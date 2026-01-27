@@ -1,0 +1,177 @@
+{
+    "SmallOrders": [
+        {
+            "OrderId": "DrinkingSpicy",
+            "OrderName": "我想要特別口味的飲料",
+            "OrderDescription": "有一個喜歡各種飲料的人類，特別愛辣的",
+            "OrderType": 1,
+            "OrderNeedTags": [
+                "Spicy"
+            ]
+        },
+        {
+            "OrderId": "HistoryHunter",
+            "OrderName": "想要有歷史感的古物",
+            "OrderDescription": "我最近迷上了考古，有沒有那種看起來很有年代感的古物？",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Antique"
+            ]
+        },
+        {
+            "OrderId": "DaredevilBuyer",
+            "OrderName": "徵求詛咒之物",
+            "OrderDescription": "我想要詛咒一個人，這個人總是在我家門口亂丟垃圾，我要把詛咒物包裝成禮物送給他。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Cursed"
+            ]
+        },
+        {
+            "OrderId": "ToxicResearcher",
+            "OrderName": "危險的以毒攻毒",
+            "OrderDescription": "我在研究特殊的抗毒血清，需要一些帶有毒性的素材或物品，越毒越好。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Poison"
+            ]
+        },
+        {
+            "OrderId": "FortuneSeeker",
+            "OrderName": "扭轉命運",
+            "OrderDescription": "最近倒楣透頂，走路都會跌倒。有沒有那種帶有幸運效果的東西？幫幫我！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Lucky"
+            ]
+        },
+        {
+            "OrderId": "HolyBeliever",
+            "OrderName": "尋求心理的安全",
+            "OrderDescription": "最近總覺得背後涼涼的...有沒有可以帶在身上的物品能讓我安心一點？",
+            "OrderType": 0,
+            "OrderNeedTags": [
+                "Holy"
+            ]
+        },
+        {
+            "OrderId": "ScavengerArtist",
+            "OrderName": "廢土藝術家",
+            "OrderDescription": "我在創作一個後現代的裝置藝術，需要各種亂七八糟的物品來堆疊。越奇怪越好，我不挑剔。",
+            "OrderType": 2,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "BizarreGourmet",
+            "OrderName": "美食勇者",
+            "OrderDescription": "是個美食部落客，專門挑戰未知的味道。只要是「食物」，不管味道我都願意嘗試，快端上來吧！",
+            "OrderType": 1,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "PanicGifte",
+            "OrderName": "急需禮物",
+            "OrderDescription": "我也要去拜訪一位大客戶，那個客戶什麼都有，我需要一份讓他驚喜的禮物",
+            "OrderType": 2,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "CosplayEmergency",
+            "OrderName": "漫展緊急狀況",
+            "OrderDescription": "再過十分鐘就要上台，我的角色道具剛好壞了！快給我任何一件「裝備」，我會硬說那是隱藏造型！",
+            "OrderType": 0,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "StreamerChallenge",
+            "OrderName": "直播盲測挑戰",
+            "OrderDescription": "觀眾想看閉眼食物挑戰。隨便給我一份特別的食物。",
+            "OrderType": 1,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "CrushChannel",
+            "OrderName": "舒壓頻道的素材",
+            "OrderDescription": "觀眾投票想看我用液壓機壓扁東西。給我一個看起來很堅固的「裝備」，不管是頭盔還是護腕，我都要把它壓成紙！",
+            "OrderType": 2,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "TimeCapsule",
+            "OrderName": "時光膠囊的填充物",
+            "OrderDescription": "我們正在埋藏時光膠囊，還缺最後一樣物品。隨便給我一個「道具」，最好是那種讓未來考古學家完全看不懂是什麼的東西！",
+            "OrderType": 2,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "BlindBoxMaker",
+            "OrderName": "自製盲盒的隱藏款",
+            "OrderDescription": "我在做驚喜盲盒送朋友，需要一個神秘的「道具」當作隱藏大獎。不用管實用性，只要塞得進盒子裡就行。",
+            "OrderType": 2,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "FoleyArtist",
+            "OrderName": "擬音師的素材",
+            "OrderDescription": "我正在錄製怪獸電影的音效，需要一個特別的聲音！",
+            "OrderType": 2,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "BioLabAccident",
+            "OrderName": "實驗室的不明生物",
+            "OrderDescription": "我們實驗室培養皿裡的菌株突然變異了，它需要大量的有機物！快給我任何一種「食物」，它好像什麼都吃！",
+            "OrderType": 1,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "CompostKing",
+            "OrderName": "頂級堆肥原料",
+            "OrderDescription": "我在測試最新的生化堆肥機。需要投入不同質地的有機物。你有沒有賣不掉的「食物」？腐爛的也可以，我都收。",
+            "OrderType": 1,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "FoodStylist",
+            "OrderName": "攝影用道具菜",
+            "OrderDescription": "我在拍一組前衛的時尚照，需要一個看起來很厲害的「食物」當背景。反正拍完會噴亮光漆，過期或能不能吃都無所謂。",
+            "OrderType": 1,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "ScarecrowUpgrade",
+            "OrderName": "稻草人的武裝",
+            "OrderDescription": "最近的烏鴉越來越大膽了...我需要給田裡的稻草人穿點「裝備」增加威懾力。生鏽的、缺角的都行，能嚇走鳥就好！",
+            "OrderType": 0,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "StatueRepair",
+            "OrderName": "銅像的替補品",
+            "OrderDescription": "銅像的配件被人偷了！快給我一件外型差不多的「裝備」頂替一下，我噴上金漆應該沒人會發現。",
+            "OrderType": 0,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "GhostHouseManager",
+            "OrderName": "鬼屋的佈置",
+            "OrderDescription": "遊樂園的鬼屋不夠恐怖，老闆叫我弄點真的像是戰死士兵穿過的「裝備」。越破舊越好，帶點陰森氣息更佳！",
+            "OrderType": 0,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "GardenCreative",
+            "OrderName": "文青風花盆",
+            "OrderDescription": "我看網路上流行用舊頭盔種多肉植物。有沒有那種凹下去、能裝土的「裝備」？生鏽的最好，比較有工業風。",
+            "OrderType": 0,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "MuseumFiller",
+            "OrderName": "博物館湊數",
+            "OrderDescription": "展覽明天就要開始了，但展示櫃還空著一格...隨便給我一件看起來舊舊的「裝備」，我們會自己幫它編一個歷史故事。",
+            "OrderType": 0,
+            "OrderNeedTags": []
+        }
+    ]
+}

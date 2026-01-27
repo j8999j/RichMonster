@@ -1,0 +1,130 @@
+{
+    "Traits": [
+        {
+            "Id": "Urgent",
+            "TraitName": "急迫",
+            "BudgetModifier": 3,
+            "AddTags": [
+                "Spicy"
+            ],
+            "RemoveTags": [],
+            "MutexTag": "",
+            "Description": ""
+        },
+        {
+            "Id": "Shrewd",
+            "TraitName": "精明",
+            "BudgetModifier": 2,
+            "AddTags": [
+                "Machine"
+            ],
+            "RemoveTags": [],
+            "MutexTag": "T",
+            "Description": ""
+        },
+        {
+            "Id": "Fanaticism",
+            "TraitName": "狂熱",
+            "BudgetModifier": 1,
+            "AddTags": [
+                "Hot"
+            ],
+            "RemoveTags": [],
+            "MutexTag": "",
+            "Description": ""
+        },
+        {
+            "Id": "Lonely",
+            "TraitName": "孤獨",
+            "BudgetModifier": 1.3,
+            "AddTags": [
+                "Light",
+                "Alcohol"
+            ],
+            "RemoveTags": [
+                "Dark"
+            ],
+            "MutexTag": "",
+            "Description": ""
+        },
+        {
+            "Id": "Brave",
+            "TraitName": "勇敢",
+            "BudgetModifier": 1.6,
+            "AddTags": [
+                "Cursed",
+                "Lucky"
+            ],
+            "RemoveTags": [
+                "Junk",
+                "Dirty"
+            ],
+            "MutexTag": "",
+            "Description": ""
+        },
+        {
+            "Id": "Mischievous",
+            "TraitName": "調皮",
+            "BudgetModifier": 2.2,
+            "AddTags": [
+                "Lucky",
+                "Dessert"
+            ],
+            "RemoveTags": [
+                "Spicy"
+            ],
+            "MutexTag": "",
+            "Description": ""
+        },
+        {
+            "Id": "Muddleheaded",
+            "TraitName": "糊塗",
+            "BudgetModifier": 4,
+            "AddTags": [
+                "Lucky"
+            ],
+            "RemoveTags": [],
+            "MutexTag": "T",
+            "Description": ""
+        },
+        {
+            "Id": "Timid",
+            "TraitName": "膽小",
+            "BudgetModifier": 1.5,
+            "AddTags": [
+                "Light",
+                "Holy"
+            ],
+            "RemoveTags": [
+                "Dark",
+                "Cursed"
+            ],
+            "MutexTag": "",
+            "Description": ""
+        },
+        {
+            "Id": "Shy",
+            "TraitName": "害羞",
+            "BudgetModifier": 2.1,
+            "AddTags": [
+                "Potion",
+                "Book"
+            ],
+            "RemoveTags": [],
+            "MutexTag": "",
+            "Description": ""
+        },
+        {
+            "Id": "Serious",
+            "TraitName": "認真",
+            "BudgetModifier": 1.6,
+            "AddTags": [
+                "Antique",
+                "Book"
+            ],
+            "RemoveTags": [],
+            "MutexTag": "",
+            "Description": ""
+        }
+    ]
+}

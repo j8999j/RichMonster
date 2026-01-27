@@ -1,0 +1,29 @@
+{
+  "Shops": [
+    {
+      "Id": "GroceryStore",
+      "ShopName": "雜貨店",
+      "ShelfCount": 10
+    },
+    {
+      "Id": "FurnituresStore",
+      "ShopName": "商店街家具行",
+      "ShelfCount": 6
+    },
+    {
+      "Id": "FoodStore",
+      "ShopName": "商店街食品行",
+      "ShelfCount": 6
+    },
+    {
+      "Id": "YokaiStore",
+      "ShopName": "妖怪雜貨店",
+      "ShelfCount": 10
+    },
+    {
+      "Id": "MonsterMerchant_HaiMonk",
+      "ShopName": "妖怪商人_海和尚",
+      "ShelfCount": 6
+    }
+  ]
+}

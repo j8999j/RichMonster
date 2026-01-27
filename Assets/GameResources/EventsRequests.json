@@ -1,0 +1,425 @@
+{
+    "LargeOrders": [
+        {
+            "OrderId": "IceSculpture_01",
+            "OrderEventId": "IceSculpture",
+            "OrderName": "抗寒大作戰",
+            "OrderDescription": "氣溫實在太低了，甚至連水管都結冰了！全城急需能產生熱能或保暖的物品。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Fire",
+                "Warm",
+                "Hot"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "IceSculpture_02",
+            "OrderEventId": "IceSculpture",
+            "OrderName": "熱食補給",
+            "OrderDescription": "這種天氣適合吃點保暖的食物",
+            "OrderType": 1,
+            "OrderNeedTags": [
+                "Fire",
+                "Warm",
+                "Hot"
+            ],
+            "OrderRank": "1"
+        },
+        {
+            "OrderId": "IceSculpture_03",
+            "OrderEventId": "IceSculpture",
+            "OrderName": "受潮書籍",
+            "OrderDescription": "濕冷的空氣滲透進了圖書館，古籍正面臨發霉危機，急需能夠除濕與乾燥的物品！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Dry"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "LibraryDusting_01",
+            "OrderEventId": "LibraryDusting",
+            "OrderName": "過敏藥物採購",
+            "OrderDescription": "空氣裡全是灰塵，急需能夠緩解呼吸道症狀的藥劑。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Purify",
+                "Potion"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "LibraryDusting_02",
+            "OrderEventId": "LibraryDusting",
+            "OrderName": "靈感大爆發",
+            "OrderDescription": "雖然一直打噴嚏，但腦中突然湧現好多靈感！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Book"
+            ],
+            "OrderRank": "1"
+        },
+        {
+            "OrderId": "LibraryDusting_03",
+            "OrderEventId": "LibraryDusting",
+            "OrderName": "路上的照明",
+            "OrderDescription": "空氣霧濛濛的看不清楚道路，急需照明用具",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Light"
+            ],
+            "OrderRank": "1"
+        },
+        {
+            "OrderId": "RiverDredging_01",
+            "OrderEventId": "RiverDredging",
+            "OrderName": "除霉除藻劑",
+            "OrderDescription": "街道因為不知道漫出的泥水長滿了滑溜溜的青苔與藻類，急需化學藥劑來刷洗。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Poison"
+            ],
+            "OrderRank": "2"
+        },
+        {
+            "OrderId": "RiverDredging_02",
+            "OrderEventId": "RiverDredging",
+            "OrderName": "淨水需求",
+            "OrderDescription": "水龍頭流出綠色的水!？急需能過濾掉藻類與泥沙的過濾物品。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Purify",
+                "Pure"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "InkDisaster_01",
+            "OrderEventId": "InkDisaster",
+            "OrderName": "食物污染",
+            "OrderDescription": "食物被不知名的黑色流體汙染短缺",
+            "OrderType": 1,
+            "OrderNeedTags": [
+                "Meat",
+                "Fruit",
+                "Dessert"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "InkDisaster_02",
+            "OrderEventId": "InkDisaster",
+            "OrderName": "強力漂白",
+            "OrderDescription": "衣服遭到不明黑色液體髒汙！超市裡的漂白水被搶購一空，急需清潔用品。",
+            "OrderType": 3,
+            "OrderNeedTags": [
+                "Purify"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "SunCrow_01",
+            "OrderEventId": "SunCrowPatrol",
+            "OrderName": "極度高溫警報",
+            "OrderDescription": "太陽像是貼在臉上一樣熱！冷氣機都炸了，急需任何能讓人降溫的東西！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Machine",
+                "Cold",
+                "Wind"
+            ],
+            "OrderRank": "1"
+        },
+        {
+            "OrderId": "SunCrow_02",
+            "OrderEventId": "SunCrowPatrol",
+            "OrderName": "黑夜需求",
+            "OrderDescription": "現在是凌晨三點，但外面亮得像中午！我需要能夠遮擋光線製造黑暗的東西，不然我要失眠了。",
+            "OrderType": 3,
+            "OrderNeedTags": [
+                "Dark",
+                "Fabric"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "SunCrow_03",
+            "OrderEventId": "SunCrowPatrol",
+            "OrderName": "乾旱脫水救援",
+            "OrderDescription": "河流都快被蒸發了，自來水管流出來的是蒸氣。急需解渴的液體或飽含水分的食物！",
+            "OrderType": 1,
+            "OrderNeedTags": [
+                "Wet",
+                "Fruit",
+                "Drinkable"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Raiju_01",
+            "OrderEventId": "StaticFurSeason",
+            "OrderName": "電器大更換",
+            "OrderDescription": "家裡的電視和電腦全被空氣中的靜電燒壞了！急需補充新的家電設備。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Machine",
+                "Electricity"
+            ],
+            "OrderRank": "2"
+        },
+        {
+            "OrderId": "Raiju_02",
+            "OrderEventId": "StaticFurSeason",
+            "OrderName": "炸毛護理危機",
+            "OrderDescription": "因為靜電太強，全城的人頭髮都豎起來像獅子一樣。急需油性物質來撫平毛躁的頭髮！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Beauty",
+                "Oil"
+            ],
+            "OrderRank": "1"
+        },
+        {
+            "OrderId": "Raiju_03",
+            "OrderEventId": "StaticFurSeason",
+            "OrderName": "絕緣防護裝備",
+            "OrderDescription": "碰到門把就被電飛！我們需要木頭或橡膠製品來當作絕緣體，或者乾脆穿上厚布料防護。",
+            "OrderType": 3,
+            "OrderNeedTags": [
+                "Fabric",
+                "Wood"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Fashion_01",
+            "OrderEventId": "FashionWeek",
+            "OrderName": "解毒護膚劑",
+            "OrderDescription": "最近流行的化妝品好像含有不明成分，大家臉上都起了紅疹！急需能淨化毒素的藥劑。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Purify",
+                "Potion",
+                "Clean"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Fashion_02",
+            "OrderEventId": "FashionWeek",
+            "OrderName": "奢華配件熱潮",
+            "OrderDescription": "受到莫名其妙的潮流影響，大家突然瘋狂追求閃亮亮的寶石和配飾，越貴越好！",
+            "OrderType": 3,
+            "OrderNeedTags": [
+                "Luxury",
+                "Gem",
+                "Accessory"
+            ],
+            "OrderRank": "2"
+        },
+        {
+            "OrderId": "Fashion_03",
+            "OrderEventId": "FashionWeek",
+            "OrderName": "復古絲綢狂熱",
+            "OrderDescription": "街上突然流行起穿著繁複的絲綢古裝，成衣店的庫存告急，需要大量華美的布料或古物。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Beauty",
+                "Antique",
+                "Fabric"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Tengu_01",
+            "OrderEventId": "TenguFanTest",
+            "OrderName": "髮型保衛戰",
+            "OrderDescription": "這風大到我的髮膠完全失效了！急需黏性最強的油或膠狀物，我的偶像包袱不能掉！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Beauty",
+                "Oil",
+                "Hard"
+            ],
+            "OrderRank": "1"
+        },
+        {
+            "OrderId": "Tengu_02",
+            "OrderEventId": "TenguFanTest",
+            "OrderName": "壓住那張紙！",
+            "OrderDescription": "辦公室的文件滿天飛！快給我一些重得要命的東西當紙鎮，石頭、金屬塊什麼都好！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Heavy"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Tengu_03",
+            "OrderEventId": "TenguFanTest",
+            "OrderName": "風沙大掃除",
+            "OrderDescription": "強風把不知道哪來的怪灰塵都吹進家裡了，急需清潔工具把這些髒東西弄出去。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Purify",
+                "Clean"
+            ],
+            "OrderRank": "2"
+        },
+        {
+            "OrderId": "Zombie_01",
+            "OrderEventId": "ZombieAerobics",
+            "OrderName": "關節急救油",
+            "OrderDescription": "不知道為什麼今天膝蓋特別僵硬，走路像機器人一樣。急需能推拿活絡的油！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Potion",
+                "Oil"
+            ],
+            "OrderRank": "1"
+        },
+        {
+            "OrderId": "Zombie_02",
+            "OrderEventId": "ZombieAerobics",
+            "OrderName": "驅逐陰寒",
+            "OrderDescription": "總覺得背脊發涼，不是氣溫的問題，是一種...陰森的感覺。我需要神聖或發光的東西來壯膽！",
+            "OrderType": 3,
+            "OrderNeedTags": [
+                "Light",
+                "Holy"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Sandman_01",
+            "OrderEventId": "SandmanBagLeak",
+            "OrderName": "咖啡因緊急輸血",
+            "OrderDescription": "撐...撐不住了...眼皮...好重...快給我最苦、最濃的飲料...",
+            "OrderType": 1,
+            "OrderNeedTags": [
+                "Drinkable",
+                "Bitter"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Sandman_02",
+            "OrderEventId": "SandmanBagLeak",
+            "OrderName": "噪音喚醒服務",
+            "OrderDescription": "我還有報告要交！給我能發出巨大噪音的東西，把我從桌子上震起來！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Noise"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Sandman_03",
+            "OrderEventId": "SandmanBagLeak",
+            "OrderName": "味覺衝擊",
+            "OrderDescription": "既然咖啡沒用，就用痛覺吧！給我最辣的東西，我要辣到清醒過來！",
+            "OrderType": 1,
+            "OrderNeedTags": [
+                "Cold",
+                "Spicy"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Fox_01",
+            "OrderEventId": "FoxWedding",
+            "OrderName": "鬼打牆救援",
+            "OrderDescription": "我已經在自家樓下繞了三小時了！GPS一直在轉圈圈，快給我指南針或者任何能指引方向的神祕道具！",
+            "OrderType": 3,
+            "OrderNeedTags": [
+                "Mystic",
+                "Magnetic"
+            ],
+            "OrderRank": "2"
+        },
+        {
+            "OrderId": "Fox_02",
+            "OrderEventId": "FoxWedding",
+            "OrderName": "破除迷霧",
+            "OrderDescription": "這霧氣太詭異了，手電筒的光都照不透。我需要高品質的鏡片或強力光源來看清路況。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Light"
+            ],
+            "OrderRank": "1"
+        },
+        {
+            "OrderId": "Fox_03",
+            "OrderEventId": "FoxWedding",
+            "OrderName": "莫名的豆皮渴望",
+            "OrderDescription": "不知道為什麼，突然好想吃那種甜甜的、油油的豆皮壽司...這一定是某種超自然的飢餓感！",
+            "OrderType": 1,
+            "OrderNeedTags": [
+                "Sweet",
+                "Oil"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Gargoyle_01",
+            "OrderEventId": "GargoyleStrike",
+            "OrderName": "頭部防護工程",
+            "OrderDescription": "走在路上隨時會有磚塊掉下來，太可怕了！急需堅硬的頭盔或任何能保護頭部的裝備。",
+            "OrderType": 3,
+            "OrderNeedTags": [
+                "Hard",
+                "Lucky"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Gargoyle_02",
+            "OrderEventId": "GargoyleStrike",
+            "OrderName": "替補守護者",
+            "OrderDescription": "屋頂上的石像跑了",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Heavy",
+                "Mystic",
+                "Toy"
+            ],
+            "OrderRank": "2"
+        },
+        {
+            "OrderId": "Dryad_01",
+            "OrderEventId": "DryadOvergrowth",
+            "OrderName": "除草劑急單",
+            "OrderDescription": "客廳的電視被藤蔓纏住了！普通的剪刀根本來不及剪，給我最強的毒藥或除草劑！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Machine",
+                "Poison"
+            ],
+            "OrderRank": "1"
+        },
+        {
+            "OrderId": "Dryad_02",
+            "OrderEventId": "DryadOvergrowth",
+            "OrderName": "火攻策略",
+            "OrderDescription": "植物怕火對吧？給我任何能噴火或產生高溫的東西，我要把臥室奪回來！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Fire"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Dryad_03",
+            "OrderEventId": "DryadOvergrowth",
+            "OrderName": "開路先鋒",
+            "OrderDescription": "我出不了門了，門口被巨型捕蠅草堵住了。急需鋒利的武器來劈開一條血路！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Hard",
+                "Weapon"
+            ],
+            "OrderRank": "2"
+        }
+    ]
+}

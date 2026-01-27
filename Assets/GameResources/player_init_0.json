@@ -1,0 +1,21 @@
+{
+  "ID": 0,
+  "MasterSeed": 12345,
+  "DaysPlayed": 1,
+  "CustomerIndex": 0,
+  "PlayingStatus": 0,
+  "Gold": 1000,
+  "MonsterGold": 1000,
+  "ShopShelves": [
+    {
+      "ShopID": "GroceryStore",
+      "Changes": [
+        {
+          "ItemId": "Mineralwater",
+          "Purchased": true,
+          "SlotIndex": 0
+        }
+      ]
+    }
+  ]
+}

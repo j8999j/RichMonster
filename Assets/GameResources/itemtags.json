@@ -1,0 +1,292 @@
+{
+    "ItemTags": [
+        {
+            "TagID": "Wet",
+            "TagName": "潮濕"
+        },
+        {
+            "TagID": "Machine",
+            "TagName": "家電"
+        },
+        {
+            "TagID": "Dry",
+            "TagName": "乾燥"
+        },
+        {
+            "TagID": "Beauty",
+            "TagName": "華美"
+        },
+        {
+            "TagID": "Meat",
+            "TagName": "肉類"
+        },
+        {
+            "TagID": "Purify",
+            "TagName": "淨化"
+        },
+        {
+            "TagID": "Light",
+            "TagName": "發光"
+        },
+        {
+            "TagID": "Dark",
+            "TagName": "黑暗"
+        },
+        {
+            "TagID": "Holy",
+            "TagName": "神聖"
+        },
+        {
+            "TagID": "Cold",
+            "TagName": "寒冷"
+        },
+        {
+            "TagID": "Preserved",
+            "TagName": "醃漬"
+        },
+        {
+            "TagID": "Cursed",
+            "TagName": "受詛咒"
+        },
+        {
+            "TagID": "Junk",
+            "TagName": "廢品"
+        },
+        {
+            "TagID": "Luxury",
+            "TagName": "奢華的"
+        },
+        {
+            "TagID": "Antique",
+            "TagName": "古物"
+        },
+        {
+            "TagID": "Gem",
+            "TagName": "寶石"
+        },
+        {
+            "TagID": "Accessory",
+            "TagName": "配飾"
+        },
+        {
+            "TagID": "Corruption",
+            "TagName": "腐敗"
+        },
+        {
+            "TagID": "Hot",
+            "TagName": "炎熱"
+        },
+        {
+            "TagID": "Natural",
+            "TagName": "自然"
+        },
+        {
+            "TagID": "Potion",
+            "TagName": "藥水"
+        },
+        {
+            "TagID": "Wind",
+            "TagName": "風"
+        },
+        {
+            "TagID": "Growth",
+            "TagName": "生長"
+        },
+        {
+            "TagID": "Ocean",
+            "TagName": "海洋"
+        },
+        {
+            "TagID": "Lucky",
+            "TagName": "幸運"
+        },
+        {
+            "TagID": "Pure",
+            "TagName": "純淨"
+        },
+        {
+            "TagID": "Dirty",
+            "TagName": "髒污"
+        },
+        {
+            "TagID": "Old",
+            "TagName": "陳舊"
+        },
+        {
+            "TagID": "Fire",
+            "TagName": "火焰"
+        },
+        {
+            "TagID": "Alcohol",
+            "TagName": "酒精"
+        },
+        {
+            "TagID": "Spicy",
+            "TagName": "辣味"
+        },
+        {
+            "TagID": "Book",
+            "TagName": "書籍"
+        },
+        {
+            "TagID": "Fruit",
+            "TagName": "水果"
+        },
+        {
+            "TagID": "Seafood",
+            "TagName": "海鮮"
+        },
+        {
+            "TagID": "Dessert",
+            "TagName": "甜點"
+        },
+        {
+            "TagID": "Sweet",
+            "TagName": "甜味"
+        },
+        {
+            "TagID": "Sour",
+            "TagName": "酸味"
+        },
+        {
+            "TagID": "Fresh",
+            "TagName": "新鮮"
+        },
+        {
+            "TagID": "Vegetable",
+            "TagName": "蔬菜"
+        },
+        {
+            "TagID": "Oil",
+            "TagName": "油"
+        },
+        {
+            "TagID": "Warm",
+            "TagName": "溫暖"
+        },
+        {
+            "TagID": "Heavy",
+            "TagName": "沉重"
+        },
+        {
+            "TagID": "Hard",
+            "TagName": "堅韌"
+        },
+        {
+            "TagID": "Mystic",
+            "TagName": "神秘"
+        },
+        {
+            "TagID": "Poison",
+            "TagName": "毒物"
+        },
+        {
+            "TagID": "Plant",
+            "TagName": "植物"
+        },
+        {
+            "TagID": "Clean",
+            "TagName": "清潔"
+        },
+        {
+            "TagID": "Music",
+            "TagName": "音樂"
+        },
+        {
+            "TagID": "Magnetic",
+            "TagName": "磁"
+        },
+        {
+            "TagID": "Soul",
+            "TagName": "靈魂"
+        },
+        {
+            "TagID": "Star",
+            "TagName": "星辰"
+        },
+        {
+            "TagID": "Memory",
+            "TagName": "記憶"
+        },
+        {
+            "TagID": "Noise",
+            "TagName": "噪音"
+        },
+        {
+            "TagID": "Blood",
+            "TagName": "血液"
+        },
+        {
+            "TagID": "Insect",
+            "TagName": "昆蟲"
+        },
+        {
+            "TagID": "Moon",
+            "TagName": "月亮"
+        },
+        {
+            "TagID": "Fish",
+            "TagName": "魚"
+        },
+        {
+            "TagID": "River",
+            "TagName": "河川"
+        },
+        {
+            "TagID": "Gold",
+            "TagName": "黃金"
+        },
+        {
+            "TagID": "Sun",
+            "TagName": "太陽"
+        },
+        {
+            "TagID": "Weapon",
+            "TagName": "武器"
+        },
+        {
+            "TagID": "Drinkable",
+            "TagName": "飲品"
+        },
+        {
+            "TagID": "Bitter",
+            "TagName": "苦味"
+        },
+        {
+            "TagID": "Magic",
+            "TagName": "魔法"
+        },
+        {
+            "TagID": "Glass",
+            "TagName": "玻璃"
+        },
+        {
+            "TagID": "Rice",
+            "TagName": "米飯"
+        },
+        {
+            "TagID": "Noodle",
+            "TagName": "麵條"
+        },
+        {
+            "TagID": "Toy",
+            "TagName": "玩具"
+        },
+        {
+            "TagID": "Ceramic",
+            "TagName": "陶瓷"
+        },
+        {
+            "TagID": "Fabric",
+            "TagName": "布料"
+        },
+        {
+            "TagID": "Wood",
+            "TagName": "木材"
+        },
+        {
+            "TagID": "Electricity",
+            "TagName": "電力"
+        }
+    ]
+}

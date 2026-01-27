@@ -1,0 +1,152 @@
+{
+  "Events": [
+    {
+      "Id": "IceSculpture",
+      "Name": "雪原的冰雕大賽",
+      "EventDescription": "【雪原快訊】第10屆冰雕設計大賽盛大開幕！來自各地的雪女選手齊聚一堂，比拼誰的嘆息能造出最完美的冰雕。目前的奪冠熱門是「前男友劈腿三百次」的霜雪姬，她剛剛的一聲長嘆不小心讓寒氣衝破了界域屏障。主辦方提醒觀眾：請穿好您的羽絨衣，以免被選手的冷氣凍傷。",
+      "EventTimes": [
+        "Early",
+        "Mid",
+        "Late"
+      ],
+      "eventRareity": "0",
+      "TriggerEffect": ""
+    },
+    {
+      "Id": "LibraryDusting",
+      "Name": "圖書館大掃除",
+      "EventDescription": "【館藏公告】圖書館書架整理中，請勿靠近 咳咳咳！請各位書靈注意，在整理書時請注意灰塵防護。",
+      "EventTimes": [
+        "Early",
+        "Mid",
+        "Late"
+      ],
+      "eventRareity": "0",
+      "TriggerEffect": ""
+    },
+    {
+      "Id": "RiverDredging",
+      "Name": "河道疏浚工程",
+      "EventDescription": "【社區公告】河道清潔大成功！感謝河童們的努力，我們的河流終於恢復清澈了！至於那些刮下來的累積幾百年的淤泥去哪了？嗯...舊「沖下去」就沒事了。",
+      "EventTimes": [
+        "Early",
+        "Mid",
+        "Late"
+      ],
+      "eventRareity": "0",
+      "TriggerEffect": ""
+    },
+    {
+      "Id": "InkDisaster",
+      "Name": "墨汁翻倒意外",
+      "EventDescription": "【意外事故】百科全書編撰暫停：沒墨水了 負責搬運墨水的實習書靈不慎絆倒，導致「歷史紀錄專用墨水」整缸傾倒。",
+      "EventTimes": [
+        "Early",
+        "Mid",
+        "Late"
+      ],
+      "eventRareity": "0",
+      "TriggerEffect": ""
+    },
+    {
+      "Id": "SunCrowPatrol",
+      "Name": "金烏的低空巡遊演習",
+      "EventDescription": "【氣象快訊】三足金烏今日心情大好，決定重現遠古「十日並出」的輝煌，進行低空飛行演習。雖然他被后羿的警告勸退了，但遺留的熱輻射導致人界氣溫瞬間飆升，且夜晚亮如白晝。",
+      "EventTimes": [
+        "Early",
+        "Mid",
+        "Late"
+      ],
+      "eventRareity": "0",
+      "TriggerEffect": ""
+    },
+    {
+      "Id": "StaticFurSeason",
+      "Name": "雷獸的換毛季",
+      "EventDescription": "【注意靜電】雷獸們進入了換毛期，帶有高壓電的絨毛漫天飛舞。這些絨毛穿過了界域屏障，導致人界空氣中充滿了電荷，電器瘋狂短路，人類的頭髮全部豎了起來。",
+      "EventTimes": [
+        "Early",
+        "Mid",
+        "Late"
+      ],
+      "eventRareity": "0",
+      "TriggerEffect": ""
+    },
+    {
+      "Id": "FashionWeek",
+      "Name": "盤絲洞時尚週",
+      "EventDescription": "【潮流預警】蜘蛛精與畫皮聯手舉辦的「致命誘惑」時尚週開幕。妖界的審美觀念（以及一些迷幻鱗粉）滲透到了人界，人們突然對「危險的美麗」產生了瘋狂的執著，同時也伴隨著大規模的皮膚過敏。",
+      "EventTimes": [
+        "Early",
+        "Mid"
+      ],
+      "eventRareity": "0",
+      "TriggerEffect": ""
+    },
+    {
+      "Id": "TenguFanTest",
+      "Name": "天狗的團扇校準測試",
+      "EventDescription": "【強風特報】天狗長老正在測試一把標榜「十級颱風出力」的新團扇。雖然他只是輕輕揮了一下，但洩漏出的風壓導致人界氣流大亂，街上的招牌都在跳舞，人們的髮型更是慘不忍睹。",
+      "EventTimes": [
+        "Early",
+        "Mid"
+      ],
+      "eventRareity": "0",
+      "TriggerEffect": ""
+    },
+    {
+      "Id": "ZombieAerobics",
+      "Name": "千年殭屍體操大會",
+      "EventDescription": "【奇怪震動】為了預防關節退化，殭屍界舉辦了集體跳躍體操大會。數萬名殭屍整齊劃一的跳躍引發了跨界共振，導致人界的人們突然感覺膝蓋僵硬，且周遭莫名陰冷。",
+      "EventTimes": [
+        "Mid"
+      ],
+      "eventRareity": "0",
+      "TriggerEffect": ""
+    },
+    {
+      "Id": "SandmanBagLeak",
+      "Name": "睡魔的破袋事故",
+      "EventDescription": "【睡眠警報】負責管理夢境的睡魔不小心勾破了裝滿「瞌睡沙」的袋子。高濃度的睡眠粉塵飄散到人界，導致所有上班族和學生眼皮重得像鉛塊一樣，全城陷入昏睡危機。",
+      "EventTimes": [
+        "Early",
+        "Mid"
+      ],
+      "eventRareity": "0",
+      "TriggerEffect": ""
+    },
+    {
+      "Id": "FoxWedding",
+      "Name": "狐狸娶親的迷魂霧",
+      "EventDescription": "【濃霧特報】九尾狐家族正在舉行盛大的婚禮遊行。溢出的妖氣化作了濃厚的金色霧氣籠罩人界，街道變得像迷宮一樣，導航系統全部失靈，人們甚至分不清上下左右。",
+      "EventTimes": [
+        "Mid",
+        "Late"
+      ],
+      "eventRareity": "0",
+      "TriggerEffect": ""
+    },
+    {
+      "Id": "GargoyleStrike",
+      "Name": "石像鬼的集體罷工",
+      "EventDescription": "【高空墜物】守護建築屋頂的石像鬼們覺得薪資（供品）太少，決定集體飛離崗位去抗議。這導致大量原本被鎮壓的「厄運」入侵建築，且石像鬼起飛時踢落了許多碎石磚瓦，街道變得非常危險。",
+      "EventTimes": [
+        "Late"
+      ],
+      "eventRareity": "0",
+      "TriggerEffect": ""
+    },
+    {
+      "Id": "DryadOvergrowth",
+      "Name": "樹妖精的暴走花粉",
+      "EventDescription": "【植物災難】樹妖精長老打了一個含有超濃縮生長激素的噴嚏。這些花粉飄入人界，導致家裡的盆栽、路邊的雜草在一夜之間瘋長，馬桶裡長出了食人花，臥室變成了亞馬遜雨林。",
+      "EventTimes": [
+        "Early",
+        "Mid",
+        "Late"
+      ],
+      "eventRareity": "0",
+      "TriggerEffect": ""
+    }
+  ]
+}

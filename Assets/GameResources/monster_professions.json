@@ -1,0 +1,169 @@
+{
+    "Professions": [
+        {
+            "Id": "RookieAdventurer",
+            "ProfessionName": "雪女",
+            "PreferredTags": [
+                "Wet",
+                "Cold"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 3,
+            "Description": "",
+            "professionType": 1,
+            "HateTags": [
+                "Dry"
+            ],
+            "Race": "幽靈"
+        },
+        {
+            "Id": "SeniorKnight",
+            "ProfessionName": "九尾狐",
+            "PreferredTags": [
+                "Luxury",
+                "Vegetable",
+                "Fruit"
+            ],
+            "BaseBudgetMultiplier": 2,
+            "PreferMaxPower": 10,
+            "Description": "",
+            "professionType": 2,
+            "HateTags": [
+                "Cursed"
+            ],
+            "Race": "神族"
+        },
+        {
+            "Id": "ApprenticeMage",
+            "ProfessionName": "天狗",
+            "PreferredTags": [
+                "Magic",
+                "Old"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 3,
+            "Description": "",
+            "professionType": 0,
+            "HateTags": [
+                "Junk"
+            ],
+            "Race": "神族"
+        },
+        {
+            "Id": "WardenWoods",
+            "ProfessionName": "書靈",
+            "PreferredTags": [
+                "Book",
+                "Gem"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 3,
+            "Description": "",
+            "professionType": 0,
+            "HateTags": [
+                "Corruption"
+            ],
+            "Race": "妖精"
+        },
+        {
+            "Id": "Rogue",
+            "ProfessionName": "樹妖精",
+            "PreferredTags": [
+                "Growth",
+                "Sour"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 3,
+            "Description": "",
+            "professionType": 0,
+            "HateTags": [
+                "Fire"
+            ],
+            "Race": "妖精"
+        },
+        {
+            "Id": "WanderingBard",
+            "ProfessionName": "殭屍",
+            "PreferredTags": [
+                "Corruption",
+                "Potion"
+            ],
+            "BaseBudgetMultiplier": 0.5,
+            "PreferMaxPower": 5,
+            "Description": "",
+            "professionType": 0,
+            "HateTags": [
+                "Hot"
+            ],
+            "Race": "幽靈"
+        },
+        {
+            "Id": "ChurchPriest",
+            "ProfessionName": "河童",
+            "PreferredTags": [
+                "Vegetable",
+                "Sour"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 3,
+            "Description": "",
+            "professionType": 0,
+            "HateTags": [
+                "Dirty"
+            ],
+            "Race": "獸族"
+        },
+        {
+            "Id": "Oxboos",
+            "ProfessionName": "牛魔王",
+            "PreferredTags": [
+                "Dry",
+                "Tasty",
+                "Antique",
+                "Dessert"
+            ],
+            "BaseBudgetMultiplier": 1.5,
+            "PreferMaxPower": 10,
+            "Description": "",
+            "professionType": 1,
+            "HateTags": [
+                "Spicy"
+            ],
+            "Race": "獸族"
+        },
+        {
+            "Id": "TigerAunt",
+            "ProfessionName": "虎姑婆",
+            "PreferredTags": [
+                "Meat",
+                "Preserved"
+            ],
+            "BaseBudgetMultiplier": 0.8,
+            "PreferMaxPower": 5,
+            "Description": "",
+            "professionType": 1,
+            "HateTags": [
+                "Hot",
+                "Fire"
+            ],
+            "Race": "獸族"
+        },
+        {
+            "Id": "WhiteBoneDemon",
+            "ProfessionName": "白骨精",
+            "PreferredTags": [
+                "Beauty",
+                "Meat",
+                "Cursed"
+            ],
+            "BaseBudgetMultiplier": 0.8,
+            "PreferMaxPower": 5,
+            "Description": "",
+            "professionType": 0,
+            "HateTags": [
+                "Sour"
+            ],
+            "Race": "幽靈"
+        }
+    ]
+}

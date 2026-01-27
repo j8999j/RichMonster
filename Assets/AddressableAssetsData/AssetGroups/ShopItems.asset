@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: ShopItems
+  m_EditorClassIdentifier: 
+  m_GroupName: ShopItems
+  m_Data:
+    m_SerializedData: []
+  m_GUID: a94bf07a37d53bb4aaceb98277d5504e
+  m_SerializeEntries:
+  - m_GUID: 1252d45f6d6998d49b3e4d3d1ebaa888
+    m_Address: Assets/Art/Allitems.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8c13ca95d44abb41bc0b18a699571e6
+    m_Address: ItemsAtlas
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: f6de18b731cd1f54f9b9a93a82ae481d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 8e166882ae1b39044bc7232b3c65c3bc, type: 2}
+    - {fileID: 11400000, guid: 1e3aed7223cc1434ba6c931cd6061da6, type: 2}

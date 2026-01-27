@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: GameResoures
+  m_EditorClassIdentifier: 
+  m_GroupName: GameResoures
+  m_Data:
+    m_SerializedData: []
+  m_GUID: ee0de37c9db090e45968a80e8335cc9f
+  m_SerializeEntries:
+  - m_GUID: 0d18024b37259b248b6c9b8344ce0dd0
+    m_Address: professions
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 122664f56c5f032439c6fbe3b5f7386b
+    m_Address: player_init
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 559206c2b7347d14580676b69f5a5005
+    m_Address: itemtags
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57967e0c9297a4a4cacf86f0cd1c4595
+    m_Address: traits
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5abad22e8d137554dad6063d0193415d
+    m_Address: shops
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7149ab2551394904aa69f724a1aff024
+    m_Address: items
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4c04ee4a57afb64ab3190284b88619d
+    m_Address: monster_traits
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dae57473029b61f40b8d5bd1e2fd4d0b
+    m_Address: monster_professions
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9d3f60b86f159d409077068e3dc0f31
+    m_Address: events
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ecfeb3f136af8c34dba31b3fe020909d
+    m_Address: HumanEvents
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9c39db8135badb48bc62ecb9ddf1b76
+    m_Address: EventsRequests
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: f6de18b731cd1f54f9b9a93a82ae481d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 7111e1182be6c604a911a5bda199db45, type: 2}
+    - {fileID: 11400000, guid: 12c430c4fb6271546bc08ee0882ed528, type: 2}

@@ -1,0 +1,388 @@
+{
+  "Items": [
+    {
+      "Id": "Mineralwater",
+      "Name": "礦泉水",
+      "Tags": [
+        "Wet",
+        "Pure"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 10,
+      "Description": "一整瓶滿滿的乾淨的水",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Holywater",
+      "Name": "聖水",
+      "Tags": [
+        "Wet",
+        "Holy",
+        "Growth"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 2,
+      "BasePrice": 150,
+      "Description": "神聖之水",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Hairdryer",
+      "Name": "吹風機",
+      "Tags": [
+        "Machine",
+        "Dry",
+        "Hot"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 200,
+      "Description": "吹出熱風",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "PalacePearl",
+      "Name": "夜明珠",
+      "Tags": [
+        "Wet",
+        "Purify",
+        "Light",
+        "Gem",
+        "Natural"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 3,
+      "BasePrice": 500,
+      "Description": "神祕的寶物，光芒柔和且帶有潮濕氣息。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "DryMachine",
+      "Name": "除濕機",
+      "Tags": [
+        "Machine",
+        "Dry",
+        "Purify"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 2,
+      "BasePrice": 300,
+      "Description": "在濕度高的地區，銷售量非常高。",
+      "ShopType": [
+        "FurnituresStore"
+      ]
+    },
+    {
+      "Id": "FriedChickenLeg",
+      "Name": "酥炸雞腿",
+      "Tags": [
+        "Meat",
+        "Oil"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 50,
+      "Description": "美味的雞腿，口水流下來了",
+      "ShopType": [
+        "FoodStore"
+      ]
+    },
+    {
+      "Id": "GrilledMeatPlatter",
+      "Name": "烤肉拼盤",
+      "Tags": [
+        "Meat",
+        "Fire",
+        "Fresh"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 2,
+      "BasePrice": 150,
+      "Description": "高級的肉類拼盤，今天來犒賞一下自己吧",
+      "ShopType": [
+        "FoodStore"
+      ]
+    },
+    {
+      "Id": "SimpleSalad",
+      "Name": "普通沙拉",
+      "Tags": [
+        "Natural",
+        "Fruit",
+        "Vegetable"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 30,
+      "Description": "跟名稱一樣普通，纖維素是含量次高的成分。",
+      "ShopType": [
+        "FoodStore"
+      ]
+    },
+    {
+      "Id": "SoupForgetfulness",
+      "Name": "孟婆湯",
+      "Tags": [
+        "Tasty",
+        "Sweet"
+      ],
+      "Type": 1,
+      "World": 1,
+      "Rarity": 1,
+      "BasePrice": 40,
+      "Description": "據說好吃到令人失憶。我剛剛吃飯了嗎?",
+      "ShopType": [
+        "MonsterMerchant_HaiMonk"
+      ]
+    },
+    {
+      "Id": "GhostflameSearedPorkChop",
+      "Name": "鬼火炙燒豬排",
+      "Tags": [
+        "Meat",
+        "Preserved",
+        "Fire"
+      ],
+      "Type": 1,
+      "World": 1,
+      "Rarity": 1,
+      "BasePrice": 70,
+      "Description": "妖界常見的小吃，外焦裡脆老饕最愛。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "HellfireRamen",
+      "Name": "地獄拉麵",
+      "Tags": [
+        "Light",
+        "Hot",
+        "Fire"
+      ],
+      "Type": 1,
+      "World": 1,
+      "Rarity": 2,
+      "BasePrice": 160,
+      "Description": "趁熱吃保證最佳口感",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "DownJacket",
+      "Name": "羽絨外套",
+      "Tags": [
+        "Warm"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 3,
+      "BasePrice": 350,
+      "Description": "保暖效果極強的裝備，但價格也不便宜",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "GoldRing",
+      "Name": "黃金戒指",
+      "Tags": [
+        "Light",
+        "Luxury",
+        "Accessory"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 4,
+      "BasePrice": 1000,
+      "Description": "閃著耀眼光芒的物品，小小一個卻這麼重!",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "BullDemonKingBracers",
+      "Name": "牛魔王護腕",
+      "Tags": [
+        "Heavy",
+        "Hard"
+      ],
+      "Type": 0,
+      "World": 1,
+      "Rarity": 2,
+      "BasePrice": 150,
+      "Description": "這麼大的護腕，提供滿滿安全感",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "TenguFeatherFan",
+      "Name": "天狗羽扇",
+      "Tags": [
+        "Natural",
+        "Wind",
+        "Warm"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 3,
+      "BasePrice": 500,
+      "Description": "能夠帶來溫暖的風",
+      "ShopType": [
+        "MonsterMerchant_HaiMonk"
+      ]
+    },
+    {
+      "Id": "Lighter",
+      "Name": "打火機",
+      "Tags": [
+        "Light",
+        "Fire"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 20,
+      "Description": "人類發明的神祕道具可以召喚火焰!?",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "KinmenKaoliangLiquor",
+      "Name": "金門高粱酒",
+      "Tags": [
+        "Purify",
+        "Potion",
+        "Alcohol",
+        "Warm"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 2,
+      "BasePrice": 50,
+      "Description": "高達58度酒精的釀造飲品",
+      "ShopType": [
+        "FoodStore"
+      ]
+    },
+    {
+      "Id": "WineGlass",
+      "Name": "高腳杯",
+      "Tags": [
+        "Beauty"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 90,
+      "Description": "能夠作為大部分飲品的容器",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "CrystalChandelier",
+      "Name": "水晶燈",
+      "Tags": [
+        "Beauty",
+        "Luxury",
+        "Gem"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 3,
+      "BasePrice": 600,
+      "Description": "高級的裝飾品，能使光線產生優美的折射",
+      "ShopType": [
+        "FurnituresStore"
+      ]
+    },
+    {
+      "Id": "WindSealingPill",
+      "Name": "定風丸",
+      "Tags": [
+        "Potion",
+        "Heavy"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 3,
+      "BasePrice": 600,
+      "Description": "吃了這個能抵擋100級陣風!?",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "BookSpiritInk",
+      "Name": "書靈墨水",
+      "Tags": [
+        "Wet",
+        "Potion",
+        "Mystic"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 2,
+      "BasePrice": 200,
+      "Description": "喝下去能讓寫的字變得好看",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "TreeSpiritSeed",
+      "Name": "樹精種子",
+      "Tags": [
+        "Natural",
+        "Growth",
+        "Pure"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 1,
+      "BasePrice": 70,
+      "Description": "擁有極強的生命力，據說能在極地與沙漠生長",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "GodLight",
+      "Name": "阿拉丁神燈",
+      "Tags": [
+        "Holy",
+        "Cursed",
+        "Mystic"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 4,
+      "BasePrice": 3000,
+      "Description": "能實現願望的神器，你願意付出什麼樣的代價呢?",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    }
+  ]
+}
