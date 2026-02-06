@@ -15,6 +15,8 @@ public class Inventory
 [System.Serializable]
 public class PlayerData : IReadOnlyPlayerData
 {
+    public string UniqueID { get; set; }
+    public int LastUpdatedDay { get; set; }
     public int ID;
     public int MasterSeed;
     public int DaysPlayed;//歷史遊玩天數
@@ -26,11 +28,10 @@ public class PlayerData : IReadOnlyPlayerData
     public Inventory Inventory = new();
     // 商店庫存變更紀錄
     public List<ShopShelfData> ShopShelves = new List<ShopShelfData>();
-    public List<RareItemShopShelfData> RareItemShopShelves = new List<RareItemShopShelfData>();
     public List<OrderProgress> OrderHistory;
     public TradeProgress TradeHistory;
     public MonsterTradeProgress MonsterTradeHistory;
-    
+    public GameSaveFile gameSaveFile;
 
     //interface
     int IReadOnlyPlayerData.ID => ID;
@@ -42,11 +43,12 @@ public class PlayerData : IReadOnlyPlayerData
     DayPhase IReadOnlyPlayerData.PlayingStatus => PlayingStatus;
     IReadOnlyList<Item> IReadOnlyPlayerData.InventoryItems => Inventory?.Items ?? new List<Item>();
     IReadOnlyList<ShopShelfData> IReadOnlyPlayerData.ShopShelves => ShopShelves ?? new List<ShopShelfData>();
-    IReadOnlyList<RareItemShopShelfData> IReadOnlyPlayerData.RareItemShopShelves => RareItemShopShelves ?? new List<RareItemShopShelfData>();
     IReadOnlyList<OrderProgress> IReadOnlyPlayerData.OrderHistory => OrderHistory;
     TradeProgress IReadOnlyPlayerData.TradeHistory => TradeHistory;
     MonsterTradeProgress IReadOnlyPlayerData.MonsterTradeHistory => MonsterTradeHistory;
-    
+
+    GameSaveFile IReadOnlyPlayerData.gameSaveFile => gameSaveFile;
+
 }
 [System.Serializable]
 public class ItemDefinition
@@ -65,7 +67,7 @@ public class ItemDefinition
 [System.Serializable]
 public class Item
 {
-    public string ItemId; // 唯一 ID
+    public string ItemId;
     public int CostPrice;
 }
 
@@ -79,9 +81,6 @@ public class ItemTagsDatabase
 {
     public List<ItemTags> ItemTags;
 }
-
-
-
 public class ItemDatabase
 {
     public List<ItemDefinition> Items;
@@ -172,8 +171,10 @@ public class ShopCategoryDatabase
 
 // --- 存檔相關資料 (Shop Shelf) ---
 [System.Serializable]
-public class ShopShelfData
+public class ShopShelfData : ISaveData
 {
+    public string UniqueID { get; set; }
+    public int LastUpdatedDay { get; set; }
     public string ShopID;
     // 保存庫存變更（增減量與格位）
     public List<ShopInventoryChange> Changes = new List<ShopInventoryChange>();
@@ -187,25 +188,24 @@ public class ShopInventoryChange
     public int SlotIndex = -1;
 }
 [System.Serializable]
-public class RareItemShopShelfData
+public class MonsterTradeProgress : ISaveData
 {
-    public string ShopID;
-    public string ItemID;
-    public bool Purchased; // true: 已被購買, false: 尚未購買
-}
-[System.Serializable]
-public class MonsterTradeProgress
-{
+    public string UniqueID { get; set; }
+    public int LastUpdatedDay { get; set; }
     public int CustomerIndex;//當日顧客索引
 }
-public class OrderProgress
+public class OrderProgress : ISaveData
 {
-    public String OrderID;//訂單紀錄索引
+    public string UniqueID { get; set; }
+    public int LastUpdatedDay { get; set; }
+    public string OrderID;//訂單紀錄索引
     public bool IsCompleted;//是否完成
 }
 [System.Serializable]
-public class TradeProgress
+public class TradeProgress : ISaveData
 {
+    public string UniqueID { get; set; }
+    public int LastUpdatedDay { get; set; }
     public Item NowItem;
     public int CustomerIndex;//當日顧客索引
     public int TradeTimes;//交易次數
@@ -226,11 +226,10 @@ public interface IReadOnlyPlayerData
     DayPhase PlayingStatus { get; }
     IReadOnlyList<Item> InventoryItems { get; }
     IReadOnlyList<ShopShelfData> ShopShelves { get; }
-    IReadOnlyList<RareItemShopShelfData> RareItemShopShelves { get; }
     IReadOnlyList<OrderProgress> OrderHistory { get; }
     TradeProgress TradeHistory { get; }
     MonsterTradeProgress MonsterTradeHistory { get; }
-    
+    GameSaveFile gameSaveFile { get; }
 }
 #endregion
 #region BookData
@@ -242,11 +241,19 @@ public class GameSaveBook //跨單局物品圖鑑與妖怪圖鑑存檔
 public class MonsterBookData //妖怪圖鑑
 {
     public List<MonsterBookDatabase> MonsterBooks;
+    public List<MonsterStoryDatabase> monsterStoryDatabases;
 }
-public class MonsterBookDatabase //妖怪圖鑑以解鎖紀錄資料
+public class MonsterBookDatabase //妖怪圖鑑妖怪趣聞
 {
     public string MonsterID;
-    public int MonsterLevel;
+    public string InformationID;
+    public string MonsterInformation;
+}
+public class MonsterStoryDatabase //妖怪圖鑑妖怪小故事
+{
+    public string MonsterID;
+    public string MonsterStoryID;
+    public int MonsterStory;
 }
 public class ItemBookDatabase //物品圖鑑已取得過資料
 {
@@ -301,7 +308,7 @@ public enum Rarity
 public enum ItemWorld
 {
     Human,
-    Monster   
+    Monster
 }
 public enum ItemType
 {

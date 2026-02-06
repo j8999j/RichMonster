@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using Player;
 using Cinemachine;
+
 namespace GameSystem
 {
     public class GameManager : Singleton<GameManager>
@@ -24,12 +25,11 @@ namespace GameSystem
             base.Awake();
             dataManager = DataManager.Instance;
             saveManager = SaveManager.Instance;
-            sceneTransitionManager = SceneTransitionManager.Instance;
-            
+            sceneTransitionManager = GetComponent<SceneTransitionManager>();
             // 訂閱場景載入完成事件
             sceneTransitionManager.OnSceneLoadComplete += OnSceneLoadComplete;
         }
-        
+
         protected override void OnDestroy()
         {
             if (sceneTransitionManager != null)
@@ -38,7 +38,7 @@ namespace GameSystem
             }
             base.OnDestroy();
         }
-        
+
         /// <summary>
         /// 場景載入完成後的回調
         /// </summary>
@@ -49,7 +49,7 @@ namespace GameSystem
                 return;
             InitializePlayerInScene(sceneName);
         }
-        
+
         /// <summary>
         /// 在場景中初始化玩家
         /// </summary>
@@ -60,7 +60,7 @@ namespace GameSystem
             SetPlayerMove(true);
             SetPlayerInteract(true);
             SetCameraFollowPlayer();
-            if(sceneName == SceneTransitionManager.SCENE_MONSTER)
+            if (sceneName == SceneTransitionManager.SCENE_MONSTER)
             {
                 PlayerController.SetIsNight(true);
             }
@@ -126,7 +126,7 @@ namespace GameSystem
         {
             PlayerController.SetCanInteract(CanInteract);
         }
-        
+
         /// <summary>
         /// 設定攝影機跟隨玩家
         /// </summary>
@@ -136,7 +136,7 @@ namespace GameSystem
             {
                 virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
             }
-            
+
             if (virtualCamera != null && Player != null)
             {
                 virtualCamera.Follow = Player.transform;
@@ -144,12 +144,20 @@ namespace GameSystem
             }
             else
             {
-                Debug.LogWarning("[GameManager] 無法設定攝影機跟隨：" + 
+                Debug.LogWarning("[GameManager] 無法設定攝影機跟隨：" +
                     (virtualCamera == null ? "找不到 VirtualCamera" : "找不到 Player"));
             }
         }
         #endregion
         #region 場景轉換捷徑方法（透過 SceneTransitionManager）
+        private void BlackView()
+        {
+            
+        }
+        public void LoadImage()
+        {
+            
+        }
         /// <summary>
         /// 載入指定場景
         /// </summary>
