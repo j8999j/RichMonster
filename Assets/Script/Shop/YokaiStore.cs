@@ -136,6 +136,8 @@ namespace Shop
         /// <param name="shelfSlot">新增的商店購買紀錄</param>
         public void NewShopShelfData(ShelfSlot shelfSlot)
         {
+            ThisShopShelfData.UniqueID = ShopID+"ShopShelfData";
+            ThisShopShelfData.LastUpdatedDay = GameManager.Instance.gameFlow.CurrentDay;
             ThisShopShelfData.Changes[shelfSlot.SlotIndex] = new ShopInventoryChange
             {
                 SlotIndex = shelfSlot.SlotIndex,

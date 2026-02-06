@@ -15,6 +15,15 @@ namespace GameSystem
         private SaveFileData _lastLoaded;
 
         /// <summary>
+        /// 共用的 JSON 設定，確保介面類型可以正確序列化/反序列化
+        /// </summary>
+        private static readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.Auto,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        };
+
+        /// <summary>
         /// 是否正在存檔中，用於防止連點導致的檔案寫入衝突
         /// </summary>
         public bool IsSaving { get; private set; }
@@ -40,7 +49,7 @@ namespace GameSystem
 
             try
             {
-                string json = JsonConvert.SerializeObject(payload, Formatting.Indented);
+                string json = JsonConvert.SerializeObject(payload, Formatting.Indented, _jsonSettings);
                 await File.WriteAllTextAsync(filePath, json);
                 Debug.Log($"[SaveManager] 存檔完成: {filePath}");
             }
@@ -72,7 +81,7 @@ namespace GameSystem
             try
             {
                 string json = File.ReadAllText(filePath);
-                _lastLoaded = JsonConvert.DeserializeObject<SaveFileData>(json) ?? new SaveFileData();
+                _lastLoaded = JsonConvert.DeserializeObject<SaveFileData>(json, _jsonSettings) ?? new SaveFileData();
 
                 if (_lastLoaded.Player == null) _lastLoaded.Player = new PlayerData();
                 EnsureLists(_lastLoaded.Player);
@@ -109,13 +118,25 @@ namespace GameSystem
             try
             {
                 string json = File.ReadAllText(filePath);
-                var saveData = JsonConvert.DeserializeObject<SaveFileData>(json);
+
+                // ---------------------------------------------------------
+                // 修正點：必須建立與存檔時一模一樣的設定
+                // ---------------------------------------------------------
+                var settings = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.Auto,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                };
+
+                // 帶入 settings 進行反序列化
+                var saveData = JsonConvert.DeserializeObject<SaveFileData>(json, settings);
 
                 if (saveData?.Player != null)
                 {
                     slotData.IsEmpty = false;
                     slotData.DaysPlayed = saveData.Player.DaysPlayed;
                     slotData.Gold = saveData.Player.Gold;
+                    // 注意這裡強制轉型可能會有隱藏風險，確保 Enum 定義一致
                     slotData.CurrentPhase = (DayPhase)saveData.Player.PlayingStatus;
 
                     var fileInfo = new FileInfo(filePath);
@@ -128,6 +149,7 @@ namespace GameSystem
             }
             catch (System.Exception ex)
             {
+                // 這裡會捕捉到 "Could not create instance..." 如果設定沒加上的話
                 Debug.LogError($"[SaveManager] 讀取存檔資訊 {slot} 失敗: {ex.Message}");
                 slotData.IsEmpty = true;
             }
@@ -162,13 +184,28 @@ namespace GameSystem
         private static SaveFileData CloneData(SaveFileData source)
         {
             if (source == null) return null;
-            return JsonConvert.DeserializeObject<SaveFileData>(JsonConvert.SerializeObject(source));
+            var json = JsonConvert.SerializeObject(source, _jsonSettings);
+            return JsonConvert.DeserializeObject<SaveFileData>(json, _jsonSettings);
         }
 
         private PlayerData ClonePlayer(PlayerData source)
         {
             if (source == null) return new PlayerData();
-            var clone = JsonConvert.DeserializeObject<PlayerData>(JsonConvert.SerializeObject(source));
+            // 這裡我們告訴 JsonConvert：「請把類別名稱 (Type Name) 也存進去！」
+            var settings = new JsonSerializerSettings
+            {
+                // Auto 代表：如果型別是介面或繼承類別，自動寫入 "$type" 屬性
+                TypeNameHandling = TypeNameHandling.Auto,
+
+                // (選用建議) 防止物件 A 參照 B，B 又參照 A 造成的無窮迴圈錯誤
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+
+            // 3. 序列化 (轉成字串，包含 $type 資訊)
+            var json = JsonConvert.SerializeObject(source, settings);
+
+            // 4. 反序列化 (讀回物件，根據 $type 資訊還原正確的 Class)
+            var clone = JsonConvert.DeserializeObject<PlayerData>(json, settings);
             EnsureLists(clone);
             return clone;
         }
@@ -178,7 +215,6 @@ namespace GameSystem
             if (player == null) return;
             player.Inventory ??= new Inventory();
             player.Inventory.Items ??= new List<Item>();
-            player.ShopShelves ??= new List<ShopShelfData>();
         }
     }
 

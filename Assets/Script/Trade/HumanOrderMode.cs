@@ -80,11 +80,11 @@ public class HumanOrderMode : MonoBehaviour
     }
     private void LoadOrdersHistory()
     {
-        var orderHistory = DataManager.Instance.CurrentPlayerData.OrderHistory;
-        if (orderHistory == null || orderHistory.Count == 0) return;
+        var orderHistory = DataManager.Instance.GetPlayerData<OrderHistoryData>("OrderHistory");
+        if (orderHistory == null || orderHistory.OrderHistory.Count == 0) return;
         // 建立已完成訂單 ID 的快速查詢集合
         var completedOrderIds = new HashSet<string>(
-            orderHistory.Where(o => o.IsCompleted).Select(o => o.OrderID)
+            orderHistory.OrderHistory.Where(o => o.IsCompleted).Select(o => o.OrderID)
         );
         // 更新大型訂單的完成狀態
         foreach (var order in _todayLargeOrders)

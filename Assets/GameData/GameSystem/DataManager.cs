@@ -21,7 +21,7 @@ public class DataManager : Singleton<DataManager>
     private Dictionary<string, ShopDefinition> _shopDict = new Dictionary<string, ShopDefinition>();
     private Dictionary<string, HumanLargeOrder> _humanLargeOrderDict = new Dictionary<string, HumanLargeOrder>();
     private Dictionary<string, HumanSmallOrder> _humanSmallOrderDict = new Dictionary<string, HumanSmallOrder>();
-    
+
     private PlayerData _initialPlayerData;
     private PlayerData _currentPlayerData;
     // Read-only accessors
@@ -99,7 +99,7 @@ public class DataManager : Singleton<DataManager>
 
             // 嘗試解析 JSON：支援物件格式 {"ItemTags":[...]} 或直接陣列格式 [...]
             List<ItemTags> tagsList = null;
-            
+
             string jsonText = jsonFile.text.TrimStart();
             if (jsonText.StartsWith("["))
             {
@@ -364,7 +364,7 @@ public class DataManager : Singleton<DataManager>
 
             // 嘗試解析 JSON：支援物件格式 {"Orders":[...]} 或直接陣列格式 [...]
             List<HumanLargeOrder> ordersList = null;
-            
+
             string jsonText = jsonFile.text.TrimStart();
             if (jsonText.StartsWith("["))
             {
@@ -412,7 +412,7 @@ public class DataManager : Singleton<DataManager>
 
             // 嘗試解析 JSON：支援物件格式 {"Orders":[...]} 或直接陣列格式 [...]
             List<HumanSmallOrder> ordersList = null;
-            
+
             string jsonText = jsonFile.text.TrimStart();
             if (jsonText.StartsWith("["))
             {
@@ -537,11 +537,18 @@ public class DataManager : Singleton<DataManager>
         if (_itemTagsDict == null || string.IsNullOrEmpty(tag) || !_itemTagsDict.ContainsKey(tag)) return "";
         return _itemTagsDict[tag].TagName;
     }
+    private static readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
+    {
+        TypeNameHandling = TypeNameHandling.Auto,
+        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+    };
+
     private static PlayerData ClonePlayerData(PlayerData source)
     {
         if (source == null) return null;
         // Json round-trip clone to avoid accidental shared references
-        return JsonConvert.DeserializeObject<PlayerData>(JsonConvert.SerializeObject(source));
+        var json = JsonConvert.SerializeObject(source, _jsonSettings);
+        return JsonConvert.DeserializeObject<PlayerData>(json, _jsonSettings);
     }
     #endregion
 
@@ -561,8 +568,37 @@ public class DataManager : Singleton<DataManager>
     {
         _currentPlayerData = ClonePlayerData(data);
     }
+    public void initialPlayerGameSaveFile()
+    {
+        _currentPlayerData.GameSaveFile = new GameSaveFile();
+        _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
+    }
     #endregion
     #region ModifyPlayerAPI
+    public T GetPlayerData<T>(string key) where T : class, ISaveData, new()
+    {
+        if (_currentPlayerData == null)
+        {
+            Debug.LogError("[DataManager] _currentPlayerData is null");
+            return new T();
+        }
+        if (_currentPlayerData.GameSaveFile == null)
+        {
+            _currentPlayerData.GameSaveFile = new GameSaveFile();
+            _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
+            return new T();
+        }
+        if (_currentPlayerData.GameSaveFile.GameData == null)
+        {
+            _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
+            return new T();
+        }
+        if (!_currentPlayerData.GameSaveFile.GameData.ContainsKey(key))
+        {
+            return new T();
+        }
+        return _currentPlayerData.GameSaveFile.GameData[key] as T;
+    }
     /// <summary>
     /// 取得當前金幣
     /// </summary>
@@ -630,7 +666,6 @@ public class DataManager : Singleton<DataManager>
             ItemId = itemId,
             CostPrice = costPrice
         };
-
         _currentPlayerData.Inventory.Items.Add(newItem);
     }
     /// <summary>
@@ -665,35 +700,65 @@ public class DataManager : Singleton<DataManager>
     {
         if (_currentPlayerData == null || newShelfData == null) return;
 
+        // 從當前玩家資料取得日期並更新庫存的紀錄日期
+        newShelfData.LastUpdatedDay = _currentPlayerData.DaysPlayed;
+
         // 確保列表已初始化
-        if (_currentPlayerData.ShopShelves == null)
-            _currentPlayerData.ShopShelves = new List<ShopShelfData>();
-        if (_currentPlayerData.ShopShelves.Any(s => s.ShopID == newShelfData.ShopID))
+        if (_currentPlayerData.GameSaveFile.GameData == null)
+            _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
+        
+        // 如果已存在相同ID的資料，則更新；否則新增
+        if (_currentPlayerData.GameSaveFile.GameData.ContainsKey(newShelfData.UniqueID))
         {
-            _currentPlayerData.ShopShelves.Remove(_currentPlayerData.ShopShelves.FirstOrDefault(s => s.ShopID == newShelfData.ShopID));
+            // 更新現有資料
+            _currentPlayerData.GameSaveFile.GameData[newShelfData.UniqueID] = newShelfData;
         }
-        // 加入新的資料
-        _currentPlayerData.ShopShelves.Add(newShelfData);
-    }
-    //清空商店紀錄
-    public void ClearShopShelfData()
-    {
-        _currentPlayerData.ShopShelves.Clear();
+        else
+        {
+            // 加入新的資料
+            _currentPlayerData.GameSaveFile.GameData.Add(newShelfData.UniqueID, newShelfData);
+        }
     }
     //新增完成訂單紀錄
     public void AddOrderProgress(string ID)
     {
-        if(_currentPlayerData.OrderHistory == null)
+        if (_currentPlayerData.GameSaveFile.GameData == null)
+        _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
+        if(_currentPlayerData.GameSaveFile.GameData.ContainsKey("OrderHistory"))
         {
-            _currentPlayerData.OrderHistory = new List<OrderProgress>();
+            var orderHistoryData = _currentPlayerData.GameSaveFile.GameData["OrderHistory"] as OrderHistoryData;
+            if (orderHistoryData.OrderHistory == null)
+            {
+                orderHistoryData.OrderHistory = new List<OrderProgress>();
+            }
+            orderHistoryData.OrderHistory.Add(new OrderProgress { OrderID = ID, IsCompleted = true });
         }
-        _currentPlayerData.OrderHistory.Add(new OrderProgress { OrderID = ID, IsCompleted = true});
+        else
+        {
+            _currentPlayerData.GameSaveFile.GameData.Add("OrderHistory", new OrderHistoryData());
+            var orderHistoryData = _currentPlayerData.GameSaveFile.GameData["OrderHistory"] as OrderHistoryData;
+            if (orderHistoryData.OrderHistory == null)
+            {
+                orderHistoryData.OrderHistory = new List<OrderProgress>();
+            }
+            orderHistoryData.OrderHistory.Add(new OrderProgress { OrderID = ID, IsCompleted = true });
+        }
+
     }
     //清空完成訂單紀錄
     public void ClearOrderProgress()
     {
-        if(_currentPlayerData.OrderHistory != null)
-        _currentPlayerData.OrderHistory.Clear();
+        if (_currentPlayerData.GameSaveFile.GameData == null)
+        _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
+        if(_currentPlayerData.GameSaveFile.GameData.ContainsKey("OrderHistory"))
+        {
+            var orderHistoryData = _currentPlayerData.GameSaveFile.GameData["OrderHistory"] as OrderHistoryData;
+            if (orderHistoryData.OrderHistory == null)
+            {
+                orderHistoryData.OrderHistory = new List<OrderProgress>();
+            }
+            orderHistoryData.OrderHistory.Clear();
+        }
     }
     public void ModifyCurrentDayPhase(DayPhase dayPhase)
     {
@@ -722,13 +787,16 @@ public class DataManager : Singleton<DataManager>
     }
     #endregion
     #region GetPlayerAPI
-    public TradeProgress LoadTradeHistory()
-    {
-        return CurrentPlayerData.TradeHistory;
-    }
     public MonsterTradeProgress LoadMonsterTradeHistory()
     {
-        return CurrentPlayerData.MonsterTradeHistory;
+        if(_currentPlayerData.GameSaveFile.GameData.ContainsKey("MonsterTradeHistory"))
+        {
+                return _currentPlayerData.GameSaveFile.GameData["MonsterTradeHistory"] as MonsterTradeProgress;
+        }
+        else
+        {
+            return new MonsterTradeProgress();
+        }
     }
     public DayPhase GetCurrentDayPhase()
     {

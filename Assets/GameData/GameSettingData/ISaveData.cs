@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 public class GameSaveFile
 {
-    public Dictionary<string, ISaveData> WorldState = new Dictionary<string, ISaveData>();
+    public Dictionary<string, ISaveData> GameData = new Dictionary<string, ISaveData>();
 }
 public interface ISaveData
 {

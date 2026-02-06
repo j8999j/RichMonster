@@ -60,7 +60,7 @@ namespace Shop
         }
         protected virtual void OnInteract()
         {
-            
+
         }
         protected virtual void GetShopData()
         {
@@ -78,7 +78,7 @@ namespace Shop
                 //Debug.Log($"{ShopName}可以刷新{item.Name}");
             }
         }
-        
+
         /// <summary>
         /// 將貨架的購買狀態與玩家存檔同步，並回傳更新後的清單。
         /// </summary>
@@ -87,13 +87,12 @@ namespace Shop
             var result = new List<ShelfSlot>();
             if (shelves == null) return result;
 
-            var player = DataManager.Instance.CurrentPlayerData ?? new PlayerData();
-            var targetShopId = ShopID;
-
-            ThisShopShelfData = player.ShopShelves.FirstOrDefault(s => s != null && s.ShopID == targetShopId);
-            if (ThisShopShelfData == null)
+            var player = DataManager.Instance.CurrentPlayerData;
+            var targetShopId = ShopID + "ShopShelfData";
+            ThisShopShelfData = DataManager.Instance.GetPlayerData<ShopShelfData>(targetShopId);
+            if (ThisShopShelfData.LastUpdatedDay != GameManager.Instance.gameFlow.CurrentDay)//如果不是同一天，重置商店
             {
-                ThisShopShelfData = new ShopShelfData { ShopID = targetShopId, Changes = new List<ShopInventoryChange>() };
+                ThisShopShelfData = new ShopShelfData { UniqueID = targetShopId, Changes = new List<ShopInventoryChange>() };
             }
             ThisShopShelfData.Changes ??= new List<ShopInventoryChange>();
             foreach (var slot in shelves.Where(s => s != null))

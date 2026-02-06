@@ -1,8 +1,8 @@
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
+using UnityEngine;
 
 
 // --- 玩家與存檔 ---
@@ -26,12 +26,8 @@ public class PlayerData : IReadOnlyPlayerData
     public int MonsterGold;
     //玩家倉庫
     public Inventory Inventory = new();
-    // 商店庫存變更紀錄
-    public List<ShopShelfData> ShopShelves = new List<ShopShelfData>();
-    public List<OrderProgress> OrderHistory;
-    public TradeProgress TradeHistory;
-    public MonsterTradeProgress MonsterTradeHistory;
-    public GameSaveFile gameSaveFile;
+    // 所有資料變更紀錄
+    public GameSaveFile GameSaveFile = new GameSaveFile();
 
     //interface
     int IReadOnlyPlayerData.ID => ID;
@@ -42,12 +38,6 @@ public class PlayerData : IReadOnlyPlayerData
     int IReadOnlyPlayerData.CustomerIndex => CustomerIndex;
     DayPhase IReadOnlyPlayerData.PlayingStatus => PlayingStatus;
     IReadOnlyList<Item> IReadOnlyPlayerData.InventoryItems => Inventory?.Items ?? new List<Item>();
-    IReadOnlyList<ShopShelfData> IReadOnlyPlayerData.ShopShelves => ShopShelves ?? new List<ShopShelfData>();
-    IReadOnlyList<OrderProgress> IReadOnlyPlayerData.OrderHistory => OrderHistory;
-    TradeProgress IReadOnlyPlayerData.TradeHistory => TradeHistory;
-    MonsterTradeProgress IReadOnlyPlayerData.MonsterTradeHistory => MonsterTradeHistory;
-
-    GameSaveFile IReadOnlyPlayerData.gameSaveFile => gameSaveFile;
 
 }
 [System.Serializable]
@@ -175,7 +165,6 @@ public class ShopShelfData : ISaveData
 {
     public string UniqueID { get; set; }
     public int LastUpdatedDay { get; set; }
-    public string ShopID;
     // 保存庫存變更（增減量與格位）
     public List<ShopInventoryChange> Changes = new List<ShopInventoryChange>();
 }
@@ -194,10 +183,14 @@ public class MonsterTradeProgress : ISaveData
     public int LastUpdatedDay { get; set; }
     public int CustomerIndex;//當日顧客索引
 }
-public class OrderProgress : ISaveData
+public class OrderHistoryData : ISaveData
 {
     public string UniqueID { get; set; }
     public int LastUpdatedDay { get; set; }
+    public List<OrderProgress> OrderHistory = new List<OrderProgress>();
+}
+public class OrderProgress
+{
     public string OrderID;//訂單紀錄索引
     public bool IsCompleted;//是否完成
 }
@@ -225,11 +218,6 @@ public interface IReadOnlyPlayerData
     int CustomerIndex { get; }
     DayPhase PlayingStatus { get; }
     IReadOnlyList<Item> InventoryItems { get; }
-    IReadOnlyList<ShopShelfData> ShopShelves { get; }
-    IReadOnlyList<OrderProgress> OrderHistory { get; }
-    TradeProgress TradeHistory { get; }
-    MonsterTradeProgress MonsterTradeHistory { get; }
-    GameSaveFile gameSaveFile { get; }
 }
 #endregion
 #region BookData
@@ -316,5 +304,6 @@ public enum ItemType
     Food,
     Prop
 }
+
 
 #endregion

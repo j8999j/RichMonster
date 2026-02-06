@@ -22,7 +22,6 @@ public class GameFlow
     {
         CurrentDay++;
         DataManager.Instance.ModifyCurrentDay(CurrentDay);
-        DataManager.Instance.ClearShopShelfData();
         GameRng.InitDailySeed(_currentPlayerData.MasterSeed, CurrentDay);
         SwitchGameStageAndSave(DayPhase.Night);
     }

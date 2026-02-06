@@ -16,7 +16,7 @@ public class TradeSlot : BagSlot, IBeginDragHandler, IDragHandler, IEndDragHandl
     private Transform _originalImageParent;
     private int _originalImageSiblingIndex;
     private Image _placeholderImage;
-    
+
     /// <summary>
     /// 拖曳結束時的回調 (可用於判斷是否放置在有效區域)
     /// </summary>
@@ -36,7 +36,7 @@ public class TradeSlot : BagSlot, IBeginDragHandler, IDragHandler, IEndDragHandl
         ResetImageState();
     }
 
-    private new void OnEnable()
+    private void OnEnable()
     {
         // 確保圖片在正確位置
         EnsureImageReturned();
@@ -63,22 +63,22 @@ public class TradeSlot : BagSlot, IBeginDragHandler, IDragHandler, IEndDragHandl
     private void EnsureImageReturned()
     {
         if (_targetImage == null) return;
-        
+
         // 避免在父物件啟用/停用過程中設定 parent
         if (!gameObject.activeInHierarchy) return;
-        
+
         // 如果圖片不在 Slot 下(例如還在 Canvas 根層級)，就放回來
         if (_targetImage.transform.parent != transform)
         {
             _targetImage.transform.SetParent(transform);
             _targetImage.transform.SetSiblingIndex(1); // 根據 BagSlot 結構
-            
+
             if (_imageRectTransform != null)
             {
                 _imageRectTransform.anchoredPosition = Vector2.zero;
             }
         }
-        
+
         ResetImageState();
     }
 
@@ -88,7 +88,7 @@ public class TradeSlot : BagSlot, IBeginDragHandler, IDragHandler, IEndDragHandl
         if (_targetImage != null)
         {
             _imageRectTransform = _targetImage.GetComponent<RectTransform>();
-            
+
             // 確保圖片有 CanvasGroup
             _imageCanvasGroup = _targetImage.GetComponent<CanvasGroup>();
             if (_imageCanvasGroup == null)
@@ -96,7 +96,7 @@ public class TradeSlot : BagSlot, IBeginDragHandler, IDragHandler, IEndDragHandl
                 _imageCanvasGroup = _targetImage.gameObject.AddComponent<CanvasGroup>();
             }
         }
-        
+
         // 取得 Canvas (向上查找)
         _canvas = GetComponentInParent<Canvas>();
     }
@@ -105,19 +105,19 @@ public class TradeSlot : BagSlot, IBeginDragHandler, IDragHandler, IEndDragHandl
     {
         if (_imageRectTransform == null) InitializeDragComponents();
         if (_imageRectTransform == null || _targetImage == null) return;
-        
+
         // 記錄圖片的原始位置、父物件和排序索引
         _originalImagePosition = _imageRectTransform.anchoredPosition;
         _originalImageParent = _targetImage.transform.parent;
         _originalImageSiblingIndex = _targetImage.transform.GetSiblingIndex();
-        
+
         // 創建灰階占位圖片 (在原位置)
         CreatePlaceholder();
-        
+
         // 設定拖曳時的視覺效果
         _imageCanvasGroup.alpha = 0.9f;
         _imageCanvasGroup.blocksRaycasts = false;
-        
+
         // 將圖片移到 Canvas 根層級，確保顯示在最上層
         _targetImage.transform.SetParent(_canvas.transform);
         _targetImage.transform.SetAsLastSibling();
@@ -128,7 +128,7 @@ public class TradeSlot : BagSlot, IBeginDragHandler, IDragHandler, IEndDragHandl
     public void OnDrag(PointerEventData eventData)
     {
         if (_canvas == null || _imageRectTransform == null) return;
-        
+
         // 圖片跟隨滑鼠移動
         _imageRectTransform.anchoredPosition += eventData.delta / _canvas.scaleFactor;
     }
@@ -136,14 +136,14 @@ public class TradeSlot : BagSlot, IBeginDragHandler, IDragHandler, IEndDragHandl
     public void OnEndDrag(PointerEventData eventData)
     {
         if (_imageRectTransform == null) return;
-        
+
         // 恢復視覺效果
         _imageCanvasGroup.alpha = 1f;
         _imageCanvasGroup.blocksRaycasts = true;
-        
+
         // 觸發拖曳結束事件 (外部可判斷是否放置成功)
         OnDragEnded?.Invoke(this, eventData);
-        
+
         // 銷毀占位並返回原始位置
         DestroyPlaceholder();
         ReturnImageToOriginalPosition();
@@ -155,12 +155,12 @@ public class TradeSlot : BagSlot, IBeginDragHandler, IDragHandler, IEndDragHandl
     private void CreatePlaceholder()
     {
         if (_targetImage == null || _targetImage.sprite == null) return;
-        
+
         // 在原位置創建灰階占位圖片
         var placeholderObj = new GameObject("PlaceholderImage");
         placeholderObj.transform.SetParent(_originalImageParent);
         placeholderObj.transform.SetSiblingIndex(_originalImageSiblingIndex);
-        
+
         // 複製 RectTransform 設定
         var placeholderRect = placeholderObj.AddComponent<RectTransform>();
         placeholderRect.anchoredPosition = _originalImagePosition;
@@ -169,7 +169,7 @@ public class TradeSlot : BagSlot, IBeginDragHandler, IDragHandler, IEndDragHandl
         placeholderRect.anchorMax = _imageRectTransform.anchorMax;
         placeholderRect.pivot = _imageRectTransform.pivot;
         placeholderRect.localScale = _imageRectTransform.localScale;
-        
+
         // 複製圖片並設為灰階
         _placeholderImage = placeholderObj.AddComponent<Image>();
         _placeholderImage.sprite = _targetImage.sprite;
@@ -197,7 +197,7 @@ public class TradeSlot : BagSlot, IBeginDragHandler, IDragHandler, IEndDragHandl
     public void ReturnImageToOriginalPosition()
     {
         if (_targetImage == null || _imageRectTransform == null) return;
-        
+
         _targetImage.transform.SetParent(_originalImageParent);
         _targetImage.transform.SetSiblingIndex(_originalImageSiblingIndex);
         _imageRectTransform.anchoredPosition = _originalImagePosition;

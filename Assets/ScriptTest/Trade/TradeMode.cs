@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using GameSystem;
-using GameSystem;
 using System;
 using System.Text;
-using Unity.VisualScripting;
 
 public class TradeMode : MonoBehaviour
 {
@@ -221,7 +219,7 @@ public class TradeMode : MonoBehaviour
     /// </summary>
     private void LoadHistory()
     {
-        tradeProgress = DataManager.Instance.LoadTradeHistory();
+        //tradeProgress = DataManager.Instance.LoadTradeHistory();
         if (tradeProgress == null)
         {
             tradeProgress = new TradeProgress
@@ -342,12 +340,12 @@ public class TradeMode : MonoBehaviour
         tradeProgress.OnSelect = false;
         tradeProgress.NowItem = currentSelectedItem;
         int CustomerMaxPrice = (int)(MarketPrice * TradeGuest.customer.BudgetMultiplier);
-        Debug.Log("CustomerMaxPrice:"+CustomerMaxPrice);
+        Debug.Log("CustomerMaxPrice:" + CustomerMaxPrice);
         float successRate = currentGuest.customer.AppraisalChance - (((float)CurrentPrice - CustomerMaxPrice) / CustomerMaxPrice) * 2;
-        successRate += tradeProgress.TradeTimes * TradeGuest.customer.LoseUp; 
+        successRate += tradeProgress.TradeTimes * TradeGuest.customer.LoseUp;
         Debug.Log((((float)CurrentPrice - CustomerMaxPrice) / CustomerMaxPrice) * 2);
-        Debug.Log("successRate:"+successRate);
-        if (successRate<=0)
+        Debug.Log("successRate:" + successRate);
+        if (successRate <= 0)
         {
             //交易失敗扣兩心鎖定價格
             TradeGuest.customer.Patience -= 2;
@@ -386,7 +384,7 @@ public class TradeMode : MonoBehaviour
                 }
                 else
                 {
-                    PriceMax = CurrentPrice;  
+                    PriceMax = CurrentPrice;
                     NextPrice();
                 }
             }
@@ -399,18 +397,18 @@ public class TradeMode : MonoBehaviour
     {
         Debug.Log($"[TradeMode] 顧客 {tradeProgress.CustomerIndex} 離開，耐心耗盡");
         tradeProgress.NowItem = null;
-        tradeProgress.OnSelect = true; 
+        tradeProgress.OnSelect = true;
         tradeProgress.TradeTimes = 0;
         // 記錄最高出價（如果有的話）
         if (tradeProgress.MaxPrice > 0)
         {
             Debug.Log($"[TradeMode] 未成交最高價: {tradeProgress.MaxPrice}");
         }
-        
+
         // 切換到下一位顧客
         NextGuest();
     }
-    
+
     /// <summary>
     /// 下一次出價 - 繼續議價
     /// </summary>
@@ -420,10 +418,10 @@ public class TradeMode : MonoBehaviour
         tradeProgress.TradeTimes++;
         // 記錄當前最高出價
         tradeProgress.MaxPrice = PriceMax;
-        
+
         // 更新交易進度中的耐心值
         tradeProgress.Patience = TradeGuest.customer.Patience;
-        
+
         // 更新 UI，允許玩家再次出價
         var PlayerInventory = DataManager.Instance.CurrentPlayerData.InventoryItems.ToList();
         tradeView.UpdateTradeInfo(tradeProgress, TradeGuest, PlayerInventory, false);
