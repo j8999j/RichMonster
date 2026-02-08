@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 581ab6f0da3c5ad4b93d6b1f36927265
   m_currentHash:
     serializedVersion: 2
-    Hash: 5f6dc8b5a1b6b6c51b3e39f8c8412eba
+    Hash: bdacd5a93f6a7cdc611c6634d7ab1a24
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -47,6 +47,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 87aa1f13ce2913b40b148a5d0d61ad23, type: 2}
   - {fileID: 11400000, guid: 877a5141cc45acc49aff3f0c2a781af6, type: 2}
   - {fileID: 11400000, guid: 330b369789082874fa2b13505186aa2e, type: 2}
+  - {fileID: 11400000, guid: 0930d157bd51b5a4bbbaa4dbc0b170d0, type: 2}
   - {fileID: 11400000, guid: c586ec995994c7c4fb1863644d4989c6, type: 2}
   - {fileID: 11400000, guid: 73747cd47b53a1843a188ddb443e7256, type: 2}
   - {fileID: 11400000, guid: e26a2fb76d4f38e428af9ff85eec41f1, type: 2}
@@ -91,6 +92,7 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - NpcMission
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 428b207a75a982b4abe9b2e3c416ae7e, type: 2}

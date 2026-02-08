@@ -21,6 +21,7 @@ public class DataManager : Singleton<DataManager>
     private Dictionary<string, ShopDefinition> _shopDict = new Dictionary<string, ShopDefinition>();
     private Dictionary<string, HumanLargeOrder> _humanLargeOrderDict = new Dictionary<string, HumanLargeOrder>();
     private Dictionary<string, HumanSmallOrder> _humanSmallOrderDict = new Dictionary<string, HumanSmallOrder>();
+    private Dictionary<string, NpcMission> _missionDict = new Dictionary<string, NpcMission>();
 
     private PlayerData _initialPlayerData;
     private PlayerData _currentPlayerData;
@@ -35,6 +36,7 @@ public class DataManager : Singleton<DataManager>
     public IReadOnlyDictionary<string, GameEventDefinition> EventDict => _eventDict;
     public IReadOnlyDictionary<string, HumanLargeOrder> HumanLargeOrderDict => _humanLargeOrderDict;
     public IReadOnlyDictionary<string, HumanSmallOrder> HumanSmallOrderDict => _humanSmallOrderDict;
+    public IReadOnlyDictionary<string, NpcMission> MissionDict => _missionDict;
     public PlayerData InitialPlayerData => ClonePlayerData(_initialPlayerData);
     public IReadOnlyPlayerData CurrentPlayerData => _currentPlayerData;
     //LoadKey
@@ -49,6 +51,7 @@ public class DataManager : Singleton<DataManager>
     private const string KEY_MONSTER_TRAITS = "monster_traits";
     private const string KEY_HUMAN_LARGE_ORDERS = "EventsRequests";
     private const string KEY_HUMAN_SMALL_ORDERS = "HumanEvents";
+    private const string KEY_MISSIONS = "NpcMission";
 
     public bool IsInitialized { get; private set; }
     private Task _initTask;
@@ -77,6 +80,7 @@ public class DataManager : Singleton<DataManager>
         await LoadMonsterTraitsAsync();
         await LoadHumanLargeOrdersAsync();
         await LoadHumanSmallOrdersAsync();
+        await LoadMissionsAsync();
         await LoadInitialPlayerDataAsync();
         await LoadEventDataAsync();
 
@@ -444,6 +448,35 @@ public class DataManager : Singleton<DataManager>
             }
         }
     }
+    private async Task LoadMissionsAsync()
+    {
+        AsyncOperationHandle<IList<NpcMission>> handle = default;
+        try
+        {
+            // 使用 Label 載入所有型別為 NpcMission 的資產
+            handle = Addressables.LoadAssetsAsync<NpcMission>(KEY_MISSIONS, null);
+            IList<NpcMission> results = await handle.Task;
+
+            if (handle.Status == AsyncOperationStatus.Succeeded && results != null)
+            {
+                _missionDict = results
+                    .Where(m => m != null && !string.IsNullOrEmpty(m.MissionID))
+                    .GroupBy(m => m.MissionID)
+                    .ToDictionary(g => g.Key, g => g.First());
+
+                Debug.Log($"[DataManager] 載入 {_missionDict.Count} 筆任務資料");
+            }
+            else
+            {
+                Debug.LogError("[DataManager] 任務載入失敗！");
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[DataManager] LoadMissionsAsync failed: {e}");
+        }
+        // 注意：ScriptableObject 資產不需要 Release，因為它們是原始資產參考
+    }
     private async Task LoadInitialPlayerDataAsync()
     {
         try
@@ -516,6 +549,22 @@ public class DataManager : Singleton<DataManager>
     }
     #endregion
 
+    #region Mission Queries
+    public NpcMission GetMissionById(string missionId)
+    {
+        if (_missionDict != null && _missionDict.TryGetValue(missionId, out var mission))
+        {
+            return mission;
+        }
+        return null;
+    }
+    public List<NpcMission> GetAllMissions()
+    {
+        if (_missionDict == null) return new List<NpcMission>();
+        return _missionDict.Values.ToList();
+    }
+    #endregion
+
     #region Item Queries
     public List<ItemDefinition> GetItemsByShopType(string shopType)
     {
@@ -568,11 +617,6 @@ public class DataManager : Singleton<DataManager>
     {
         _currentPlayerData = ClonePlayerData(data);
     }
-    public void initialPlayerGameSaveFile()
-    {
-        _currentPlayerData.GameSaveFile = new GameSaveFile();
-        _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
-    }
     #endregion
     #region ModifyPlayerAPI
     public T GetPlayerData<T>(string key) where T : class, ISaveData, new()
@@ -597,7 +641,13 @@ public class DataManager : Singleton<DataManager>
         {
             return new T();
         }
-        return _currentPlayerData.GameSaveFile.GameData[key] as T;
+        T data = _currentPlayerData.GameSaveFile.GameData[key] as T;
+        // 在回傳前進行日期判斷
+        if (data != null && data.LastUpdatedDay != _currentPlayerData.DaysPlayed)
+        {
+            return new T();
+        }
+        return data;
     }
     /// <summary>
     /// 取得當前金幣

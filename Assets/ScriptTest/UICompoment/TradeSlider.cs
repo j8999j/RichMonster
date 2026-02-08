@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 
-public class TradeSlider : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class TradeSlider : MonoBehaviour, IDragHandler
 {
     [Header("Slider 元件")]
     [SerializeField] private RectTransform bar;           // Bar 背景
@@ -25,7 +25,6 @@ public class TradeSlider : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public event Action<int> OnStageChanged;
 
     private int currentStage = 0;                         // 目前階段（0 到 stageCount-1）
-    private bool isDragging = false;
     private Canvas canvas;
     private RectTransform handleRect;
     private float barWidth;
@@ -54,12 +53,6 @@ public class TradeSlider : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             GenerateStageMarkers();
         }
     }
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        isDragging = true;
-    }
-
     public void OnDrag(PointerEventData eventData)
     {
         // 轉換滑鼠位置到 Bar 的本地座標
@@ -85,12 +78,6 @@ public class TradeSlider : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             OnStageChanged?.Invoke(currentStage);
         }
     }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        isDragging = false;
-    }
-
     /// <summary>
     /// 計算扣除邊界後的有效範圍
     /// </summary>
