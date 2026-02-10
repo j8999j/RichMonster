@@ -11,8 +11,10 @@ namespace GameSystem
     /// </summary>
     public class SaveManager : Singleton<SaveManager>
     {
+        private const string BookSaveFilePattern = "illustrated_book.json";
         private const string SaveFilePattern = "save_slot_{0}.json";
         private SaveFileData _lastLoaded;
+        private GameSaveBook _cachedBookData;
 
         /// <summary>
         /// 共用的 JSON 設定，確保介面類型可以正確序列化/反序列化
@@ -27,6 +29,11 @@ namespace GameSystem
         /// 是否正在存檔中，用於防止連點導致的檔案寫入衝突
         /// </summary>
         public bool IsSaving { get; private set; }
+
+        /// <summary>
+        /// 是否正在儲存圖鑑中，獨立於一般存檔
+        /// </summary>
+        public bool IsSavingBook { get; private set; }
 
         public SaveFileData LastLoaded => CloneData(_lastLoaded);
 
@@ -62,6 +69,7 @@ namespace GameSystem
                 IsSaving = false;
             }
         }
+        
 
         public SaveFileData Load(int slot = 0)
         {
@@ -216,6 +224,80 @@ namespace GameSystem
             player.Inventory ??= new Inventory();
             player.Inventory.Items ??= new List<Item>();
         }
+
+        #region Book Save/Load (跨單局圖鑑資料)
+        /// <summary>
+        /// 非同步儲存圖鑑資料 (物品圖鑑與妖怪圖鑑)
+        /// </summary>
+        public async Task SaveBookDataAsync(GameSaveBook bookData)
+        {
+            if (IsSavingBook)
+            {
+                Debug.LogWarning("[SaveManager] 正在儲存圖鑑中，跳過本次圖鑑存檔請求");
+                return;
+            }
+
+            IsSavingBook = true;
+            string filePath = GetBookFilePath();
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(bookData, Formatting.Indented, _jsonSettings);
+                await File.WriteAllTextAsync(filePath, json);
+                _cachedBookData = bookData;
+                Debug.Log($"[SaveManager] 圖鑑存檔完成: {filePath}");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[SaveManager] 圖鑑存檔失敗: {ex.Message}");
+            }
+            finally
+            {
+                IsSavingBook = false;
+            }
+        }
+
+        /// <summary>
+        /// 同步儲存圖鑑資料 (物品圖鑑與妖怪圖鑑)
+        /// </summary>
+        public void SaveBookData(GameSaveBook bookData)
+        {
+            string filePath = GetBookFilePath();
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(bookData, Formatting.Indented, _jsonSettings);
+                File.WriteAllText(filePath, json);
+                _cachedBookData = bookData;
+                Debug.Log($"[SaveManager] 圖鑑存檔完成: {filePath}");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[SaveManager] 圖鑑存檔失敗: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 設定圖鑑快取資料 (由 GameDataLoader 載入後設定)
+        /// </summary>
+        public void SetBookDataCache(GameSaveBook bookData)
+        {
+            _cachedBookData = bookData;
+        }
+
+        /// <summary>
+        /// 取得圖鑑快取資料
+        /// </summary>
+        public GameSaveBook GetBookDataCache()
+        {
+            return _cachedBookData;
+        }
+
+        private string GetBookFilePath()
+        {
+            return Path.Combine(Application.persistentDataPath, BookSaveFilePattern);
+        }
+        #endregion
     }
 
     [System.Serializable]

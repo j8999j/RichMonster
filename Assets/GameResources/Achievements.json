@@ -1,0 +1,36 @@
+{
+  "Achievements": [
+    {
+      "AchievementID": "NewWorldGod",
+      "AchievementName": "成為新世界的神!?",
+      "ConditionDescription": "取得生死簿殘頁",
+      "Description": "記錄生與死的筆記",
+      "Category": 0,
+      "Level": 0
+    },
+    {
+      "AchievementID": "WolfGas",
+      "AchievementName": "防狼",
+      "ConditionDescription": "將防狼噴霧賣給狼人",
+      "Description": "真正的防狼!?",
+      "Category": 1,
+      "Level": 0
+    },
+    {
+      "AchievementID": "BackHome",
+      "AchievementName": "回到月宮",
+      "ConditionDescription": "將水火箭賣給輝夜姬",
+      "Description": "會許能夠飛回月球",
+      "Category": 1,
+      "Level": 1
+    },
+    {
+      "AchievementID": "GoldGet",
+      "AchievementName": "第一桶金",
+      "ConditionDescription": "賺到100000金幣",
+      "Description": "好多好多金幣",
+      "Category": 2,
+      "Level": 1
+    }
+  ]
+}

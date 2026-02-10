@@ -17,11 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: ee0de37c9db090e45968a80e8335cc9f
   m_SerializeEntries:
-  - m_GUID: 0d18024b37259b248b6c9b8344ce0dd0
-    m_Address: professions
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 122664f56c5f032439c6fbe3b5f7386b
     m_Address: player_init
     m_ReadOnly: 0
@@ -29,11 +24,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 559206c2b7347d14580676b69f5a5005
     m_Address: itemtags
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 57967e0c9297a4a4cacf86f0cd1c4595
-    m_Address: traits
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

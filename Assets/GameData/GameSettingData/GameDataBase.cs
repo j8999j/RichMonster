@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using UnityEngine;
-
-
 // --- 玩家與存檔 ---
 [System.Serializable]
 public class Inventory
@@ -225,13 +222,13 @@ public class GameSaveBook //跨單局物品圖鑑與妖怪圖鑑存檔
 {
     public ItemBookData ItemBookData;
     public MonsterBookData MonsterBookData;
+    public List<IAchievementSave> AchievementData;
 }
 public class MonsterBookData //妖怪圖鑑
 {
-    public List<MonsterBookDatabase> MonsterBooks;
-    public List<MonsterStoryDatabase> monsterStoryDatabases;
+    public List<string> UnlockMonsterInformationID;
 }
-public class MonsterBookDatabase //妖怪圖鑑妖怪趣聞
+public class MonsterInformationDatabase //妖怪圖鑑妖怪趣聞
 {
     public string MonsterID;
     public string InformationID;
@@ -240,6 +237,7 @@ public class MonsterBookDatabase //妖怪圖鑑妖怪趣聞
 public class MonsterStoryDatabase //妖怪圖鑑妖怪小故事
 {
     public string MonsterID;
+    public int StoryIndex;
     public string MonsterStoryID;
     public int MonsterStory;
 }
