@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 namespace AchievementLibrary
 {
-public class NewWorldGodAchievement : AchievementBase
+public class AchievementBigDeal : AchievementBase
     {
-        public NewWorldGodAchievement()
+        public AchievementBigDeal()
         {
-            AchievementID = "NewWorldGod";
+            AchievementID = "BigDeal";
         }
 
         public override void Initialize()
@@ -19,14 +20,14 @@ public class NewWorldGodAchievement : AchievementBase
             DataManager.Instance.UpdateAchievementSaveData(this);
         }
         protected override void SubscribeEvents() =>
-            AchievementEvents.OnItemObtained += CheckCondition;
+            AchievementEvents.OnOrderCompleted += CheckCondition;
 
         protected override void UnsubscribeEvents() =>
-            AchievementEvents.OnItemObtained -= CheckCondition;
+            AchievementEvents.OnOrderCompleted -= CheckCondition;
 
-        private void CheckCondition(string itemId)
+        private void CheckCondition(string orderId, List<string> itemIds, int gold)
         {
-            if (itemId == "DeathNote")
+            if (gold > 10000)
             {
                 CompletedAchievement();
                 SaveData();

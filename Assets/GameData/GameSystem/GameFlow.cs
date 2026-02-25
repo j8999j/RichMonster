@@ -36,10 +36,10 @@ public class GameFlow
         if (DataManager.Instance.OnPlayerDataChanged)
         {
             await SaveManager.Instance.SaveGameAsync(_currentPlayerData as PlayerData, _saveSlot);
+            await DataManager.Instance.SaveAchievementAsync();
             DataManager.Instance.SetPlayerDataChanged(false);
         }
     }
-
 }
 
 

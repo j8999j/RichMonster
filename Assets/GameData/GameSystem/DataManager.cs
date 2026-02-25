@@ -25,6 +25,7 @@ public class DataManager : Singleton<DataManager>
     private PlayerData _initialPlayerData;
     private PlayerData _currentPlayerData;
     private GameSaveBook _bookData;
+    private Dictionary<string, IAchievementSave> _achievementSaveDict = new Dictionary<string, IAchievementSave>();
     public bool OnPlayerDataChanged { get; private set; } = true;
     public bool OnBookDataChanged { get; private set; } = true;
 
@@ -82,6 +83,9 @@ public class DataManager : Singleton<DataManager>
 
         // 同步圖鑑快取到 SaveManager
         SaveManager.Instance.SetBookDataCache(_bookData);
+
+        // 將成就存檔 List 轉為 Dictionary 使用
+        _achievementSaveDict = SaveManager.Instance.GetAchievementDict();
 
         // 初始化成就系統
         AchievementManager.Instance.Initialize(_achievementDict);
@@ -210,6 +214,74 @@ public class DataManager : Singleton<DataManager>
         if (_bookData == null) return false;
         return _bookData.MonsterBookData.UnlockMonsterInformationID.Contains(informationId);
     }
+    /// <summary>
+    /// 檢查成就是否已完成 (從字典中查詢)
+    /// </summary>
+    public bool IsAchievementCompleted(string achievementId)
+    {
+        if (_achievementSaveDict.TryGetValue(achievementId, out var save))
+        {
+            return save.IsCompleted;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 取得成就存檔資料 (從字典中查詢)
+    /// </summary>
+    public IAchievementSave GetAchievementSaveData(string achievementId)
+    {
+        _achievementSaveDict.TryGetValue(achievementId, out var save);
+        return save;
+    }
+
+    /// <summary>
+    /// 取得所有成就存檔資料 (字典)
+    /// </summary>
+    public Dictionary<string, IAchievementSave> GetAllAchievementSaveData()
+    {
+        return _achievementSaveDict;
+    }
+
+    /// <summary>
+    /// 更新單筆成就存檔資料 (新增或覆蓋)
+    /// </summary>
+    public void UpdateAchievementSaveData(IAchievementSave saveData)
+    {
+        if (saveData == null || string.IsNullOrEmpty(saveData.AchievementID)) return;
+
+        _achievementSaveDict[saveData.AchievementID] = saveData;
+        OnBookDataChanged = true;
+        SaveManager.Instance.SaveAchievementData(_achievementSaveDict);
+    }
+
+    /// <summary>
+    /// 從 AchievementManager 取得所有成就實例並批次更新存檔資料
+    /// </summary>
+    public void UpdateAllAchievementSaveData()
+    {
+        var allAchievements = AchievementManager.Instance.GetCompletedAchievements();
+        allAchievements.AddRange(AchievementManager.Instance.GetIncompleteAchievements());
+
+        foreach (var achievement in allAchievements)
+        {
+            if (!string.IsNullOrEmpty(achievement.AchievementID))
+            {
+                _achievementSaveDict[achievement.AchievementID] = achievement;
+            }
+        }
+        OnBookDataChanged = true;
+        SaveManager.Instance.SaveAchievementData(_achievementSaveDict);
+    }
+
+    /// <summary>
+    /// 非同步儲存成就資料
+    /// </summary>
+    public async Task SaveAchievementAsync()
+    {
+        await SaveManager.Instance.SaveAchievementDataAsync(_achievementSaveDict);
+        OnBookDataChanged = false;
+    }
     #endregion
 
     #region Player Data Utilities
@@ -294,28 +366,18 @@ public class DataManager : Singleton<DataManager>
         }
         return data;
     }
-
-    /// <summary>
-    /// 取得當前金幣
-    /// </summary>
-    public int GetGold()
-    {
-        return _currentPlayerData != null ? _currentPlayerData.Gold : 0;
-    }
-
     /// <summary>
     /// 修改金幣 (正數為獲得，負數為扣除)
     /// </summary>
     public void ModifyGold(int amount)
     {
         if (_currentPlayerData == null) return;
-
+        
         _currentPlayerData.Gold += amount;
         if (_currentPlayerData.Gold < 0) _currentPlayerData.Gold = 0;
-
+        AchievementEvents.GoldChanged(_currentPlayerData.Gold, amount);
         AdjustUpdateView();
     }
-
     /// <summary>
     /// 修改妖怪金幣 (正數為獲得，負數為扣除)
     /// </summary>
@@ -388,6 +450,28 @@ public class DataManager : Singleton<DataManager>
         }
         Debug.LogWarning($"[DataManager] 移除失敗，找不到: {item.ItemId} (成本: {item.CostPrice})");
         return false;
+    }
+
+    /// <summary>
+    /// 取得背包中指定稀有度的物品數量
+    /// </summary>
+    public int GetItemCountByRarity(Rarity rarity)
+    {
+        if (_currentPlayerData?.Inventory?.Items == null) return 0;
+        return _currentPlayerData.Inventory.Items
+            .Count(item => _itemDict.TryGetValue(item.ItemId, out var def) && def.Rarity == rarity);
+    }
+
+    /// <summary>
+    /// 取得背包中指定物品種類與世界的不重複物品種類數量
+    /// </summary>
+    public int GetDistinctItemCountByTypeAndWorld(ItemType type, ItemWorld world)
+    {
+        if (_currentPlayerData?.Inventory?.Items == null) return 0;
+        return _currentPlayerData.Inventory.Items
+            .Select(item => item.ItemId)
+            .Distinct()
+            .Count(itemId => _itemDict.TryGetValue(itemId, out var def) && def.Type == type && def.World == world);
     }
 
     /// <summary>

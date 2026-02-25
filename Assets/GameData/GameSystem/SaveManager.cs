@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -15,6 +16,14 @@ namespace GameSystem
         private const string SaveFilePattern = "save_slot_{0}.json";
         private SaveFileData _lastLoaded;
         private GameSaveBook _cachedBookData;
+        private Dictionary<string, IAchievementSave> _achievementDict = new Dictionary<string, IAchievementSave>();
+
+        protected override void Awake()
+        {
+            base.Awake();
+            _cachedBookData = LoadBookData();
+            _achievementDict = ListToDict(_cachedBookData.AchievementData);
+        }
 
         /// <summary>
         /// 共用的 JSON 設定，確保介面類型可以正確序列化/反序列化
@@ -130,11 +139,7 @@ namespace GameSystem
                 // ---------------------------------------------------------
                 // 修正點：必須建立與存檔時一模一樣的設定
                 // ---------------------------------------------------------
-                var settings = new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Auto,
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                };
+                var settings = _jsonSettings;
 
                 // 帶入 settings 進行反序列化
                 var saveData = JsonConvert.DeserializeObject<SaveFileData>(json, settings);
@@ -200,14 +205,7 @@ namespace GameSystem
         {
             if (source == null) return new PlayerData();
             // 這裡我們告訴 JsonConvert：「請把類別名稱 (Type Name) 也存進去！」
-            var settings = new JsonSerializerSettings
-            {
-                // Auto 代表：如果型別是介面或繼承類別，自動寫入 "$type" 屬性
-                TypeNameHandling = TypeNameHandling.Auto,
-
-                // (選用建議) 防止物件 A 參照 B，B 又參照 A 造成的無窮迴圈錯誤
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            };
+            var settings = _jsonSettings;
 
             // 3. 序列化 (轉成字串，包含 $type 資訊)
             var json = JsonConvert.SerializeObject(source, settings);
@@ -283,6 +281,7 @@ namespace GameSystem
         public void SetBookDataCache(GameSaveBook bookData)
         {
             _cachedBookData = bookData;
+            _achievementDict = ListToDict(bookData?.AchievementData);
         }
 
         /// <summary>
@@ -293,9 +292,110 @@ namespace GameSystem
             return _cachedBookData;
         }
 
+        /// <summary>
+        /// 取得成就字典 (以 AchievementID 為 Key 的快速查找)
+        /// </summary>
+        public Dictionary<string, IAchievementSave> GetAchievementDict()
+        {
+            return _achievementDict;
+        }
+
+        /// <summary>
+        /// 非同步儲存成就資料 (將字典轉為 List 後寫入檔案)
+        /// </summary>
+        public async Task SaveAchievementDataAsync(Dictionary<string, IAchievementSave> achievementDict)
+        {
+            if (_cachedBookData == null)
+            {
+                Debug.LogWarning("[SaveManager] 圖鑑快取為空，無法儲存成就資料");
+                return;
+            }
+
+            _achievementDict = achievementDict;
+            _cachedBookData.AchievementData = DictToList(achievementDict);
+            await SaveBookDataAsync(_cachedBookData);
+        }
+
+        /// <summary>
+        /// 同步儲存成就資料 (將字典轉為 List 後寫入檔案)
+        /// </summary>
+        public void SaveAchievementData(Dictionary<string, IAchievementSave> achievementDict)
+        {
+            if (_cachedBookData == null)
+            {
+                Debug.LogWarning("[SaveManager] 圖鑑快取為空，無法儲存成就資料");
+                return;
+            }
+
+            _achievementDict = achievementDict;
+            _cachedBookData.AchievementData = DictToList(achievementDict);
+            SaveBookData(_cachedBookData);
+        }
+
+        /// <summary>
+        /// 從檔案讀取圖鑑資料，若不存在則建立預設空資料
+        /// </summary>
+        private GameSaveBook LoadBookData()
+        {
+            string filePath = GetBookFilePath();
+
+            if (!File.Exists(filePath))
+            {
+                Debug.Log($"[SaveManager] 找不到圖鑑存檔，建立新的圖鑑資料: {filePath}");
+                return new GameSaveBook
+                {
+                    ItemBookData = new ItemBookData { ItemBooks = new List<ItemBookDatabase>() },
+                    MonsterBookData = new MonsterBookData { UnlockMonsterInformationID = new List<string>() },
+                    AchievementData = new List<IAchievementSave>()
+                };
+            }
+
+            try
+            {
+                string json = File.ReadAllText(filePath);
+                var data = JsonConvert.DeserializeObject<GameSaveBook>(json, _jsonSettings);
+                if (data == null) data = new GameSaveBook();
+                data.ItemBookData ??= new ItemBookData { ItemBooks = new List<ItemBookDatabase>() };
+                data.MonsterBookData ??= new MonsterBookData { UnlockMonsterInformationID = new List<string>() };
+                data.AchievementData ??= new List<IAchievementSave>();
+                Debug.Log($"[SaveManager] 圖鑑讀檔成功: {filePath}");
+                return data;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[SaveManager] 圖鑑讀檔失敗: {ex.Message}");
+                return new GameSaveBook
+                {
+                    ItemBookData = new ItemBookData { ItemBooks = new List<ItemBookDatabase>() },
+                    MonsterBookData = new MonsterBookData { UnlockMonsterInformationID = new List<string>() },
+                    AchievementData = new List<IAchievementSave>()
+                };
+            }
+        }
+
         private string GetBookFilePath()
         {
             return Path.Combine(Application.persistentDataPath, BookSaveFilePattern);
+        }
+
+        /// <summary>
+        /// List → Dictionary 轉換 (以 AchievementID 為 Key)
+        /// </summary>
+        private static Dictionary<string, IAchievementSave> ListToDict(List<IAchievementSave> list)
+        {
+            if (list == null) return new Dictionary<string, IAchievementSave>();
+            return list
+                .Where(x => x != null && !string.IsNullOrEmpty(x.AchievementID))
+                .ToDictionary(x => x.AchievementID, x => x);
+        }
+
+        /// <summary>
+        /// Dictionary → List 轉換 (存檔用)
+        /// </summary>
+        private static List<IAchievementSave> DictToList(Dictionary<string, IAchievementSave> dict)
+        {
+            if (dict == null) return new List<IAchievementSave>();
+            return dict.Values.ToList();
         }
         #endregion
     }

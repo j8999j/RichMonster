@@ -1,11 +1,11 @@
 using System;
 namespace AchievementLibrary
 {
-public class NewWorldGodAchievement : AchievementBase
+public class AchievementGodLuck : AchievementBase
     {
-        public NewWorldGodAchievement()
+        public AchievementGodLuck()
         {
-            AchievementID = "NewWorldGod";
+            AchievementID = "GodLuck";
         }
 
         public override void Initialize()
@@ -19,14 +19,14 @@ public class NewWorldGodAchievement : AchievementBase
             DataManager.Instance.UpdateAchievementSaveData(this);
         }
         protected override void SubscribeEvents() =>
-            AchievementEvents.OnItemObtained += CheckCondition;
+            AchievementEvents.OnScratchCardCompleted += CheckCondition;
 
         protected override void UnsubscribeEvents() =>
-            AchievementEvents.OnItemObtained -= CheckCondition;
+            AchievementEvents.OnScratchCardCompleted -= CheckCondition;
 
-        private void CheckCondition(string itemId)
+        private void CheckCondition(int prizeLevel)
         {
-            if (itemId == "DeathNote")
+            if (prizeLevel == 0)
             {
                 CompletedAchievement();
                 SaveData();

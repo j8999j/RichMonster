@@ -23,8 +23,8 @@ namespace GameSystem
         protected override void Awake()
         {
             base.Awake();
-            dataManager = DataManager.Instance;
             saveManager = SaveManager.Instance;
+            dataManager = DataManager.Instance;
             sceneTransitionManager = GetComponent<SceneTransitionManager>();
             // 訂閱場景載入完成事件
             sceneTransitionManager.OnSceneLoadComplete += OnSceneLoadComplete;
@@ -152,11 +152,11 @@ namespace GameSystem
         #region 場景轉換捷徑方法（透過 SceneTransitionManager）
         private void BlackView()
         {
-            
+
         }
         public void LoadImage()
         {
-            
+
         }
         /// <summary>
         /// 載入指定場景

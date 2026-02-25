@@ -103,13 +103,18 @@ public class AchievementManager : Singleton<AchievementManager>
     private List<Type> FindAllAchievementTypes()
     {
         var baseType = typeof(AchievementBase);
+        const string targetNamespace = "AchievementLibrary"; // 改成你的命名空間
+
         return AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(assembly =>
             {
                 try { return assembly.GetTypes(); }
                 catch { return Type.EmptyTypes; }
             })
-            .Where(t => t != baseType && baseType.IsAssignableFrom(t) && !t.IsAbstract)
+            .Where(t => t != baseType
+                     && baseType.IsAssignableFrom(t)
+                     && !t.IsAbstract
+                     && t.Namespace == targetNamespace) // 精確匹配
             .ToList();
     }
 

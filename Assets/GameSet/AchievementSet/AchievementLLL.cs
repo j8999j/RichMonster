@@ -1,11 +1,11 @@
 using System;
 namespace AchievementLibrary
 {
-public class NewWorldGodAchievement : AchievementBase
+public class AchievementLLL : AchievementBase
     {
-        public NewWorldGodAchievement()
+        public AchievementLLL()
         {
-            AchievementID = "NewWorldGod";
+            AchievementID = "LLL";
         }
 
         public override void Initialize()
@@ -26,11 +26,14 @@ public class NewWorldGodAchievement : AchievementBase
 
         private void CheckCondition(string itemId)
         {
-            if (itemId == "DeathNote")
+            if (DataManager.Instance.GetItemById(itemId).Rarity == Rarity.Legendary)
             {
-                CompletedAchievement();
-                SaveData();
-                UnsubscribeEvents();
+                if(DataManager.Instance.GetItemCountByRarity(Rarity.Legendary) >= 3)
+                {
+                    CompletedAchievement();
+                    SaveData();
+                    UnsubscribeEvents();
+                }
             }
         }
     }

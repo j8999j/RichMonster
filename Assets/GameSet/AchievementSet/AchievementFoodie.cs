@@ -1,11 +1,11 @@
 using System;
 namespace AchievementLibrary
 {
-public class NewWorldGodAchievement : AchievementBase
+public class AchievementFoodie : AchievementBase, IAchievementHiddenCondition
     {
-        public NewWorldGodAchievement()
+        public AchievementFoodie()
         {
-            AchievementID = "NewWorldGod";
+            AchievementID = "Foodie";
         }
 
         public override void Initialize()
@@ -26,11 +26,17 @@ public class NewWorldGodAchievement : AchievementBase
 
         private void CheckCondition(string itemId)
         {
-            if (itemId == "DeathNote")
+            if (DataManager.Instance.GetItemById(itemId).Type == ItemType.Food)
             {
-                CompletedAchievement();
-                SaveData();
-                UnsubscribeEvents();
+                if(DataManager.Instance.GetDistinctItemCountByTypeAndWorld(ItemType.Food, ItemWorld.Human) >= 3)
+                {
+                    if(DataManager.Instance.GetDistinctItemCountByTypeAndWorld(ItemType.Food, ItemWorld.Monster) >= 3)
+                    {
+                        CompletedAchievement();
+                        SaveData();
+                        UnsubscribeEvents();
+                    }
+                }
             }
         }
     }

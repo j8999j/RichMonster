@@ -1,11 +1,11 @@
 using System;
 namespace AchievementLibrary
 {
-public class NewWorldGodAchievement : AchievementBase
+public class AchievementNoDead : AchievementBase
     {
-        public NewWorldGodAchievement()
+        public AchievementNoDead()
         {
-            AchievementID = "NewWorldGod";
+            AchievementID = "NoDead";
         }
 
         public override void Initialize()
@@ -26,7 +26,7 @@ public class NewWorldGodAchievement : AchievementBase
 
         private void CheckCondition(string itemId)
         {
-            if (itemId == "DeathNote")
+            if (itemId == "FullMoonPalaceElixir")
             {
                 CompletedAchievement();
                 SaveData();

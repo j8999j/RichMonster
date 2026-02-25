@@ -1,11 +1,11 @@
 using System;
 namespace AchievementLibrary
 {
-public class NewWorldGodAchievement : AchievementBase
+public class AchievementCrisisManager : AchievementBase, IAchievementHiddenCondition
     {
-        public NewWorldGodAchievement()
+        public AchievementCrisisManager()
         {
-            AchievementID = "NewWorldGod";
+            AchievementID = "CrisisManager";
         }
 
         public override void Initialize()
@@ -19,14 +19,14 @@ public class NewWorldGodAchievement : AchievementBase
             DataManager.Instance.UpdateAchievementSaveData(this);
         }
         protected override void SubscribeEvents() =>
-            AchievementEvents.OnItemObtained += CheckCondition;
+            AchievementEvents.OnDayEndGold += CheckCondition;
 
         protected override void UnsubscribeEvents() =>
-            AchievementEvents.OnItemObtained -= CheckCondition;
+            AchievementEvents.OnDayEndGold -= CheckCondition;
 
-        private void CheckCondition(string itemId)
+        private void CheckCondition(int gold)
         {
-            if (itemId == "DeathNote")
+            if (gold < 50)
             {
                 CompletedAchievement();
                 SaveData();

@@ -20,17 +20,89 @@
       "AchievementID": "BackHome",
       "AchievementName": "回到月宮",
       "ConditionDescription": "將水火箭賣給輝夜姬",
-      "Description": "會許能夠飛回月球",
+      "Description": "會許真的能夠飛回月球",
+      "Category": 1,
+      "Level": 0
+    },
+    {
+      "AchievementID": "GoldBucket",
+      "AchievementName": "第一桶金",
+      "ConditionDescription": "累積賺取100000金幣",
+      "Description": "好多好多金幣",
+      "Category": 2,
+      "Level": 0
+    },
+    {
+      "AchievementID": "NoDead",
+      "AchievementName": "長生不老",
+      "ConditionDescription": "取得月宮靈藥",
+      "Description": "吃下去會變得輕飄飄",
+      "Category": 0,
+      "Level": 1
+    },
+    {
+      "AchievementID": "GodLuck",
+      "AchievementName": "天命之子",
+      "ConditionDescription": "刮刮樂取得特獎",
+      "Description": "運氣極佳!!!",
+      "Category": 3,
+      "Level": 2
+    },
+    {
+      "AchievementID": "LLL",
+      "AchievementName": "傳奇收藏家",
+      "ConditionDescription": "背包中同時擁有3件以上傳說級的商品",
+      "Description": "你的背包裡放著足以引發二界戰爭的至寶",
+      "Category": 0,
+      "Level": 1
+    },
+    {
+      "AchievementID": "MyGo",
+      "AchievementName": "星際迷航",
+      "ConditionDescription": "將「指南針」賣給「輝夜姬」",
+      "Description": "地上的指針，可能指引不了回到月宮的路。",
+      "Category": 1,
+      "Level": 0
+    },
+    {
+      "AchievementID": "FakeFish",
+      "AchievementName": "這是魚嗎？",
+      "ConditionDescription": "將「鯛魚燒」賣給「貓又」",
+      "Description": "聞起來像甜點，但長得像魚...貓貓感到十分困惑",
+      "Category": 1,
+      "Level": 0
+    },
+    {
+      "AchievementID": "CrisisManager",
+      "AchievementName": "瀕臨破產",
+      "ConditionDescription": "在持有金幣低於 50 的情況下結束一天",
+      "Description": "在破產邊緣反覆橫跳，這就是商人的極限運動",
+      "Category": 3,
+      "Level": 0
+    },
+    {
+      "AchievementID": "BigDeal",
+      "AchievementName": "超級大單",
+      "ConditionDescription": "單筆需求訂單交易金額超過 10000 金幣",
+      "Description": "這一單下去，三天的飯錢都有了",
       "Category": 1,
       "Level": 1
     },
     {
-      "AchievementID": "GoldGet",
-      "AchievementName": "第一桶金",
-      "ConditionDescription": "賺到100000金幣",
-      "Description": "好多好多金幣",
-      "Category": 2,
-      "Level": 1
+      "AchievementID": "MeltingCrisis",
+      "AchievementName": "融化危機",
+      "ConditionDescription": "嘗試將「吹風機」賣給「雪女」",
+      "Description": "這熱風對她來說簡直是毀滅性的打擊",
+      "Category": 1,
+      "Level": 0
+    },
+    {
+      "AchievementID": "Foodie",
+      "AchievementName": "美食家",
+      "ConditionDescription": "背包中同時擁有兩界各三種不同的食物",
+      "Description": "從人類的沙拉到妖界的怪味料理，你什麼都想嚐嚐",
+      "Category": 3,
+      "Level": 0
     }
   ]
 }

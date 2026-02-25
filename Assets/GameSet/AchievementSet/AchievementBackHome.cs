@@ -1,11 +1,11 @@
 using System;
 namespace AchievementLibrary
 {
-public class NewWorldGodAchievement : AchievementBase
+public class AchievementBackHome : AchievementBase, IAchievementHiddenCondition
     {
-        public NewWorldGodAchievement()
+        public AchievementBackHome()
         {
-            AchievementID = "NewWorldGod";
+            AchievementID = "BackHome";
         }
 
         public override void Initialize()
@@ -19,14 +19,14 @@ public class NewWorldGodAchievement : AchievementBase
             DataManager.Instance.UpdateAchievementSaveData(this);
         }
         protected override void SubscribeEvents() =>
-            AchievementEvents.OnItemObtained += CheckCondition;
+            AchievementEvents.OnTransactionCompleted += CheckCondition;
 
         protected override void UnsubscribeEvents() =>
-            AchievementEvents.OnItemObtained -= CheckCondition;
+            AchievementEvents.OnTransactionCompleted -= CheckCondition;
 
-        private void CheckCondition(string itemId)
+        private void CheckCondition(string customerId, string itemId)
         {
-            if (itemId == "DeathNote")
+            if (customerId == "Kaguya" && itemId == "WaterRocket")
             {
                 CompletedAchievement();
                 SaveData();
