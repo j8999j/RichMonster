@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52c7fb4c3f8377d449542df94455b87b, type: 3}
-  m_Name: New Specific Item Req
+  m_Script: {fileID: 11500000, guid: 36b91055bec6a3e4ca30ad5b2130a837, type: 3}
+  m_Name: Gold_TagReq
   m_EditorClassIdentifier: 
-  TargetItemID: WindSealingPill
+  TargetTag: Gold

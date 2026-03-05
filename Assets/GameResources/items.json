@@ -5,11 +5,12 @@
       "Name": "礦泉水",
       "Tags": [
         "Wet",
-        "Pure"
+        "Pure",
+        "Drinkable"
       ],
       "Type": 1,
       "World": 0,
-      "Rarity": 1,
+      "Rarity": 0,
       "BasePrice": 10,
       "Description": "一整瓶滿滿的乾淨的水",
       "ShopType": [
@@ -26,7 +27,7 @@
       ],
       "Type": 2,
       "World": 0,
-      "Rarity": 2,
+      "Rarity": 1,
       "BasePrice": 150,
       "Description": "神聖之水",
       "ShopType": [
@@ -43,7 +44,7 @@
       ],
       "Type": 2,
       "World": 0,
-      "Rarity": 1,
+      "Rarity": 0,
       "BasePrice": 200,
       "Description": "吹出熱風",
       "ShopType": [
@@ -62,7 +63,7 @@
       ],
       "Type": 2,
       "World": 1,
-      "Rarity": 3,
+      "Rarity": 2,
       "BasePrice": 500,
       "Description": "神祕的寶物，光芒柔和且帶有潮濕氣息。",
       "ShopType": [
@@ -79,7 +80,7 @@
       ],
       "Type": 2,
       "World": 0,
-      "Rarity": 2,
+      "Rarity": 1,
       "BasePrice": 300,
       "Description": "在濕度高的地區，銷售量非常高。",
       "ShopType": [
@@ -95,7 +96,7 @@
       ],
       "Type": 1,
       "World": 0,
-      "Rarity": 1,
+      "Rarity": 0,
       "BasePrice": 50,
       "Description": "美味的雞腿，口水流下來了",
       "ShopType": [
@@ -112,7 +113,7 @@
       ],
       "Type": 1,
       "World": 0,
-      "Rarity": 2,
+      "Rarity": 1,
       "BasePrice": 150,
       "Description": "高級的肉類拼盤，今天來犒賞一下自己吧",
       "ShopType": [
@@ -129,7 +130,7 @@
       ],
       "Type": 1,
       "World": 0,
-      "Rarity": 1,
+      "Rarity": 0,
       "BasePrice": 30,
       "Description": "跟名稱一樣普通，纖維素是含量次高的成分。",
       "ShopType": [
@@ -140,12 +141,12 @@
       "Id": "SoupForgetfulness",
       "Name": "孟婆湯",
       "Tags": [
-        "Tasty",
-        "Sweet"
+        "Sweet",
+        "Drinkable"
       ],
       "Type": 1,
       "World": 1,
-      "Rarity": 1,
+      "Rarity": 0,
       "BasePrice": 40,
       "Description": "據說好吃到令人失憶。我剛剛吃飯了嗎?",
       "ShopType": [
@@ -162,7 +163,7 @@
       ],
       "Type": 1,
       "World": 1,
-      "Rarity": 1,
+      "Rarity": 0,
       "BasePrice": 70,
       "Description": "妖界常見的小吃，外焦裡脆老饕最愛。",
       "ShopType": [
@@ -179,7 +180,7 @@
       ],
       "Type": 1,
       "World": 1,
-      "Rarity": 2,
+      "Rarity": 1,
       "BasePrice": 160,
       "Description": "趁熱吃保證最佳口感",
       "ShopType": [
@@ -194,7 +195,7 @@
       ],
       "Type": 0,
       "World": 0,
-      "Rarity": 3,
+      "Rarity": 2,
       "BasePrice": 350,
       "Description": "保暖效果極強的裝備，但價格也不便宜",
       "ShopType": [
@@ -211,7 +212,7 @@
       ],
       "Type": 0,
       "World": 0,
-      "Rarity": 4,
+      "Rarity": 3,
       "BasePrice": 1000,
       "Description": "閃著耀眼光芒的物品，小小一個卻這麼重!",
       "ShopType": [
@@ -227,7 +228,7 @@
       ],
       "Type": 0,
       "World": 1,
-      "Rarity": 2,
+      "Rarity": 1,
       "BasePrice": 150,
       "Description": "這麼大的護腕，提供滿滿安全感",
       "ShopType": [
@@ -244,7 +245,7 @@
       ],
       "Type": 2,
       "World": 1,
-      "Rarity": 3,
+      "Rarity": 2,
       "BasePrice": 500,
       "Description": "能夠帶來溫暖的風",
       "ShopType": [
@@ -260,7 +261,7 @@
       ],
       "Type": 2,
       "World": 0,
-      "Rarity": 1,
+      "Rarity": 0,
       "BasePrice": 20,
       "Description": "人類發明的神祕道具可以召喚火焰!?",
       "ShopType": [
@@ -278,7 +279,7 @@
       ],
       "Type": 1,
       "World": 0,
-      "Rarity": 2,
+      "Rarity": 1,
       "BasePrice": 50,
       "Description": "高達58度酒精的釀造飲品",
       "ShopType": [
@@ -289,11 +290,12 @@
       "Id": "WineGlass",
       "Name": "高腳杯",
       "Tags": [
-        "Beauty"
+        "Beauty",
+        "Music"
       ],
       "Type": 2,
       "World": 0,
-      "Rarity": 1,
+      "Rarity": 0,
       "BasePrice": 90,
       "Description": "能夠作為大部分飲品的容器",
       "ShopType": [
@@ -310,7 +312,7 @@
       ],
       "Type": 2,
       "World": 0,
-      "Rarity": 3,
+      "Rarity": 2,
       "BasePrice": 600,
       "Description": "高級的裝飾品，能使光線產生優美的折射",
       "ShopType": [
@@ -326,7 +328,7 @@
       ],
       "Type": 2,
       "World": 1,
-      "Rarity": 3,
+      "Rarity": 2,
       "BasePrice": 600,
       "Description": "吃了這個能抵擋100級陣風!?",
       "ShopType": [
@@ -343,7 +345,7 @@
       ],
       "Type": 2,
       "World": 1,
-      "Rarity": 2,
+      "Rarity": 1,
       "BasePrice": 200,
       "Description": "喝下去能讓寫的字變得好看",
       "ShopType": [
@@ -360,7 +362,7 @@
       ],
       "Type": 2,
       "World": 1,
-      "Rarity": 1,
+      "Rarity": 0,
       "BasePrice": 70,
       "Description": "擁有極強的生命力，據說能在極地與沙漠生長",
       "ShopType": [
@@ -377,7 +379,7 @@
       ],
       "Type": 2,
       "World": 1,
-      "Rarity": 4,
+      "Rarity": 3,
       "BasePrice": 3000,
       "Description": "能實現願望的神器，你願意付出什麼樣的代價呢?",
       "ShopType": [

@@ -3010,6 +3010,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: YokaiStore
       objectReference: {fileID: 0}
+    - target: {fileID: 1998822995364289585, guid: 66ac53836f9e78d469b0b81afabda80b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716551488046466583, guid: 66ac53836f9e78d469b0b81afabda80b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4897765651490596564, guid: 66ac53836f9e78d469b0b81afabda80b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.38
+      objectReference: {fileID: 0}
+    - target: {fileID: 4897765651490596564, guid: 66ac53836f9e78d469b0b81afabda80b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.02
+      objectReference: {fileID: 0}
     - target: {fileID: 8643346568015389549, guid: 66ac53836f9e78d469b0b81afabda80b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.99

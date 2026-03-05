@@ -1,0 +1,74 @@
+{
+  "MonsterStories": [
+    {
+      "MonsterStoryID": "Story_001_RookieAdventurer",
+      "MonsterID": "RookieAdventurer",
+      "StoryIndex": 0,
+      "MonsterStoryName": "雪女故事其一",
+      "MonsterStory": "雪女故事一"
+    },
+    {
+      "MonsterStoryID": "Story_002_RookieAdventurer",
+      "MonsterID": "RookieAdventurer",
+      "StoryIndex": 1,
+      "MonsterStoryName": "雪女故事其二",
+      "MonsterStory": "雪女故事二"
+    },
+    {
+      "MonsterStoryID": "Story_001_WardenWoods",
+      "MonsterID": "WardenWoods",
+      "StoryIndex": 0,
+      "MonsterStoryName": "書靈故事其一",
+      "MonsterStory": "書靈故事一"
+    },
+    {
+      "MonsterStoryID": "Story_002_WardenWoods",
+      "MonsterID": "WardenWoods",
+      "StoryIndex": 1,
+      "MonsterStoryName": "書靈故事其二",
+      "MonsterStory": "書靈故事二"
+    },
+    {
+      "MonsterStoryID": "Story_001_Rogue",
+      "MonsterID": "Rogue",
+      "StoryIndex": 0,
+      "MonsterStoryName": "樹靈故事其一",
+      "MonsterStory": "樹靈故事一"
+    },
+    {
+      "MonsterStoryID": "Story_002_Rogue",
+      "MonsterID": "Rogue",
+      "StoryIndex": 1,
+      "MonsterStoryName": "樹靈故事其二",
+      "MonsterStory": "樹靈故事二"
+    },
+    {
+      "MonsterStoryID": "Story_001_ApprenticeMage",
+      "MonsterID": "ApprenticeMage",
+      "StoryIndex": 0,
+      "MonsterStoryName": "天狗故事其一",
+      "MonsterStory": "天狗故事一"
+    },
+    {
+      "MonsterStoryID": "Story_002_ApprenticeMage",
+      "MonsterID": "ApprenticeMage",
+      "StoryIndex": 1,
+      "MonsterStoryName": "天狗故事其二",
+      "MonsterStory": "天狗故事二"
+    },
+    {
+      "MonsterStoryID": "Story_001_SeniorKnight",
+      "MonsterID": "SeniorKnight",
+      "StoryIndex": 0,
+      "MonsterStoryName": "九尾狐故事其一",
+      "MonsterStory": "九尾狐故事一"
+    },
+    {
+      "MonsterStoryID": "Story_002_SeniorKnight",
+      "MonsterID": "SeniorKnight",
+      "StoryIndex": 1,
+      "MonsterStoryName": "九尾狐故事其二",
+      "MonsterStory": "九尾狐故事二"
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "MonsterInformations": [
+    {
+      "InformationID": "Info_001_RookieAdventurer",
+      "MonsterID": "RookieAdventurer",
+      "MonsterInformationName": "寒冷體質",
+      "MonsterInformation": "她總是在尋找能讓周遭空氣降溫的冰涼物件",
+      "TagID": "Cold"
+    },
+    {
+      "InformationID": "Info_002_RookieAdventurer",
+      "MonsterID": "RookieAdventurer",
+      "MonsterInformationName": "控制水氣",
+      "MonsterInformation": "非常享受水分充沛的感覺，似乎連買回去的商品都希望帶點水氣",
+      "TagID": "Wet"
+    },
+    {
+      "InformationID": "Info_003_RookieAdventurer",
+      "MonsterID": "RookieAdventurer",
+      "MonsterInformationName": "皮膚保養",
+      "MonsterInformation": "對於會吸收水分或讓皮膚龜裂的環境極度排斥，碰都不想碰",
+      "TagID": "Dry"
+    },
+    {
+      "InformationID": "Info_001_WardenWoods",
+      "MonsterID": "WardenWoods",
+      "MonsterInformationName": "圖書管理員",
+      "MonsterInformation": "身上總是帶著紙張與墨水的香氣，對承載知識的文本愛不釋手。",
+      "TagID": "Book"
+    },
+    {
+      "InformationID": "Info_002_WardenWoods",
+      "MonsterID": "WardenWoods",
+      "MonsterInformationName": "一顆恆久遠",
+      "MonsterInformation": "似乎認為閃閃發亮的珍貴礦石能夠用來長久保存文字的記憶。",
+      "TagID": "Gem"
+    },
+    {
+      "InformationID": "Info_003_WardenWoods",
+      "MonsterID": "WardenWoods",
+      "MonsterInformationName": "防腐措施",
+      "MonsterInformation": "最害怕看到發霉或敗壞的東西，認為那會輕易毀滅珍貴的歷史紀錄。",
+      "TagID": "Corruption"
+    },
+    {
+      "InformationID": "Info_001_Rogue",
+      "MonsterID": "Rogue",
+      "MonsterInformationName": "植物管理員",
+      "MonsterInformation": "充滿活力的她，總是渴望能讓自己長得更高壯的生命力泉源。",
+      "TagID": "Growth"
+    },
+    {
+      "InformationID": "Info_002_Rogue",
+      "MonsterID": "Rogue",
+      "MonsterInformationName": "酸酸甜甜",
+      "MonsterInformation": "吃東西時，特別喜歡那種咬下去會讓人忍不住皺起眉頭的刺激風味。",
+      "TagID": "Sour"
+    },
+    {
+      "InformationID": "Info_003_Rogue",
+      "MonsterID": "Rogue",
+      "MonsterInformationName": "小心火燭",
+      "MonsterInformation": "只要看到一點點火星就會嚇得立刻逃跑，對明火有著本能的恐懼。",
+      "TagID": "Fire"
+    },
+    {
+      "InformationID": "Info_001_ApprenticeMage",
+      "MonsterID": "ApprenticeMage",
+      "MonsterInformationName": "奇異物品",
+      "MonsterInformation": "總是四處打聽哪裡有散發著奇異波動、能引起法術共鳴的神祕物品。",
+      "TagID": "Magic"
+    },
+    {
+      "InformationID": "Info_002_ApprenticeMage",
+      "MonsterID": "ApprenticeMage",
+      "MonsterInformationName": "骨董收藏家",
+      "MonsterInformation": "特別鍾情於那些經過歲月洗禮、充滿歷史痕跡的古董。",
+      "TagID": "Old"
+    },
+    {
+      "InformationID": "Info_003_ApprenticeMage",
+      "MonsterID": "ApprenticeMage",
+      "MonsterInformationName": "強風吹拂",
+      "MonsterInformation": "因為享受強風住在山頂",
+      "TagID": "Wind"
+    },
+    {
+      "InformationID": "Info_004_ApprenticeMage",
+      "MonsterID": "ApprenticeMage",
+      "MonsterInformationName": "討厭垃圾",
+      "MonsterInformation": "自視甚高，對於那些毫無用處的破銅爛鐵連看都不屑看一眼。",
+      "TagID": "Junk"
+    },
+    {
+      "InformationID": "Info_001_SeniorKnight",
+      "MonsterID": "SeniorKnight",
+      "MonsterInformationName": "華美",
+      "MonsterInformation": "擁有極高的眼界，對那些做工繁複、價值不斐的珍品毫無抵抗力。",
+      "TagID": "Luxury"
+    },
+    {
+      "InformationID": "Info_002_SeniorKnight",
+      "MonsterID": "SeniorKnight",
+      "MonsterInformationName": "蔬食主義",
+      "MonsterInformation": "喜歡各種蔬菜作為供品",
+      "TagID": "Vegetable"
+    },
+    {
+      "InformationID": "Info_003_SeniorKnight",
+      "MonsterID": "SeniorKnight",
+      "MonsterInformationName": "熱愛水果",
+      "MonsterInformation": "喜歡品嚐飯後水果。",
+      "TagID": "Fruit"
+    },
+    {
+      "InformationID": "Info_004_SeniorKnight",
+      "MonsterID": "SeniorKnight",
+      "MonsterInformationName": "解咒",
+      "MonsterInformation": "有著近乎神聖的潔癖，絕對不會購買任何沾染邪氣與晦氣的物品。",
+      "TagID": "Cursed"
+    }
+  ]
+}

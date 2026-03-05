@@ -25,6 +25,8 @@ public class GameDataLoader
     private const string KEY_HUMAN_SMALL_ORDERS = "HumanEvents";
     private const string KEY_MISSIONS = "NpcMission";
     private const string KEY_ACHIEVEMENTS = "Achievements";
+    private const string KEY_MONSTER_INFO = "MonsterInfo";
+    private const string KEY_MONSTER_STORY = "MonsterStory";
     // Book save file
     private const string BOOK_SAVE_FILE = "illustrated_book.json";
 
@@ -43,6 +45,8 @@ public class GameDataLoader
         public Dictionary<string, HumanSmallOrder> HumanSmallOrderDict = new Dictionary<string, HumanSmallOrder>();
         public Dictionary<string, NpcMission> MissionDict = new Dictionary<string, NpcMission>();
         public Dictionary<string, AchievementConfig> AchievementDict = new Dictionary<string, AchievementConfig>();
+        public Dictionary<string, MonsterInformationDatabase> MonsterInfoDict = new Dictionary<string, MonsterInformationDatabase>();
+        public Dictionary<string, MonsterStoryDatabase> MonsterStoryDict = new Dictionary<string, MonsterStoryDatabase>();
         public PlayerData InitialPlayerData;
         public GameSaveBook BookData;
     }
@@ -63,6 +67,8 @@ public class GameDataLoader
         result.HumanSmallOrderDict = await LoadHumanSmallOrdersAsync();
         result.MissionDict = await LoadMissionsAsync();
         result.AchievementDict = await LoadAchievementsAsync();
+        result.MonsterInfoDict = await LoadMonsterInfoAsync();
+        result.MonsterStoryDict = await LoadMonsterStoryAsync();
         result.InitialPlayerData = await LoadInitialPlayerDataAsync();
         result.EventDict = await LoadEventDataAsync();
         result.BookData = LoadBookData();
@@ -461,7 +467,6 @@ public class GameDataLoader
         }
         // 注意：ScriptableObject 資產不需要 Release
     }
-
     private async Task<PlayerData> LoadInitialPlayerDataAsync()
     {
         try
@@ -557,6 +562,97 @@ public class GameDataLoader
         {
             Debug.LogError($"[GameDataLoader] LoadAchievementsAsync failed: {e}");
             return new Dictionary<string, AchievementConfig>();
+        }
+        finally
+        {
+            if (handle.IsValid()) Addressables.Release(handle);
+        }
+    }
+    private async Task<Dictionary<string, MonsterInformationDatabase>> LoadMonsterInfoAsync()
+    {
+        AsyncOperationHandle<TextAsset> handle = default;
+        try
+        {
+            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_MONSTER_INFO);
+            TextAsset jsonFile = await handle.Task;
+
+            if (jsonFile == null)
+            {
+                Debug.LogError("[GameDataLoader] 找不到 MonsterInfo (Addressables)");
+                return new Dictionary<string, MonsterInformationDatabase>();
+            }
+
+            List<MonsterInformationDatabase> infoList = null;
+            string jsonText = jsonFile.text.TrimStart();
+            if (jsonText.StartsWith("["))
+            {
+                infoList = JsonConvert.DeserializeObject<List<MonsterInformationDatabase>>(jsonFile.text);
+            }
+            else
+            {
+                var db = JsonConvert.DeserializeObject<MonsterInformationDatabaseRoot>(jsonFile.text);
+                infoList = db?.MonsterInformations;
+            }
+
+            var dict = infoList?
+                .Where(i => i != null && !string.IsNullOrEmpty(i.InformationID))
+                .GroupBy(i => i.InformationID)
+                .ToDictionary(g => g.Key, g => g.First())
+                ?? new Dictionary<string, MonsterInformationDatabase>();
+
+            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆妖怪趣聞資料");
+            return dict;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GameDataLoader] LoadMonsterInfoAsync failed: {e}");
+            return new Dictionary<string, MonsterInformationDatabase>();
+        }
+        finally
+        {
+            if (handle.IsValid()) Addressables.Release(handle);
+        }
+    }
+
+    private async Task<Dictionary<string, MonsterStoryDatabase>> LoadMonsterStoryAsync()
+    {
+        AsyncOperationHandle<TextAsset> handle = default;
+        try
+        {
+            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_MONSTER_STORY);
+            TextAsset jsonFile = await handle.Task;
+
+            if (jsonFile == null)
+            {
+                Debug.LogError("[GameDataLoader] 找不到 MonsterStory (Addressables)");
+                return new Dictionary<string, MonsterStoryDatabase>();
+            }
+
+            List<MonsterStoryDatabase> storyList = null;
+            string jsonText = jsonFile.text.TrimStart();
+            if (jsonText.StartsWith("["))
+            {
+                storyList = JsonConvert.DeserializeObject<List<MonsterStoryDatabase>>(jsonFile.text);
+            }
+            else
+            {
+                var db = JsonConvert.DeserializeObject<MonsterStoryDatabaseRoot>(jsonFile.text);
+                storyList = db?.MonsterStories;
+            }
+
+            var dict = storyList?
+                .Where(s => s != null && !string.IsNullOrEmpty(s.MonsterStoryID))
+                .GroupBy(s => s.MonsterStoryID)
+                .ToDictionary(g => g.Key, g => g.First())
+                ?? new Dictionary<string, MonsterStoryDatabase>();
+
+            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆妖怪小故事資料");
+            return dict;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GameDataLoader] LoadMonsterStoryAsync failed: {e}");
+            return new Dictionary<string, MonsterStoryDatabase>();
         }
         finally
         {

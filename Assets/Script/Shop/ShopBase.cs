@@ -89,7 +89,7 @@ namespace Shop
 
             var player = DataManager.Instance.CurrentPlayerData;
             var targetShopId = ShopID + "ShopShelfData";
-            ThisShopShelfData = DataManager.Instance.GetPlayerData<ShopShelfData>(targetShopId);
+            ThisShopShelfData = DataManager.Instance.GetPlayerSaveData<ShopShelfData>(targetShopId);
             if (ThisShopShelfData.LastUpdatedDay != GameManager.Instance.gameFlow.CurrentDay)//如果不是同一天，重置商店
             {
                 ThisShopShelfData = new ShopShelfData { UniqueID = targetShopId, Changes = new List<ShopInventoryChange>() };

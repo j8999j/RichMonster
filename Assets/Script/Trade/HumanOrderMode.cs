@@ -80,7 +80,7 @@ public class HumanOrderMode : MonoBehaviour
     }
     private void LoadOrdersHistory()
     {
-        var orderHistory = DataManager.Instance.GetPlayerData<OrderHistoryData>("OrderHistory");
+        var orderHistory = DataManager.Instance.GetPlayerSaveData<OrderHistoryData>("OrderHistory");
         if (orderHistory == null || orderHistory.OrderHistory.Count == 0) return;
         // 建立已完成訂單 ID 的快速查詢集合
         var completedOrderIds = new HashSet<string>(

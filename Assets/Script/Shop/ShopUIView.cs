@@ -29,7 +29,8 @@ public class ShopUIView : MonoBehaviour
     public TextMeshProUGUI DetailDescText;         // 商品描述
     public TextMeshProUGUI DetailPriceText;        // 商品價格
     public Button BuyButton;            // 購買按鈕
-    public TextMeshProUGUI BuyButtonText;          // 按鈕文字 (例如顯示 "已購買" 或 "購買")
+    public Sprite BuyButtonSprite_CanBuy;
+    public Sprite BuyButtonSprite_Buyed;
     public Button CloseButton;// 關閉按鈕
 
     private ShelfSlot _currentSelectedData; // 目前選中的資料
@@ -152,9 +153,9 @@ public class ShopUIView : MonoBehaviour
         bool isPurchased = _currentSelectedData.Purchased;
         BuyButton.interactable = !isPurchased; // 如果買過了就不能按
 
-        if (BuyButtonText != null)
+        if (BuyButton.image != null)
         {
-            BuyButtonText.text = isPurchased ? "已售罄" : "購買";
+            BuyButton.image.sprite = isPurchased ? BuyButtonSprite_Buyed : BuyButtonSprite_CanBuy;
         }
     }
     private void ClearDetailPanel()

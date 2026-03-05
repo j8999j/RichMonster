@@ -2,12 +2,150 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 
-[RequireComponent(typeof(RawImage))]
 public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
 {
+    [Header("刮除目標設定")]
+    [Tooltip("指定要刮除的 RawImage 物件，若未指定則使用自身的 RawImage")]
+    [SerializeField] private RawImage targetRawImage;
+
     [Header("貼圖設定")]
     public Texture2D coverTexture;
+    public GameObject CardPanel;
+    public GameObject BuyPanel;
+    public GameObject ScratchPanel;
+    public Button BuyScratchButton;
+    public GameObject CompletePrizePanel;
+    public GameObject BuyPanelRaycastImage;
+    [SerializeField] private Button[] ScratchCardSelect;
+
+    [Header("按鈕懸停效果設定")]
+    [Tooltip("滑鼠懸停時按鈕朝自身方向移動的距離")]
+    [SerializeField] private float hoverMoveDistance = 30f;
+    [Tooltip("移動動畫持續時間（秒）")]
+    [SerializeField] private float hoverMoveDuration = 0.15f;
+
+    [Header("獎品圖片設定 (依照 ScratchCardPrizeType 順序特獎到銘謝)")]
+    [SerializeField] private Sprite[] prizeSprites;
+    [SerializeField] private Image[] prizeImages;
+
+    /// <summary>
+    /// 依照獎品索引設定獎品圖片
+    /// </summary>
+    public void SetPrize(ScratchCardPrizeType prizeIndex)
+    {
+        // 將獎項轉換為等級：GrandPrize(0) → 等級6(最高)，NoWin(6) → 等級0(最低)
+        int prizeLevel = 6 - (int)prizeIndex;
+
+        // 隨機選一個位置，保證至少有一張圖片為當前最高數字
+        int guaranteedSlot = UnityEngine.Random.Range(0, prizeImages.Length);
+
+        for (int i = 0; i < prizeImages.Length; i++)
+        {
+            int spriteIndex;
+
+            if (i == guaranteedSlot || prizeLevel <= 0 || prizeLevel >= 6)
+            {
+                // 保證位置 或 最低/最高等級：直接設為 prizeLevel
+                spriteIndex = Mathf.Clamp(prizeLevel, 0, 6);
+            }
+            else
+            {
+                // 其餘位置隨機抽選 0 ~ prizeLevel
+                spriteIndex = UnityEngine.Random.Range(0, prizeLevel + 1);
+            }
+
+            prizeImages[i].sprite = prizeSprites[spriteIndex];
+        }
+    }
+    public void ShowCompletePrize()
+    {
+        CompletePrizePanel.SetActive(true);
+    }
+    public void ShowCardPanel(bool isScratched)
+    {
+        CardPanel.SetActive(true);
+        if(isScratched)
+        {
+            ShowScratchCard(true);
+            ScratchPanel.SetActive(true);
+            BuyPanel.SetActive(false);
+            CompletePrizePanel.SetActive(true);
+        }
+        else
+        {
+            ShowBuyPanel();
+        }
+    }
+    public void ShowScratchPanel()
+    {
+        ScratchPanel.SetActive(true);
+        BuyPanel.SetActive(false);
+    }
+    public void ShowBuyPanel()
+    {
+        ScratchPanel.SetActive(false);
+        BuyPanel.SetActive(true);
+    }
+    public void HideBuyPanel()
+    {
+        ScratchPanel.SetActive(true);
+        BuyPanel.SetActive(false);
+    }
+    /// <summary>
+    /// 顯示刮刮卡漆面
+    /// </summary>
+    public void ShowScratchCard(bool isScratched)
+    {
+        if(isScratched)
+        {
+            // 已刮過：遮罩全黑，完整顯示獎品
+            if (_maskTex != null)
+            {
+                Color32[] pixels = new Color32[_maskTex.width * _maskTex.height];
+                for (int i = 0; i < pixels.Length; i++)
+                    pixels[i] = new Color32(0, 0, 0, 255);
+                _maskTex.SetPixels32(pixels);
+                _maskTex.Apply();
+            }
+            _completed = true;
+        }
+        else
+        {
+            // 未刮過：遮罩全白，顯示完整封面
+            _completed = false;
+            _lastUV = -Vector2.one;
+            if (_maskTex != null)
+            {
+                ClearMask();
+            }
+        }
+    }
+    /// <summary>
+    /// 購買刮刮卡
+    /// </summary>
+    public void BuyScratchCard()
+    {
+        if(DataManager.Instance.TrySpendGold(300))
+        {
+            BuyScratchButton.gameObject.SetActive(false);
+            BuyPanelRaycastImage.SetActive(false);
+        }
+        else
+        {
+            NotEnoughGold();
+        }
+    }
+    /// <summary>
+    /// 金幣不足
+    /// </summary>
+    public void NotEnoughGold()
+    {
+        
+    }
     [Header("筆刷設定")]
     [Range(10, 200)]
     public int brushSize = 60;
@@ -17,7 +155,7 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     public float revealThreshold = 0.80f;
     public float checkInterval   = 0.3f;
 
-    public UnityEngine.Events.UnityEvent onScratchComplete;
+    public event Action OnScratchComplete;
 
     // --- 私有 ---
     private Texture2D     _maskTex;       // CPU 可寫的遮罩（黑=刮掉）
@@ -32,10 +170,19 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     private float[] _brushAlpha;
     private int     _brushDiameter;
 
+    // 懸停效果：紀錄每個按鈕的原始位置與正在執行的 Coroutine
+    private Dictionary<Button, Vector3> _buttonOriginalPos = new Dictionary<Button, Vector3>();
+    private Dictionary<Button, Coroutine> _buttonCoroutines = new Dictionary<Button, Coroutine>();
+
     void Start()
     {
-        _rawImage      = GetComponent<RawImage>();
-        _rectTransform = GetComponent<RectTransform>();
+        BuyScratchButton.onClick.AddListener(BuyScratchCard);
+        SetupHoverEffects();
+        // 若未指定目標，則使用自身的 RawImage
+        if (targetRawImage == null)
+            targetRawImage = GetComponent<RawImage>();
+        _rawImage      = targetRawImage;
+        _rectTransform = _rawImage.GetComponent<RectTransform>();
 
         int w = coverTexture.width;
         int h = coverTexture.height;
@@ -170,7 +317,6 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
             if (p.r < 26) dark++; // < 10% 亮度視為已刮除
 
         float ratio = (float)dark / pixels.Length;
-        Debug.Log($"刮除比例: {ratio:P1}");
 
         if (ratio >= revealThreshold)
             RevealAll();
@@ -189,8 +335,8 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
         _maskTex.SetPixels32(pixels);
         _maskTex.Apply();
 
-        Debug.Log("🎉 刮除完成！");
-        onScratchComplete?.Invoke();
+        Debug.Log("刮除完成！");
+        OnScratchComplete?.Invoke();
     }
 
     // ── 筆刷大小 Slider 回調 ──────────────────────────
@@ -215,6 +361,137 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
 
         // 過濾超出範圍
         return uv.x >= 0 && uv.x <= 1 && uv.y >= 0 && uv.y <= 1;
+    }
+
+    // ── 懸停效果設定 ──────────────────────────────────
+    void SetupHoverEffects()
+    {
+        if (ScratchCardSelect == null) return;
+
+        foreach (var btn in ScratchCardSelect)
+        {
+            if (btn == null) continue;
+
+            // 紀錄原始位置
+            _buttonOriginalPos[btn] = btn.transform.localPosition;
+
+            // 取得或新增 EventTrigger
+            var trigger = btn.gameObject.GetComponent<EventTrigger>();
+            if (trigger == null)
+                trigger = btn.gameObject.AddComponent<EventTrigger>();
+
+            // PointerEnter
+            var entryEnter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+            var captured = btn; // 避免閉包問題
+            entryEnter.callback.AddListener(_ => OnButtonHoverEnter(captured));
+            trigger.triggers.Add(entryEnter);
+
+            // PointerExit
+            var entryExit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+            entryExit.callback.AddListener(_ => OnButtonHoverExit(captured));
+            trigger.triggers.Add(entryExit);
+
+            // Click → 選定卡片
+            btn.onClick.AddListener(() => SelectCard(captured));
+        }
+    }
+
+    void OnButtonHoverEnter(Button btn)
+    {
+        if (!_buttonOriginalPos.ContainsKey(btn)) return;
+
+        // 目標位置：原始位置 + 物件自身朝向（localRotation 的 up）× 移動距離
+        Vector3 origin = _buttonOriginalPos[btn];
+        Vector3 direction = btn.transform.up; // 物件目前朝向
+        Vector3 target = origin + direction * hoverMoveDistance;
+
+        StartHoverCoroutine(btn, target);
+    }
+
+    void OnButtonHoverExit(Button btn)
+    {
+        if (!_buttonOriginalPos.ContainsKey(btn)) return;
+
+        // 回到原始位置
+        Vector3 origin = _buttonOriginalPos[btn];
+        StartHoverCoroutine(btn, origin);
+    }
+
+    void StartHoverCoroutine(Button btn, Vector3 targetPos)
+    {
+        // 停止該按鈕先前的動畫
+        if (_buttonCoroutines.TryGetValue(btn, out Coroutine prev) && prev != null)
+            StopCoroutine(prev);
+
+        _buttonCoroutines[btn] = StartCoroutine(SmoothMoveCoroutine(btn.transform, targetPos));
+    }
+
+    IEnumerator SmoothMoveCoroutine(Transform target, Vector3 endPos)
+    {
+        Vector3 startPos = target.localPosition;
+        float elapsed = 0f;
+
+        while (elapsed < hoverMoveDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / hoverMoveDuration);
+            target.localPosition = Vector3.Lerp(startPos, endPos, t);
+            yield return null;
+        }
+
+        target.localPosition = endPos;
+    }
+
+    // ── 選定卡片：隱藏其他選項，平滑移動至中央並放大 ─────
+    void SelectCard(Button selectedBtn)
+    {
+        // 隱藏其他選項
+        foreach (var btn in ScratchCardSelect)
+        {
+            if (btn == null) continue;
+            if (btn == selectedBtn) continue;
+            btn.gameObject.SetActive(false);
+        }
+
+        // 停止該按鈕的懸停動畫
+        if (_buttonCoroutines.TryGetValue(selectedBtn, out Coroutine prev) && prev != null)
+            StopCoroutine(prev);
+
+        // 移除懸停與點擊事件，避免選定後繼續觸發
+        var trigger = selectedBtn.gameObject.GetComponent<EventTrigger>();
+        if (trigger != null)
+            Destroy(trigger);
+        selectedBtn.onClick.RemoveAllListeners();
+        selectedBtn.enabled = false; // 取消按鈕組件
+
+        // 開始平滑移動 + 調整大小
+        RectTransform rt = selectedBtn.GetComponent<RectTransform>();
+        StartCoroutine(SmoothSelectCoroutine(rt, Vector2.zero, new Vector2(500f, 760f), 1.5f));
+    }
+
+    IEnumerator SmoothSelectCoroutine(RectTransform rt, Vector2 targetPos, Vector2 targetSize, float duration)
+    {
+        Vector2    startPos  = rt.anchoredPosition;
+        Vector2    startSize = rt.sizeDelta;
+        Quaternion startRot  = rt.localRotation;
+        Quaternion targetRot = Quaternion.identity; // 角度歸零
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / duration);
+            rt.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
+            rt.sizeDelta        = Vector2.Lerp(startSize, targetSize, t);
+            rt.localRotation    = Quaternion.Lerp(startRot, targetRot, t);
+            yield return null;
+        }
+
+        rt.anchoredPosition = targetPos;
+        rt.sizeDelta        = targetSize;
+        rt.localRotation    = targetRot;
+
+        ShowScratchPanel();
     }
 
     void OnDestroy()

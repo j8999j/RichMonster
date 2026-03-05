@@ -16,6 +16,7 @@ public class PlayerView : MonoBehaviour
     public Image DetailIcon;//背包物品圖片
     public Image TypeIcon;//背包物品類型圖片
     public Image WorldIcon;//世界標籤圖片
+    public Image RareLevelImage;//稀有度圖標
     public Sprite nullSprite;//空圖片
     public Sprite PropSprite;//道具
     public Sprite FoodSprite;//食物
@@ -260,11 +261,53 @@ public class PlayerView : MonoBehaviour
     {
         for(int i = 0; i < tags.Count; i++)
         {
-            string tagName = DataManager.Instance.GetTagNameByTag(tags[i]);
+            string tagId = tags[i];
+            string tagName = DataManager.Instance.GetTagNameByTag(tagId);
+
             if(tagName != "")
             {
                 GameObject newSlot = Instantiate(TagsPrefab, TagSlotContainer);
-                newSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = tagName;
+                
+                TextMeshProUGUI textComp = newSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                textComp.text = tagName;
+
+                // 建立Tag圖片物件
+                GameObject imgObj = new GameObject("TagImage");
+                imgObj.transform.SetParent(newSlot.transform, false);
+                Image tagImage = imgObj.AddComponent<Image>();
+                imgObj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                imgObj.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
+
+                // 預設隱藏圖片，顯示文字
+                imgObj.SetActive(false);
+                textComp.gameObject.SetActive(true);
+
+                Image capturedImage = tagImage;
+                TextMeshProUGUI capturedText = textComp;
+                GameObject capturedImgObj = imgObj;
+
+                // 嘗試載入Tag圖片，成功則顯示圖片並隱藏文字，失敗則顯示文字
+                SpriteLoader.LoadSpriteAsync(tagId, sprite =>
+                {
+                    if (capturedImgObj == null) return; // 物件已被銷毀
+                    if (sprite != null)
+                    {
+                        capturedImage.sprite = sprite;
+                        capturedImage.SetNativeSize();
+                        // 等比例將寬設為175
+                        RectTransform rt = capturedImage.GetComponent<RectTransform>();
+                        float ratio = 175f / rt.sizeDelta.x;
+                        rt.sizeDelta = new Vector2(175f, rt.sizeDelta.y * ratio);
+                        capturedImgObj.SetActive(true);
+                        capturedText.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        // 圖片載入失敗，保持顯示文字
+                        capturedImgObj.SetActive(false);
+                        capturedText.gameObject.SetActive(true);
+                    }
+                });
             }
         }
     }
@@ -297,6 +340,20 @@ public class PlayerView : MonoBehaviour
             TypeIcon.sprite = PropSprite;
             break;
         }
+        // 載入對應稀有度ID的圖片
+        string rarityId = slot._currentDefinition.Rarity.ToString();
+        SpriteLoader.LoadSpriteAsync(rarityId, sprite =>
+        {
+            if (RareLevelImage == null) return;
+            if (sprite != null)
+            {
+                RareLevelImage.sprite = sprite;
+            }
+            else
+            {
+                RareLevelImage.sprite = nullSprite;
+            }
+        });
         ShowTags(slot._currentDefinition.Tags);
         AdjustImageScale(DetailIcon);
     }
@@ -309,6 +366,7 @@ public class PlayerView : MonoBehaviour
         DetailIcon.sprite = nullSprite;
         WorldIcon.sprite = nullSprite;
         TypeIcon.sprite = nullSprite;
+        RareLevelImage.sprite = nullSprite;
         foreach(Transform child in TagSlotContainer)
         {
             Destroy(child.gameObject);

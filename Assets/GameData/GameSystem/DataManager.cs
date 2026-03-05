@@ -21,6 +21,8 @@ public class DataManager : Singleton<DataManager>
     private Dictionary<string, HumanSmallOrder> _humanSmallOrderDict = new Dictionary<string, HumanSmallOrder>();
     private Dictionary<string, NpcMission> _missionDict = new Dictionary<string, NpcMission>();
     private Dictionary<string, AchievementConfig> _achievementDict = new Dictionary<string, AchievementConfig>();
+    private Dictionary<string, MonsterInformationDatabase> _monsterInfoDict = new Dictionary<string, MonsterInformationDatabase>();
+    private Dictionary<string, MonsterStoryDatabase> _monsterStoryDict = new Dictionary<string, MonsterStoryDatabase>();
 
     private PlayerData _initialPlayerData;
     private PlayerData _currentPlayerData;
@@ -40,6 +42,8 @@ public class DataManager : Singleton<DataManager>
     public IReadOnlyDictionary<string, HumanSmallOrder> HumanSmallOrderDict => _humanSmallOrderDict;
     public IReadOnlyDictionary<string, NpcMission> MissionDict => _missionDict;
     public IReadOnlyDictionary<string, AchievementConfig> AchievementDict => _achievementDict;
+    public IReadOnlyDictionary<string, MonsterInformationDatabase> MonsterInfoDict => _monsterInfoDict;
+    public IReadOnlyDictionary<string, MonsterStoryDatabase> MonsterStoryDict => _monsterStoryDict;
     public PlayerData InitialPlayerData => ClonePlayerData(_initialPlayerData);
     public IReadOnlyPlayerData CurrentPlayerData => _currentPlayerData;
 
@@ -78,6 +82,8 @@ public class DataManager : Singleton<DataManager>
         _missionDict = result.MissionDict;
         _achievementDict = result.AchievementDict;
         _eventDict = result.EventDict;
+        _monsterInfoDict = result.MonsterInfoDict;
+        _monsterStoryDict = result.MonsterStoryDict;
         _initialPlayerData = result.InitialPlayerData;
         _bookData = result.BookData;
 
@@ -146,6 +152,54 @@ public class DataManager : Singleton<DataManager>
     {
         if (_itemTagsDict == null || string.IsNullOrEmpty(tag) || !_itemTagsDict.ContainsKey(tag)) return "";
         return _itemTagsDict[tag].TagName;
+    }
+    /// <summary>
+    /// 依照 InformationID 查找妖怪趣聞
+    /// </summary>
+    public MonsterInformationDatabase GetMonsterInfoById(string informationId)
+    {
+        if (_monsterInfoDict != null && _monsterInfoDict.TryGetValue(informationId, out var info))
+        {
+            return info;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// 依照 MonsterID 取得該妖怪所有趣聞
+    /// </summary>
+    public List<MonsterInformationDatabase> GetMonsterInfosByMonsterID(string monsterID)
+    {
+        if (_monsterInfoDict == null || string.IsNullOrEmpty(monsterID))
+            return new List<MonsterInformationDatabase>();
+        return _monsterInfoDict.Values
+            .Where(info => info.MonsterID == monsterID)
+            .ToList();
+    }
+
+    /// <summary>
+    /// 依照 MonsterStoryID 查找妖怪小故事
+    /// </summary>
+    public MonsterStoryDatabase GetMonsterStoryById(string storyId)
+    {
+        if (_monsterStoryDict != null && _monsterStoryDict.TryGetValue(storyId, out var story))
+        {
+            return story;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// 依照 MonsterID 取得該妖怪所有小故事 (依 StoryIndex 排序)
+    /// </summary>
+    public List<MonsterStoryDatabase> GetMonsterStoriesByMonsterID(string monsterID)
+    {
+        if (_monsterStoryDict == null || string.IsNullOrEmpty(monsterID))
+            return new List<MonsterStoryDatabase>();
+        return _monsterStoryDict.Values
+            .Where(s => s.MonsterID == monsterID)
+            .OrderBy(s => s.StoryIndex)
+            .ToList();
     }
     #endregion
 
@@ -337,35 +391,43 @@ public class DataManager : Singleton<DataManager>
     #endregion
 
     #region ModifyPlayerAPI
-    public T GetPlayerData<T>(string key) where T : class, ISaveData, new()
+    
+
+    /// <summary>
+    /// 新增或更新存檔資料到當前玩家的 GameSaveFile 中
+    /// </summary>
+    /// <param name="key">存檔資料的唯一鍵值</param>
+    /// <param name="data">要儲存的資料 (必須實作 ISaveData)</param>
+    public void SetPlayerData<T>(string key, T data) where T : class, ISaveData
     {
         if (_currentPlayerData == null)
         {
-            Debug.LogError("[DataManager] _currentPlayerData is null");
-            return new T();
+            Debug.LogError("[DataManager] _currentPlayerData is null，無法寫入存檔資料");
+            return;
         }
+        if (string.IsNullOrEmpty(key))
+        {
+            Debug.LogError("[DataManager] key 不可為空");
+            return;
+        }
+        if (data == null)
+        {
+            Debug.LogError("[DataManager] data 不可為 null");
+            return;
+        }
+
+        // 確保 GameSaveFile 與 GameData 存在
         if (_currentPlayerData.GameSaveFile == null)
-        {
             _currentPlayerData.GameSaveFile = new GameSaveFile();
-            _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
-            return new T();
-        }
         if (_currentPlayerData.GameSaveFile.GameData == null)
-        {
             _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
-            return new T();
-        }
-        if (!_currentPlayerData.GameSaveFile.GameData.ContainsKey(key))
-        {
-            return new T();
-        }
-        T data = _currentPlayerData.GameSaveFile.GameData[key] as T;
-        if (data != null && data.LastUpdatedDay != _currentPlayerData.DaysPlayed)
-        {
-            return new T();
-        }
-        return data;
+
+        _currentPlayerData.GameSaveFile.GameData[key] = data;
+        OnPlayerDataChanged = true;
+
+        Debug.Log($"[DataManager] 已寫入存檔資料: key={key}, type={typeof(T).Name}");
     }
+
     /// <summary>
     /// 修改金幣 (正數為獲得，負數為扣除)
     /// </summary>
@@ -574,7 +636,36 @@ public class DataManager : Singleton<DataManager>
     }
     #endregion
 
-    #region GetPlayerAPI
+    #region GetPlayerSaveDataAPI
+    public T GetPlayerSaveData<T>(string key) where T : class, ISaveData, new()
+    {
+        if (_currentPlayerData == null)
+        {
+            Debug.LogError("[DataManager] _currentPlayerData is null");
+            return new T();
+        }
+        if (_currentPlayerData.GameSaveFile == null)
+        {
+            _currentPlayerData.GameSaveFile = new GameSaveFile();
+            _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
+            return new T();
+        }
+        if (_currentPlayerData.GameSaveFile.GameData == null)
+        {
+            _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
+            return new T();
+        }
+        if (!_currentPlayerData.GameSaveFile.GameData.ContainsKey(key))
+        {
+            return new T();
+        }
+        T data = _currentPlayerData.GameSaveFile.GameData[key] as T;
+        if (data != null && data.LastUpdatedDay != _currentPlayerData.DaysPlayed)
+        {
+            return new T();
+        }
+        return data;
+    }
     public MonsterTradeProgress LoadMonsterTradeHistory()
     {
         if (_currentPlayerData.GameSaveFile.GameData.ContainsKey("MonsterTradeHistory"))
@@ -585,16 +676,6 @@ public class DataManager : Singleton<DataManager>
         {
             return new MonsterTradeProgress();
         }
-    }
-
-    public DayPhase GetCurrentDayPhase()
-    {
-        return CurrentPlayerData.PlayingStatus;
-    }
-
-    public int GetCurrentDay()
-    {
-        return CurrentPlayerData.DaysPlayed;
     }
     #endregion
 }

@@ -232,14 +232,25 @@ public class MonsterInformationDatabase //妖怪圖鑑妖怪趣聞
 {
     public string MonsterID;
     public string InformationID;
+    public string MonsterInformationName;
     public string MonsterInformation;
+    public string TagID;
 }
 public class MonsterStoryDatabase //妖怪圖鑑妖怪小故事
 {
     public string MonsterID;
     public int StoryIndex;
     public string MonsterStoryID;
-    public int MonsterStory;
+    public string MonsterStoryName;
+    public string MonsterStory;
+}
+public class MonsterInformationDatabaseRoot
+{
+    public List<MonsterInformationDatabase> MonsterInformations;
+}
+public class MonsterStoryDatabaseRoot
+{
+    public List<MonsterStoryDatabase> MonsterStories;
 }
 public class ItemBookDatabase //物品圖鑑已取得過資料
 {
