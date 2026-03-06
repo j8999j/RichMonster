@@ -3,6 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Mission/NpcMission")]
 public class NpcMission : ScriptableObject
 {
+    [NpcIDSelect]
     public string NpcID;
     public string MissionID;
     public string MissionName;

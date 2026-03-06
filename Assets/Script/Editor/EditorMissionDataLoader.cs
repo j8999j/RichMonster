@@ -44,12 +44,15 @@ public class EditorMissionDataLoader : AssetPostprocessor
     // 設定檔案路徑 (相對於 Assets 資料夾)
     private const string JSON_RELATIVE_PATH = "GameResources/items.json";
     private const string TAGS_JSON_PATH = "GameResources/itemtags.json";
+    private const string KEY_MONSTER_PROFESSIONS = "GameResources/monster_professions.json";
 
     // 緩存資料
     private static string[] _cachedItemIDs;
     private static List<EditorItemData> _cachedItems;
     private static string[] _cachedTagIDs;
     private static List<EditorTagData> _cachedTags;
+    private static string[] _cachedMonsterIDs;
+    private static List<MonsterProfessionDefinition> _cachedMonsters;
 
     // --- 公開接口 ---
 
@@ -99,6 +102,30 @@ public class EditorMissionDataLoader : AssetPostprocessor
     {
         if (_cachedTags == null) LoadTagData();
         return _cachedTags?.FirstOrDefault(x => x.TagID == tagId);
+    }
+
+    public static string[] GetMonsterIDs()
+    {
+        if (_cachedMonsterIDs == null)
+        {
+            LoadMonsterData();
+        }
+        return _cachedMonsterIDs;
+    }
+
+    public static List<MonsterProfessionDefinition> GetAllMonsters()
+    {
+        if (_cachedMonsters == null)
+        {
+            LoadMonsterData();
+        }
+        return _cachedMonsters ?? new List<MonsterProfessionDefinition>();
+    }
+
+    public static MonsterProfessionDefinition GetMonsterById(string id)
+    {
+        if (_cachedMonsters == null) LoadMonsterData();
+        return _cachedMonsters?.FirstOrDefault(x => x.Id == id);
     }
 
     // --- 核心讀取邏輯 (使用 Newtonsoft.Json) ---
@@ -179,6 +206,44 @@ public class EditorMissionDataLoader : AssetPostprocessor
         }
     }
 
+    private static void LoadMonsterData()
+    {
+        string fullPath = Path.Combine(Application.dataPath, KEY_MONSTER_PROFESSIONS);
+
+        if (!File.Exists(fullPath))
+        {
+            Debug.LogError($"[MissionEditor] 找不到妖怪職業檔案: {fullPath}");
+            _cachedMonsterIDs = new string[] { "Missing_File" };
+            _cachedMonsters = new List<MonsterProfessionDefinition>();
+            return;
+        }
+
+        try
+        {
+            string jsonContent = File.ReadAllText(fullPath);
+            var wrapper = JsonConvert.DeserializeObject<MonsterProfessionDatabase>(jsonContent);
+
+            if (wrapper != null && wrapper.Professions != null && wrapper.Professions.Count > 0)
+            {
+                _cachedMonsters = wrapper.Professions;
+                _cachedMonsterIDs = _cachedMonsters.Select(x => x.Id).ToArray();
+                Debug.Log($"[MissionEditor] 成功載入 {_cachedMonsters.Count} 個妖怪職業");
+            }
+            else
+            {
+                Debug.LogWarning("[MissionEditor] JSON 解析成功但沒有妖怪職業資料");
+                _cachedMonsterIDs = new string[] { "No_Monsters" };
+                _cachedMonsters = new List<MonsterProfessionDefinition>();
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[MissionEditor] 妖怪職業解析失敗: {e.Message}");
+            _cachedMonsterIDs = new string[] { "Error" };
+            _cachedMonsters = new List<MonsterProfessionDefinition>();
+        }
+    }
+
     // --- 自動化監聯 ---
 
     static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
@@ -197,6 +262,13 @@ public class EditorMissionDataLoader : AssetPostprocessor
                 Debug.Log($"[MissionEditor] 偵測到 {str} 變更，自動刷新標籤緩存！");
                 _cachedTagIDs = null;
                 _cachedTags = null;
+            }
+
+            if (str.EndsWith(KEY_MONSTER_PROFESSIONS))
+            {
+                Debug.Log($"[MissionEditor] 偵測到 {str} 變更，自動刷新妖怪職業緩存！");
+                _cachedMonsterIDs = null;
+                _cachedMonsters = null;
             }
         }
     }

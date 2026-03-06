@@ -1658,7 +1658,7 @@ GameObject:
   - component: {fileID: 3980984467133578689}
   - component: {fileID: 4532938836776683920}
   m_Layer: 0
-  m_Name: Bulletin
+  m_Name: ShopImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
