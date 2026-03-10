@@ -47,6 +47,7 @@ public class NpcIDDrawer : PropertyDrawer
     private SearchablePopupWindow.OptionData[] BuildOptionList()
     {
         var monsters = EditorMissionDataLoader.GetAllMonsters();
+        var npcs = EditorMissionDataLoader.GetAllNPCs();
         var options = new List<SearchablePopupWindow.OptionData>();
 
         // 加入空選項
@@ -57,28 +58,46 @@ public class NpcIDDrawer : PropertyDrawer
             SearchText = "none 無"
         });
 
+        // 妖怪選項
         foreach (var monster in monsters)
         {
             options.Add(new SearchablePopupWindow.OptionData
             {
                 Value = monster.Id,
-                DisplayName = $"{monster.ProfessionName} ({monster.Id})",
-                SearchText = $"{monster.ProfessionName} {monster.Id} {monster.Race}".ToLower()
+                DisplayName = $"[妖怪] {monster.ProfessionName} ({monster.Id})",
+                SearchText = $"妖怪 {monster.ProfessionName} {monster.Id} {monster.Race}".ToLower()
+            });
+        }
+
+        // NPC 選項
+        foreach (var npc in npcs)
+        {
+            options.Add(new SearchablePopupWindow.OptionData
+            {
+                Value = npc.NpcID,
+                DisplayName = $"[NPC] {npc.NpcName} ({npc.NpcID})",
+                SearchText = $"npc {npc.NpcName} {npc.NpcID}".ToLower()
             });
         }
 
         return options.ToArray();
     }
 
-    private string GetDisplayName(string monsterId)
+    private string GetDisplayName(string npcId)
     {
-        if (string.IsNullOrEmpty(monsterId))
+        if (string.IsNullOrEmpty(npcId))
             return "(None)";
 
-        var monster = EditorMissionDataLoader.GetMonsterById(monsterId);
+        // 先查妖怪
+        var monster = EditorMissionDataLoader.GetMonsterById(npcId);
         if (monster != null)
-            return $"{monster.ProfessionName} ({monster.Id})";
+            return $"[妖怪] {monster.ProfessionName} ({monster.Id})";
 
-        return monsterId;
+        // 再查 NPC
+        var npc = EditorMissionDataLoader.GetNPCById(npcId);
+        if (npc != null)
+            return $"[NPC] {npc.NpcName} ({npc.NpcID})";
+
+        return npcId;
     }
 }

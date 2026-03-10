@@ -24,6 +24,7 @@ public class GameDataLoader
     private const string KEY_HUMAN_LARGE_ORDERS = "EventsRequests";
     private const string KEY_HUMAN_SMALL_ORDERS = "HumanEvents";
     private const string KEY_MISSIONS = "NpcMission";
+    private const string KEY_NPC_DATA = "NPCData";
     private const string KEY_ACHIEVEMENTS = "Achievements";
     private const string KEY_MONSTER_INFO = "MonsterInfo";
     private const string KEY_MONSTER_STORY = "MonsterStory";
@@ -47,6 +48,7 @@ public class GameDataLoader
         public Dictionary<string, AchievementConfig> AchievementDict = new Dictionary<string, AchievementConfig>();
         public Dictionary<string, MonsterInformationDatabase> MonsterInfoDict = new Dictionary<string, MonsterInformationDatabase>();
         public Dictionary<string, MonsterStoryDatabase> MonsterStoryDict = new Dictionary<string, MonsterStoryDatabase>();
+        public Dictionary<string, NPCMissionData> NPCDataDict = new Dictionary<string, NPCMissionData>();
         public PlayerData InitialPlayerData;
         public GameSaveBook BookData;
     }
@@ -69,6 +71,7 @@ public class GameDataLoader
         result.AchievementDict = await LoadAchievementsAsync();
         result.MonsterInfoDict = await LoadMonsterInfoAsync();
         result.MonsterStoryDict = await LoadMonsterStoryAsync();
+        result.NPCDataDict = await LoadNPCDataAsync();
         result.InitialPlayerData = await LoadInitialPlayerDataAsync();
         result.EventDict = await LoadEventDataAsync();
         result.BookData = LoadBookData();
@@ -653,6 +656,52 @@ public class GameDataLoader
         {
             Debug.LogError($"[GameDataLoader] LoadMonsterStoryAsync failed: {e}");
             return new Dictionary<string, MonsterStoryDatabase>();
+        }
+        finally
+        {
+            if (handle.IsValid()) Addressables.Release(handle);
+        }
+    }
+
+    private async Task<Dictionary<string, NPCMissionData>> LoadNPCDataAsync()
+    {
+        AsyncOperationHandle<TextAsset> handle = default;
+        try
+        {
+            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_NPC_DATA);
+            TextAsset jsonFile = await handle.Task;
+
+            if (jsonFile == null)
+            {
+                Debug.LogError("[GameDataLoader] 找不到 NPCData (Addressables)");
+                return new Dictionary<string, NPCMissionData>();
+            }
+
+            List<NPCMissionData> npcList = null;
+            string jsonText = jsonFile.text.TrimStart();
+            if (jsonText.StartsWith("["))
+            {
+                npcList = JsonConvert.DeserializeObject<List<NPCMissionData>>(jsonFile.text);
+            }
+            else
+            {
+                var db = JsonConvert.DeserializeObject<NPCMissionDataDatabase>(jsonFile.text);
+                npcList = db?.NPCMissionData;
+            }
+
+            var dict = npcList?
+                .Where(n => n != null && !string.IsNullOrEmpty(n.NpcID))
+                .GroupBy(n => n.NpcID)
+                .ToDictionary(g => g.Key, g => g.First())
+                ?? new Dictionary<string, NPCMissionData>();
+
+            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆 NPC 資料");
+            return dict;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GameDataLoader] LoadNPCDataAsync failed: {e}");
+            return new Dictionary<string, NPCMissionData>();
         }
         finally
         {

@@ -148,6 +148,13 @@ namespace GameSystem
                     (virtualCamera == null ? "找不到 VirtualCamera" : "找不到 Player"));
             }
         }
+        /// <summary>
+        /// 切換玩家位置
+        /// </summary>
+        public void SwitchPlayerPos(Vector3 position)
+        {
+            Player.transform.position = position;
+        }
         #endregion
         #region 場景轉換捷徑方法（透過 SceneTransitionManager）
         private void BlackView()

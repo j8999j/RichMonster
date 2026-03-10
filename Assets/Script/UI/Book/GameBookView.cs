@@ -637,7 +637,7 @@ public class GameBookView : MonoBehaviour
                 imgObj.transform.SetParent(newSlot.transform, false);
                 Image tagImage = imgObj.AddComponent<Image>();
                 imgObj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-                imgObj.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
+                imgObj.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 65);
 
                 // 預設隱藏圖片，顯示文字
                 imgObj.SetActive(false);
@@ -656,8 +656,8 @@ public class GameBookView : MonoBehaviour
                         capturedImage.sprite = sprite;
                         capturedImage.SetNativeSize();
                         RectTransform rt = capturedImage.GetComponent<RectTransform>();
-                        float ratio = 175f / rt.sizeDelta.x;
-                        rt.sizeDelta = new Vector2(175f, rt.sizeDelta.y * ratio);
+                        float ratio = 125f / rt.sizeDelta.x;
+                        rt.sizeDelta = new Vector2(125f, rt.sizeDelta.y * ratio);
                         capturedImgObj.SetActive(true);
                         capturedText.gameObject.SetActive(false);
                     }

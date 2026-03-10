@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 088f225fa8c8ed54192668fb68dbac72, type: 3}
+  m_Name: Heiress_Mission_3
+  m_EditorClassIdentifier: 
+  NpcID: Heiress
+  MissionID: Heiress_3
+  MissionName: "\u5ACC\u8857\u4E0A\u592A\u9AD2"
+  MissionDescription: "\u9019\u88E1\u7684\u7A7A\u6C23\u597D\u6DF7\u6FC1\uFF0C\u611F\u89BA\u6709\u4E00\u80A1\u5947\u602A\u7684\u5473\u9053...\u8001\u95C6\uFF0C\u7D66\u6211\u9EDE\u80FD\u5E36\u4F86\u7D14\u6DE8\u611F\u7684\u5C0F\u7269\u3002\u6211\u8DDF\u4F60\u8AAA\uFF0C\u525B\u624D\u5DF7\u5B50\u88E1\u6709\u500B\u4EBA\u5C45\u7136\u9577\u8457\u72D0\u72F8\u5C3E\u5DF4\uFF01"
+  Requirement:
+    Type: 2
+    TargetItemID: Mineralwater
+    TargetTag: Pure
+    TargetType: 2
+  Rewards:
+  - RewardType: 2
+    GoldAmount: 0
+    ItemID: 
+    ItemAmount: 0
+  IsFinish: 0
+  MissionWorld: 0

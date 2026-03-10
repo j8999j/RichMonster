@@ -19,6 +19,7 @@ public class ShopUIView : MonoBehaviour
     public Image DetailIcon;            // 商品圖片
     public Image WorldIcon;            // 分界圖片
     public Image TypeIcon;            // 類型圖片
+    public Image RarityIcon;            // 稀有度圖片
     public Sprite PropSprite;//道具
     public Sprite FoodSprite;//食物
     public Sprite EquipmentSprite;//裝備
@@ -32,6 +33,8 @@ public class ShopUIView : MonoBehaviour
     public Sprite BuyButtonSprite_CanBuy;
     public Sprite BuyButtonSprite_Buyed;
     public Button CloseButton;// 關閉按鈕
+    public GameObject TagsPrefab;
+    public Transform ItemTagCotainer;
 
     private ShelfSlot _currentSelectedData; // 目前選中的資料
     public event Action OnCloseShopUI;
@@ -126,24 +129,42 @@ public class ShopUIView : MonoBehaviour
     // 3. 更新 UI
     private void UpdateDetailPanel(ShopSlot slotUI)
     {
+        foreach(Transform child in ItemTagCotainer)
+        {
+            Destroy(child.gameObject);
+        }
         if (DetailRoot != null) DetailRoot.SetActive(true);
         var data = slotUI._currentData;
-
+        var ItemData = data.Item;
         // 更新文字
-        if (DetailNameText != null) DetailNameText.text = data.Item.Name;
+        if (DetailNameText != null) DetailNameText.text = ItemData.Name;
         // 假設 ItemDefinition 有 Description 欄位
-        if (DetailDescText != null) DetailDescText.text = data.Item.Description;
+        if (DetailDescText != null) DetailDescText.text = ItemData.Description;
         if (DetailPriceText != null) DetailPriceText.text = $"${data.Price}";
         //更新分界
-        if (WorldIcon != null) WorldIcon.sprite = data.Item.World == ItemWorld.Human ? HumanTagSprite : MonsterTagSprite;
+        if (WorldIcon != null) WorldIcon.sprite = ItemData.World == ItemWorld.Human ? HumanTagSprite : MonsterTagSprite;
         //更新類型
-        if (TypeIcon != null) TypeIcon.sprite = data.Item.Type == ItemType.Prop ? PropSprite : data.Item.Type == ItemType.Food ? FoodSprite : EquipmentSprite;
+        if (TypeIcon != null) TypeIcon.sprite = ItemData.Type == ItemType.Prop ? PropSprite : ItemData.Type == ItemType.Food ? FoodSprite : EquipmentSprite;
         // 更新圖片 (直接拿 Slot 已經載好的圖，省效能)
         if (DetailIcon != null) DetailIcon.sprite = slotUI._targetImage.sprite;
         //調整圖片大小
         AdjustImageScale(DetailIcon);
         // 更新按鈕狀態
         UpdateButtonState();
+        string rarityId = ItemData.Rarity.ToString();
+        SpriteLoader.LoadSpriteAsync(rarityId, sprite =>
+        {
+            if (RarityIcon == null) return;
+            if (sprite != null)
+            {
+                RarityIcon.sprite = sprite;
+            }
+            else
+            {
+                RarityIcon.sprite = DetailIconSprite_Empty;
+            }
+        });
+        ShowTags(ItemData.Tags);
     }
     // 更新按鈕狀態
     private void UpdateButtonState()
@@ -158,8 +179,66 @@ public class ShopUIView : MonoBehaviour
             BuyButton.image.sprite = isPurchased ? BuyButtonSprite_Buyed : BuyButtonSprite_CanBuy;
         }
     }
+    private void ShowTags(List<string> tags)
+    {
+        if (tags == null || TagsPrefab == null || ItemTagCotainer == null) return;
+
+        for (int i = 0; i < tags.Count; i++)
+        {
+            string tagId = tags[i];
+            string tagName = DataManager.Instance.GetTagNameByTag(tagId);
+
+            if (tagName != "")
+            {
+                GameObject newSlot = Instantiate(TagsPrefab, ItemTagCotainer);
+
+                TextMeshProUGUI textComp = newSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                textComp.text = tagName;
+
+                // 建立Tag圖片物件
+                GameObject imgObj = new GameObject("TagImage");
+                imgObj.transform.SetParent(newSlot.transform, false);
+                Image tagImage = imgObj.AddComponent<Image>();
+                imgObj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                imgObj.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 65);
+
+                // 預設隱藏圖片，顯示文字
+                imgObj.SetActive(false);
+                textComp.gameObject.SetActive(true);
+
+                Image capturedImage = tagImage;
+                TextMeshProUGUI capturedText = textComp;
+                GameObject capturedImgObj = imgObj;
+
+                // 嘗試載入Tag圖片，成功則顯示圖片並隱藏文字
+                SpriteLoader.LoadSpriteAsync(tagId, sprite =>
+                {
+                    if (capturedImgObj == null) return;
+                    if (sprite != null)
+                    {
+                        capturedImage.sprite = sprite;
+                        capturedImage.SetNativeSize();
+                        RectTransform rt = capturedImage.GetComponent<RectTransform>();
+                        float ratio = 125f / rt.sizeDelta.x;
+                        rt.sizeDelta = new Vector2(125f, rt.sizeDelta.y * ratio);
+                        capturedImgObj.SetActive(true);
+                        capturedText.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        capturedImgObj.SetActive(false);
+                        capturedText.gameObject.SetActive(true);
+                    }
+                });
+            }
+        }
+    }
     private void ClearDetailPanel()
     {
+        foreach(Transform child in ItemTagCotainer)
+        {
+            Destroy(child.gameObject);
+        }
         BuyButton.gameObject.SetActive(false);
         DetailNameText.text = "";
         DetailDescText.text = "";
@@ -167,6 +246,7 @@ public class ShopUIView : MonoBehaviour
         WorldIcon.sprite = DetailIconSprite_Empty;
         TypeIcon.sprite = DetailIconSprite_Empty;
         DetailIcon.sprite = DetailIconSprite_Empty;
+        RarityIcon.sprite = DetailIconSprite_Empty;
         _currentSelectedData = null;
     }
     //按下購買

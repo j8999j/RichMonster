@@ -1,0 +1,44 @@
+{
+  "NPCMissionData": [
+    {
+      "NpcID": "NightGuard",
+      "NpcName": "夜班保全 老張"
+    },
+    {
+      "NpcID": "SupernaturalStudents",
+      "NpcName": "靈異研究社的高中生 小美"
+    },
+    {
+      "NpcID": "Novelist",
+      "NpcName": "靈感枯竭的懸疑小說家 莫言"
+    },
+    {
+      "NpcID": "Ken",
+      "NpcName": "追求流量的探險實況主 Ken"
+    },
+    {
+      "NpcID": "StreetTeller",
+      "NpcName": "招搖撞騙的街頭半仙 阿財"
+    },
+    {
+      "NpcID": "Deliveryman",
+      "NpcName": "外送員 小宇"
+    },
+    {
+      "NpcID": "Chef",
+      "NpcName": "怪奇主廚  狂人老王"
+    },
+    {
+      "NpcID": "Heiress",
+      "NpcName": "逃家千金 露西"
+    },
+    {
+      "NpcID": "Investigator",
+      "NpcName": "私家偵探 趙哥"
+    },
+    {
+      "NpcID": "Chuunibyou",
+      "NpcName": "中二病少年 小翔"
+    }
+  ]
+}

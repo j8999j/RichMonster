@@ -45,6 +45,7 @@ public class EditorMissionDataLoader : AssetPostprocessor
     private const string JSON_RELATIVE_PATH = "GameResources/items.json";
     private const string TAGS_JSON_PATH = "GameResources/itemtags.json";
     private const string KEY_MONSTER_PROFESSIONS = "GameResources/monster_professions.json";
+    private const string NPC_DATA_PATH = "GameResources/NPCData.json";
 
     // 緩存資料
     private static string[] _cachedItemIDs;
@@ -53,6 +54,8 @@ public class EditorMissionDataLoader : AssetPostprocessor
     private static List<EditorTagData> _cachedTags;
     private static string[] _cachedMonsterIDs;
     private static List<MonsterProfessionDefinition> _cachedMonsters;
+    private static string[] _cachedNPCIDs;
+    private static List<NPCMissionData> _cachedNPCs;
 
     // --- 公開接口 ---
 
@@ -126,6 +129,30 @@ public class EditorMissionDataLoader : AssetPostprocessor
     {
         if (_cachedMonsters == null) LoadMonsterData();
         return _cachedMonsters?.FirstOrDefault(x => x.Id == id);
+    }
+
+    public static string[] GetNPCIDs()
+    {
+        if (_cachedNPCIDs == null)
+        {
+            LoadNPCData();
+        }
+        return _cachedNPCIDs;
+    }
+
+    public static List<NPCMissionData> GetAllNPCs()
+    {
+        if (_cachedNPCs == null)
+        {
+            LoadNPCData();
+        }
+        return _cachedNPCs ?? new List<NPCMissionData>();
+    }
+
+    public static NPCMissionData GetNPCById(string id)
+    {
+        if (_cachedNPCs == null) LoadNPCData();
+        return _cachedNPCs?.FirstOrDefault(x => x.NpcID == id);
     }
 
     // --- 核心讀取邏輯 (使用 Newtonsoft.Json) ---
@@ -270,6 +297,51 @@ public class EditorMissionDataLoader : AssetPostprocessor
                 _cachedMonsterIDs = null;
                 _cachedMonsters = null;
             }
+
+            if (str.EndsWith(NPC_DATA_PATH))
+            {
+                Debug.Log($"[MissionEditor] 偵測到 {str} 變更，自動刷新 NPC 緩存！");
+                _cachedNPCIDs = null;
+                _cachedNPCs = null;
+            }
+        }
+    }
+
+    private static void LoadNPCData()
+    {
+        string fullPath = Path.Combine(Application.dataPath, NPC_DATA_PATH);
+
+        if (!File.Exists(fullPath))
+        {
+            Debug.LogError($"[MissionEditor] 找不到 NPC 檔案: {fullPath}");
+            _cachedNPCIDs = new string[] { "Missing_File" };
+            _cachedNPCs = new List<NPCMissionData>();
+            return;
+        }
+
+        try
+        {
+            string jsonContent = File.ReadAllText(fullPath);
+            var wrapper = JsonConvert.DeserializeObject<NPCMissionDataDatabase>(jsonContent);
+
+            if (wrapper != null && wrapper.NPCMissionData != null && wrapper.NPCMissionData.Count > 0)
+            {
+                _cachedNPCs = wrapper.NPCMissionData;
+                _cachedNPCIDs = _cachedNPCs.Select(x => x.NpcID).ToArray();
+                Debug.Log($"[MissionEditor] 成功載入 {_cachedNPCs.Count} 個 NPC");
+            }
+            else
+            {
+                Debug.LogWarning("[MissionEditor] JSON 解析成功但沒有 NPC 資料");
+                _cachedNPCIDs = new string[] { "No_NPCs" };
+                _cachedNPCs = new List<NPCMissionData>();
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[MissionEditor] NPC 解析失敗: {e.Message}");
+            _cachedNPCIDs = new string[] { "Error" };
+            _cachedNPCs = new List<NPCMissionData>();
         }
     }
 }

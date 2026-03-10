@@ -17,8 +17,98 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 9f591576f5e49ed4987e1b3dc278e1cb
   m_SerializeEntries:
+  - m_GUID: 09b5256441e7a9d4ca3332c15c6bd585
+    m_Address: Assets/GameSet/Mission/Investigator/Investigator_Mission_3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0eac10c4e73d3814692286cec1e92530
+    m_Address: Assets/GameSet/Mission/Deliveryman/Deliveryman_Mission_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 14954b1b28be0cf4bb315e1128d1a211
+    m_Address: Assets/GameSet/Mission/Heiress/Heiress_Mission_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 259bc42b7a91a9f488fa3246a1cbde91
+    m_Address: Assets/GameSet/Mission/SupernaturalStudents/SupernaturalStudents_Mission_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 261bccc10003c1744aeaa01d32cff7f0
+    m_Address: Assets/GameSet/Mission/Heiress/Heiress_Mission_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e443bb56564ce244a2d45784383a8f0
+    m_Address: Assets/GameSet/Mission/Ken/Ken_Mission_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32094dd3a1cc1bc499cf42b94c97b8e0
+    m_Address: Assets/GameSet/Mission/StreetTeller/StreetTeller_Mission_3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3de8857f42984c643b53e29269fc58f3
+    m_Address: Assets/GameSet/Mission/SupernaturalStudents/SupernaturalStudents_Mission_3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4076074239de1ec41823ffdb2e6bff74
+    m_Address: Assets/GameSet/Mission/Ken/Ken_Mission_3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b5819ea89c90e94480aa7bb8e725e46
+    m_Address: Assets/GameSet/Mission/Deliveryman/Deliveryman_Mission_3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cb1d1905cd115640be5d8bc2e99bce4
+    m_Address: Assets/GameSet/Mission/Chef/Chef_Mission_3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5775b47b4ef3faa4c9e36e82a08d09c1
+    m_Address: Assets/GameSet/Mission/Deliveryman/Deliveryman_Mission_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5846fe6fb69d9d247a7f5c218632bf66
+    m_Address: Assets/GameSet/Mission/Novelist/Novelist_Mission_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6465e779a6556134e848e75be24364b8
+    m_Address: Assets/GameSet/Mission/Chef/Chef_Mission_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 67aa769f454291e49886225a09d01dc6
     m_Address: Assets/GameSet/Mission/New Npc Mission.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67e2d2069df96a145b5e9b9b8504dbf1
+    m_Address: Assets/GameSet/Mission/Investigator/Investigator_Mission_2.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - NpcMission
@@ -31,6 +121,84 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7d8587030c9682c438a3da9c2915a283
     m_Address: Assets/GameSet/Mission/New Npc Mission 2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 807d20c76aea0ec4dbca30eb0073d0c9
+    m_Address: Assets/GameSet/Mission/Chuunibyou/Chuunibyou_Mission_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85943c243f9b5e145a7e5e16d90b757e
+    m_Address: Assets/GameSet/Mission/Chuunibyou/Chuunibyou_Mission_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c7933b685ce0624ea2956e555773c74
+    m_Address: Assets/GameSet/Mission/Novelist/Novelist_Mission_3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 902522fa190062445888a0b668b7b571
+    m_Address: Assets/GameSet/Mission/Heiress/Heiress_Mission_3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 96c67fb152a7f9145aafc8a656c814c0
+    m_Address: Assets/GameSet/Mission/StreetTeller/StreetTeller_Mission_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a136c84651e571d4d80bab4e53a59d2c
+    m_Address: Assets/GameSet/Mission/SupernaturalStudents/SupernaturalStudents_Mission_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a285b31d68e68524dae431efe1c8dcc0
+    m_Address: Assets/GameSet/Mission/Investigator/Investigator_Mission_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2586941a87a49e41a7153ecb136de61
+    m_Address: Assets/GameSet/Mission/StreetTeller/StreetTeller_Mission_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c69befc52ad278a498024614e766c4d3
+    m_Address: Assets/GameSet/Mission/Chuunibyou/Chuunibyou_Mission_3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: caffd0a13eda6184e8a2d8dff5457815
+    m_Address: Assets/GameSet/Mission/Chef/Chef_Mission_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee4497ba14eedce42ac67e6237a1b4c9
+    m_Address: Assets/GameSet/Mission/Ken/Ken_Mission_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2a83f9e08c345d418b823cfe436747f
+    m_Address: Assets/GameSet/Mission/Novelist/Novelist_Mission_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f44af9b095847684989c79720934a028
+    m_Address: Assets/GameSet/Mission/Novelist/Novelist_Mission_4.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - NpcMission

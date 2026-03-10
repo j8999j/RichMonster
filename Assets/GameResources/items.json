@@ -385,6 +385,1444 @@
       "ShopType": [
         "YokaiStore"
       ]
+    },
+    {
+      "Id": "Flashlight",
+      "Name": "手電筒",
+      "Tags": [
+        "Light"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 150,
+      "Description": "用來驅散黑暗的工具，不需要火就能發光的神奇物品。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Soap",
+      "Name": "香皂",
+      "Tags": [
+        "Purify",
+        "Clean"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 50,
+      "Description": "帶有香氣的清潔用品，洗完澡會覺得自己煥然一新。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Cola",
+      "Name": "可樂",
+      "Tags": [
+        "Wet",
+        "Sweet",
+        "Drinkable"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 35,
+      "Description": "充滿氣泡的黑色甜水，喝下去會想打嗝。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "PotatoChips",
+      "Name": "洋芋片",
+      "Tags": [
+        "Vegetable",
+        "Oil"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 50,
+      "Description": "薄脆可口的零食，一吃就停不下來。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "IcePack",
+      "Name": "保冷劑",
+      "Tags": [
+        "Cold"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 120,
+      "Description": "藍色的冰涼袋子，可以維持低溫很久，適合怕熱的生物。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "FlowerSeeds",
+      "Name": "花種子",
+      "Tags": [
+        "Growth",
+        "Plant"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 250,
+      "Description": "沉睡的植物生命，埋進土裡澆水就會甦醒。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "CannedTuna",
+      "Name": "鮪魚罐頭",
+      "Tags": [
+        "Preserved",
+        "Seafood",
+        "Ocean"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 300,
+      "Description": "將深海魚肉封印在金屬罐中，打開就能聞到海洋的味道。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Honey",
+      "Name": "蜂蜜",
+      "Tags": [
+        "Natural",
+        "Sweet"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 80,
+      "Description": "永不變質的金黃色糖漿，來自大自然的饋贈。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Mop",
+      "Name": "拖把",
+      "Tags": [
+        "Wet",
+        "Clean"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 400,
+      "Description": "吸水性極強的布條束，大掃除必備的神器。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Wasabi",
+      "Name": "山葵醬",
+      "Tags": [
+        "Spicy",
+        "Plant"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 160,
+      "Description": "綠色的泥狀物，吃一口能讓你的鼻腔瞬間通暢。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Seashell",
+      "Name": "神奇海螺",
+      "Tags": [
+        "Wet",
+        "Ocean",
+        "Music"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 600,
+      "Description": "貼在耳朵上能聽到海浪的聲音，來自遙遠的鹽水世界。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Compass",
+      "Name": "指北針",
+      "Tags": [
+        "Mystic",
+        "Magnetic"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 70,
+      "Description": "永遠指向北方的神奇盤子，據說是指引迷途靈魂的法器。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "HellMagmaRock",
+      "Name": "溫泉石",
+      "Tags": [
+        "Hot"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 380,
+      "Description": "從溫泉撈上來的石頭，永遠保持著攝氏60度。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "Fireworks",
+      "Name": "煙火組",
+      "Tags": [
+        "Light",
+        "Luxury",
+        "Fire"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 700,
+      "Description": "剎那間極致的光與熱。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "GoldCoinChocolate",
+      "Name": "金幣巧克力",
+      "Tags": [
+        "Sweet",
+        "Poison",
+        "Gold",
+        "Dessert"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 60,
+      "Description": "包著金色錫箔紙的糖果，當中的成分靠能對某些生物來說有毒",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "EspressoShot",
+      "Name": "濃縮黑咖啡",
+      "Tags": [
+        "Bitter",
+        "Potion",
+        "Poison"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 130,
+      "Description": "漆黑如墨、苦澀如膽的液體。對不喝咖啡的生物來說，這味道和身體反應（心悸）跟中毒沒兩樣",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "StarFruit",
+      "Name": "楊桃",
+      "Tags": [
+        "Fruit",
+        "Sweet",
+        "Sour",
+        "Star"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 550,
+      "Description": "來自熱帶的水果，橫切面呈現完美的五角星形。對人類來說是水果，對妖怪來說可能是掉下來的星星碎片。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "BlueBathBomb",
+      "Name": "海洋浴鹽球",
+      "Tags": [
+        "Purify",
+        "Ocean",
+        "Clean"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 330,
+      "Description": "丟進水裡會劇烈冒泡，把整缸水染成深藍色並散發海洋香氣的球體。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "TomatoJuice",
+      "Name": "蕃茄汁罐頭",
+      "Tags": [
+        "Fruit",
+        "Sour",
+        "Blood"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 440,
+      "Description": "濃稠、深紅色的液體，帶有鐵鏽味（其實是罐頭味）。視覺上跟鮮血有 90% 相似度。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "InstantCamera",
+      "Name": "拍立得相機",
+      "Tags": [
+        "Soul",
+        "Memory"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 2000,
+      "Description": "一張剛吐出來的紙片，隨著甩動，上面會慢慢浮現出剛才發生的畫面。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Mooncake",
+      "Name": "月餅",
+      "Tags": [
+        "Sweet",
+        "Moon"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 160,
+      "Description": "形的金色餅塊，上面印著神祕的咒文（其實是店名），切開後裡面常藏著另一個小月亮（蛋黃）。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "StinkyTofu",
+      "Name": "炸臭豆腐",
+      "Tags": [
+        "Corruption",
+        "Oil"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 80,
+      "Description": "散發著濃烈的、彷彿屍體放置三天的氣味，但表面炸得金黃酥脆。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "MentholStick",
+      "Name": "薄荷棒",
+      "Tags": [
+        "Cold",
+        "Wind"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 650,
+      "Description": "小小的管子，吸一口就像是把暴風雪吸進鼻子裡，直衝腦門的涼意。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Taiyaki",
+      "Name": "鯛魚燒",
+      "Tags": [
+        "Dessert",
+        "Sweet",
+        "Fish"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 220,
+      "Description": "外皮金黃酥脆，內餡是紅豆泥的魚形蛋糕。除了長得像魚，跟海鮮沒有任何關係。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Baguette",
+      "Name": "法棍麵包",
+      "Tags": [
+        "Dry",
+        "Hard",
+        "Weapon"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 35,
+      "Description": "乾燥硬化後的長條麵包，硬度堪比警棍。雖然本質是食物，但在物理層面上完全可以敲暈一頭牛。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "BlueCheese",
+      "Name": "藍紋起司",
+      "Tags": [
+        "Corruption",
+        "Dirty",
+        "Spicy"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 750,
+      "Description": "佈滿綠色黴菌的乳製品，散發著令人懷疑人生的強烈氣味。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Sparkler",
+      "Name": "仙女棒",
+      "Tags": [
+        "Fire",
+        "Mystic",
+        "Star"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 380,
+      "Description": "一根細鐵絲，點燃後會噴濺出金色的星光，雖然短暫但極其燦爛。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "MosquitoCoil",
+      "Name": "蚊香",
+      "Tags": [
+        "Accessory",
+        "Mystic",
+        "Poison"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 10,
+      "Description": "綠色的漩渦狀物品，點燃後會冒出輕煙，某種特殊飾品?",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Sunglasses",
+      "Name": "墨鏡",
+      "Tags": [
+        "Dark",
+        "Accessory"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 10,
+      "Description": "兩片黑色的鏡片，戴上後世界會變暗。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "AdhesiveHeatPack",
+      "Name": "暖暖包",
+      "Tags": [
+        "Warm",
+        "Magic"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 260,
+      "Description": "貼在盔甲或衣服內側的小方塊，會源源不絕地釋放熱量，彷彿刻上了火焰符文。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "NoiseCancelingHeadphones",
+      "Name": "降噪耳機",
+      "Tags": [
+        "Warm",
+        "Music",
+        "Noise"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 850,
+      "Description": "人類用來隔絕世界的法寶，戴上後只剩音樂，還有保暖耳朵的功能。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "LuxuryGoldWatch",
+      "Name": "純金勞力士",
+      "Tags": [
+        "Luxury",
+        "Accessory",
+        "Gold"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 3,
+      "BasePrice": 7000,
+      "Description": "沉甸甸的金塊，精密的工藝。它代表的不僅是時間，更是地位。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "ToyKnife",
+      "Name": "玩具小刀",
+      "Tags": [
+        "Junk",
+        "Weapon"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 40,
+      "Description": "伸縮玩具小刀",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "DiamondNecklace",
+      "Name": "鑽石項鍊",
+      "Tags": [
+        "Beauty",
+        "Luxury",
+        "Gem",
+        "Accessory"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 3,
+      "BasePrice": 8000,
+      "Description": "經過精密切割的碳結晶，在光線下閃爍著令人目眩的火彩。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "HighHeels",
+      "Name": "高跟鞋",
+      "Tags": [
+        "Beauty",
+        "Luxury",
+        "Cursed"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 2500,
+      "Description": "鮮紅色的漆皮高跟鞋，穿久了腳會很痛。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "High-VisVest",
+      "Name": "反光背心",
+      "Tags": [
+        "Light",
+        "Holy"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 330,
+      "Description": "一條條螢光黃與銀色條紋交織的網狀背心。只要有一點點光，它就會爆發出刺眼的光芒。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "SafetyHarness",
+      "Name": "安全吊帶",
+      "Tags": [
+        "Accessory",
+        "Wind",
+        "Hard"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 680,
+      "Description": "空中戰鬥",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "GasMask",
+      "Name": "防毒面具",
+      "Tags": [
+        "Purify",
+        "Accessory"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 1200,
+      "Description": "",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "BronzeAncientArmor",
+      "Name": "青銅古戰甲",
+      "Tags": [
+        "Antique",
+        "Heavy",
+        "Hard"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 2,
+      "BasePrice": 1200,
+      "Description": "沉重骨董",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "BeefJerky",
+      "Name": "牛肉乾",
+      "Tags": [
+        "Dry",
+        "Meat",
+        "Dessert"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 220,
+      "Description": "肉乾",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "SpicyHotPotBase",
+      "Name": "麻辣火鍋湯底",
+      "Tags": [
+        "Hot",
+        "Spicy",
+        "Oil"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 690,
+      "Description": "極致的辣油",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "PepperSpray",
+      "Name": "防狼噴霧",
+      "Tags": [
+        "Spicy",
+        "Weapon"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 990,
+      "Description": "非常辣",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "AgedCuredMeat",
+      "Name": "陳年臘肉",
+      "Tags": [
+        "Meat",
+        "Preserved",
+        "Antique"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 2300,
+      "Description": "越久越陳",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "AmberInsectSpecimens",
+      "Name": "琥珀昆蟲標本",
+      "Tags": [
+        "Gem",
+        "Soul",
+        "Insect"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 2,
+      "BasePrice": 3333,
+      "Description": "琥珀是將生命的永遠",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "HeatedClothing",
+      "Name": "發熱毛衣",
+      "Tags": [
+        "Hot",
+        "Warm"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 580,
+      "Description": "身體燥熱的衣服",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "LemonTart",
+      "Name": "檸檬塔",
+      "Tags": [
+        "Fruit",
+        "Dessert",
+        "Sour"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 130,
+      "Description": "超酸甜點",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "UltravioletGermicidalLamp",
+      "Name": "紫外線殺菌燈",
+      "Tags": [
+        "Purify",
+        "Light"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 6300,
+      "Description": "殺菌燈",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "SolarFlashlight",
+      "Name": "太陽能手電筒",
+      "Tags": [
+        "Light",
+        "Sun",
+        "Junk"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 3,
+      "BasePrice": 700,
+      "Description": "使用太陽能最為能量來源的手電筒",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "ColdNoodle",
+      "Name": "涼麵",
+      "Tags": [
+        "Wet",
+        "Cold"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 75,
+      "Description": "好吃涼麵",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "FoodHeatingLamp",
+      "Name": "食物加熱燈",
+      "Tags": [
+        "Light",
+        "Warm",
+        "Sun"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 1300,
+      "Description": "加熱食物如太陽般溫暖",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "DozenBeer",
+      "Name": "日式燒酒",
+      "Tags": [
+        "Alcohol",
+        "Drinkable"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 300,
+      "Description": "巨大份量的酒，滿足他的酒量。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "OceanWeatherBottle",
+      "Name": "海洋天氣瓶",
+      "Tags": [
+        "Wind",
+        "Ocean",
+        "Glass"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 2,
+      "BasePrice": 670,
+      "Description": "海洋造型的天氣瓶，好像容納座一座大海一般",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "LiquidNitrogen",
+      "Name": "一罐液態氮",
+      "Tags": [
+        "Cold"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 600,
+      "Description": "可以製作冰淇淋",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "PickledCucumbers",
+      "Name": "酸黃瓜",
+      "Tags": [
+        "Sour",
+        "Fresh",
+        "Vegetable"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 390,
+      "Description": "酸酸小黃瓜",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "PlumJuice",
+      "Name": "酸梅汁",
+      "Tags": [
+        "Fruit",
+        "Sour",
+        "Drinkable"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 85,
+      "Description": "(酸味) 的植物製品。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Steak",
+      "Name": "炭烤牛排",
+      "Tags": [
+        "Meat",
+        "Fire"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 550,
+      "Description": "用火烤過的肉，帶有火氣。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "GhostFireJar",
+      "Name": "鬼火罐頭",
+      "Tags": [
+        "Light",
+        "Cold",
+        "Fire"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 150,
+      "Description": "裝在玻璃罐裡的藍色火焰，摸起來卻是冰涼的。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "PetrifiedEye",
+      "Name": "石化之眼",
+      "Tags": [
+        "Antique",
+        "Gem",
+        "Hard"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 3,
+      "BasePrice": 2200,
+      "Description": "一顆灰色的石頭眼球。雖然已經失去了魔力，但盯著它看還是會覺得關節僵硬。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "SirenScale",
+      "Name": "賽壬鱗片",
+      "Tags": [
+        "Beauty",
+        "Ocean",
+        "Music"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 2,
+      "BasePrice": 800,
+      "Description": "散發著海洋氣息的鱗片，放在耳邊能聽到迷幻的歌聲，有助眠（或永眠）效果。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "MoonPalaceElixir",
+      "Name": "月宮靈藥(試作型)",
+      "Tags": [
+        "Potion",
+        "Moon",
+        "Bitter"
+      ],
+      "Type": 1,
+      "World": 1,
+      "Rarity": 2,
+      "BasePrice": 3000,
+      "Description": "玉兔搗藥時掉落的瑕疵品。雖然不能長生不老，但吃下去會覺得身體輕飄飄的副作用",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "FullMoonPalaceElixir",
+      "Name": "月宮靈藥",
+      "Tags": [
+        "Potion",
+        "Sweet",
+        "Moon"
+      ],
+      "Type": 1,
+      "World": 1,
+      "Rarity": 4,
+      "BasePrice": 6000,
+      "Description": "玉兔搗藥時的完成品據說吃下後可以長生不老",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "Pharaoh'sGoldenMask",
+      "Name": "法老的黃金面具",
+      "Tags": [
+        "Purify",
+        "Holy",
+        "Antique",
+        "Gold",
+        "Sun"
+      ],
+      "Type": 0,
+      "World": 1,
+      "Rarity": 4,
+      "BasePrice": 10000,
+      "Description": "傳說中的面具",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "TerracottaFragment",
+      "Name": "兵馬俑碎片",
+      "Tags": [
+        "Antique",
+        "Old",
+        "Soul"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 350,
+      "Description": "古代士兵身上掉下來的陶土片。據說深夜裡會發出金屬撞擊的聲音。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "RiverGem",
+      "Name": "江河晶石",
+      "Tags": [
+        "Wet",
+        "Gem",
+        "River"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 3,
+      "BasePrice": 2600,
+      "Description": "只有在淡水河底深處才能找到的寶石，表面永遠是濕潤的，握在手裡能感覺到水流的脈動。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "StarDustSand",
+      "Name": "星塵睡沙",
+      "Tags": [
+        "Star",
+        "Magic",
+        "Glass"
+      ],
+      "Type": 0,
+      "World": 1,
+      "Rarity": 1,
+      "BasePrice": 1200,
+      "Description": "睡魔灑下的沙子。只要一小撮，就能讓人瞬間進入充滿星空的夢境。失眠症患者的救星。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "Charcoal",
+      "Name": "一包木炭",
+      "Tags": [
+        "Dry",
+        "Purify",
+        "Fire"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 300,
+      "Description": "可以淨水",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Bleach",
+      "Name": "漂白水",
+      "Tags": [
+        "Purify",
+        "Poison",
+        "Clean"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 190,
+      "Description": "高效清潔",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Chocolate",
+      "Name": "巧克力",
+      "Tags": [
+        "Dessert",
+        "Sweet",
+        "Poison"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 85,
+      "Description": "好吃巧克力",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "AlarmClock",
+      "Name": "鬧鐘",
+      "Tags": [
+        "Cursed",
+        "Noise"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 390,
+      "Description": "非常吵",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Telescope",
+      "Name": "望遠鏡",
+      "Tags": [
+        "Star",
+        "Moon",
+        "Glass"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 3300,
+      "Description": "觀測星辰",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "DeathNote",
+      "Name": "生死簿殘頁",
+      "Tags": [
+        "Cursed",
+        "Book",
+        "Soul"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 3,
+      "BasePrice": 2400,
+      "Description": "記載著某人壽命的紙張。雖然看不懂上面的字，但拿在手上會感到一陣寒意。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "CrystalBall",
+      "Name": "水晶球",
+      "Tags": [
+        "Light",
+        "Gem",
+        "Soul",
+        "Glass"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 1400,
+      "Description": "據說可以看見未來",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "AncientScroll",
+      "Name": "古畫卷",
+      "Tags": [
+        "Beauty",
+        "Antique",
+        "Book"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 2,
+      "BasePrice": 4200,
+      "Description": "珍貴收藏",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "GiantFan",
+      "Name": "芭蕉扇",
+      "Tags": [
+        "Wind",
+        "Magic"
+      ],
+      "Type": 0,
+      "World": 1,
+      "Rarity": 3,
+      "BasePrice": 2200,
+      "Description": "可以吹出大風",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "FireflyLantern",
+      "Name": "螢火蟲燈籠",
+      "Tags": [
+        "Beauty",
+        "Light",
+        "Insect"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 450,
+      "Description": "捕捉了夏夜氣息的天然照明。比LED燈更有情調，雖然亮度不怎麼樣。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "AntiqueCompass",
+      "Name": "風水羅盤",
+      "Tags": [
+        "Antique",
+        "Old",
+        "Mystic",
+        "Magnetic"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 1200,
+      "Description": "上面刻滿了天干地支，指針轉動的方式完全不符合物理學，但在妖界卻意外地準確。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "GoldenBeetle",
+      "Name": "黃金甲蟲標本",
+      "Tags": [
+        "Beauty",
+        "Insect",
+        "Gold"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 3500,
+      "Description": "甲殼散發著真實黃金光澤的稀有甲蟲。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "PigBloodCake",
+      "Name": "豬血糕",
+      "Tags": [
+        "Sweet",
+        "Blood",
+        "Rice"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 90,
+      "Description": "著名的街頭小吃，混合了糯米的凝固血塊。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "DreamCatcher",
+      "Name": "捕夢網",
+      "Tags": [
+        "Mystic",
+        "Memory",
+        "Fabric"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 350,
+      "Description": "據說能捕捉夢境的網子。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "DriftWoodObj",
+      "Name": "漂流木雕刻",
+      "Tags": [
+        "Old",
+        "River",
+        "Wood"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 1,
+      "BasePrice": 600,
+      "Description": "經過河水沖刷多年形成的獨特形狀。並雕刻",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "Firecracker",
+      "Name": "一串鞭炮",
+      "Tags": [
+        "Hot",
+        "Fire",
+        "Noise"
+      ],
+      "Type": 2,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 50,
+      "Description": "劈哩啪啦響個不停。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "MossyStone",
+      "Name": "青苔濕石",
+      "Tags": [
+        "Wet",
+        "Dirty",
+        "Plant",
+        "River"
+      ],
+      "Type": 0,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 25,
+      "Description": "河邊隨處可見的石頭，滑溜溜的。",
+      "ShopType": [
+        "GroceryStore"
+      ]
+    },
+    {
+      "Id": "GargoyleEye",
+      "Name": "石像鬼之眼",
+      "Tags": [
+        "Old",
+        "Hard",
+        "Mystic"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 300,
+      "Description": "一顆石頭眼球。據說在晚上會自己轉動，監視周圍的一舉一動，防盜效果極佳。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "EnlightenmentTea",
+      "Name": "悟道茶葉",
+      "Tags": [
+        "Natural",
+        "Plant",
+        "Drinkable"
+      ],
+      "Type": 1,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 300,
+      "Description": "一片翠綠得發光的葉子。泡水飲用後，能讓人保持絕對清醒三天三夜，是考生與加班族的至寶。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "GrudgeSoil",
+      "Name": "泥田黑土",
+      "Tags": [
+        "Natural",
+        "Growth",
+        "Dirty"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 600,
+      "Description": "一袋永遠潮濕的泥土。種在裡面的植物會以十倍速度生長。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "RaijuFur",
+      "Name": "雷獸的毛髮",
+      "Tags": [
+        "Warm",
+        "Fabric",
+        "Electricity"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 325,
+      "Description": "一小塊永遠帶有靜電的毛皮。但碰到金屬門把時會被電得飛起來。",
+      "ShopType": [
+        "YokaiStore"
+      ]
     }
   ]
 }

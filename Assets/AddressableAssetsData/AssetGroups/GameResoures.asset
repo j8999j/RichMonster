@@ -57,6 +57,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce9c30c2a33530c41a8509af895e9412
+    m_Address: NPCData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dae57473029b61f40b8d5bd1e2fd4d0b
     m_Address: monster_professions
     m_ReadOnly: 0

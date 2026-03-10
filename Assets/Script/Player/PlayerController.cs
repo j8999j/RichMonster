@@ -159,7 +159,6 @@ namespace Player
                     nearest = interactable;
                 }
             }
-
             if (nearest != _currentInteractable)
             {
                 _currentInteractable?.HidePrompt();
@@ -167,13 +166,6 @@ namespace Player
                 _currentInteractable?.ShowPrompt();
             }
         }
-
-        private void OnDisable()
-        {
-            _currentInteractable?.HidePrompt();
-            _currentInteractable = null;
-        }
-
         public void SetCanInteract(bool canInteract)
         {
             _CanInteract = canInteract;

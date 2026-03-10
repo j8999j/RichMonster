@@ -8,7 +8,7 @@ public interface ISaveData
     string UniqueID { get; }
     int LastUpdatedDay { get; }
 }
-public class NpcMissionData : ISaveData
+public class MissionSaveData : ISaveData
 {
     public string UniqueID { get; set; }
     public int LastUpdatedDay { get; set; }

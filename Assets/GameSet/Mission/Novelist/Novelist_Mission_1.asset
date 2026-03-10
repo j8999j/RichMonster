@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 088f225fa8c8ed54192668fb68dbac72, type: 3}
+  m_Name: Novelist_Mission_1
+  m_EditorClassIdentifier: 
+  NpcID: Novelist
+  MissionID: Novelist_1
+  MissionName: "\u71AC\u591C\u8D95\u7A3F"
+  MissionDescription: "\u300C\u7DE8\u8F2F\u5DF2\u7D93\u5728\u596A\u547D\u9023\u74B0\u53E9\u4E86\uFF0C\u4F46\u6211\u9084\u5DEE\u4E09\u842C\u5B57...\u8001\u95C6\uFF0C\u7D66\u6211\u4E00\u74F6\u80FD\u77AC\u9593\u6FC0\u767C\u8166\u529B\u3001\u704C\u4E0B\u53BB\u4E0D\u6703\u7761\u8457\u7684\u6DB2\u9AD4\uFF01\u300D"
+  Requirement:
+    Type: 2
+    TargetItemID: Mineralwater
+    TargetTag: Potion
+    TargetType: 0
+  Rewards:
+  - RewardType: 0
+    GoldAmount: 100
+    ItemID: 
+    ItemAmount: 0
+  IsFinish: 0
+  MissionWorld: 0

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 088f225fa8c8ed54192668fb68dbac72, type: 3}
+  m_Name: Chuunibyou_Mission_2
+  m_EditorClassIdentifier: 
+  NpcID: Chuunibyou
+  MissionID: Chuunibyou_2
+  MissionName: "\u9B54\u529B\u66B4\u8D70"
+  MissionDescription: "\u6211\u9AD4\u5167\u7684\u9B54\u529B\u6B63\u5728\u7FFB\u6E67\uFF01\u9700\u8981\u5438\u6536\u5916\u90E8\u7684\u9B54\u6CD5\u80FD\u91CF\u4F86\u5E73\u8861\uFF01"
+  Requirement:
+    Type: 2
+    TargetItemID: Mineralwater
+    TargetTag: Magic
+    TargetType: 2
+  Rewards:
+  - RewardType: 0
+    GoldAmount: 100
+    ItemID: 
+    ItemAmount: 0
+  IsFinish: 0
+  MissionWorld: 0

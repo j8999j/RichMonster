@@ -14,6 +14,7 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
 
     [Header("貼圖設定")]
     public Texture2D coverTexture;
+    public GameObject LeaveButton;
     public GameObject CardPanel;
     public GameObject BuyPanel;
     public GameObject ScratchPanel;
@@ -68,7 +69,7 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     public void ShowCardPanel(bool isScratched)
     {
         CardPanel.SetActive(true);
-        if(isScratched)
+        if (isScratched)
         {
             ShowScratchCard(true);
             ScratchPanel.SetActive(true);
@@ -100,7 +101,7 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     /// </summary>
     public void ShowScratchCard(bool isScratched)
     {
-        if(isScratched)
+        if (isScratched)
         {
             // 已刮過：遮罩全黑，完整顯示獎品
             if (_maskTex != null)
@@ -129,8 +130,9 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     /// </summary>
     public void BuyScratchCard()
     {
-        if(DataManager.Instance.TrySpendGold(300))
+        if (DataManager.Instance.TrySpendGold(300))
         {
+            LeaveButton.SetActive(false);
             BuyScratchButton.gameObject.SetActive(false);
             BuyPanelRaycastImage.SetActive(false);
         }
@@ -144,7 +146,7 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     /// </summary>
     public void NotEnoughGold()
     {
-        
+
     }
     [Header("筆刷設定")]
     [Range(10, 200)]
@@ -153,22 +155,22 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     [Header("結算設定")]
     [Range(0f, 1f)]
     public float revealThreshold = 0.80f;
-    public float checkInterval   = 0.3f;
+    public float checkInterval = 0.3f;
 
     public event Action OnScratchComplete;
 
     // --- 私有 ---
-    private Texture2D     _maskTex;       // CPU 可寫的遮罩（黑=刮掉）
-    private Material      _mat;
-    private RawImage      _rawImage;
+    private Texture2D _maskTex;       // CPU 可寫的遮罩（黑=刮掉）
+    private Material _mat;
+    private RawImage _rawImage;
     private RectTransform _rectTransform;
-    private float         _nextCheckTime;
-    private bool          _completed;
-    private Vector2       _lastUV = -Vector2.one;
+    private float _nextCheckTime;
+    private bool _completed;
+    private Vector2 _lastUV = -Vector2.one;
 
     // 預先產生的圓形筆刷 alpha 值
     private float[] _brushAlpha;
-    private int     _brushDiameter;
+    private int _brushDiameter;
 
     // 懸停效果：紀錄每個按鈕的原始位置與正在執行的 Coroutine
     private Dictionary<Button, Vector3> _buttonOriginalPos = new Dictionary<Button, Vector3>();
@@ -181,7 +183,7 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
         // 若未指定目標，則使用自身的 RawImage
         if (targetRawImage == null)
             targetRawImage = GetComponent<RawImage>();
-        _rawImage      = targetRawImage;
+        _rawImage = targetRawImage;
         _rectTransform = _rawImage.GetComponent<RectTransform>();
 
         int w = coverTexture.width;
@@ -196,7 +198,7 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
         _mat.SetTexture("_MainTex", coverTexture);
         _mat.SetTexture("_MaskTex", _maskTex);
         _rawImage.material = _mat;
-        _rawImage.texture  = coverTexture;
+        _rawImage.texture = coverTexture;
 
         // 預建筆刷
         BuildBrush(brushSize);
@@ -206,21 +208,21 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     void BuildBrush(int size)
     {
         _brushDiameter = size;
-        _brushAlpha    = new float[size * size];
-        float r   = size * 0.5f;
-        float cx  = r - 0.5f;
-        float cy  = r - 0.5f;
+        _brushAlpha = new float[size * size];
+        float r = size * 0.5f;
+        float cx = r - 0.5f;
+        float cy = r - 0.5f;
 
         for (int y = 0; y < size; y++)
-        for (int x = 0; x < size; x++)
-        {
-            float dx   = x - cx;
-            float dy   = y - cy;
-            float dist = Mathf.Sqrt(dx * dx + dy * dy);
-            // 平滑邊緣
-            float alpha = 1f - Mathf.Clamp01((dist - r * 0.6f) / (r * 0.4f));
-            _brushAlpha[y * size + x] = alpha;
-        }
+            for (int x = 0; x < size; x++)
+            {
+                float dx = x - cx;
+                float dy = y - cy;
+                float dist = Mathf.Sqrt(dx * dx + dy * dy);
+                // 平滑邊緣
+                float alpha = 1f - Mathf.Clamp01((dist - r * 0.6f) / (r * 0.4f));
+                _brushAlpha[y * size + x] = alpha;
+            }
     }
 
     // ── 清除遮罩為全白 ────────────────────────────────
@@ -250,8 +252,8 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
         // 插值補點（滑動流暢）
         if (_lastUV.x >= 0)
         {
-            float dist  = Vector2.Distance(_lastUV, uv) * _maskTex.width;
-            int   steps = Mathf.Max(1, (int)(dist / (_brushDiameter * 0.3f)));
+            float dist = Vector2.Distance(_lastUV, uv) * _maskTex.width;
+            int steps = Mathf.Max(1, (int)(dist / (_brushDiameter * 0.3f)));
             for (int i = 1; i <= steps; i++)
                 PaintMask(Vector2.Lerp(_lastUV, uv, (float)i / steps));
         }
@@ -273,11 +275,11 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     // ── 在遮罩 Texture 上刷黑色 ───────────────────────
     void PaintMask(Vector2 uv)
     {
-        int w  = _maskTex.width;
-        int h  = _maskTex.height;
+        int w = _maskTex.width;
+        int h = _maskTex.height;
         int cx = Mathf.RoundToInt(uv.x * w);
         int cy = Mathf.RoundToInt(uv.y * h);
-        int r  = _brushDiameter / 2;
+        int r = _brushDiameter / 2;
 
         int x0 = Mathf.Clamp(cx - r, 0, w - 1);
         int x1 = Mathf.Clamp(cx + r, 0, w - 1);
@@ -288,22 +290,22 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
         Color32[] region = _maskTex.GetPixels32();
 
         for (int y = y0; y <= y1; y++)
-        for (int x = x0; x <= x1; x++)
-        {
-            int bx = x - (cx - r);
-            int by = y - (cy - r);
+            for (int x = x0; x <= x1; x++)
+            {
+                int bx = x - (cx - r);
+                int by = y - (cy - r);
 
-            // 邊界保護
-            if (bx < 0 || bx >= _brushDiameter || by < 0 || by >= _brushDiameter)
-                continue;
+                // 邊界保護
+                if (bx < 0 || bx >= _brushDiameter || by < 0 || by >= _brushDiameter)
+                    continue;
 
-            float alpha    = _brushAlpha[by * _brushDiameter + bx];
-            int   idx      = y * w + x;
-            byte  current  = region[idx].r;
-            // 將遮罩值往 0（黑）靠近
-            byte  newVal   = (byte)Mathf.Max(0, current - (int)(alpha * 255));
-            region[idx]    = new Color32(newVal, newVal, newVal, 255);
-        }
+                float alpha = _brushAlpha[by * _brushDiameter + bx];
+                int idx = y * w + x;
+                byte current = region[idx].r;
+                // 將遮罩值往 0（黑）靠近
+                byte newVal = (byte)Mathf.Max(0, current - (int)(alpha * 255));
+                region[idx] = new Color32(newVal, newVal, newVal, 255);
+            }
 
         _maskTex.SetPixels32(region);
     }
@@ -471,9 +473,9 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
 
     IEnumerator SmoothSelectCoroutine(RectTransform rt, Vector2 targetPos, Vector2 targetSize, float duration)
     {
-        Vector2    startPos  = rt.anchoredPosition;
-        Vector2    startSize = rt.sizeDelta;
-        Quaternion startRot  = rt.localRotation;
+        Vector2 startPos = rt.anchoredPosition;
+        Vector2 startSize = rt.sizeDelta;
+        Quaternion startRot = rt.localRotation;
         Quaternion targetRot = Quaternion.identity; // 角度歸零
         float elapsed = 0f;
 
@@ -482,21 +484,21 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
             elapsed += Time.deltaTime;
             float t = Mathf.SmoothStep(0f, 1f, elapsed / duration);
             rt.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
-            rt.sizeDelta        = Vector2.Lerp(startSize, targetSize, t);
-            rt.localRotation    = Quaternion.Lerp(startRot, targetRot, t);
+            rt.sizeDelta = Vector2.Lerp(startSize, targetSize, t);
+            rt.localRotation = Quaternion.Lerp(startRot, targetRot, t);
             yield return null;
         }
 
         rt.anchoredPosition = targetPos;
-        rt.sizeDelta        = targetSize;
-        rt.localRotation    = targetRot;
+        rt.sizeDelta = targetSize;
+        rt.localRotation = targetRot;
 
         ShowScratchPanel();
     }
 
     void OnDestroy()
     {
-        if (_maskTex  != null) Destroy(_maskTex);
-        if (_mat      != null) Destroy(_mat);
+        if (_maskTex != null) Destroy(_maskTex);
+        if (_mat != null) Destroy(_mat);
     }
 }

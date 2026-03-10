@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 088f225fa8c8ed54192668fb68dbac72, type: 3}
+  m_Name: Chef_Mission_3
+  m_EditorClassIdentifier: 
+  NpcID: Chef
+  MissionID: Chef_3
+  MissionName: "\u7279\u6B8A\u9AD8\u6E6F\u98DF\u6750"
+  MissionDescription: "\u5E02\u9762\u4E0A\u7684\u8C6C\u725B\u7F8A\u592A\u7121\u8DA3\u4E86\uFF01\u8001\u95C6\uFF0C\u62FF\u51FA\u4F60\u5E97\u88E1\u6700\u5947\u7279\u3001\u6700\u7A00\u6709\u7684\u8089\u985E\uFF01\u6211\u8981\u71AC\u4E00\u934B\u9A5A\u5929\u5730\u6CE3\u9B3C\u795E\u7684\u9AD8\u6E6F\uFF01"
+  Requirement:
+    Type: 2
+    TargetItemID: Mineralwater
+    TargetTag: Meat
+    TargetType: 2
+  Rewards:
+  - RewardType: 2
+    GoldAmount: 0
+    ItemID: 
+    ItemAmount: 0
+  IsFinish: 0
+  MissionWorld: 0

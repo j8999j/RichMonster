@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 088f225fa8c8ed54192668fb68dbac72, type: 3}
+  m_Name: StreetTeller_Mission_1
+  m_EditorClassIdentifier: 
+  NpcID: StreetTeller
+  MissionID: StreetTeller_1
+  MissionName: "\u64FA\u6524\u7684\u884C\u982D"
+  MissionDescription: "\u54B3\u54B3\uFF0C\u8001\u592B\u6700\u8FD1\u8981\u5728\u5E02\u4E2D\u5FC3\u64FA\u6524\uFF0C\u884C\u982D\u4E0D\u80FD\u5BD2\u9178\uFF01\u7D66\u6211\u500B\u770B\u8D77\u4F86\u91D1\u5149\u9583\u9583\u3001\u83EF\u7F8E\u4E0D\u51E1\u7684\u7269\u4EF6\u5145\u5145\u5834\u9762\uFF01"
+  Requirement:
+    Type: 2
+    TargetItemID: Mineralwater
+    TargetTag: Beauty
+    TargetType: 2
+  Rewards:
+  - RewardType: 2
+    GoldAmount: 0
+    ItemID: 
+    ItemAmount: 0
+  IsFinish: 0
+  MissionWorld: 0

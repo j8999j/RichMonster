@@ -20,9 +20,15 @@ public class DataManager : Singleton<DataManager>
     private Dictionary<string, HumanLargeOrder> _humanLargeOrderDict = new Dictionary<string, HumanLargeOrder>();
     private Dictionary<string, HumanSmallOrder> _humanSmallOrderDict = new Dictionary<string, HumanSmallOrder>();
     private Dictionary<string, NpcMission> _missionDict = new Dictionary<string, NpcMission>();
+    // 任務分類
+    private List<NpcMission> _humanInfoMissions = new List<NpcMission>();
+    private List<NpcMission> _humanNonInfoMissions = new List<NpcMission>();
+    private List<NpcMission> _monsterInfoMissions = new List<NpcMission>();
+    private List<NpcMission> _monsterNonInfoMissions = new List<NpcMission>();
     private Dictionary<string, AchievementConfig> _achievementDict = new Dictionary<string, AchievementConfig>();
     private Dictionary<string, MonsterInformationDatabase> _monsterInfoDict = new Dictionary<string, MonsterInformationDatabase>();
     private Dictionary<string, MonsterStoryDatabase> _monsterStoryDict = new Dictionary<string, MonsterStoryDatabase>();
+    private Dictionary<string, NPCMissionData> _npcDataDict = new Dictionary<string, NPCMissionData>();
 
     private PlayerData _initialPlayerData;
     private PlayerData _currentPlayerData;
@@ -41,9 +47,14 @@ public class DataManager : Singleton<DataManager>
     public IReadOnlyDictionary<string, HumanLargeOrder> HumanLargeOrderDict => _humanLargeOrderDict;
     public IReadOnlyDictionary<string, HumanSmallOrder> HumanSmallOrderDict => _humanSmallOrderDict;
     public IReadOnlyDictionary<string, NpcMission> MissionDict => _missionDict;
+    public IReadOnlyList<NpcMission> HumanInfoMissions => _humanInfoMissions;
+    public IReadOnlyList<NpcMission> HumanNonInfoMissions => _humanNonInfoMissions;
+    public IReadOnlyList<NpcMission> MonsterInfoMissions => _monsterInfoMissions;
+    public IReadOnlyList<NpcMission> MonsterNonInfoMissions => _monsterNonInfoMissions;
     public IReadOnlyDictionary<string, AchievementConfig> AchievementDict => _achievementDict;
     public IReadOnlyDictionary<string, MonsterInformationDatabase> MonsterInfoDict => _monsterInfoDict;
     public IReadOnlyDictionary<string, MonsterStoryDatabase> MonsterStoryDict => _monsterStoryDict;
+    public IReadOnlyDictionary<string, NPCMissionData> NPCDataDict => _npcDataDict;
     public PlayerData InitialPlayerData => ClonePlayerData(_initialPlayerData);
     public IReadOnlyPlayerData CurrentPlayerData => _currentPlayerData;
 
@@ -80,10 +91,12 @@ public class DataManager : Singleton<DataManager>
         _humanLargeOrderDict = result.HumanLargeOrderDict;
         _humanSmallOrderDict = result.HumanSmallOrderDict;
         _missionDict = result.MissionDict;
+        CategorizeMissions();
         _achievementDict = result.AchievementDict;
         _eventDict = result.EventDict;
         _monsterInfoDict = result.MonsterInfoDict;
         _monsterStoryDict = result.MonsterStoryDict;
+        _npcDataDict = result.NPCDataDict;
         _initialPlayerData = result.InitialPlayerData;
         _bookData = result.BookData;
 
@@ -97,6 +110,42 @@ public class DataManager : Singleton<DataManager>
         AchievementManager.Instance.Initialize(_achievementDict);
 
         _currentPlayerData = ClonePlayerData(_initialPlayerData);
+    }
+
+    /// <summary>
+    /// 將任務按照 MissionWorld 與是否含有 Information 獎勵分成四類
+    /// </summary>
+    private void CategorizeMissions()
+    {
+        _humanInfoMissions.Clear();
+        _humanNonInfoMissions.Clear();
+        _monsterInfoMissions.Clear();
+        _monsterNonInfoMissions.Clear();
+
+        foreach (var mission in _missionDict.Values)
+        {
+            if (mission == null) continue;
+
+            bool hasInfo = mission.Rewards != null
+                && mission.Rewards.Exists(r => r.RewardType == RewardType.Information);
+
+            if (mission.MissionWorld == ItemWorld.Human)
+            {
+                if (hasInfo)
+                    _humanInfoMissions.Add(mission);
+                else
+                    _humanNonInfoMissions.Add(mission);
+            }
+            else // ItemWorld.Monster
+            {
+                if (hasInfo)
+                    _monsterInfoMissions.Add(mission);
+                else
+                    _monsterNonInfoMissions.Add(mission);
+            }
+        }
+
+        Debug.Log($"[DataManager] 任務分類完成 - 人間(情報:{_humanInfoMissions.Count}, 一般:{_humanNonInfoMissions.Count}), 妖界(情報:{_monsterInfoMissions.Count}, 一般:{_monsterNonInfoMissions.Count})");
     }
 
     #region Data Queries
@@ -215,7 +264,7 @@ public class DataManager : Singleton<DataManager>
     /// <summary>
     /// 新增物品到物品圖鑑
     /// </summary>
-    public void AddItemToBook(string itemId)
+    private void AddItemToBook(string itemId)
     {
         if (_bookData == null) return;
         
@@ -253,7 +302,7 @@ public class DataManager : Singleton<DataManager>
     /// <summary>
     /// 檢查物品是否已收錄在圖鑑中
     /// </summary>
-    public bool IsItemInBook(string itemId)
+    private bool IsItemInBook(string itemId)
     {
         if (_bookData == null) return false;
         var item = _bookData.ItemBookData.ItemBooks.Find(x => x.ItemID == itemId);
@@ -485,7 +534,10 @@ public class DataManager : Singleton<DataManager>
     {
         if (_currentPlayerData == null) return;
         if (_currentPlayerData.Inventory == null) _currentPlayerData.Inventory = new Inventory();
-
+        if (IsItemInBook(itemId) == false)
+        {
+            AddItemToBook(itemId);
+        }
         var newItem = new Item
         {
             ItemId = itemId,
