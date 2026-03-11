@@ -7,6 +7,16 @@ public class AchievementWolfGas : AchievementBase, IAchievementHiddenCondition
     {
         AchievementID = "WolfGas";
     }
+        public override void Initialize()
+    {
+        var data = DataManager.Instance.GetAchievementSaveData(AchievementID);
+        if (data != null)
+        {
+            IsCompleted = (data as AchievementWolfGas).IsCompleted;
+        }
+        if (IsCompleted) return;
+        base.Initialize();
+    }
     protected override void SaveData()
     {
         FinishDay = DateTime.Now.ToString("yyyy-MM-dd");

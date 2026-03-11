@@ -7,6 +7,16 @@ public class AchievementMyGo : AchievementBase, IAchievementHiddenCondition
     {
         AchievementID = "MyGo";
     }
+    public override void Initialize()
+    {
+        var data = DataManager.Instance.GetAchievementSaveData(AchievementID);
+        if (data != null)
+        {
+            IsCompleted = (data as AchievementMyGo).IsCompleted;
+        }
+        if (IsCompleted) return;
+        base.Initialize();
+    }
     protected override void SaveData()
     {
         FinishDay = DateTime.Now.ToString("yyyy-MM-dd");
@@ -20,7 +30,7 @@ public class AchievementMyGo : AchievementBase, IAchievementHiddenCondition
 
     private void CheckCondition(string customerId, string itemId)
     {
-        if (customerId == "Kaguya" && itemId == "Compass")
+        if (customerId == "Kaguya-hime" && itemId == "Compass")
         {
             CompletedAchievement();
             SaveData();

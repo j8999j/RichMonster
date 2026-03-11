@@ -16,9 +16,17 @@ public class MonsterTradeView : MonoBehaviour
     public Transform SlotContainer; // 生成 Slot 的父物件
     public Transform TagSlotContainer;//標籤容器
     public Image DetailIcon;//背包物品圖片
+    public Image RarityIcon;//稀有度圖片
+    public Image TypeIcon;//物品類型圖片
+    public Sprite PropSprite;
+    public Sprite FoodSprite;
+    public Sprite EquipmentSprite;
+    public GameObject TagsPrefab;//標籤預製物件
+    public Transform ItemTagCotainer;//標籤容器
     public TextMeshProUGUI DetailNameText;//背包物品名稱
     public TextMeshProUGUI DetailDescText;//背包物品描述
     public TextMeshProUGUI DetailPriceText;//背包物品購買成本
+
     private List<TradeSlot> _activeSlots = new List<TradeSlot>();//背包列表
     //TradeData
     private Item OnSelectItem;
@@ -28,11 +36,13 @@ public class MonsterTradeView : MonoBehaviour
     [Header("交易組件")]
     [SerializeField] private GameObject TradeModeUI;//交易組件根物件
     [SerializeField] private Button OnOpenShopButton;//切換階段開始交易
-    [SerializeField] private Image PreferImage;//偏好圖片
     [SerializeField] private Sprite PreferSprite;
     [SerializeField] private Sprite NotPreferSprite;
     [SerializeField] private Sprite NoneSprite;
     [SerializeField] private Image CustomerImage;//客人圖片
+    [SerializeField] private TextMeshProUGUI SoulAddAnimationText;//妖界貨幣增加動畫
+    [SerializeField] private TextMeshProUGUI CustomerIndex;//剩餘客人
+    [SerializeField] private TextMeshProUGUI NowSoul;//目前妖界貨幣
     public TextMeshProUGUI CustomerDialogText;//客人對話
     [Header("拖曳放置區域")]
     [SerializeField] private RectTransform TradeDropZone;//交易放置區域
@@ -106,14 +116,27 @@ public class MonsterTradeView : MonoBehaviour
     {
         CustomerDialogText.text = dialog;
     }
-    public void UpdateTradeInfo(MonsterGuest guest, List<Item> bagItems)//更新客人與背包資訊
+    public void UpdateTradeInfo(MonsterGuest guest, List<Item> bagItems, int currentIndex, int totalCount, int currentSoul)//更新客人與背包資訊
     {
         //更新背包列表
         bagItemsList = bagItems;
+        //更新剩餘人數
+        CustomerIndex.text = $"剩餘客人{totalCount - (currentIndex + 1)}";
+        //更新目前妖界貨幣
+        NowSoul.text = currentSoul.ToString();
         //刷新背包顯示
         ShowBagItems(bagItemsList);
         //顯示客人
         UpdateGuestInfo(guest);
+    }
+    public void UpdateSoulDisplayAnimation(int price)//更新妖界貨幣顯示
+    {
+        SoulAddAnimationText.text = "+" + price.ToString()+"$";
+        SoulAddAnimationText.gameObject.SetActive(true);
+    }
+    public void UpdateSoulDisplay(int currentSoul)//更新妖界貨幣顯示
+    {
+        NowSoul.text = currentSoul.ToString();
     }
     public void SetSelectTradeUI()//設定開始時的UI顯示
     {
@@ -130,8 +153,16 @@ public class MonsterTradeView : MonoBehaviour
 
     #endregion
     #region TradeUIView
-    private void OnTradeSelected(BagSlot bagSlot)
+    private void OnTradeSelected(BagSlot bagSlot)//選中物品顯示
     {
+        // 清除標籤
+        if (ItemTagCotainer != null)
+        {
+            foreach (Transform child in ItemTagCotainer)
+            {
+                Destroy(child.gameObject);
+            }
+        }
         OnSelectQuality = ItemQuality.None;
         OnSelectItem = bagSlot._currentData;
         InvokeTradeItems(bagSlot._currentData);
@@ -139,7 +170,92 @@ public class MonsterTradeView : MonoBehaviour
         DetailDescText.text = bagSlot._currentDefinition.Description;
         DetailPriceText.text = bagSlot._currentData.CostPrice.ToString();
         DetailIcon.sprite = bagSlot._targetImage.sprite;
+        if (TypeIcon != null)
+        {
+            if (bagSlot._currentDefinition.Type == ItemType.Prop)
+            {
+                TypeIcon.sprite = PropSprite;
+            }
+            else if (bagSlot._currentDefinition.Type == ItemType.Food)
+            {
+                TypeIcon.sprite = FoodSprite;
+            }
+            else if (bagSlot._currentDefinition.Type == ItemType.Equipment)
+            {
+                TypeIcon.sprite = EquipmentSprite;
+            }
+        }
+        string rarityId = bagSlot._currentDefinition.Rarity.ToString();
+        SpriteLoader.LoadSpriteAsync(rarityId, sprite =>
+        {
+            if (RarityIcon == null) return;
+            if (sprite != null)
+            {
+                RarityIcon.sprite = sprite;
+            }
+            else
+            {
+                RarityIcon.sprite = NoneSprite;
+            }
+        });
+        // 顯示標籤
+        ShowTags(bagSlot._currentDefinition.Tags);
         DetailIcon.SetNativeSize();
+    }
+    private void ShowTags(List<string> tags)
+    {
+
+        if (tags == null || TagsPrefab == null || ItemTagCotainer == null) return;
+
+        for (int i = 0; i < tags.Count; i++)
+        {
+            string tagId = tags[i];
+            string tagName = DataManager.Instance.GetTagNameByTag(tagId);
+
+            if (tagName != "")
+            {
+                GameObject newSlot = Instantiate(TagsPrefab, ItemTagCotainer);
+
+                TextMeshProUGUI textComp = newSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                textComp.text = tagName;
+
+                // 建立Tag圖片物件
+                GameObject imgObj = new GameObject("TagImage");
+                imgObj.transform.SetParent(newSlot.transform, false);
+                Image tagImage = imgObj.AddComponent<Image>();
+                imgObj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                imgObj.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 65);
+
+                // 預設隱藏圖片，顯示文字
+                imgObj.SetActive(false);
+                textComp.gameObject.SetActive(true);
+
+                Image capturedImage = tagImage;
+                TextMeshProUGUI capturedText = textComp;
+                GameObject capturedImgObj = imgObj;
+
+                // 嘗試載入Tag圖片，成功則顯示圖片並隱藏文字
+                SpriteLoader.LoadSpriteAsync(tagId, sprite =>
+                {
+                    if (capturedImgObj == null) return;
+                    if (sprite != null)
+                    {
+                        capturedImage.sprite = sprite;
+                        capturedImage.SetNativeSize();
+                        RectTransform rt = capturedImage.GetComponent<RectTransform>();
+                        float ratio = 125f / rt.sizeDelta.x;
+                        rt.sizeDelta = new Vector2(125f, rt.sizeDelta.y * ratio);
+                        capturedImgObj.SetActive(true);
+                        capturedText.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        capturedImgObj.SetActive(false);
+                        capturedText.gameObject.SetActive(true);
+                    }
+                });
+            }
+        }
     }
     private void OnEndTradeDrag(TradeSlot slot, PointerEventData eventData)
     {
@@ -177,20 +293,25 @@ public class MonsterTradeView : MonoBehaviour
     }
     public void ClearBagImage()
     {
+        // 清除標籤
+        if (ItemTagCotainer != null)
+        {
+            foreach (Transform child in ItemTagCotainer)
+            {
+                Destroy(child.gameObject);
+            }
+        }
         DetailIcon.sprite = NoneSprite;
+        TypeIcon.sprite = NoneSprite;
+        RarityIcon.sprite = NoneSprite;
         DetailNameText.text = "";
         DetailDescText.text = "";
         DetailPriceText.text = "";
     }
     public void ClearImage()//清空圖片
     {
-        PreferImage.sprite = NoneSprite;
         DetailIcon.sprite = NoneSprite;
         CustomerImage.sprite = NoneSprite;
-    }
-    public void SetPreferImage(bool isSatisfied)
-    {
-        PreferImage.sprite = isSatisfied ? PreferSprite : NotPreferSprite;
     }
     #endregion
     #region ButtonMethon

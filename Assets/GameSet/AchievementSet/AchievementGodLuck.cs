@@ -10,6 +10,11 @@ public class AchievementGodLuck : AchievementBase
 
         public override void Initialize()
         {
+            var data = DataManager.Instance.GetAchievementSaveData(AchievementID);
+            if (data != null)
+            {
+                IsCompleted = (data as AchievementGodLuck).IsCompleted;
+            }
             if (IsCompleted) return;
             base.Initialize();
         }

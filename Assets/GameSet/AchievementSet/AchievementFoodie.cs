@@ -10,6 +10,11 @@ public class AchievementFoodie : AchievementBase, IAchievementHiddenCondition
 
         public override void Initialize()
         {
+            var data = DataManager.Instance.GetAchievementSaveData(AchievementID);
+            if (data != null)
+            {
+                IsCompleted = (data as AchievementFoodie).IsCompleted;
+            }
             if (IsCompleted) return;
             base.Initialize();
         }

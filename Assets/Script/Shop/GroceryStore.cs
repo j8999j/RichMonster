@@ -130,10 +130,6 @@ namespace Shop
                 // **關鍵：通知 View 刷新 (包含列表變灰 + 按鈕變灰)**
                 _shopUIView.RefreshAll();
             }
-            else
-            {
-                Debug.Log("金幣不足");
-            }
         }
         /// <summary>
         /// 新增商店存貨狀態
@@ -141,7 +137,7 @@ namespace Shop
         /// <param name="shelfSlot">新增的商店購買紀錄</param>
         public void NewShopShelfData(ShelfSlot shelfSlot)
         {
-            ThisShopShelfData.UniqueID = ShopID+"ShopShelfData";
+            ThisShopShelfData.UniqueID = ShopID + "ShopShelfData";
             ThisShopShelfData.LastUpdatedDay = GameManager.Instance.gameFlow.CurrentDay;
             ThisShopShelfData.Changes[shelfSlot.SlotIndex] = new ShopInventoryChange
             {

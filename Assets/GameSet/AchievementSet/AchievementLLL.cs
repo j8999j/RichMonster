@@ -10,6 +10,11 @@ public class AchievementLLL : AchievementBase
 
         public override void Initialize()
         {
+            var data = DataManager.Instance.GetAchievementSaveData(AchievementID);
+            if (data != null)
+            {
+                IsCompleted = (data as AchievementLLL).IsCompleted;
+            }
             if (IsCompleted) return;
             base.Initialize();
         }

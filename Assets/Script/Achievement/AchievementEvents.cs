@@ -145,7 +145,6 @@ public abstract class AchievementBase : IAchievementSave, IDisposable
     {
         if (IsCompleted) return;
         IsCompleted = true;
-        Debug.Log($"成就解鎖：{AchievementName}");
         OnUnlocked?.Invoke(this);
     }
     protected void NotifyViewUpdated() => OnViewUpdated?.Invoke();

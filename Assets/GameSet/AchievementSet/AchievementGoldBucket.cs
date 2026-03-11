@@ -28,6 +28,7 @@ public class AchievementGoldBucket : AchievementBase, IAchievementWithProgress
         if (data != null)
         {
             goldRecorder = (data as AchievementGoldBucket).goldRecorder;
+            IsCompleted = (data as AchievementGoldBucket).IsCompleted;
         }
         else
         {

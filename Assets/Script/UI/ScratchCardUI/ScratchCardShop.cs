@@ -113,34 +113,41 @@ public class ScratchCardShop : MonoBehaviour, IInteractable
         {
             case ScratchCardPrizeType.GrandPrize:
                 goldReward = 10000;
+                AchievementEvents.ScratchCardCompleted(0);
                 break;
             case ScratchCardPrizeType.FirstPrize:
                 goldReward = 5000;
+                AchievementEvents.ScratchCardCompleted(1);
                 break;
             case ScratchCardPrizeType.SecondPrize:
                 goldReward = 2000;
+                AchievementEvents.ScratchCardCompleted(2);
                 break;
             case ScratchCardPrizeType.ThirdPrize:
                 goldReward = 500;
+                AchievementEvents.ScratchCardCompleted(3);
                 break;
             case ScratchCardPrizeType.FourthPrize:
                 goldReward = 300;
+                AchievementEvents.ScratchCardCompleted(4);
                 break;
             case ScratchCardPrizeType.FifthPrize:
                 goldReward = 100;
+                AchievementEvents.ScratchCardCompleted(5);
                 break;
             case ScratchCardPrizeType.NoWin:
                 goldReward = 0;
+                AchievementEvents.ScratchCardCompleted(6);
                 break;
         }
         DataManager.Instance.ModifyGold(goldReward);
         Debug.Log($"[ScratchCardShop] 恭喜獲得 {prize}！獎勵金幣: {goldReward}");
-        ShowPrizePanel();
+        ShowPrizePanel(prize);
     }
-    private async void ShowPrizePanel()
+    private async void ShowPrizePanel(ScratchCardPrizeType prize)
     {
         await GameManager.Instance.gameFlow.SaveGameAsync();
-        scratchCard.ShowCompletePrize();
+        scratchCard.ShowCompletePrize(prize);
     }
     /// <summary>
     /// 顯示提示

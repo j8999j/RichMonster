@@ -10,6 +10,11 @@ public class NewWorldGodAchievement : AchievementBase
 
         public override void Initialize()
         {
+            var data = DataManager.Instance.GetAchievementSaveData(AchievementID);
+            if (data != null)
+            {
+                IsCompleted = (data as NewWorldGodAchievement).IsCompleted;
+            }
             if (IsCompleted) return;
             base.Initialize();
         }

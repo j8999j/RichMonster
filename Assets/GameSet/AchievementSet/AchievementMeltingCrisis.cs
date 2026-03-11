@@ -7,6 +7,16 @@ public class AchievementMeltingCrisis : AchievementBase, IAchievementHiddenCondi
     {
         AchievementID = "MeltingCrisis";
     }
+    public override void Initialize()
+    {
+        var data = DataManager.Instance.GetAchievementSaveData(AchievementID);
+        if (data != null)
+        {
+            IsCompleted = (data as AchievementMeltingCrisis).IsCompleted;
+        }
+        if (IsCompleted) return;
+        base.Initialize();
+    }
     protected override void SaveData()
     {
         FinishDay = DateTime.Now.ToString("yyyy-MM-dd");

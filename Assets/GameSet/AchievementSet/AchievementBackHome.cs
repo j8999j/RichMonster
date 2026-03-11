@@ -7,16 +7,20 @@ public class AchievementBackHome : AchievementBase, IAchievementHiddenCondition
         {
             AchievementID = "BackHome";
         }
-
-        public override void Initialize()
-        {
-            if (IsCompleted) return;
-            base.Initialize();
-        }
         protected override void SaveData()
         {
             FinishDay = DateTime.Now.ToString("yyyy-MM-dd");
             DataManager.Instance.UpdateAchievementSaveData(this);
+        }
+        public override void Initialize()
+        {
+            var data = DataManager.Instance.GetAchievementSaveData(AchievementID);
+            if (data != null)
+            {
+                IsCompleted = (data as AchievementBackHome).IsCompleted;
+            }
+            if (IsCompleted) return;
+            base.Initialize();
         }
         protected override void SubscribeEvents() =>
             AchievementEvents.OnTransactionCompleted += CheckCondition;
@@ -26,7 +30,7 @@ public class AchievementBackHome : AchievementBase, IAchievementHiddenCondition
 
         private void CheckCondition(string customerId, string itemId)
         {
-            if (customerId == "Kaguya" && itemId == "WaterRocket")
+            if (customerId == "Kaguya-hime" && itemId == "WaterRocket")
             {
                 CompletedAchievement();
                 SaveData();

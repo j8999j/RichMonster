@@ -10,6 +10,11 @@ public class AchievementCrisisManager : AchievementBase, IAchievementHiddenCondi
 
         public override void Initialize()
         {
+            var data = DataManager.Instance.GetAchievementSaveData(AchievementID);
+            if (data != null)
+            {
+                IsCompleted = (data as AchievementCrisisManager).IsCompleted;
+            }
             if (IsCompleted) return;
             base.Initialize();
         }

@@ -25,7 +25,7 @@ public class MonsterTradeMode : MonoBehaviour
             new Dictionary<string, MonsterTraitDefinition>(DataManager.Instance.MonsterTraitDict),
             new Dictionary<string, ItemTags>(DataManager.Instance.ItemTagsDict)
         );
-        
+
     }
     void OnEnable()
     {
@@ -47,7 +47,7 @@ public class MonsterTradeMode : MonoBehaviour
         _TodayMonsterGuestList = _generator.GenerateGuestsForDay(1);
         LogAllGuestDetails();
     }
-    
+
     /// <summary>
     /// 開始交易模式，開始抽選並回復資料
     /// </summary>
@@ -56,7 +56,7 @@ public class MonsterTradeMode : MonoBehaviour
         GameManager.Instance.gameFlow.SwitchGameStageAndSave(DayPhase.NightTrade);
         GenerateGuestList();
         LoadHistory();
-        tradeView.UpdateTradeInfo(_TodayMonsterGuestList[monsterTradeProgress.CustomerIndex], DataManager.Instance.CurrentPlayerData.InventoryItems.ToList());
+        tradeView.UpdateTradeInfo(_TodayMonsterGuestList[monsterTradeProgress.CustomerIndex], DataManager.Instance.CurrentPlayerData.InventoryItems.ToList(), monsterTradeProgress.CustomerIndex, _TodayMonsterGuestList.Count, DataManager.Instance.CurrentPlayerData.MonsterGold);
         UpdateGuestDialog();
     }
 
@@ -73,12 +73,12 @@ public class MonsterTradeMode : MonoBehaviour
             var customer = guest.monsterCustomer;
             var request = guest.monsterRequest;
 
-            string traits = customer.Traits.Count > 0 
-                ? string.Join(", ", customer.TraitNames) 
+            string traits = customer.Traits.Count > 0
+                ? string.Join(", ", customer.TraitNames)
                 : "無";
 
-            string tags = request.RequestTags.Count > 0 
-                ? string.Join(", ", request.RequestTags) 
+            string tags = request.RequestTags.Count > 0
+                ? string.Join(", ", request.RequestTags)
                 : "無";
 
             string preferredTags = customer.PreferredTags.Count > 0
@@ -123,10 +123,10 @@ public class MonsterTradeMode : MonoBehaviour
     private string GenerateRequestDialog(MonsterGuest guest)
     {
         if (guest == null) return "...";
-        
+
         var request = guest.monsterRequest;
         var customer = guest.monsterCustomer;
-        
+
         // 對話模板列表
         var dialogTemplates = new List<string>
         {
@@ -137,7 +137,7 @@ public class MonsterTradeMode : MonoBehaviour
             "你這有{type}嗎？",
             "聽說這裡有{type}？"
         };
-        
+
         // 帶標籤的對話模板
         var tagDialogTemplates = new List<string>
         {
@@ -158,14 +158,14 @@ public class MonsterTradeMode : MonoBehaviour
         };
 
         string dialog;
-        
+
         // 如果有請求標籤，有機率使用帶標籤的對話
         if (request.RequestTags != null && request.RequestTags.Count > 0 && GameRng.Value() > 0.3f)
         {
             // 隨機選一個標籤
             int tagIndex = GameRng.Range(0, request.RequestTags.Count);
             string tagName = GetTagDisplayName(request.RequestTags[tagIndex]);
-            
+
             // 隨機選一個帶標籤的模板
             int templateIndex = GameRng.Range(0, tagDialogTemplates.Count);
             dialog = tagDialogTemplates[templateIndex]
@@ -178,10 +178,10 @@ public class MonsterTradeMode : MonoBehaviour
             int templateIndex = GameRng.Range(0, dialogTemplates.Count);
             dialog = dialogTemplates[templateIndex].Replace("{type}", typeName);
         }
-        
+
         return dialog;
     }
-    
+
     /// <summary>
     /// 取得標籤的顯示名稱
     /// </summary>
@@ -193,7 +193,7 @@ public class MonsterTradeMode : MonoBehaviour
         }
         return tagId;
     }
-    
+
     /// <summary>
     /// 更新當前顧客的對話
     /// </summary>
@@ -209,7 +209,8 @@ public class MonsterTradeMode : MonoBehaviour
     {
         // 只計算妖界物品
         var PlayerInventory = DataManager.Instance.CurrentPlayerData.InventoryItems
-            .Where(item => {
+            .Where(item =>
+            {
                 var definition = DataManager.Instance.GetItemById(item.ItemId);
                 return definition != null && definition.World == ItemWorld.Human;
             })
@@ -233,7 +234,7 @@ public class MonsterTradeMode : MonoBehaviour
         else//下一位
         {
             currentmonsterGuest = _TodayMonsterGuestList[monsterTradeProgress.CustomerIndex];
-            tradeView.UpdateTradeInfo(_TodayMonsterGuestList[monsterTradeProgress.CustomerIndex], PlayerInventory);
+            tradeView.UpdateTradeInfo(_TodayMonsterGuestList[monsterTradeProgress.CustomerIndex], PlayerInventory, monsterTradeProgress.CustomerIndex, _TodayMonsterGuestList.Count, DataManager.Instance.CurrentPlayerData.MonsterGold);
             UpdateGuestDialog();
         }
     }
@@ -251,20 +252,23 @@ public class MonsterTradeMode : MonoBehaviour
     #region TradePrice
     private void PriceTrade(Item item)
     {
-            var price = CaculatePrice(item);
-            if (TradeSuccess(item))
-            {
-                //交易成功
-                DataManager.Instance.ModifyMonsterGold((int)price);
-                DataManager.Instance.RemoveItem(item);
-                NextGuest();
-            }
-            else
-            {
-                Debug.Log($"交易失敗");
-                //交易失敗
-                GuestLeave();
-            }
+        var price = CaculatePrice(item);
+        AchievementEvents.TradeItem(currentmonsterGuest.monsterCustomer.Profession, item.ItemId);
+        if (TradeSuccess(item))
+        {
+            //交易成功
+            DataManager.Instance.ModifyMonsterGold((int)price);
+            tradeView.UpdateSoulDisplayAnimation((int)price);
+            tradeView.UpdateSoulDisplay(DataManager.Instance.CurrentPlayerData.MonsterGold);
+            DataManager.Instance.RemoveItem(item);
+            NextGuest();
+        }
+        else
+        {
+            Debug.Log($"交易失敗");
+            //交易失敗
+            GuestLeave();
+        }
     }
     /// <summary>
     /// 顧客離開 - 耐心耗盡時觸發
@@ -281,13 +285,13 @@ public class MonsterTradeMode : MonoBehaviour
     private bool TradeSuccess(Item item)
     {
         if (item == null || currentmonsterGuest == null) return false;
-        
+
         var itemDefinition = DataManager.Instance.GetItemById(item.ItemId);
         if (itemDefinition == null) return false;
-        
+
         var hateTags = currentmonsterGuest.monsterCustomer.HateTags;
         if (hateTags == null || hateTags.Count == 0) return true;
-        
+
         // 檢查物品標籤是否與 HateTags 有交集
         foreach (var tag in itemDefinition.Tags)
         {
@@ -315,8 +319,8 @@ public class MonsterTradeMode : MonoBehaviour
             3 => currentmonsterGuest.monsterCustomer.PreferMaxPower * 1f,
             _ => currentmonsterGuest.monsterCustomer.PreferMaxPower * 1f
         };
-        
-        if(currentmonsterGuest.monsterRequest.itemType == itemDefinition.Type)
+
+        if (currentmonsterGuest.monsterRequest.itemType == itemDefinition.Type)
         {
             // 計算物品標籤與顧客請求標籤的相同數量
             int matchingTagCount = itemDefinition.Tags

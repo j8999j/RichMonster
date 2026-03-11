@@ -634,7 +634,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   talkSystem: {fileID: 381028777}
-  textAsset: {fileID: 4900000, guid: e3a5a20868c10a2478711c2b3005a4bd, type: 3}
+  textAsset: {fileID: 4900000, guid: 972a1a40863478e48aa09d39831b0994, type: 3}
 --- !u!1 &458759656
 GameObject:
   m_ObjectHideFlags: 0
@@ -667,8 +667,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1108066469}
   - {fileID: 1503134272}
+  - {fileID: 1108066469}
   m_Father: {fileID: 381028774}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

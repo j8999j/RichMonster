@@ -11,7 +11,11 @@ public class AchievementBigDeal : AchievementBase
 
         public override void Initialize()
         {
-            if (IsCompleted) return;
+            var data = DataManager.Instance.GetAchievementSaveData(AchievementID);
+            if (data != null)
+            {
+                IsCompleted = (data as AchievementBigDeal).IsCompleted;
+            }
             base.Initialize();
         }
         protected override void SaveData()

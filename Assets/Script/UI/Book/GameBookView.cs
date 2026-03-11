@@ -35,6 +35,12 @@ public class GameBookView : MonoBehaviour
     public Sprite OrcsRaceSprite;
     public Sprite ProtossRaceSprite;
     public Sprite FairyRaceSprite;
+    public Sprite OnButtonSelectSprite;
+    public Sprite OffButtonSelectSprite;
+    public Button DescriptionButton;
+    public Button StoryButton_1;
+    public Button StoryButton_2;
+    public List<Button> InformationButtonList;
     [Header("篩選按鈕物品")]
     public Button AllButton;
     public Button PropButton;
@@ -314,7 +320,6 @@ public class GameBookView : MonoBehaviour
             TypeIcon.sprite = nullSprite;
         if (WorldIcon != null)
             WorldIcon.sprite = nullSprite;
-
         // 清除標籤
         if (ItemTagCotainer != null)
         {

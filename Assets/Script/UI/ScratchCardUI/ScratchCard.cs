@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 
 public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
 {
@@ -22,7 +23,9 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     public GameObject CompletePrizePanel;
     public GameObject BuyPanelRaycastImage;
     [SerializeField] private Button[] ScratchCardSelect;
-
+    [Header("得獎設定")]
+    public GameObject PrizePanel;
+    public TextMeshProUGUI PrizeText;
     [Header("按鈕懸停效果設定")]
     [Tooltip("滑鼠懸停時按鈕朝自身方向移動的距離")]
     [SerializeField] private float hoverMoveDistance = 30f;
@@ -62,9 +65,34 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
             prizeImages[i].sprite = prizeSprites[spriteIndex];
         }
     }
-    public void ShowCompletePrize()
+    public void ShowCompletePrize(ScratchCardPrizeType prize)
     {
         CompletePrizePanel.SetActive(true);
+        PrizePanel.SetActive(true);
+        switch (prize)
+        {
+            case ScratchCardPrizeType.GrandPrize:
+                PrizeText.text = "恭喜獲得:10000";
+                break;
+            case ScratchCardPrizeType.FirstPrize:
+                PrizeText.text = "恭喜獲得:5000";
+                break;
+            case ScratchCardPrizeType.SecondPrize:
+                PrizeText.text = "恭喜獲得:2000";
+                break;
+            case ScratchCardPrizeType.ThirdPrize:
+                PrizeText.text = "恭喜獲得:500";
+                break;
+            case ScratchCardPrizeType.FourthPrize:
+                PrizeText.text = "恭喜獲得:300";
+                break;
+            case ScratchCardPrizeType.FifthPrize:
+                PrizeText.text = "恭喜獲得:100";
+                break;
+            case ScratchCardPrizeType.NoWin:
+                PrizeText.text = "恭喜獲得:0";
+                break;
+        }
     }
     public void ShowCardPanel(bool isScratched)
     {

@@ -267,7 +267,7 @@ public class DataManager : Singleton<DataManager>
     private void AddItemToBook(string itemId)
     {
         if (_bookData == null) return;
-        
+
         var existing = _bookData.ItemBookData.ItemBooks.Find(x => x.ItemID == itemId);
         if (existing != null)
         {
@@ -281,7 +281,8 @@ public class DataManager : Singleton<DataManager>
                 IsBooked = true
             });
         }
-        
+
+        OnBookDataChanged = true;
         SaveManager.Instance.SaveBookData(_bookData);
     }
 
@@ -291,10 +292,11 @@ public class DataManager : Singleton<DataManager>
     public void UnlockMonsterInformation(string informationId)
     {
         if (_bookData == null) return;
-        
+
         if (!_bookData.MonsterBookData.UnlockMonsterInformationID.Contains(informationId))
         {
             _bookData.MonsterBookData.UnlockMonsterInformationID.Add(informationId);
+            OnBookDataChanged = true;
             SaveManager.Instance.SaveBookData(_bookData);
         }
     }
@@ -440,7 +442,7 @@ public class DataManager : Singleton<DataManager>
     #endregion
 
     #region ModifyPlayerAPI
-    
+
 
     /// <summary>
     /// 新增或更新存檔資料到當前玩家的 GameSaveFile 中
@@ -483,9 +485,10 @@ public class DataManager : Singleton<DataManager>
     public void ModifyGold(int amount)
     {
         if (_currentPlayerData == null) return;
-        
+
         _currentPlayerData.Gold += amount;
         if (_currentPlayerData.Gold < 0) _currentPlayerData.Gold = 0;
+        OnPlayerDataChanged = true;
         AchievementEvents.GoldChanged(_currentPlayerData.Gold, amount);
         AdjustUpdateView();
     }
@@ -498,7 +501,7 @@ public class DataManager : Singleton<DataManager>
 
         _currentPlayerData.MonsterGold += amount;
         if (_currentPlayerData.MonsterGold < 0) _currentPlayerData.MonsterGold = 0;
-
+        OnPlayerDataChanged = true;
         AdjustUpdateView();
     }
 
@@ -534,6 +537,7 @@ public class DataManager : Singleton<DataManager>
     {
         if (_currentPlayerData == null) return;
         if (_currentPlayerData.Inventory == null) _currentPlayerData.Inventory = new Inventory();
+        AchievementEvents.GetItem(itemId);
         if (IsItemInBook(itemId) == false)
         {
             AddItemToBook(itemId);
@@ -544,6 +548,7 @@ public class DataManager : Singleton<DataManager>
             CostPrice = costPrice
         };
         _currentPlayerData.Inventory.Items.Add(newItem);
+        OnPlayerDataChanged = true;
     }
 
     /// <summary>
@@ -559,7 +564,7 @@ public class DataManager : Singleton<DataManager>
         if (target != null)
         {
             _currentPlayerData.Inventory.Items.Remove(target);
-            Debug.Log($"[DataManager] 已移除物品: {item.ItemId} (成本: {item.CostPrice})");
+            OnPlayerDataChanged = true;
             return true;
         }
         Debug.LogWarning($"[DataManager] 移除失敗，找不到: {item.ItemId} (成本: {item.CostPrice})");
@@ -599,7 +604,7 @@ public class DataManager : Singleton<DataManager>
 
         if (_currentPlayerData.GameSaveFile.GameData == null)
             _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
-        
+
         if (_currentPlayerData.GameSaveFile.GameData.ContainsKey(newShelfData.UniqueID))
         {
             _currentPlayerData.GameSaveFile.GameData[newShelfData.UniqueID] = newShelfData;
@@ -608,6 +613,7 @@ public class DataManager : Singleton<DataManager>
         {
             _currentPlayerData.GameSaveFile.GameData.Add(newShelfData.UniqueID, newShelfData);
         }
+        OnPlayerDataChanged = true;
     }
 
     /// <summary>
@@ -637,6 +643,7 @@ public class DataManager : Singleton<DataManager>
             }
             orderHistoryData.OrderHistory.Add(new OrderProgress { OrderID = ID, IsCompleted = true });
         }
+        OnPlayerDataChanged = true;
     }
 
     /// <summary>
@@ -655,12 +662,14 @@ public class DataManager : Singleton<DataManager>
                 orderHistoryData.OrderHistory = new List<OrderProgress>();
             }
             orderHistoryData.OrderHistory.Clear();
+            OnPlayerDataChanged = true;
         }
     }
 
     public void ModifyCurrentDayPhase(DayPhase dayPhase)
     {
         _currentPlayerData.PlayingStatus = dayPhase;
+        OnPlayerDataChanged = true;
         AdjustUpdateView();
     }
 
@@ -684,6 +693,7 @@ public class DataManager : Singleton<DataManager>
     public void ModifyCurrentDay(int CurrentDay)
     {
         _currentPlayerData.DaysPlayed = CurrentDay;
+        OnPlayerDataChanged = true;
         AdjustUpdateView();
     }
     #endregion
