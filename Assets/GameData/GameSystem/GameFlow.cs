@@ -29,6 +29,10 @@ public class GameFlow
     {
         DataManager.Instance.ClearOrderProgress();
         DataManager.Instance.ModifyCurrentDayPhase(newPhase);
+        if (newPhase == DayPhase.Night)
+        {
+            AchievementEvents.DayEndGold(_currentPlayerData.Gold);
+        }
         await SaveGameAsync();
     }
     public async Task SaveGameAsync()

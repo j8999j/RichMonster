@@ -21,6 +21,10 @@ MonoBehaviour:
     TargetItemID: 
     TargetTag: Magic
     TargetType: 0
-  Rewards: []
+  Rewards:
+  - RewardType: 0
+    GoldAmount: 100
+    ItemID: 
+    ItemAmount: 0
   IsFinish: 0
   MissionWorld: 0

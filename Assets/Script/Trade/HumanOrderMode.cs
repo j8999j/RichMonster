@@ -392,6 +392,8 @@ public class HumanOrderMode : MonoBehaviour
             DataManager.Instance.AddOrderProgress(SelectedLargeOrder.OrderId);
             int TradePrice = LargeOrderTrade(SelectedOrderItems, SelectedLargeOrder);
             DataManager.Instance.ModifyGold(TradePrice);
+            List<string> itemIds = SelectedOrderItems.Select(item => item.ItemId).ToList();
+            AchievementEvents.CompleteOrder(SelectedLargeOrder.OrderId,itemIds,TradePrice);
             foreach (var item in SelectedOrderItems)
             {
                 DataManager.Instance.RemoveItem(item);
@@ -410,6 +412,8 @@ public class HumanOrderMode : MonoBehaviour
             DataManager.Instance.AddOrderProgress(SelectedSmallOrder.OrderId);
             int TradePrice = SmallOrderTrade(SelectedOrderItems[0], SelectedSmallOrder);
             DataManager.Instance.ModifyGold(TradePrice);
+            List<string> itemIds = SelectedOrderItems.Select(item => item.ItemId).ToList();
+            AchievementEvents.CompleteOrder(SelectedSmallOrder.OrderId,itemIds,TradePrice);
             DataManager.Instance.RemoveItem(SelectedOrderItems[0]);
             // 刷新訂單列表顯示
             ShowTodayOrder();

@@ -46,7 +46,7 @@ public class BookItemSlot : MonoBehaviour
         _onClickedCallback = onClick;
         _currentItemId = null; // 重置以強制重新載入圖片
         LoadSprite(itemId);
-        ItemName.text = CurrentDefinition.Name;
+        ItemName.text = isUnlocked ? CurrentDefinition.Name : "???";
     }
 
     /// <summary>

@@ -5,7 +5,7 @@ public class NewWorldGodAchievement : AchievementBase
     {
         public NewWorldGodAchievement()
         {
-            AchievementID = "NewWorldGod";
+            AchievementID = "LifeOverDeath";
         }
 
         public override void Initialize()

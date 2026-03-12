@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: fafd54932fb07a1448c328b02f87dfbe
+guid: 45abdbf8a2cf5d9438cc50525297b63f
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,13 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: TypeFood
+      name: MissionUI_Panel
       rect:
         serializedVersion: 2
-        x: 28
-        y: 189
-        width: 115
-        height: 32
+        x: 67
+        y: 140
+        width: 688
+        height: 610
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,20 +124,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ac9df09204df44a46814da0f271f80ec
-      internalID: -74133090
+      spriteID: bcd5e3fb7096ddd4d9bc613578171919
+      internalID: 1232113206
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TypeEquipment
+      name: MissionUI_Information
       rect:
         serializedVersion: 2
-        x: 28
-        y: 118
-        width: 115
-        height: 31
+        x: 789
+        y: 268
+        width: 99
+        height: 92
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -145,29 +145,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 624c64ab492916142ba9dcd99316833a
-      internalID: 385981625
+      spriteID: 122b2af80d5550e4b8fa919a383109fe
+      internalID: -820106455
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TypeProp
+      name: MissionUI_Button
       rect:
         serializedVersion: 2
-        x: 28
-        y: 41
-        width: 115
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 305
+        y: 174
+        width: 212
+        height: 69
+      alignment: 5
+      pivot: {x: 1, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ef345f9c5dc97b1458c3205ce111dc7d
-      internalID: 1248296052
+      spriteID: 59b6795756092c847b685e63bce5e93a
+      internalID: -1621342852
       vertices: []
       indices: 
       edges: []
@@ -175,7 +175,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 8feabd645b9dfbd4b904050770252d50
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -183,9 +183,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      TypeEquipment: 385981625
-      TypeFood: -74133090
-      TypeProp: 1248296052
+      MissionUI_Button: -1621342852
+      MissionUI_Information: -820106455
+      MissionUI_Panel: 1232113206
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

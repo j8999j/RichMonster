@@ -48,7 +48,7 @@ public class BookMonsterSlot : MonoBehaviour
         _currentMonsterId = null; // 重置以強制重新載入圖片
         LoadSprite(definition.Id);
         if (MonsterName != null)
-            MonsterName.text = definition.ProfessionName;
+            MonsterName.text = isUnlocked ? definition.ProfessionName : "???";
     }
 
     /// <summary>

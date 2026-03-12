@@ -1,9 +1,12 @@
 using UnityEngine;
+using Player;
 
-public class NpcOnMap : MonoBehaviour
+public class NpcOnMap : MonoBehaviour, IInteractable
 {
     public NpcMission NpcMission;
     public SpriteRenderer NpcIcon;
+    public NPCMissionView missionView;
+    public GameObject prompt;
 
     /// <summary>
     /// 設定 NPC 任務與顯示圖示
@@ -11,7 +14,7 @@ public class NpcOnMap : MonoBehaviour
     public void setNPC(NpcMission mission)
     {
         NpcMission = mission;
-        
+
         if (mission != null && !string.IsNullOrEmpty(mission.NpcID))
         {
             // 由於 SpriteLoader 目前是依照 ID 去 ItemsAtlas 尋找
@@ -41,5 +44,19 @@ public class NpcOnMap : MonoBehaviour
                 NpcIcon.gameObject.SetActive(false);
             }
         }
+        missionView.Bind(mission);
+    }
+
+    public void Interact()
+    {
+        missionView.ShowPanel();
+    }
+    public void ShowPrompt()
+    {
+        prompt.SetActive(true);
+    }
+    public void HidePrompt()
+    {
+        prompt.SetActive(false);
     }
 }

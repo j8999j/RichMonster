@@ -253,12 +253,21 @@ public class GameBookView : MonoBehaviour
 
         if (slot.CurrentDefinition == null) return;
 
-        ItemName.text = slot.CurrentDefinition.Name;
-        ItemDescription.text = slot.CurrentDefinition.Description;
+        if (isUnlocked)
+        {
+            ItemName.text = slot.CurrentDefinition.Name;
+            ItemDescription.text = slot.CurrentDefinition.Description;
+        }
+        else
+        {
+            ItemName.text = "???";
+            ItemDescription.text = "???";
+        }
 
         if (DetailIcon != null)
         {
             DetailIcon.sprite = slot.ItemImage.sprite;
+            DetailIcon.color = isUnlocked ? Color.white : Color.black;
             AdjustImageScale(DetailIcon);
         }
         if (TypeIcon != null)
@@ -313,7 +322,10 @@ public class GameBookView : MonoBehaviour
         ItemDescription.text = "";
 
         if (DetailIcon != null)
+        {
             DetailIcon.sprite = nullSprite;
+            DetailIcon.color = Color.white;
+        }
         if (RarityIcon != null)
             RarityIcon.sprite = nullSprite;
         if (TypeIcon != null)
@@ -464,16 +476,23 @@ public class GameBookView : MonoBehaviour
 
         if (slot.CurrentDefinition == null) return;
 
-        if (MonsterName != null)
-            MonsterName.text = slot.CurrentDefinition.ProfessionName;
-        if (RaceName != null)
-            RaceName.text = slot.CurrentDefinition.Race;
-        if (MonsterDescription != null)
-            MonsterDescription.text = slot.CurrentDefinition.Description;
+        if (isUnlocked)
+        {
+            if (MonsterName != null) MonsterName.text = slot.CurrentDefinition.ProfessionName;
+            if (MonsterDescription != null) MonsterDescription.text = slot.CurrentDefinition.Description;
+        }
+        else
+        {
+            if (MonsterName != null) MonsterName.text = "???";
+            if (MonsterDescription != null) MonsterDescription.text = "???";
+        }
+        // 種族不受解鎖狀態影響，總是顯示
+        if (RaceName != null) RaceName.text = slot.CurrentDefinition.Race;
 
         if (MonsterDetailIcon != null)
         {
             MonsterDetailIcon.sprite = slot.MonsterImage.sprite;
+            MonsterDetailIcon.color = isUnlocked ? Color.white : Color.black;
             AdjustImageScale(MonsterDetailIcon);
         }
 
@@ -510,7 +529,10 @@ public class GameBookView : MonoBehaviour
         if (MonsterDescription != null)
             MonsterDescription.text = "";
         if (MonsterDetailIcon != null)
+        {
             MonsterDetailIcon.sprite = nullSprite;
+            MonsterDetailIcon.color = Color.white;
+        }
         if (MonsterRaceIcon != null)
             MonsterRaceIcon.sprite = nullSprite;
     }

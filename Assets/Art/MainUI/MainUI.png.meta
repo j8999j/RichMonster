@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: fafd54932fb07a1448c328b02f87dfbe
+guid: df57e975339bc7544b44fad13f653992
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,64 +110,127 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: TypeFood
+      name: MainUI_0
       rect:
         serializedVersion: 2
-        x: 28
-        y: 189
-        width: 115
-        height: 32
+        x: 69
+        y: 22
+        width: 50
+        height: 64
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ac9df09204df44a46814da0f271f80ec
-      internalID: -74133090
+      spriteID: 458d9a41845f07b498df3733a5973c7d
+      internalID: -1989455413
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TypeEquipment
+      name: MainUI_1
       rect:
         serializedVersion: 2
-        x: 28
-        y: 118
-        width: 115
-        height: 31
+        x: 146
+        y: 26
+        width: 50
+        height: 63
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 624c64ab492916142ba9dcd99316833a
-      internalID: 385981625
+      spriteID: 5325872fb0e9de54582cd70469bf0600
+      internalID: 1053093405
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TypeProp
+      name: MainUI_2
       rect:
         serializedVersion: 2
-        x: 28
-        y: 41
-        width: 115
-        height: 32
+        x: 212
+        y: 28
+        width: 64
+        height: 58
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ef345f9c5dc97b1458c3205ce111dc7d
-      internalID: 1248296052
+      spriteID: 8519404b49edfbe47bf2233d9761727c
+      internalID: 1985236278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MainUI_3
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 26
+        width: 64
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f6ae21b298857841aa2f16c5ad2b68a
+      internalID: -103835599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MainUI_4
+      rect:
+        serializedVersion: 2
+        x: 379
+        y: 26
+        width: 64
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cfecb0e2ce54a0948acd0e85e5f341e2
+      internalID: 1508733238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MainUI_5
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 22
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1194836ce8152c74c8dd900f37e768a2
+      internalID: -1570599028
       vertices: []
       indices: 
       edges: []
@@ -175,7 +238,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 8feabd645b9dfbd4b904050770252d50
+    spriteID: 397283f9c0f587b40a245ffc5d58d4a0
     internalID: 0
     vertices: []
     indices: 
@@ -183,9 +246,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      TypeEquipment: 385981625
-      TypeFood: -74133090
-      TypeProp: 1248296052
+      MainUI_0: -1989455413
+      MainUI_1: 1053093405
+      MainUI_2: 1985236278
+      MainUI_3: -103835599
+      MainUI_4: 1508733238
+      MainUI_5: -1570599028
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
