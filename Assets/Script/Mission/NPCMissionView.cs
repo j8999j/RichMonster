@@ -4,16 +4,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
+using System;
 
 public class NPCMissionView : MonoBehaviour
 {
     [Header("UI Components")]
     public GameObject MissionPanel;
+    public GameObject NoneItemCanTradeText;
     public TextMeshProUGUI NPCNameText;
     public TextMeshProUGUI MissionNameText;
     public TextMeshProUGUI DescriptionText;
     public TextMeshProUGUI RequirementText;
     public Image RequirementImage;
+    public Image SelectedImage;
     public Sprite PropSprite;
     public Sprite FoodSprite;
     public Sprite EquipmentSprite;
@@ -22,9 +25,31 @@ public class NPCMissionView : MonoBehaviour
     public Button SubmitButton;
     private NpcMission _currentMission;
     private List<GameObject> _spawnedRewards = new List<GameObject>();
+    
+    [Header("Bag UI")]
+    public Transform BagContainer;             // 顯示背包的容器
+    public NPCTradeSlot NPCTradeSlotPrefab;    // 背包道具的 Prefab
+    public Sprite NullSprite;
+    private List<NPCTradeSlot> _spawnedBagSlots = new List<NPCTradeSlot>();
+    [Header("Item Detail UI")]
+    public Transform TagSlotContainer;//標籤容器
+    public Image DetailIcon;//背包物品圖片
+    public Image TypeIcon;//背包物品類型圖片
+    public Image WorldIcon;//世界標籤圖片
+    public Image RareLevelImage;//稀有度圖標
+    public Sprite MonsterTagSprite;//妖界
+    public TextMeshProUGUI DetailNameText;//背包物品名稱
+    public TextMeshProUGUI DetailDescText;//背包物品描述
+    public TextMeshProUGUI DetailPriceText;//背包物品購買成本
+    public GameObject TagsPrefab; // 標籤 Prefab
+    
+    public Item SubmitItem { get; private set; }
+    public event Action OnSubmitClick;
+
 
     private void Start()
     {
+        ClearSelected();
         if (SubmitButton != null)
             SubmitButton.onClick.AddListener(SubmitMission);
     }
@@ -43,6 +68,7 @@ public class NPCMissionView : MonoBehaviour
     public void Bind(NpcMission mission)
     {
         _currentMission = mission;
+        SubmitItem = null;
         if (mission == null) return;
 
         // 1. 基本資訊
@@ -61,8 +87,11 @@ public class NPCMissionView : MonoBehaviour
         // 3. 獎勵列表
         UpdateRewardsUI();
 
-        // 4. 檢查是否可提交
-        RefreshSubmitButton();
+        // 4. 重置與顯示背包
+        SubmitItem = null;
+        ClearSelected();
+        ShowBagItems();
+        RefreshSubmitButton(_currentMission.Requirement == null || _currentMission.Requirement.Type == RequirementType.None);
 
         gameObject.SetActive(true);
     }
@@ -152,9 +181,176 @@ public class NPCMissionView : MonoBehaviour
         }
     }
 
-    private void RefreshSubmitButton()
+    private void ShowBagItems()
     {
-        if (SubmitButton == null) return;
+        foreach (var slot in _spawnedBagSlots) Destroy(slot.gameObject);
+        _spawnedBagSlots.Clear();
+
+        if (BagContainer == null || NPCTradeSlotPrefab == null) return;
+        
+        var inventory = DataManager.Instance.CurrentPlayerData.InventoryItems;
+        int Count = 0;
+        NoneItemCanTradeText.SetActive(false);
+        foreach (var item in inventory)
+        {
+            var def = DataManager.Instance.GetItemById(item.ItemId);
+            if (def == null) continue;
+
+            // 條件：妖界物品且符合任務需求
+            if (def.World == ItemWorld.Monster && (_currentMission == null || _currentMission.Requirement.Type == RequirementType.None || _currentMission.Requirement.IsMatch(def)))
+            {
+                NPCTradeSlot slot = Instantiate(NPCTradeSlotPrefab, BagContainer);
+                slot.Setup(item, OnBagSlotClicked);
+                _spawnedBagSlots.Add(slot);
+                Count++;
+            }
+        }
+        if (Count == 0)
+        {
+            NoneItemCanTradeText.SetActive(true);
+        }
+    }
+
+    private void OnBagSlotClicked(NPCTradeSlot slot)
+    {
+        ClearSelected();
+        SubmitItem = slot._currentData;
+        SpriteLoader.LoadSpriteAsync(slot._currentData.ItemId, sprite =>
+        {
+                SelectedImage.sprite = sprite;
+                AdjustImageScale(SelectedImage, 70);
+        });
+
+        //處理選中背包物品的邏輯
+        if (DetailNameText != null) DetailNameText.text = slot._currentDefinition.Name;
+        if (DetailDescText != null) DetailDescText.text = slot._currentDefinition.Description;
+        if (DetailPriceText != null) DetailPriceText.text = slot._currentData.CostPrice.ToString();
+        if (DetailIcon != null) DetailIcon.sprite = slot._targetImage.sprite;
+
+        if (WorldIcon != null)
+        {
+            switch(slot._currentDefinition.World)
+            {
+                case ItemWorld.Monster:
+                    WorldIcon.sprite = MonsterTagSprite;
+                    break;
+            }
+        }
+
+        if (TypeIcon != null)
+        {
+            switch(slot._currentDefinition.Type)
+            {
+                case ItemType.Food:
+                    TypeIcon.sprite = FoodSprite;
+                    break;
+                case ItemType.Equipment:
+                    TypeIcon.sprite = EquipmentSprite;
+                    break;
+                case ItemType.Prop:
+                    TypeIcon.sprite = PropSprite;
+                    break;
+            }
+        }
+
+        // 載入對應稀有度ID的圖片
+        if (RareLevelImage != null)
+        {
+            string rarityId = slot._currentDefinition.Rarity.ToString();
+            SpriteLoader.LoadSpriteAsync(rarityId, sprite =>
+            {
+                if (RareLevelImage == null) return;
+                RareLevelImage.sprite = sprite != null ? sprite : NullSprite;
+            });
+        }
+
+        ShowTags(slot._currentDefinition.Tags);
+        if (DetailIcon != null) AdjustImageScale(DetailIcon, 100);
+        RefreshSubmitButton(true);
+    }
+
+    private void ClearSelected()
+    {
+        //清空選中背包物品的邏輯
+        
+        DetailNameText.text = "";
+        DetailDescText.text = "";
+        DetailPriceText.text = "";
+        SelectedImage.sprite = NullSprite;
+        DetailIcon.sprite = NullSprite;
+        WorldIcon.sprite = NullSprite;
+        TypeIcon.sprite = NullSprite;
+        RareLevelImage.sprite = NullSprite;
+        if (TagSlotContainer != null)
+        {
+            foreach(Transform child in TagSlotContainer)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+    }
+
+    private void ShowTags(List<string> tags)
+    {
+        if (TagSlotContainer == null || TagsPrefab == null || tags == null) return;
+
+        for(int i = 0; i < tags.Count; i++)
+        {
+            string tagId = tags[i];
+            string tagName = DataManager.Instance.GetTagNameByTag(tagId);
+
+            if(tagName != "")
+            {
+                GameObject newSlot = Instantiate(TagsPrefab, TagSlotContainer);
+                
+                TextMeshProUGUI textComp = newSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                textComp.text = tagName;
+
+                // 建立Tag圖片物件
+                GameObject imgObj = new GameObject("TagImage");
+                imgObj.transform.SetParent(newSlot.transform, false);
+                Image tagImage = imgObj.AddComponent<Image>();
+                imgObj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                imgObj.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
+
+                // 預設隱藏圖片，顯示文字
+                imgObj.SetActive(false);
+                textComp.gameObject.SetActive(true);
+
+                Image capturedImage = tagImage;
+                TextMeshProUGUI capturedText = textComp;
+                GameObject capturedImgObj = imgObj;
+
+                // 嘗試載入Tag圖片，成功則顯示圖片並隱藏文字，失敗則顯示文字
+                SpriteLoader.LoadSpriteAsync(tagId, sprite =>
+                {
+                    if (capturedImgObj == null) return; // 物件已被銷毀
+                    if (sprite != null)
+                    {
+                        capturedImage.sprite = sprite;
+                        capturedImage.SetNativeSize();
+                        // 等比例將寬設為175
+                        RectTransform rt = capturedImage.GetComponent<RectTransform>();
+                        float ratio = 175f / rt.sizeDelta.x;
+                        rt.sizeDelta = new Vector2(175f, rt.sizeDelta.y * ratio);
+                        capturedImgObj.SetActive(true);
+                        capturedText.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        // 圖片載入失敗，保持顯示文字
+                        capturedImgObj.SetActive(false);
+                        capturedText.gameObject.SetActive(true);
+                    }
+                });
+            }
+        }
+    }
+
+
+    public void RefreshSubmitButton(bool canSubmit)
+    {
+        if (SubmitButton == null || _currentMission == null) return;
 
         if (_currentMission.IsFinish)
         {
@@ -164,67 +360,15 @@ public class NPCMissionView : MonoBehaviour
             return;
         }
 
-        bool canSubmit = CheckRequirementMet(out _);
         SubmitButton.interactable = canSubmit;
-    }
-
-    private bool CheckRequirementMet(out Item targetItem)
-    {
-        targetItem = null;
-        if (_currentMission.Requirement == null || _currentMission.Requirement.Type == RequirementType.None) return true;
-
-        var inventory = DataManager.Instance.CurrentPlayerData.InventoryItems;
-        foreach (var item in inventory)
-        {
-            var def = DataManager.Instance.GetItemById(item.ItemId);
-            if (_currentMission.Requirement.IsMatch(def))
-            {
-                targetItem = item;
-                return true;
-            }
-        }
-
-        return false;
+        var normalText = SubmitButton.GetComponentInChildren<TextMeshProUGUI>();
+        if (normalText != null && normalText.text == "已完成") normalText.text = "提交任務";
     }
 
     public void SubmitMission()
     {
         if (_currentMission == null || _currentMission.IsFinish) return;
-
-        if (CheckRequirementMet(out Item targetItem))
-        {
-            // 1. 扣除物品 (如果是 RequirementType.None 則 targetItem 為 null)
-            if (targetItem != null)
-            {
-                DataManager.Instance.RemoveItem(targetItem);
-            }
-
-            // 2. 發放獎勵
-            foreach (var reward in _currentMission.Rewards)
-            {
-                switch (reward.RewardType)
-                {
-                    case RewardType.Gold:
-                        if (_currentMission.MissionWorld == ItemWorld.Human)
-                            DataManager.Instance.ModifyGold(reward.GoldAmount);
-                        else
-                            DataManager.Instance.ModifyMonsterGold(reward.GoldAmount);
-                        break;
-                    case RewardType.Item:
-                        DataManager.Instance.AddItem(reward.ItemID, 0); // 獎勵物品成本設為 0
-                        break;
-                    case RewardType.Information:
-                        // TODO: 處理情報解鎖邏輯，例如 DataManager.Instance.UnlockMonsterInformation(...)
-                        Debug.Log("[NPCMissionView] 獲得情報獎勵，需視具體任務設定解鎖內容");
-                        break;
-                }
-            }
-            // 3. 標記完成
-            _currentMission.IsFinish = true;
-            Debug.Log($"[NPCMissionView] 任務 '{_currentMission.MissionName}' 已提交完成！");
-            // 4. 關閉或刷新
-            RefreshSubmitButton();
-        }
+        OnSubmitClick?.Invoke();
     }
 
     public void CloseView()

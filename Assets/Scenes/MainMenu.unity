@@ -1644,6 +1644,8 @@ MonoBehaviour:
   ItemTagCotainer: {fileID: 637925779}
   ItemSlotCotainer: {fileID: 370169911}
   MonsterSlotCotainer: {fileID: 1641342691}
+  MonsterLikeTagContainer: {fileID: 1162520799}
+  MonsterHateTagContainer: {fileID: 1809832743}
   ItemBookButton: {fileID: 49601376}
   MonsterBookButton: {fileID: 1396869116}
   ItemName: {fileID: 506710637}
@@ -1884,7 +1886,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &295736125
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5885,7 +5887,7 @@ GameObject:
   - component: {fileID: 1146236256}
   - component: {fileID: 1146236255}
   m_Layer: 5
-  m_Name: PreferImage (1)
+  m_Name: HateImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

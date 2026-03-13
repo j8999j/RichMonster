@@ -23,9 +23,9 @@ MonoBehaviour:
     TargetTag: Fire
     TargetType: 0
   Rewards:
-  - RewardType: 0
-    GoldAmount: 150
+  - RewardType: 2
+    GoldAmount: 0
     ItemID: 
     ItemAmount: 0
-  IsFinish: 0
+  IsFinish: 1
   MissionWorld: 0

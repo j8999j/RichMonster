@@ -1,5 +1,6 @@
 using UnityEngine;
 using Player;
+using GameSystem;
 
 public class NpcOnMap : MonoBehaviour, IInteractable
 {
@@ -7,13 +8,32 @@ public class NpcOnMap : MonoBehaviour, IInteractable
     public SpriteRenderer NpcIcon;
     public NPCMissionView missionView;
     public GameObject prompt;
-
+    public void LoadData()
+    {
+        var data = DataManager.Instance.GetPlayerSaveData<NPCMissionSave>(NpcMission.MissionID);
+        if (data != null && data.LastUpdatedDay == GameManager.Instance.gameFlow.CurrentDay)
+        {
+            NpcMission.IsFinish = data.IsFinish;
+        }
+        else
+        {
+            NpcMission.IsFinish = false;
+        }
+    }
+    private void SaveData()
+    {
+        var data = new NPCMissionSave();
+        data.IsFinish = NpcMission.IsFinish;
+        data.LastUpdatedDay = GameManager.Instance.gameFlow.CurrentDay;
+        DataManager.Instance.SetPlayerData(NpcMission.MissionID, data);
+    }
     /// <summary>
     /// 設定 NPC 任務與顯示圖示
     /// </summary>
     public void setNPC(NpcMission mission)
     {
         NpcMission = mission;
+        LoadData();
 
         if (mission != null && !string.IsNullOrEmpty(mission.NpcID))
         {
@@ -44,12 +64,106 @@ public class NpcOnMap : MonoBehaviour, IInteractable
                 NpcIcon.gameObject.SetActive(false);
             }
         }
-        missionView.Bind(mission);
+        if (missionView != null)
+        {
+            missionView.OnSubmitClick -= HandleMissionSubmit;
+            missionView.OnSubmitClick += HandleMissionSubmit;
+            missionView.Bind(mission);
+        }
+    }
+
+    public bool CheckRequirementMet()
+    {
+        if (NpcMission == null || NpcMission.Requirement == null || NpcMission.Requirement.Type == RequirementType.None) return true;
+
+        var inventory = DataManager.Instance.CurrentPlayerData.InventoryItems;
+        foreach (var item in inventory)
+        {
+            var def = DataManager.Instance.GetItemById(item.ItemId);
+            if (NpcMission.Requirement.IsMatch(def))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void HandleMissionSubmit()
+    {
+        if (NpcMission == null || NpcMission.IsFinish) return;
+
+        Item targetItem = missionView != null ? missionView.SubmitItem : null;
+        bool validToSubmit = false;
+
+        if (NpcMission.Requirement == null || NpcMission.Requirement.Type == RequirementType.None)
+        {
+            validToSubmit = true;
+        }
+        else if (targetItem != null)
+        {
+            var def = DataManager.Instance.GetItemById(targetItem.ItemId);
+            if (NpcMission.Requirement.IsMatch(def))
+            {
+                validToSubmit = true;
+            }
+        }
+
+        if (validToSubmit)
+        {
+            // 1. 扣除物品 (如果是 RequirementType.None 則 targetItem 為 null)
+            if (targetItem != null)
+            {
+                DataManager.Instance.RemoveItem(targetItem);
+            }
+
+            // 2. 發放獎勵
+            foreach (var reward in NpcMission.Rewards)
+            {
+                switch (reward.RewardType)
+                {
+                    case RewardType.Gold:
+                        if (NpcMission.MissionWorld == ItemWorld.Human)
+                            DataManager.Instance.ModifyGold(reward.GoldAmount);
+                        else
+                            DataManager.Instance.ModifyMonsterGold(reward.GoldAmount);
+                        break;
+                    case RewardType.Item:
+                        DataManager.Instance.AddItem(reward.ItemID, 0);
+                        break;
+                    case RewardType.Information:
+                        DataManager.Instance.UnlockRandomMonsterInformation();
+                        break;
+                }
+            }
+            
+            // 3. 標記完成
+            NpcMission.IsFinish = true;
+            Debug.Log($"[NpcOnMap] 任務 '{NpcMission.MissionName}' 已提交完成！");
+
+            // 4. 更新 UI 狀態
+            if (missionView != null)
+            {
+                missionView.Bind(NpcMission);
+            }
+            SaveData();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (missionView != null)
+        {
+            missionView.OnSubmitClick -= HandleMissionSubmit;
+        }
     }
 
     public void Interact()
     {
-        missionView.ShowPanel();
+        if (missionView != null)
+        {
+            missionView.Bind(NpcMission);
+            missionView.ShowPanel();
+        }
     }
     public void ShowPrompt()
     {

@@ -79,21 +79,6 @@ public class ScratchCardShop : MonoBehaviour, IInteractable
         DataManager.Instance.SetPlayerData("ScratchCardShopData", data);
     }
     /// <summary>
-    /// 買刮刮卡
-    /// </summary>
-    private void BuyScratchCard()
-    {
-        if(isScratched == false && DataManager.Instance.TrySpendGold(300))
-        {
-            DataManager.Instance.ModifyGold(-300);
-            scratchCard.ShowScratchCard(false);
-        }
-        else if(DataManager.Instance.TrySpendGold(300) == false)
-        {
-            scratchCard.NotEnoughGold();
-        }
-    }
-    /// <summary>
     /// ScratchCard 刮除完成後的回調 (由 ScratchCard.onScratchComplete 事件觸發)
     /// </summary>
     private void OnScratchComplete()

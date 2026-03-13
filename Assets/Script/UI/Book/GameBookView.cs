@@ -15,6 +15,8 @@ public class GameBookView : MonoBehaviour
     public Transform ItemTagCotainer;
     public Transform ItemSlotCotainer;
     public Transform MonsterSlotCotainer;
+    public Transform MonsterLikeTagContainer;
+    public Transform MonsterHateTagContainer;
     [Header("圖鑑按鈕")]
     public Button ItemBookButton;
     public Button MonsterBookButton;
@@ -261,7 +263,7 @@ public class GameBookView : MonoBehaviour
         else
         {
             ItemName.text = "???";
-            ItemDescription.text = "???";
+            ItemDescription.text = slot.CurrentDefinition.Description;
         }
 
         if (DetailIcon != null)
@@ -473,19 +475,95 @@ public class GameBookView : MonoBehaviour
     private void OnMonsterBookSlotSelected(BookMonsterSlot slot, bool isUnlocked)
     {
         ClearMonsterBookSelected();
-
+        DescriptionButton.gameObject.SetActive(true);
         if (slot.CurrentDefinition == null) return;
+
+        int unlockedInfoCount = 0;
 
         if (isUnlocked)
         {
             if (MonsterName != null) MonsterName.text = slot.CurrentDefinition.ProfessionName;
             if (MonsterDescription != null) MonsterDescription.text = slot.CurrentDefinition.Description;
+            
+            // 計算解鎖的情報數量
+            var infos = DataManager.Instance.GetMonsterInfosByMonsterID(slot.CurrentDefinition.Id);
+            if (SaveBook != null && SaveBook.MonsterBookData != null && SaveBook.MonsterBookData.UnlockMonsterInformationID != null)
+            {
+                foreach (var info in infos)
+                {
+                    if (SaveBook.MonsterBookData.UnlockMonsterInformationID.Contains(info.InformationID))
+                    {
+                        unlockedInfoCount++;
+                    }
+                }
+            }
         }
         else
         {
             if (MonsterName != null) MonsterName.text = "???";
             if (MonsterDescription != null) MonsterDescription.text = "???";
         }
+
+        // --- 綁定 DescriptionButton 事件 ---
+        if (DescriptionButton != null)
+        {
+            DescriptionButton.onClick.RemoveAllListeners();
+            DescriptionButton.onClick.AddListener(() =>
+            {
+                if (MonsterDescription != null)
+                {
+                    MonsterDescription.text = isUnlocked ? slot.CurrentDefinition.Description : "???";
+                }
+            });
+        }
+
+        // --- 更新 InformationButtonList 顯示狀態與事件綁定 ---
+        var unlockedInfosList = new List<MonsterInformationDatabase>();
+        if (isUnlocked && SaveBook != null && SaveBook.MonsterBookData != null && SaveBook.MonsterBookData.UnlockMonsterInformationID != null)
+        {
+            var infos = DataManager.Instance.GetMonsterInfosByMonsterID(slot.CurrentDefinition.Id);
+            foreach (var info in infos)
+            {
+                if (SaveBook.MonsterBookData.UnlockMonsterInformationID.Contains(info.InformationID))
+                {
+                    unlockedInfosList.Add(info);
+                }
+            }
+        }
+        
+        unlockedInfoCount = unlockedInfosList.Count;
+
+        if (InformationButtonList != null)
+        {
+            for (int i = 0; i < InformationButtonList.Count; i++)
+            {
+                if (InformationButtonList[i] != null)
+                {
+                    bool isVisible = i < unlockedInfoCount;
+                    InformationButtonList[i].gameObject.SetActive(isVisible);
+
+                    // 重新綁定點擊事件
+                    InformationButtonList[i].onClick.RemoveAllListeners();
+                    if (isVisible)
+                    {
+                        var infoData = unlockedInfosList[i]; // 捕捉區域變數以便在 delegate 內使用
+                        InformationButtonList[i].onClick.AddListener(() =>
+                        {
+                            if (MonsterDescription != null)
+                            {
+                                MonsterDescription.text = infoData.MonsterInformation;
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+        // --- 更新 StoryButton 顯示狀態 ---
+        int unlockedStoryCount = unlockedInfoCount / 2; // 每2個情報解鎖1個故事
+        if (StoryButton_1 != null) StoryButton_1.gameObject.SetActive(unlockedStoryCount >= 1);
+        if (StoryButton_2 != null) StoryButton_2.gameObject.SetActive(unlockedStoryCount >= 2);
+
         // 種族不受解鎖狀態影響，總是顯示
         if (RaceName != null) RaceName.text = slot.CurrentDefinition.Race;
 
@@ -515,6 +593,27 @@ public class GameBookView : MonoBehaviour
                     break;
             }
         }
+
+        // --- 顯示已解鎖情報對應的標籤 ---
+        List<string> likeTags = new List<string>();
+        List<string> hateTags = new List<string>();
+
+        foreach (var info in unlockedInfosList)
+        {
+            if (!string.IsNullOrEmpty(info.TagID))
+            {
+                if (slot.CurrentDefinition.PreferredTags != null && slot.CurrentDefinition.PreferredTags.Contains(info.TagID))
+                {
+                    if (!likeTags.Contains(info.TagID)) likeTags.Add(info.TagID);
+                }
+                else if (slot.CurrentDefinition.HateTags != null && slot.CurrentDefinition.HateTags.Contains(info.TagID))
+                {
+                    if (!hateTags.Contains(info.TagID)) hateTags.Add(info.TagID);
+                }
+            }
+        }
+        ShowMonsterTags(likeTags, MonsterLikeTagContainer);
+        ShowMonsterTags(hateTags, MonsterHateTagContainer);
     }
 
     /// <summary>
@@ -522,6 +621,11 @@ public class GameBookView : MonoBehaviour
     /// </summary>
     private void ClearMonsterBookSelected()
     {
+        DescriptionButton.gameObject.SetActive(false);
+        foreach (var button in InformationButtonList)
+        {
+            button.gameObject.SetActive(false);
+        }
         if (MonsterName != null)
             MonsterName.text = "";
         if (RaceName != null)
@@ -535,6 +639,21 @@ public class GameBookView : MonoBehaviour
         }
         if (MonsterRaceIcon != null)
             MonsterRaceIcon.sprite = nullSprite;
+        // 清除妖怪標籤
+        if (MonsterLikeTagContainer != null)
+        {
+            foreach (Transform child in MonsterLikeTagContainer)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+        if (MonsterHateTagContainer != null)
+        {
+            foreach (Transform child in MonsterHateTagContainer)
+            {
+                Destroy(child.gameObject);
+            }
+        }
     }
     #endregion
 
@@ -675,6 +794,64 @@ public class GameBookView : MonoBehaviour
                 GameObject capturedImgObj = imgObj;
 
                 // 嘗試載入Tag圖片，成功則顯示圖片並隱藏文字
+                SpriteLoader.LoadSpriteAsync(tagId, sprite =>
+                {
+                    if (capturedImgObj == null) return;
+                    if (sprite != null)
+                    {
+                        capturedImage.sprite = sprite;
+                        capturedImage.SetNativeSize();
+                        RectTransform rt = capturedImage.GetComponent<RectTransform>();
+                        float ratio = 125f / rt.sizeDelta.x;
+                        rt.sizeDelta = new Vector2(125f, rt.sizeDelta.y * ratio);
+                        capturedImgObj.SetActive(true);
+                        capturedText.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        capturedImgObj.SetActive(false);
+                        capturedText.gameObject.SetActive(true);
+                    }
+                });
+            }
+        }
+    }
+
+    /// <summary>
+    /// 顯示妖怪標籤（基於已解鎖情報的TagID）
+    /// </summary>
+    private void ShowMonsterTags(List<string> tags, Transform container)
+    {
+        if (tags == null || TagsPrefab == null || container == null) return;
+
+        for (int i = 0; i < tags.Count; i++)
+        {
+            string tagId = tags[i];
+            string tagName = DataManager.Instance.GetTagNameByTag(tagId);
+
+            if (tagName != "")
+            {
+                GameObject newSlot = Instantiate(TagsPrefab, container);
+
+                TextMeshProUGUI textComp = newSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                textComp.text = tagName;
+
+                // 建立Tag圖片物件
+                GameObject imgObj = new GameObject("TagImage");
+                imgObj.transform.SetParent(newSlot.transform, false);
+                Image tagImage = imgObj.AddComponent<Image>();
+                imgObj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                imgObj.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 65);
+
+                // 預設隱藏圖片，顯示文字
+                imgObj.SetActive(false);
+                textComp.gameObject.SetActive(true);
+
+                Image capturedImage = tagImage;
+                TextMeshProUGUI capturedText = textComp;
+                GameObject capturedImgObj = imgObj;
+
+                // 嘗試載入Tag圖片
                 SpriteLoader.LoadSpriteAsync(tagId, sprite =>
                 {
                     if (capturedImgObj == null) return;

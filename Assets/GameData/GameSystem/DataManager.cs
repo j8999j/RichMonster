@@ -302,6 +302,34 @@ public class DataManager : Singleton<DataManager>
     }
 
     /// <summary>
+    /// 解鎖隨機一個未解鎖的妖怪情報
+    /// </summary>
+    public void UnlockRandomMonsterInformation()
+    {
+        var allInfoKeys = _monsterInfoDict.Keys;
+        var lockedInfos = new List<string>();
+        foreach (var key in allInfoKeys)
+        {
+            if (!IsMonsterInfoUnlocked(key))
+            {
+                lockedInfos.Add(key);
+            }
+        }
+
+        if (lockedInfos.Count > 0)
+        {
+            string randomInfo = lockedInfos[UnityEngine.Random.Range(0, lockedInfos.Count)];
+            UnlockMonsterInformation(randomInfo);
+            Debug.Log($"[DataManager] 隨機解鎖妖怪情報: {randomInfo}");
+        }
+        else
+        {
+            Debug.Log("[DataManager] 所有妖怪情報已解鎖，無可解鎖項目");
+        }
+    }
+
+
+    /// <summary>
     /// 檢查物品是否已收錄在圖鑑中
     /// </summary>
     private bool IsItemInBook(string itemId)
@@ -591,6 +619,26 @@ public class DataManager : Singleton<DataManager>
             .Select(item => item.ItemId)
             .Distinct()
             .Count(itemId => _itemDict.TryGetValue(itemId, out var def) && def.Type == type && def.World == world);
+    }
+
+    /// <summary>
+    /// 取得背包中人間物品的總數量
+    /// </summary>
+    public int GetHumanItemCount()
+    {
+        if (_currentPlayerData?.Inventory?.Items == null) return 0;
+        return _currentPlayerData.Inventory.Items
+            .Count(item => _itemDict.TryGetValue(item.ItemId, out var def) && def.World == ItemWorld.Human);
+    }
+
+    /// <summary>
+    /// 取得背包中妖界物品的總數量
+    /// </summary>
+    public int GetMonsterItemCount()
+    {
+        if (_currentPlayerData?.Inventory?.Items == null) return 0;
+        return _currentPlayerData.Inventory.Items
+            .Count(item => _itemDict.TryGetValue(item.ItemId, out var def) && def.World == ItemWorld.Monster);
     }
 
     /// <summary>
