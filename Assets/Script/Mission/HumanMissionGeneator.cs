@@ -73,7 +73,7 @@ public class HumanMissionGeneator : MonoBehaviour
         for (int i = 0; i < targetCount; i++)
         {
             var npcGroup = missionsByNpc[i].ToList();
-            
+
             // 從這名 NPC 的任務堆中，隨機抽出一個任務
             if (npcGroup.Count > 0)
             {
@@ -83,11 +83,6 @@ public class HumanMissionGeneator : MonoBehaviour
         }
 
         Debug.Log($"[HumanMissionGeneator] 成功生成 {CurrentDailyMissions.Count} 個任務");
-        foreach (var mission in CurrentDailyMissions)
-        {
-            Debug.Log($"   - NPC: {mission.NpcID}, Mission: {mission.MissionID} ({mission.MissionName})");
-        }
-
         // --- 處理地圖上的實體生成 ---
         SpawnNpcsOnMap(masterSeed, dayNumber);
     }
@@ -127,7 +122,7 @@ public class HumanMissionGeneator : MonoBehaviour
         for (int i = 0; i < CurrentDailyMissions.Count; i++)
         {
             var mission = CurrentDailyMissions[i];
-            
+
             if (i >= availablePositions.Count)
             {
                 Debug.LogWarning($"[HumanMissionGeneator] 地圖定位點不足，無法放置 NPC: {mission.NpcID}");

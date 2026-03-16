@@ -115,7 +115,7 @@ TextureImporter:
         serializedVersion: 2
         x: 35
         y: 177
-        width: 53
+        width: 49
         height: 99
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -319,6 +319,216 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: NightGuard_head
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 226
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4d1a3e050fba0fe4d9512ab3ef9bc25b
+      internalID: -324974949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SupernaturalStudents_head
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 224
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 32ec423ff21e57f4789f15547ef0b3c4
+      internalID: -390195228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StreetTeller_head
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 225
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bd41ac09cbc68264fa0877176fce65c9
+      internalID: -471632834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Investigator_head
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 226
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 85f419c10828bfb4097b8aeb06a4ef85
+      internalID: 452209672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chuunibyou_head
+      rect:
+        serializedVersion: 2
+        x: 403
+        y: 224
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d0f75f04ad1cd774a8b967cb8ea30fe4
+      internalID: 510571473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heiress_head
+      rect:
+        serializedVersion: 2
+        x: 493
+        y: 224
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76b9a8ac75f2b174ba212b86b2218cda
+      internalID: 574368960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Novelist_head
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 87
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 83ad8e6a85c063f4b8419e50b3f88d24
+      internalID: -994244556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ken_head
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 87
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a16fa9af4ad8194d850e63d4f3c7a42
+      internalID: 403233826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Chef_head
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 85
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: caaadb666cca4dc4db70fd11c5519a14
+      internalID: -1008837985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Deliveryman_head
+      rect:
+        serializedVersion: 2
+        x: 342
+        y: 81
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e7ba4654148dff54c8eac428dcb42066
+      internalID: 579003590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -331,15 +541,25 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       Chef: 1125049014
+      Chef_head: -1008837985
       Chuunibyou: 1850266164
+      Chuunibyou_head: 510571473
       Deliveryman: 1344502946
+      Deliveryman_head: 579003590
       Heiress: -980845363
+      Heiress_head: 574368960
       Investigator: -350340253
+      Investigator_head: 452209672
       Ken: -2069654771
+      Ken_head: 403233826
       NightGuard: -284601752
+      NightGuard_head: -324974949
       Novelist: 705252161
+      Novelist_head: -994244556
       StreetTeller: 1789167503
+      StreetTeller_head: -471632834
       SupernaturalStudents: -313908047
+      SupernaturalStudents_head: -390195228
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

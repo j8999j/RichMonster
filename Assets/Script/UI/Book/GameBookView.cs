@@ -96,6 +96,7 @@ public class GameBookView : MonoBehaviour
     // 按鈕正常/變暗顏色
     private readonly Color _activeColor = Color.white;
     private readonly Color _dimColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+    private bool _monsterContentHighlightRegistered;
 
     private void Awake()
     {
@@ -134,6 +135,8 @@ public class GameBookView : MonoBehaviour
             ProtossButton.onClick.AddListener(() => SetRaceFilter(RaceFilter.Protoss));
         if (FairyButton != null)
             FairyButton.onClick.AddListener(() => SetRaceFilter(RaceFilter.Fairy));
+
+        RegisterMonsterContentHighlightListeners();
     }
 
     #region 圖鑑切換
@@ -484,7 +487,7 @@ public class GameBookView : MonoBehaviour
         {
             if (MonsterName != null) MonsterName.text = slot.CurrentDefinition.ProfessionName;
             if (MonsterDescription != null) MonsterDescription.text = slot.CurrentDefinition.Description;
-            
+
             // 計算解鎖的情報數量
             var infos = DataManager.Instance.GetMonsterInfosByMonsterID(slot.CurrentDefinition.Id);
             if (SaveBook != null && SaveBook.MonsterBookData != null && SaveBook.MonsterBookData.UnlockMonsterInformationID != null)
@@ -514,6 +517,7 @@ public class GameBookView : MonoBehaviour
                 {
                     MonsterDescription.text = isUnlocked ? slot.CurrentDefinition.Description : "???";
                 }
+                HighlightMonsterContentButton(DescriptionButton);
             });
         }
 
@@ -530,7 +534,7 @@ public class GameBookView : MonoBehaviour
                 }
             }
         }
-        
+
         unlockedInfoCount = unlockedInfosList.Count;
 
         if (InformationButtonList != null)
@@ -547,12 +551,14 @@ public class GameBookView : MonoBehaviour
                     if (isVisible)
                     {
                         var infoData = unlockedInfosList[i]; // 捕捉區域變數以便在 delegate 內使用
-                        InformationButtonList[i].onClick.AddListener(() =>
+                        Button infoButton = InformationButtonList[i];
+                        infoButton.onClick.AddListener(() =>
                         {
                             if (MonsterDescription != null)
                             {
                                 MonsterDescription.text = infoData.MonsterInformation;
                             }
+                            HighlightMonsterContentButton(infoButton);
                         });
                     }
                 }
@@ -563,6 +569,8 @@ public class GameBookView : MonoBehaviour
         int unlockedStoryCount = unlockedInfoCount / 2; // 每2個情報解鎖1個故事
         if (StoryButton_1 != null) StoryButton_1.gameObject.SetActive(unlockedStoryCount >= 1);
         if (StoryButton_2 != null) StoryButton_2.gameObject.SetActive(unlockedStoryCount >= 2);
+
+        HighlightMonsterContentButton(DescriptionButton);
 
         // 種族不受解鎖狀態影響，總是顯示
         if (RaceName != null) RaceName.text = slot.CurrentDefinition.Race;
@@ -626,6 +634,7 @@ public class GameBookView : MonoBehaviour
         {
             button.gameObject.SetActive(false);
         }
+        HighlightMonsterContentButton(null);
         if (MonsterName != null)
             MonsterName.text = "";
         if (RaceName != null)
@@ -754,6 +763,34 @@ public class GameBookView : MonoBehaviour
         if (btnImage != null)
         {
             btnImage.color = isActive ? _activeColor : _dimColor;
+        }
+    }
+
+    private void RegisterMonsterContentHighlightListeners()
+    {
+        if (_monsterContentHighlightRegistered) return;
+        _monsterContentHighlightRegistered = true;
+        if (StoryButton_1 != null)
+        {
+            StoryButton_1.onClick.AddListener(() => HighlightMonsterContentButton(StoryButton_1));
+        }
+        if (StoryButton_2 != null)
+        {
+            StoryButton_2.onClick.AddListener(() => HighlightMonsterContentButton(StoryButton_2));
+        }
+    }
+
+    private void HighlightMonsterContentButton(Button selectedButton)
+    {
+        SetButtonAppearance(DescriptionButton, DescriptionButton == selectedButton);
+        SetButtonAppearance(StoryButton_1, StoryButton_1 == selectedButton);
+        SetButtonAppearance(StoryButton_2, StoryButton_2 == selectedButton);
+        if (InformationButtonList != null)
+        {
+            foreach (var button in InformationButtonList)
+            {
+                SetButtonAppearance(button, button == selectedButton);
+            }
         }
     }
     #endregion

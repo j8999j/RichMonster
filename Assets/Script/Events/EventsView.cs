@@ -231,8 +231,6 @@ public class EventsView : MonoBehaviour
     /// </summary>
     private void OnNewsClicked(MonsterEvent monsterEvent)
     {
-        Debug.Log($"玩家點擊了事件：{monsterEvent.EventName}");
-
         // 1. 顯示詳細面板
         if (MoreDetailPanel != null)
         {
@@ -249,8 +247,6 @@ public class EventsView : MonoBehaviour
     /// </summary>
     private void OnGameEventClicked(GameEventDefinition gameEvent)
     {
-        Debug.Log($"玩家點擊了事件：{gameEvent.Name}");
-
         if (MoreDetailPanel != null)
         {
             MoreDetailPanel.SetActive(true);

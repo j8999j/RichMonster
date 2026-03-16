@@ -15,6 +15,7 @@ public class NPCMissionView : MonoBehaviour
     public TextMeshProUGUI MissionNameText;
     public TextMeshProUGUI DescriptionText;
     public TextMeshProUGUI RequirementText;
+    public Image NPCHeadshotImage;
     public Image RequirementImage;
     public Image SelectedImage;
     public Sprite PropSprite;
@@ -107,7 +108,14 @@ public class NPCMissionView : MonoBehaviour
         {
             RequirementImage.gameObject.SetActive(req.Type != RequirementType.None);
         }
-
+        if (NPCHeadshotImage != null)
+        {
+            SpriteLoader.LoadSpriteAsync(_currentMission.NpcID+"_head", s => 
+            {
+                NPCHeadshotImage.sprite = s;
+                AdjustImageScale(NPCHeadshotImage, 75);
+            });
+        }
         switch (req.Type)
         {
             case RequirementType.SpecificItem:
@@ -123,7 +131,7 @@ public class NPCMissionView : MonoBehaviour
                 }
                 break;
             case RequirementType.SpecificTag:
-                reqStr += $"任意 [{DataManager.Instance.GetTagNameByTag(req.TargetTag)}] 物品";
+                reqStr += $"任意含有 [{DataManager.Instance.GetTagNameByTag(req.TargetTag)}] 標籤的物品";
                 if (RequirementImage != null)
                 {
                     SpriteLoader.LoadSpriteAsync(req.TargetTag, s => 
@@ -134,19 +142,22 @@ public class NPCMissionView : MonoBehaviour
                 }
                 break;
             case RequirementType.SpecificType:
-                reqStr += $"任意 {req.TargetType} 類型物品";
+                
                 if (RequirementImage != null)
                 {
                     switch (req.TargetType)
                     {
                         case ItemType.Prop:
                             RequirementImage.sprite = PropSprite;
+                            reqStr += $"任意道具類型物品";
                             break;
                         case ItemType.Food:
                             RequirementImage.sprite = FoodSprite;
+                            reqStr += $"任意食物類型物品";
                             break;
                         case ItemType.Equipment:
                             RequirementImage.sprite = EquipmentSprite;
+                            reqStr += $"任意裝備類型物品";
                             break;
                     }
                     AdjustImageScale(RequirementImage, 100);

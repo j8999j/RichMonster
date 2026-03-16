@@ -173,48 +173,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Map_Monster _1_3
-      rect:
-        serializedVersion: 2
-        x: 894
-        y: 990
-        width: 7
-        height: 11
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c22d94f0ad9abc94c83f27d7a0ff3953
-      internalID: -1991462992
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Map_Monster _1_4
-      rect:
-        serializedVersion: 2
-        x: 902
-        y: 1000
-        width: 6
-        height: 7
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 48f814f49b5491e40be8881b76425aac
-      internalID: 213631266
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Map_Monster _1_5
       rect:
         serializedVersion: 2
@@ -252,27 +210,6 @@ TextureImporter:
       bones: []
       spriteID: 5eef9c88c2b057744be7b1a60e4ca0d1
       internalID: -1505818727
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Map_Monster _1_7
-      rect:
-        serializedVersion: 2
-        x: 1556
-        y: 999
-        width: 6
-        height: 9
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d65758b0c3e85f649a4ec42187252827
-      internalID: -1217976384
       vertices: []
       indices: 
       edges: []
@@ -326,7 +263,7 @@ TextureImporter:
         x: 870
         y: 907
         width: 67
-        height: 90
+        height: 99
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -368,7 +305,7 @@ TextureImporter:
         x: 1521
         y: 908
         width: 74
-        height: 90
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -845,27 +782,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Map_Monster _1_35
-      rect:
-        serializedVersion: 2
-        x: 1703
-        y: 192
-        width: 7
-        height: 7
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 06c18ab722f17134287488428d223ed1
-      internalID: 998867616
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Map_Monster _1_36
       rect:
         serializedVersion: 2
@@ -903,27 +819,6 @@ TextureImporter:
       bones: []
       spriteID: a2a83d9b65430a7458e3f6407d372cd8
       internalID: 365684154
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Map_Monster _1_38
-      rect:
-        serializedVersion: 2
-        x: 1720
-        y: 86
-        width: 9
-        height: 9
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f48a9df256a49fc4a9d212d4dc1d1556
-      internalID: -1579570071
       vertices: []
       indices: 
       edges: []

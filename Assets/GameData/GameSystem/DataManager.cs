@@ -557,6 +557,15 @@ public class DataManager : Singleton<DataManager>
         }
         return false;
     }
+    /// <summary>
+    /// 設定交易狀態
+    /// </summary>
+    public void SetIsTrade(bool value)
+    {
+        if (_currentPlayerData == null) return;
+        _currentPlayerData.IsTrade = value;
+        OnPlayerDataChanged = true;
+    }
 
     /// <summary>
     /// 加入物品到玩家背包
@@ -675,9 +684,10 @@ public class DataManager : Singleton<DataManager>
         if (_currentPlayerData.GameSaveFile.GameData.ContainsKey("OrderHistory"))
         {
             var orderHistoryData = _currentPlayerData.GameSaveFile.GameData["OrderHistory"] as OrderHistoryData;
-            if (orderHistoryData.OrderHistory == null)
+            if (orderHistoryData.OrderHistory == null || orderHistoryData.LastUpdatedDay != _currentPlayerData.DaysPlayed)
             {
                 orderHistoryData.OrderHistory = new List<OrderProgress>();
+                orderHistoryData.LastUpdatedDay = _currentPlayerData.DaysPlayed;
             }
             orderHistoryData.OrderHistory.Add(new OrderProgress { OrderID = ID, IsCompleted = true });
         }
@@ -685,9 +695,10 @@ public class DataManager : Singleton<DataManager>
         {
             _currentPlayerData.GameSaveFile.GameData.Add("OrderHistory", new OrderHistoryData());
             var orderHistoryData = _currentPlayerData.GameSaveFile.GameData["OrderHistory"] as OrderHistoryData;
-            if (orderHistoryData.OrderHistory == null)
+            if (orderHistoryData.OrderHistory == null || orderHistoryData.LastUpdatedDay != _currentPlayerData.DaysPlayed)
             {
                 orderHistoryData.OrderHistory = new List<OrderProgress>();
+                orderHistoryData.LastUpdatedDay = _currentPlayerData.DaysPlayed;
             }
             orderHistoryData.OrderHistory.Add(new OrderProgress { OrderID = ID, IsCompleted = true });
         }

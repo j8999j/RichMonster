@@ -12,13 +12,12 @@ public class Inventory
 [System.Serializable]
 public class PlayerData : IReadOnlyPlayerData
 {
-    public string UniqueID { get; set; }
-    public int LastUpdatedDay { get; set; }
     public int ID;
     public int MasterSeed;
     public int DaysPlayed;//歷史遊玩天數
     public int CustomerIndex;//當日顧客索引
     public DayPhase PlayingStatus;
+    public bool IsTrade;
     public int Gold;
     public int MonsterGold;
     //玩家倉庫
@@ -33,6 +32,7 @@ public class PlayerData : IReadOnlyPlayerData
     int IReadOnlyPlayerData.MonsterGold => MonsterGold;
     int IReadOnlyPlayerData.DaysPlayed => DaysPlayed;
     int IReadOnlyPlayerData.CustomerIndex => CustomerIndex;
+    bool IReadOnlyPlayerData.IsTrade => IsTrade;
     DayPhase IReadOnlyPlayerData.PlayingStatus => PlayingStatus;
     IReadOnlyList<Item> IReadOnlyPlayerData.InventoryItems => Inventory?.Items ?? new List<Item>();
 
@@ -214,6 +214,7 @@ public interface IReadOnlyPlayerData
     int DaysPlayed { get; }
     int CustomerIndex { get; }
     DayPhase PlayingStatus { get; }
+    bool IsTrade { get; }
     IReadOnlyList<Item> InventoryItems { get; }
 }
 #endregion
