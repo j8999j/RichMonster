@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d06acce087f4c4d44bb3e0312c11358a
+guid: c751f66b1998af042b67fc63f2c64db0
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,13 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SaveSlot_0
+      name: Trash_0
       rect:
         serializedVersion: 2
-        x: 428
-        y: 379
-        width: 300
-        height: 400
+        x: 690
+        y: 45
+        width: 1436
+        height: 1443
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,50 +124,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1780e904a6ff1e547a23c81c5397cbe7
-      internalID: -883246871
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SaveSlot_1
-      rect:
-        serializedVersion: 2
-        x: 789
-        y: 380
-        width: 300
-        height: 400
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 57387bdd40dc09949a524ad325ab22c4
-      internalID: 706552746
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SaveSlot_2
-      rect:
-        serializedVersion: 2
-        x: 1150
-        y: 380
-        width: 300
-        height: 400
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0b70d523a0e615946adab0ffdb4e63e0
-      internalID: 799477945
+      spriteID: 4be214a5ffe4de54d8803ffde25101b2
+      internalID: 100569284
       vertices: []
       indices: 
       edges: []
@@ -175,7 +133,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: dbdfa647d0114ce45831c999dbe84f5e
+    spriteID: 9fea96983d85efb40bc1ddb194d0d3bf
     internalID: 0
     vertices: []
     indices: 
@@ -183,9 +141,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      SaveSlot_0: -883246871
-      SaveSlot_1: 706552746
-      SaveSlot_2: 799477945
+      Trash_0: 100569284
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

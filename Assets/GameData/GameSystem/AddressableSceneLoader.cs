@@ -159,9 +159,10 @@ namespace GameSystem
             }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             ReleaseCurrentHandle();
+            base.OnDestroy();
         }
 
         /// <summary>

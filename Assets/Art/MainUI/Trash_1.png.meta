@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d06acce087f4c4d44bb3e0312c11358a
+guid: 9a6b1e8ad62f460468ebffcd516e4f39
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,13 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SaveSlot_0
+      name: Trash_1_0
       rect:
         serializedVersion: 2
-        x: 428
-        y: 379
-        width: 300
-        height: 400
+        x: 2
+        y: 104
+        width: 100
+        height: 93
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,20 +124,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1780e904a6ff1e547a23c81c5397cbe7
-      internalID: -883246871
+      spriteID: 5fee2d1b7ff022f4bb80a89a7776844b
+      internalID: 1369518470
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SaveSlot_1
+      name: Trash_1_1
       rect:
         serializedVersion: 2
-        x: 789
-        y: 380
-        width: 300
-        height: 400
+        x: 100
+        y: 0
+        width: 99
+        height: 101
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -145,29 +145,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 57387bdd40dc09949a524ad325ab22c4
-      internalID: 706552746
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SaveSlot_2
-      rect:
-        serializedVersion: 2
-        x: 1150
-        y: 380
-        width: 300
-        height: 400
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0b70d523a0e615946adab0ffdb4e63e0
-      internalID: 799477945
+      spriteID: 9546ab004a7bbe041bf4d504ccce9fbc
+      internalID: 943428768
       vertices: []
       indices: 
       edges: []
@@ -175,7 +154,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: dbdfa647d0114ce45831c999dbe84f5e
+    spriteID: 3822beaecc9294045941ea8979abe8d2
     internalID: 0
     vertices: []
     indices: 
@@ -183,9 +162,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      SaveSlot_0: -883246871
-      SaveSlot_1: 706552746
-      SaveSlot_2: 799477945
+      Trash_1_0: 1369518470
+      Trash_1_1: 943428768
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
