@@ -230,7 +230,7 @@ public class SaveSlotUI : MonoBehaviour
         {
             DayPhase.HumanDay => NoonSlot,
             DayPhase.Night => EveningSlot,
-            DayPhase.NightTrade => EveningSlot,
+            DayPhase.AfterNoon => EveningSlot,
             _ => null
         };
     }

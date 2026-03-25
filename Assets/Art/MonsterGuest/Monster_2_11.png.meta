@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e7d87b8f395bac54aa572e1ce79cccf2
+guid: 9d6240746bb15ad44bfdb31d96f4cd73
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,13 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cloud_0
+      name: SeniorKnight
       rect:
         serializedVersion: 2
-        x: 16
-        y: 57
-        width: 14
-        height: 4
+        x: 199
+        y: 154
+        width: 76
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,20 +124,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7849b8a7c23e2ec4c923335a7e181184
-      internalID: -1405118900
+      spriteID: 806011f0d7b5c5844918cc7b7241c2bd
+      internalID: 1104893926
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cloud_1
+      name: WardenWoods
       rect:
         serializedVersion: 2
-        x: 38
-        y: 51
-        width: 22
-        height: 8
+        x: 311
+        y: 139
+        width: 95
+        height: 98
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -145,20 +145,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c3a2ac90582f0914b80ef1de5f50458a
-      internalID: -1677064429
+      spriteID: b96feab28495fd1488bf3001788852c3
+      internalID: -989343808
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cloud_2
+      name: WhiteBoneDemon
       rect:
         serializedVersion: 2
-        x: 103
-        y: 54
-        width: 15
-        height: 6
+        x: 434
+        y: 138
+        width: 58
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -166,20 +166,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 023f9f3a3b087d04597a0daf7268fb69
-      internalID: -1823793571
+      spriteID: 618646bc753c53447902337fe574ccfa
+      internalID: 1417621092
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cloud_3
+      name: Rogue
       rect:
         serializedVersion: 2
-        x: 2
-        y: 48
-        width: 18
-        height: 8
+        x: 523
+        y: 139
+        width: 55
+        height: 99
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -187,20 +187,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 466a35f0326cdb5498d0cc59c47a8ccc
-      internalID: -526296426
+      spriteID: 8896c40ae73cf1244b0e3e6074a19024
+      internalID: 2095757157
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cloud_4
+      name: ApprenticeMage
       rect:
         serializedVersion: 2
-        x: 56
-        y: 45
-        width: 10
-        height: 4
+        x: 602
+        y: 140
+        width: 96
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -208,20 +208,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9a02eea3041845a47ac7a8c1d023a96e
-      internalID: -2028051725
+      spriteID: a4c1787196dc75247a0d23ca72a4ad99
+      internalID: -2052347697
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cloud_5
+      name: WanderingBard
       rect:
         serializedVersion: 2
-        x: 67
-        y: 39
-        width: 37
-        height: 16
+        x: 726
+        y: 140
+        width: 58
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -229,20 +229,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e798284db0cd69e4da8576b2fd51e243
-      internalID: -1747744117
+      spriteID: 4cd36610b95a414478579557e0c23c4f
+      internalID: 1228313178
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cloud_6
+      name: RookieAdventurer
       rect:
         serializedVersion: 2
-        x: 24
-        y: 41
-        width: 16
-        height: 7
+        x: 108
+        y: 147
+        width: 63
+        height: 84
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -250,20 +250,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ae97475f3c444014ab7423f44a57a85d
-      internalID: -362340721
+      spriteID: 4cdf3d170942eb9408cf9b67aa2d46e6
+      internalID: -78199250
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cloud_7
+      name: Oxboos
       rect:
         serializedVersion: 2
-        x: 109
-        y: 40
-        width: 16
-        height: 8
+        x: 102
+        y: 21
+        width: 75
+        height: 100
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -271,8 +271,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bec9e98ff18c9924d8d24c1076972498
-      internalID: -1941727234
+      spriteID: 5805ef048dc6dff4cb3d6737a4af43a7
+      internalID: -379409297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ChurchPriest
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 16
+        width: 60
+        height: 100
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e5922ac0c01f9b49897784c2ea0a2b0
+      internalID: -1276767070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TigerAunt
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 16
+        width: 58
+        height: 99
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bb03435929cfd3044a83c3bc97f9f0ca
+      internalID: -1460301520
       vertices: []
       indices: 
       edges: []
@@ -280,7 +322,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 78974050196d8b341add13c43c1b00e6
+    spriteID: f0f290e1f6ff32c4092f674b2129daf4
     internalID: 0
     vertices: []
     indices: 
@@ -288,14 +330,18 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Cloud_0: -1405118900
-      Cloud_1: -1677064429
-      Cloud_2: -1823793571
-      Cloud_3: -526296426
-      Cloud_4: -2028051725
-      Cloud_5: -1747744117
-      Cloud_6: -362340721
-      Cloud_7: -1941727234
+      ApprenticeMage: -2052347697
+      ChurchPriest: -1276767070
+      Monster_2_11_1: -235343778
+      Monster_2_11_2: -720757795
+      Oxboos: -379409297
+      Rogue: 2095757157
+      RookieAdventurer: -78199250
+      SeniorKnight: 1104893926
+      TigerAunt: -1460301520
+      WanderingBard: 1228313178
+      WardenWoods: -989343808
+      WhiteBoneDemon: 1417621092
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

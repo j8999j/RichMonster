@@ -62,6 +62,7 @@ public class DataManager : Singleton<DataManager>
     private Task _initTask;
 
     public event Action<int, int, DayPhase> PlayerMainViewUpdate;
+    public event Action<string, bool> GameFlowNoticeUpdate;
 
     protected override void Awake()
     {
@@ -734,16 +735,32 @@ public class DataManager : Singleton<DataManager>
 
     private void AdjustUpdateView()
     {
-        if (_currentPlayerData.PlayingStatus == DayPhase.HumanDay)
+        if(_currentPlayerData.PlayingStatus == DayPhase.HumanDay && _currentPlayerData.IsTrade == true)
+        {
+            PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed, _currentPlayerData.Gold, _currentPlayerData.PlayingStatus);
+            GameFlowNoticeUpdate?.Invoke("採購商品或回家休息一下吧", true);
+        }
+        else if(_currentPlayerData.PlayingStatus == DayPhase.HumanDay && _currentPlayerData.IsTrade == false)
         {
             PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed + 1, _currentPlayerData.Gold, _currentPlayerData.PlayingStatus);
+            GameFlowNoticeUpdate?.Invoke("採購商品並開店確認訂單", true);
         }
-        else
+        else if(_currentPlayerData.PlayingStatus == DayPhase.AfterNoon)
+        {
+            PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed, _currentPlayerData.Gold, _currentPlayerData.PlayingStatus);
+            GameFlowNoticeUpdate?.Invoke("準備前往妖界", true);
+        }
+        else if(_currentPlayerData.PlayingStatus == DayPhase.Night && _currentPlayerData.IsTrade == true)
         {
             PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed, _currentPlayerData.MonsterGold, _currentPlayerData.PlayingStatus);
+            GameFlowNoticeUpdate?.Invoke("接待結束可選擇回家休息", true);
+        }
+        else if(_currentPlayerData.PlayingStatus == DayPhase.Night && _currentPlayerData.IsTrade == false)
+        {
+            PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed, _currentPlayerData.MonsterGold, _currentPlayerData.PlayingStatus);
+            GameFlowNoticeUpdate?.Invoke("採購商品並迎接客人", true);
         }
     }
-
     public void ShowPlayerMainData()
     {
         AdjustUpdateView();

@@ -276,9 +276,9 @@ public class MonsterEvent
 [JsonConverter(typeof(StringEnumConverter))]
 public enum DayPhase
 {
-    HumanDay,   // 人間日
-    Night,      // 夜間：妖怪採購
-    NightTrade  // 夜間：妖怪交易
+    HumanDay,    // 人間日
+    AfterNoon,   // 人間午後
+    Night        // 夜間：妖怪採購
 }
 [JsonConverter(typeof(StringEnumConverter))]
 public enum ProfessionType

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b4b70c4e979739043b0b1b47d3465bd4
+guid: 0e0eb966825dff5418c79ed149cfce0f
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,13 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: WanderingBard
+      name: Cloud_AfterNoon_0
       rect:
         serializedVersion: 2
-        x: 57
-        y: 315
-        width: 54
-        height: 100
+        x: 16
+        y: 57
+        width: 14
+        height: 4
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,20 +124,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a7a7c6e314c21e0408ce9f61d5c0e277
-      internalID: -554880458
+      spriteID: 108a9b97a6f90b440a4d17670c165c51
+      internalID: -1018732129
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WardenWoods
+      name: Cloud_AfterNoon_1
       rect:
         serializedVersion: 2
-        x: 155
-        y: 315
-        width: 96
-        height: 100
+        x: 38
+        y: 51
+        width: 22
+        height: 8
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -145,20 +145,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2f484b27beb895346b0f25b002ac10aa
-      internalID: -342182657
+      spriteID: 8abaf0b6a8a39fa4ebeac68f98a73a1f
+      internalID: 1495017181
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rogue
+      name: Cloud_AfterNoon_2
       rect:
         serializedVersion: 2
-        x: 301
-        y: 315
-        width: 77
-        height: 100
+        x: 103
+        y: 54
+        width: 15
+        height: 6
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -166,20 +166,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d79b6e78ab229f84491b76bea12223a3
-      internalID: -141112467
+      spriteID: 23fcf780669ce2c47a02afb85fed0654
+      internalID: -332125718
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ChurchPriest
+      name: Cloud_AfterNoon_3
       rect:
         serializedVersion: 2
-        x: 57
-        y: 165
-        width: 55
-        height: 100
+        x: 2
+        y: 48
+        width: 18
+        height: 8
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -187,20 +187,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3dc065753e33a1545a2b770b2132df9a
-      internalID: 442030975
+      spriteID: ebfa8a765cb80124c841b31da9e245d2
+      internalID: 1908875925
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Oxboos
+      name: Cloud_AfterNoon_4
       rect:
         serializedVersion: 2
-        x: 179
-        y: 165
-        width: 61
-        height: 100
+        x: 56
+        y: 45
+        width: 10
+        height: 4
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -208,20 +208,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 761177d32e938d34084bcd6137b0f360
-      internalID: 1269500466
+      spriteID: 8906165950465734194c20354994f47b
+      internalID: 469034876
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TigerAunt
+      name: Cloud_AfterNoon_5
       rect:
         serializedVersion: 2
-        x: 308
-        y: 165
-        width: 70
-        height: 100
+        x: 67
+        y: 39
+        width: 37
+        height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -229,20 +229,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0008c166426cfe544b7b44e15f17884e
-      internalID: -1617547499
+      spriteID: 9e13a073e2916994d96d30b44297798a
+      internalID: 1388549790
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: WhiteBoneDemon
+      name: Cloud_AfterNoon_6
       rect:
         serializedVersion: 2
-        x: 179
-        y: 29
-        width: 58
-        height: 100
+        x: 24
+        y: 41
+        width: 16
+        height: 7
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -250,8 +250,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 79be69fa452d21c489ca646364ddf9f5
-      internalID: -1330330199
+      spriteID: 9248c0f7654472944819ed7a5002f78a
+      internalID: -1039103998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cloud_AfterNoon_7
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 40
+        width: 16
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df7314e5f2acba54f8525c51ad7c988c
+      internalID: 1297986279
       vertices: []
       indices: 
       edges: []
@@ -259,7 +280,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 219cf3e6f3fd2474fbf49d7e5cd03ef0
+    spriteID: c07135a42a99f574bb3b4876ba8524ba
     internalID: 0
     vertices: []
     indices: 
@@ -267,13 +288,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      ChurchPriest: 442030975
-      Oxboos: 1269500466
-      Rogue: -141112467
-      TigerAunt: -1617547499
-      WanderingBard: -554880458
-      WardenWoods: -342182657
-      WhiteBoneDemon: -1330330199
+      Cloud_AfterNoon_0: -1018732129
+      Cloud_AfterNoon_1: 1495017181
+      Cloud_AfterNoon_2: -332125718
+      Cloud_AfterNoon_3: 1908875925
+      Cloud_AfterNoon_4: 469034876
+      Cloud_AfterNoon_5: 1388549790
+      Cloud_AfterNoon_6: -1039103998
+      Cloud_AfterNoon_7: 1297986279
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

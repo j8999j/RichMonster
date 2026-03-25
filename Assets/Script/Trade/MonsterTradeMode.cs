@@ -12,7 +12,6 @@ public class MonsterTradeMode : MonoBehaviour
     //交易狀態紀錄
     private MonsterTradeProgress monsterTradeProgress;
     private MonsterGuest currentmonsterGuest;
-    private Item currentSelectedItem;
     void Awake()
     {
         tradeView = GetComponent<MonsterTradeView>();
@@ -30,13 +29,11 @@ public class MonsterTradeMode : MonoBehaviour
     void OnEnable()
     {
         tradeView.OnOpenShop += StartTradeMode;
-        tradeView.TradeItems += TradeThisItem;
         tradeView.TradePrice += PriceTrade;
     }
     void OnDisable()
     {
         tradeView.OnOpenShop -= StartTradeMode;
-        tradeView.TradeItems -= TradeThisItem;
         tradeView.TradePrice -= PriceTrade;
     }
     /// <summary>
@@ -53,9 +50,9 @@ public class MonsterTradeMode : MonoBehaviour
     /// </summary>
     public void StartTradeMode()
     {
-        GameManager.Instance.gameFlow.SwitchGameStageAndSave(DayPhase.NightTrade);
         GenerateGuestList();
         LoadHistory();
+        
         tradeView.UpdateTradeInfo(_TodayMonsterGuestList[monsterTradeProgress.CustomerIndex], DataManager.Instance.CurrentPlayerData.InventoryItems.ToList(), monsterTradeProgress.CustomerIndex, _TodayMonsterGuestList.Count, DataManager.Instance.CurrentPlayerData.MonsterGold);
         UpdateGuestDialog();
     }
@@ -241,12 +238,6 @@ public class MonsterTradeMode : MonoBehaviour
     void ClearTradeProgress()
     {
         monsterTradeProgress.CustomerIndex = 0;
-    }
-    #endregion
-    #region SelectItem
-    private void TradeThisItem(Item item)
-    {
-        currentSelectedItem = item;
     }
     #endregion
     #region TradePrice

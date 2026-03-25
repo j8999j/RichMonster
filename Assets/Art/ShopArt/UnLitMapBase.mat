@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MapBase
+  m_Name: UnLitMapBase
   m_Shader: {fileID: -6465566751694194690, guid: 5827ce6e8b70d714eaf3e8dad82b7a6e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0

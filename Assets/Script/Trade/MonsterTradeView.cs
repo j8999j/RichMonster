@@ -48,7 +48,6 @@ public class MonsterTradeView : MonoBehaviour
     [SerializeField] private RectTransform TradeDropZone;//交易放置區域
     // ======= Events to Presenter =======
     public event Action OnOpenShop;//開始營業
-    public event Action<Item> TradeItems;//點擊商品
     public event Action<Item> TradePrice;//提交商品
     void Start()
     {
@@ -165,7 +164,6 @@ public class MonsterTradeView : MonoBehaviour
         }
         OnSelectQuality = ItemQuality.None;
         OnSelectItem = bagSlot._currentData;
-        InvokeTradeItems(bagSlot._currentData);
         DetailNameText.text = bagSlot._currentDefinition.Name;
         DetailDescText.text = bagSlot._currentDefinition.Description;
         DetailPriceText.text = bagSlot._currentData.CostPrice.ToString();
@@ -326,10 +324,6 @@ public class MonsterTradeView : MonoBehaviour
     {
         OnOpenShop?.Invoke();
         StartTradeUI();
-    }
-    private void InvokeTradeItems(Item item)
-    {
-        TradeItems?.Invoke(item);
     }
     #endregion
 }

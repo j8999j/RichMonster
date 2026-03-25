@@ -6,6 +6,7 @@ using GameSystem;
 /// <summary>
 /// 人類訂單管理模式
 /// 整合事件生成器與訂單生成器，根據當日事件抽取對應的大型訂單與小型訂單
+/// 主角人界商店確認訂單
 /// </summary>
 [RequireComponent(typeof(HumanOrderView))]
 public class HumanOrderMode : MonoBehaviour
@@ -46,6 +47,7 @@ public class HumanOrderMode : MonoBehaviour
         _humanOrderView.AddItemToOrder += TryAddItemToOrder;
         _humanOrderView.OnOrderCancelSelected += RemoveItemFromOrderRange;
         _humanOrderView.OnOpenOrderPanel += ShowTodayOrder;
+        _humanOrderView.SwitchToAfterNoonClick += OnCheckOrder;
     }
     private void OnDisable()
     {
@@ -55,6 +57,7 @@ public class HumanOrderMode : MonoBehaviour
         _humanOrderView.AddItemToOrder -= TryAddItemToOrder;
         _humanOrderView.OnOrderCancelSelected -= RemoveItemFromOrderRange;
         _humanOrderView.OnOpenOrderPanel -= ShowTodayOrder;
+        _humanOrderView.SwitchToAfterNoonClick -= OnCheckOrder;
     }
     #region GeneratorsEvents
     /// <summary>
@@ -302,11 +305,20 @@ public class HumanOrderMode : MonoBehaviour
     {
         LoadOrdersHistory();
         var (largeOrders, smallOrders) = GetTodayOrders();
-        Debug.Log($"ShowTodayOrder: largeOrders.Count = {largeOrders.Count}, smallOrders.Count = {smallOrders.Count}");
+        OnCheckOrder();
         _humanOrderView.ShowAllOrderSlots(largeOrders, smallOrders);
     }
     #endregion
     #region UI 操作
+    private void SwitchToAfternoon()
+    {
+        GameManager.Instance.gameFlow.SwitchGameStageAndSave(DayPhase.AfterNoon);
+    }
+    //本日是否確認過訂單
+    private void OnCheckOrder()
+    {
+        DataManager.Instance.SetIsTrade(true);
+    }
     private void OnSelectedOrder(HumanLargeOrder order)
     {
         ClearSelectedData();

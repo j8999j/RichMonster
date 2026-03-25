@@ -89,32 +89,23 @@ namespace GameSystem
         /// <summary>
         /// 進入人類場景（白天）
         /// </summary>
-        /// <param name="onComplete">場景載入完成後的回調</param>
+        /// <param name="onComplete">場景載入完成後更新UI顯示</param>
         public void GoToHumanScene(Action onComplete = null)
         {
-            _dataManager.ModifyCurrentDayPhase(DayPhase.HumanDay);
+            _dataManager.ModifyCurrentDayPhase(_dataManager.CurrentPlayerData.PlayingStatus);
             LoadScene(SCENE_HUMAN, onComplete);
         }
 
         /// <summary>
         /// 進入妖怪場景（夜晚）
         /// </summary>
-        /// <param name="onComplete">場景載入完成後的回調</param>
+        /// <param name="onComplete">場景載入完成後更新UI顯示</param>
         public void GoToMonsterScene(Action onComplete = null)
         {
             _dataManager.ModifyCurrentDayPhase(DayPhase.Night);
             LoadScene(SCENE_MONSTER, onComplete);
         }
 
-        /// <summary>
-        /// 進入交易場景
-        /// </summary>
-        /// <param name="onComplete">場景載入完成後的回調</param>
-        public void GoToTradeScene(Action onComplete = null)
-        {
-            _dataManager.ModifyCurrentDayPhase(DayPhase.NightTrade);
-            LoadScene(SCENE_TRADE, onComplete);
-        }
 
         /// <summary>
         /// 根據遊戲階段自動切換場景
@@ -131,8 +122,8 @@ namespace GameSystem
                 case DayPhase.Night:
                     LoadScene(SCENE_MONSTER, onComplete);
                     break;
-                case DayPhase.NightTrade:
-                    LoadScene(SCENE_MONSTER, onComplete);
+                case DayPhase.AfterNoon:
+                    LoadScene(SCENE_HUMAN, onComplete);
                     break;
                 default:
                     Debug.LogWarning($"[SceneTransitionManager] 未知的遊戲階段: {dayPhase}");

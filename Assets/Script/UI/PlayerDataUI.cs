@@ -67,7 +67,7 @@ public class PlayerDataUI : MonoBehaviour
         {
             DayPhase.HumanDay => morningSprite,
             DayPhase.Night => nightSprite,
-            DayPhase.NightTrade => nightSprite,
+            DayPhase.AfterNoon => nightSprite,
             _ => null
         };
     }

@@ -184,12 +184,6 @@ namespace GameSystem
         /// 進入妖怪場景（夜晚）
         /// </summary>
         public void GoToMonsterScene() => sceneTransitionManager.GoToMonsterScene();
-
-        /// <summary>
-        /// 進入交易場景
-        /// </summary>
-        public void GoToTradeScene() => sceneTransitionManager.GoToTradeScene();
-
         /// <summary>
         /// 進入下一天（從夜晚結束進入新的白天）
         /// </summary>

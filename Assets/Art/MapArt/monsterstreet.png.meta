@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 453e5c3cca73c2e42be6fcea696daa0c
+guid: 35d5e80ab2e332241a8df4378dbfda55
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,64 +110,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: RookieAdventurer
+      name: monsterstreet_0
       rect:
         serializedVersion: 2
-        x: 47
-        y: 139
-        width: 63
-        height: 84
+        x: 1
+        y: 2
+        width: 64
+        height: 19
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4d4a6159b150fc640989713d7dffb37c
-      internalID: -2080945616
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SeniorKnight
-      rect:
-        serializedVersion: 2
-        x: 150
-        y: 139
-        width: 76
-        height: 102
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7ab69ad90fc529848b8e0d55c2f99d73
-      internalID: -1047807257
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ApprenticeMage
-      rect:
-        serializedVersion: 2
-        x: 110
-        y: 18
-        width: 62
-        height: 100
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 21efb5c4a6ea604469ff908236af102d
-      internalID: 1719663229
+      spriteID: a4a8db39d0b00e643a9334bc27fc8487
+      internalID: -1482690990
       vertices: []
       indices: 
       edges: []
@@ -175,7 +133,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: e32a54eded64a5744a5db883dee4fa95
+    spriteID: c853b8cb048aba547936fbe57e33df1c
     internalID: 0
     vertices: []
     indices: 
@@ -183,11 +141,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      ApprenticeMage: 1719663229
-      RookieAdventurer: -2080945616
-      SeniorKnight: -1047807257
-      ms1_2: -180152184
-      ms1_3: 868081498
+      monsterstreet_0: -1482690990
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

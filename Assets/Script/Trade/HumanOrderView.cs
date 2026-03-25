@@ -11,6 +11,7 @@ public class HumanOrderView : MonoBehaviour, IInteractable
 {
     public GameObject Panel;
     public GameObject Prompt;
+    public GameObject CheckSwitchToAfterNoonPanel;
     //可提交背包
     public OrderBagSlot BagSlotPrefab;//背包欄位預製物件
     public OrderSlot OrderSlotPrefab;//訂單選擇預製物件
@@ -40,6 +41,8 @@ public class HumanOrderView : MonoBehaviour, IInteractable
     public TextMeshProUGUI OrderRewardText;//訂單獎勵
     public Button ExitButton;
     public Button Confirmbutton;
+    public Button OpenAfterNoonPanelButton;
+    public Button ConfirmAfterNoonButton;
     //不符合類型物品
     public Transform OrderObjContainer;//訂單物件容器
     private List<BagSlot> _unmatchedSlots = new List<BagSlot>();//不符合類型物品列表
@@ -50,12 +53,15 @@ public class HumanOrderView : MonoBehaviour, IInteractable
     public event Action<HumanSmallOrder> OnSelectedSmallOrder;
     public event Action OnOpenOrderPanel;
     public event Action OnConfirmOrder;
+    public event Action SwitchToAfterNoonClick;
 
     private void Start()
     {
         Prompt.SetActive(false);
         Confirmbutton.onClick.AddListener(OnConfirmOrderClick);
         ExitButton.onClick.AddListener(ExitOrderPanel);
+        OpenAfterNoonPanelButton.onClick.AddListener(OpenAfterNoonPanel);
+        ConfirmAfterNoonButton.onClick.AddListener(ConfirmSwitchToAfterNoon);
     }
     public void ShowPrompt()
     {
@@ -316,6 +322,15 @@ public class HumanOrderView : MonoBehaviour, IInteractable
         ClearBagDetail();
         ClearOrderView();
         Panel.SetActive(false);
+    }
+    private void OpenAfterNoonPanel()
+    {
+        CheckSwitchToAfterNoonPanel.SetActive(true);
+    }
+    private void ConfirmSwitchToAfterNoon()
+    {
+        CheckSwitchToAfterNoonPanel.SetActive(false);
+        SwitchToAfterNoonClick?.Invoke();
     }
     #endregion
 }
