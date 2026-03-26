@@ -105,6 +105,7 @@ namespace GameSystem
             {
                 // 場景載入完成後才執行
                 DataManager.Instance.ModifyCurrentDay(playerData.DaysPlayed);
+                GameFlowEvents.InvokeDayPhaseChanged(playerData.PlayingStatus);
                 // 玩家初始化已由 OnSceneLoadComplete 事件處理
             });
         }

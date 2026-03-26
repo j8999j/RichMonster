@@ -7922,8 +7922,8 @@ MonoBehaviour:
   maxSaveSlots: 10
   slotContainer: {fileID: 701491397}
   slotPrefab: {fileID: 4142586586100927128, guid: 00e425ecb793ad74a94accad747d17bf, type: 3}
-  MorningSlot: {fileID: -883246871, guid: d06acce087f4c4d44bb3e0312c11358a, type: 3}
-  NoonSlot: {fileID: 706552746, guid: d06acce087f4c4d44bb3e0312c11358a, type: 3}
+  MorningSlot: {fileID: 706552746, guid: d06acce087f4c4d44bb3e0312c11358a, type: 3}
+  NoonSlot: {fileID: -883246871, guid: d06acce087f4c4d44bb3e0312c11358a, type: 3}
   EveningSlot: {fileID: 799477945, guid: d06acce087f4c4d44bb3e0312c11358a, type: 3}
   tooltipPanel: {fileID: 1689495180}
   tooltipText: {fileID: 1375868849}

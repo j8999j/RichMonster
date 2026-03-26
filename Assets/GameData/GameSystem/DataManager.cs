@@ -566,6 +566,7 @@ public class DataManager : Singleton<DataManager>
         if (_currentPlayerData == null) return;
         _currentPlayerData.IsTrade = value;
         OnPlayerDataChanged = true;
+        AdjustUpdateView();
     }
 
     /// <summary>
@@ -730,6 +731,7 @@ public class DataManager : Singleton<DataManager>
     {
         _currentPlayerData.PlayingStatus = dayPhase;
         OnPlayerDataChanged = true;
+        GameFlowEvents.InvokeDayPhaseChanged(dayPhase);
         AdjustUpdateView();
     }
 
@@ -742,7 +744,7 @@ public class DataManager : Singleton<DataManager>
         }
         else if(_currentPlayerData.PlayingStatus == DayPhase.HumanDay && _currentPlayerData.IsTrade == false)
         {
-            PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed + 1, _currentPlayerData.Gold, _currentPlayerData.PlayingStatus);
+            PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed, _currentPlayerData.Gold, _currentPlayerData.PlayingStatus);
             GameFlowNoticeUpdate?.Invoke("採購商品並開店確認訂單", true);
         }
         else if(_currentPlayerData.PlayingStatus == DayPhase.AfterNoon)
@@ -752,12 +754,12 @@ public class DataManager : Singleton<DataManager>
         }
         else if(_currentPlayerData.PlayingStatus == DayPhase.Night && _currentPlayerData.IsTrade == true)
         {
-            PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed, _currentPlayerData.MonsterGold, _currentPlayerData.PlayingStatus);
+            PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed - 1, _currentPlayerData.MonsterGold, _currentPlayerData.PlayingStatus);
             GameFlowNoticeUpdate?.Invoke("接待結束可選擇回家休息", true);
         }
         else if(_currentPlayerData.PlayingStatus == DayPhase.Night && _currentPlayerData.IsTrade == false)
         {
-            PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed, _currentPlayerData.MonsterGold, _currentPlayerData.PlayingStatus);
+            PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed - 1, _currentPlayerData.MonsterGold, _currentPlayerData.PlayingStatus);
             GameFlowNoticeUpdate?.Invoke("採購商品並迎接客人", true);
         }
     }

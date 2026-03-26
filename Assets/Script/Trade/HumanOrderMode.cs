@@ -47,7 +47,7 @@ public class HumanOrderMode : MonoBehaviour
         _humanOrderView.AddItemToOrder += TryAddItemToOrder;
         _humanOrderView.OnOrderCancelSelected += RemoveItemFromOrderRange;
         _humanOrderView.OnOpenOrderPanel += ShowTodayOrder;
-        _humanOrderView.SwitchToAfterNoonClick += OnCheckOrder;
+        _humanOrderView.SwitchToAfterNoonClick += SwitchToAfternoon;
     }
     private void OnDisable()
     {
@@ -57,7 +57,7 @@ public class HumanOrderMode : MonoBehaviour
         _humanOrderView.AddItemToOrder -= TryAddItemToOrder;
         _humanOrderView.OnOrderCancelSelected -= RemoveItemFromOrderRange;
         _humanOrderView.OnOpenOrderPanel -= ShowTodayOrder;
-        _humanOrderView.SwitchToAfterNoonClick -= OnCheckOrder;
+        _humanOrderView.SwitchToAfterNoonClick -= SwitchToAfternoon;
     }
     #region GeneratorsEvents
     /// <summary>

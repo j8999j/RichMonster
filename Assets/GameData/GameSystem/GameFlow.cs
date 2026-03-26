@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using GameSystem;
 using UnityEngine;
-using System;
+
 
 public class GameFlow
 {
@@ -30,9 +30,9 @@ public class GameFlow
     {
         DataManager.Instance.ClearOrderProgress();
         DataManager.Instance.ModifyCurrentDayPhase(newPhase);
+        GameFlowEvents.InvokeDayPhaseChanged(newPhase);
         if (newPhase == DayPhase.Night)
         {
-            AchievementEvents.DayEndGold(_currentPlayerData.Gold);
             DataManager.Instance.SetIsTrade(false);
         }
         else if(newPhase == DayPhase.AfterNoon)
@@ -42,6 +42,8 @@ public class GameFlow
         else if(newPhase == DayPhase.HumanDay)
         {
             DataManager.Instance.SetIsTrade(false);
+            GameFlowEvents.InvokeDayChanged(CurrentDay);
+            AchievementEvents.DayEndGold(_currentPlayerData.Gold);
         }
         await SaveGameAsync();
     }
@@ -55,9 +57,6 @@ public class GameFlow
         }
     }
 }
-public static class GameFlowEvent
-{
-    public static event Action<DayPhase> OnDayPhaseChanged;
-}
+
 
 

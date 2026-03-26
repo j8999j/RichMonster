@@ -45,16 +45,21 @@ public class PlayerDataUI : MonoBehaviour
     private void UpdatePlayingStatus(int newStatus, DayPhase newPhase)
     {
         statusIconImage.sprite = GetStatusSprite(newPhase);
-        daysPlayedText.text = newStatus.ToString();
+        daysPlayedText.text = "距離拍賣會剩下"+(21-newStatus).ToString()+"天";
         if (newPhase == DayPhase.HumanDay)
         {
             HumanIcon.SetActive(true);
             MonsterIcon.SetActive(false);
         }
-        else
+        else if(newPhase == DayPhase.Night)
         {
             HumanIcon.SetActive(false);
             MonsterIcon.SetActive(true);
+        }
+        else if(newPhase == DayPhase.AfterNoon)
+        {
+            HumanIcon.SetActive(true);
+            MonsterIcon.SetActive(false);
         }
     }
     private void UpdateGold(int newGold)
@@ -67,7 +72,7 @@ public class PlayerDataUI : MonoBehaviour
         {
             DayPhase.HumanDay => morningSprite,
             DayPhase.Night => nightSprite,
-            DayPhase.AfterNoon => nightSprite,
+            DayPhase.AfterNoon => noonSprite,
             _ => null
         };
     }

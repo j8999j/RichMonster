@@ -277,14 +277,25 @@ public class AbyssShop : MonoBehaviour, IInteractable
     {
         if (!_isPlayed) return;
 
+        // 建立通知顯示清單
+        var noticeItems = new List<NoticeItemEntry>();
+
         if (_accumulatedMonsterGold > 0)
         {
             DataManager.Instance.ModifyMonsterGold(_accumulatedMonsterGold);
+            noticeItems.Add(NoticeItemEntry.MonsterGold(_accumulatedMonsterGold));
         }
 
         foreach (var itemId in _accumulatedItems)
         {
             DataManager.Instance.AddItem(itemId, 0); // 本金設為 0
+            noticeItems.Add(NoticeItemEntry.ItemEntry(itemId));
+        }
+
+        // 觸發取得物品通知
+        if (noticeItems.Count > 0)
+        {
+            NoticeGetItemEvents.InvokeShowNotice("貪婪之淵探索獎勵", noticeItems);
         }
 
         Debug.Log($"[AbyssShop] 結算退出。獲得妖怪幣: {_accumulatedMonsterGold}，物品數: {_accumulatedItems.Count}");

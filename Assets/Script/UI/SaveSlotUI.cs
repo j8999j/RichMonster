@@ -15,7 +15,7 @@ public class SaveSlotUI : MonoBehaviour
     [SerializeField] private int maxSaveSlots = 3;
     [SerializeField] private Transform slotContainer;
     [SerializeField] private GameObject slotPrefab;
-    
+
     [Header("存檔圖示設定")]
     [SerializeField] private Sprite MorningSlot;
     [SerializeField] private Sprite NoonSlot;
@@ -44,7 +44,7 @@ public class SaveSlotUI : MonoBehaviour
         if (tooltipPanel != null)
         {
             tooltipPanel.SetActive(false);
-            
+
             // 取得或添加 CanvasGroup，用於防止 Tooltip 攔截滑鼠事件
             tooltipCanvasGroup = tooltipPanel.GetComponent<CanvasGroup>();
             if (tooltipCanvasGroup == null)
@@ -81,7 +81,7 @@ public class SaveSlotUI : MonoBehaviour
     public void ShowTooltip(string content)
     {
         if (tooltipPanel == null || tooltipText == null) return;
-        
+
         currentTooltipContent = content;
         tooltipText.text = content;
         tooltipPanel.SetActive(true);
@@ -154,13 +154,17 @@ public class SaveSlotUI : MonoBehaviour
             {
                 slotText.text = $"存檔 {slotIndex + 1}";
                 goldText.text = $"{slotData.Gold}";
-                if(slotData.CurrentPhase == DayPhase.HumanDay)
+                if (slotData.CurrentPhase == DayPhase.HumanDay)
                 {
-                    dayText.text = $"Day {slotData.DaysPlayed + 1}";
+                    dayText.text = $"剩餘 {21 - slotData.DaysPlayed} 天";
                 }
-                else
+                else if(slotData.CurrentPhase == DayPhase.AfterNoon)
                 {
-                    dayText.text = $"Night {slotData.DaysPlayed}";
+                    dayText.text = $"剩餘 {21 - slotData.DaysPlayed} 天";
+                }
+                else if(slotData.CurrentPhase == DayPhase.Night)
+                {
+                    dayText.text = $"剩餘 {21 - (slotData.DaysPlayed-1)} 天";
                 }
                 // 設定滑鼠懸停事件顯示存檔日期
                 string saveTimeText = $"{slotData.SaveTime:yyyy/MM/dd HH:mm}";
@@ -228,9 +232,9 @@ public class SaveSlotUI : MonoBehaviour
     {
         return phase switch
         {
-            DayPhase.HumanDay => NoonSlot,
+            DayPhase.HumanDay => MorningSlot,
             DayPhase.Night => EveningSlot,
-            DayPhase.AfterNoon => EveningSlot,
+            DayPhase.AfterNoon => NoonSlot,
             _ => null
         };
     }

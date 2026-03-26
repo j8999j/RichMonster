@@ -1,7 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using DG.Tweening;
+using UnityEngine.UI;
+using System;
 //控制人界場景物件
 public class HumanSceneController : MonoBehaviour
 {
@@ -11,23 +11,25 @@ public class HumanSceneController : MonoBehaviour
     public GameObject NoonBackGround;
     public GameObject DayCloud;
     public GameObject NoonCloud;
+    public GameObject DayLightVertical;
+    public GameObject NoonLightVertical;
+    [SerializeField] private CanvasGroup fadeCanvasGroup; // 整體淡入淡出
+    [SerializeField] private Image BlackImage;
+    [SerializeField] private float fadeDuration = 0.3f;
     private void OnEnable()
     {
-        GameFlowEvent.OnDayPhaseChanged += SwitchDayPhase;
+        GameFlowEvents.OnDayPhaseChanged += SwitchDayPhase;
     }
     private void OnDisable()
     {
-        GameFlowEvent.OnDayPhaseChanged -= SwitchDayPhase;
+        GameFlowEvents.OnDayPhaseChanged -= SwitchDayPhase;
     }
     private void SwitchDayPhase(DayPhase state)
     {
         switch (state)
         {
-            case DayPhase.HumanDay:
-                SwitchToDay();
-                break;
             case DayPhase.AfterNoon:
-                SwitchToNoon();
+                LoadingScene(SwitchToNoon);
                 break;
         }
     }
@@ -39,6 +41,8 @@ public class HumanSceneController : MonoBehaviour
         NoonBackGround.SetActive(true);
         DayCloud.SetActive(false);
         NoonCloud.SetActive(true);
+        DayLightVertical.SetActive(false);
+        NoonLightVertical.SetActive(true);
     }
     public void SwitchToDay()
     {
@@ -48,5 +52,26 @@ public class HumanSceneController : MonoBehaviour
         NoonBackGround.SetActive(false);
         DayCloud.SetActive(true);
         NoonCloud.SetActive(false);
+        DayLightVertical.SetActive(true);
+        NoonLightVertical.SetActive(false);
+    }
+    public void LoadingScene(Action SceneChange)
+    {
+        Sequence enterSeq = DOTween.Sequence();
+
+        // A. 阻擋點擊
+        enterSeq.AppendCallback(() => fadeCanvasGroup.blocksRaycasts = true);
+        // B. 畫面變黑
+        enterSeq.Append(BlackImage.DOFade(1f, fadeDuration));
+        enterSeq.OnComplete(() =>
+        {
+            SceneChange?.Invoke();
+            Sequence EndSeq = DOTween.Sequence();
+            EndSeq.AppendInterval(0.3f);
+            // A. 阻擋點擊
+            EndSeq.AppendCallback(() => fadeCanvasGroup.blocksRaycasts = false);
+            // B. 畫面變黑
+            EndSeq.Append(BlackImage.DOFade(0f, fadeDuration));
+        });
     }
 }

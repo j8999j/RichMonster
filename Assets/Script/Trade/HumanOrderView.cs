@@ -329,6 +329,7 @@ public class HumanOrderView : MonoBehaviour, IInteractable
     }
     private void ConfirmSwitchToAfterNoon()
     {
+        Panel.SetActive(false);
         CheckSwitchToAfterNoonPanel.SetActive(false);
         SwitchToAfterNoonClick?.Invoke();
     }
