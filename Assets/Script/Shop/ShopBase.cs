@@ -13,13 +13,14 @@ namespace Shop
         public int Price;//商品售價
         public bool Purchased; // true: 已被購買, false: 尚未購買
     }
-    public class ShopBase : MonoBehaviour, IInteractable
+    public class ShopBase : MonoBehaviour, IInteractable, IMapGuideTarget
     {
 
         [SerializeField] protected GameObject interactPrompt;
         [SerializeField] protected ShopUIView _shopUIView;
         protected string ShopID;
         protected string ShopName;
+        public string ID => ShopID;
         //商店貨架數量
         protected int ShopInventorySize;
         //商店中可以刷新的物品
@@ -29,6 +30,10 @@ namespace Shop
         //今日刷新的物品
         protected List<ShelfSlot> TodayShopItemList = new List<ShelfSlot>();
         public ShopSO ShopSet;
+        public void SetMapGuide()
+        {
+            NoticeGetItemEvents.InvokeSetMapGuide(ID, transform);
+        }
         void Awake()
         {
             ShopID = ShopSet.ShopID;

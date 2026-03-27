@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using GameSystem;
 
-public class AbyssShop : MonoBehaviour, IInteractable
+public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
 {
     public GameObject Prompt_E;
 
     [Header("深淵商店設定")]
     public AbyssShopRewardConfig RewardConfig;
     public AbyssView ShopView;
-
+    public string ID => "AbyssShop";
     [Header("深淵遊戲狀態")]
     private bool _isPlayed;
     private bool _ArrivedBottom;
@@ -21,7 +21,10 @@ public class AbyssShop : MonoBehaviour, IInteractable
 
     // 每層成功率：100%, 75%, 50%, 40%, 20%
     private readonly float[] _successRates = { 0.90f, 0.75f, 0.50f, 0.40f, 0.20f };
-
+    public void SetMapGuide()
+    {
+        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+    }
     public void Interact()
     {
         LoadGame();

@@ -3,14 +3,18 @@ using GameSystem;
 using Player;
 using Unity.VisualScripting;
 
-public class ScratchCardShop : MonoBehaviour, IInteractable
+public class ScratchCardShop : MonoBehaviour, IInteractable, IMapGuideTarget
 {
     [SerializeField] private ScratchCard scratchCard;
-
+    public string ID => "ScratchCardShop";
     private bool isScratched;
     private int CurrentDay;
     public GameObject Prompt;
     private ScratchCardPrizeType currentPrize;
+    public void SetMapGuide()
+    {
+        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+    }
     private void OnEnable()
     {
         scratchCard.OnScratchComplete += OnScratchComplete;

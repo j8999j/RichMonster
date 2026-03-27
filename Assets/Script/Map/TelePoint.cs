@@ -4,13 +4,18 @@ using Player;
 using UnityEngine.UI;
 using GameSystem;
 
-public class TelePoint : MonoBehaviour, IInteractable
+public class TelePoint : MonoBehaviour, IInteractable, IMapGuideTarget
 {
     public Vector3 TelePosition;
     public GameObject interactPrompt;
     [SerializeField] private CanvasGroup fadeCanvasGroup; // 整體淡入淡出
     [SerializeField] private Image BlackImage;
     [SerializeField] private float fadeDuration = 0.5f;
+    public string ID => "TelePoint";
+    public void SetMapGuide()
+    {
+        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+    }
     public void Interact()
     {
         //傳送前往妖界

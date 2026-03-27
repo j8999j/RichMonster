@@ -7,11 +7,12 @@ using UnityEngine.UI;
 using Player;
 using TMPro;
 
-public class HumanOrderView : MonoBehaviour, IInteractable
+public class HumanOrderView : MonoBehaviour, IInteractable, IMapGuideTarget
 {
     public GameObject Panel;
     public GameObject Prompt;
     public GameObject CheckSwitchToAfterNoonPanel;
+    public string ID => "HumanOrderView";
     //可提交背包
     public OrderBagSlot BagSlotPrefab;//背包欄位預製物件
     public OrderSlot OrderSlotPrefab;//訂單選擇預製物件
@@ -54,7 +55,10 @@ public class HumanOrderView : MonoBehaviour, IInteractable
     public event Action OnOpenOrderPanel;
     public event Action OnConfirmOrder;
     public event Action SwitchToAfterNoonClick;
-
+    public void SetMapGuide()
+    {
+        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+    }
     private void Start()
     {
         Prompt.SetActive(false);

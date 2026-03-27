@@ -2,12 +2,17 @@ using UnityEngine;
 using Player;
 using GameSystem;
 
-public class NpcOnMap : MonoBehaviour, IInteractable
+public class NpcOnMap : MonoBehaviour, IInteractable, IMapGuideTarget
 {
     public NpcMission NpcMission;
     public SpriteRenderer NpcIcon;
     public NPCMissionView missionView;
     public GameObject prompt;
+    public string ID => NpcMission.MissionID;
+    public void SetMapGuide()
+    {
+        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+    }
     public void LoadData()
     {
         var data = DataManager.Instance.GetPlayerSaveData<NPCMissionSave>(NpcMission.MissionID);

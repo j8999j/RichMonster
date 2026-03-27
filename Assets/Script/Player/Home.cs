@@ -2,13 +2,18 @@ using UnityEngine;
 using Player;
 using System;
 using System.Collections;
-public class Home : MonoBehaviour, IInteractable
+public class Home : MonoBehaviour, IInteractable, IMapGuideTarget
 {
     [SerializeField] private GameObject interactPrompt;
     [SerializeField] private GameObject TradeCamera;
 
     private MonsterTradeView monsterTradeView;
     private bool CanInteract;
+    public string ID => "Home";
+    public void SetMapGuide()
+    {
+        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+    }
     void Start()
     {
         monsterTradeView = GetComponent<MonsterTradeView>();

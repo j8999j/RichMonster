@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using Player;
 
-public class TrashCanController : MonoBehaviour, IInteractable
+public class TrashCanController : MonoBehaviour, IInteractable, IMapGuideTarget
 {
     [Header("視圖")]
     public TrashCanView View;
     public GameObject Prompt;
-
+    public string ID => "TrashCan";
     [Header("設定")]
     [Tooltip("是否只顯示人類世界的物品 (依需求調整)")]
     public bool OnlyHumanWorld = true;
 
     private Item _pendingDiscardItem;
     private TradeSlot _pendingDiscardSlot;
-
+    public void SetMapGuide()
+    {
+        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+    }
     void Start()
     {
         if (View == null)

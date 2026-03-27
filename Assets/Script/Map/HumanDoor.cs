@@ -1,9 +1,14 @@
 using GameSystem;
 using Player;
 using UnityEngine;
-public class HumanDoor : MonoBehaviour, IInteractable
+public class HumanDoor : MonoBehaviour, IInteractable, IMapGuideTarget
 {
     [SerializeField] private GameObject interactPrompt;
+    public string ID => "HumanDoor";
+    public void SetMapGuide()
+    {
+        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+    }
     public void Interact()
     {
         //傳送前往妖界

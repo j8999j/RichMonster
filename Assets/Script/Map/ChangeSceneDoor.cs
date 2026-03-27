@@ -2,10 +2,15 @@ using UnityEngine;
 using Player;
 using GameSystem;
 
-public class ChangeSceneDoor : MonoBehaviour, IInteractable //切換場景
+public class ChangeSceneDoor : MonoBehaviour, IInteractable, IMapGuideTarget //切換場景
 {
     [SerializeField] private GameObject interactPrompt;
     [SerializeField] private SceneScriptObj scene;
+    public string ID => "ChangeSceneDoor";
+    public void SetMapGuide()
+    {
+        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+    }
     public void Interact()
     {
         //傳送前往妖界
