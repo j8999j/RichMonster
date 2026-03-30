@@ -228,6 +228,8 @@ public class GameSaveBook //跨單局物品圖鑑與妖怪圖鑑存檔
 public class MonsterBookData //妖怪圖鑑
 {
     public List<string> UnlockMonsterInformationID;
+    public List<string> NewMonsterInformationID; //新解鎖但尚未在圖鑑中確認的情報
+    public List<string> NewMonsterStoryID; //新解鎖但尚未在圖鑑中確認的故事
 }
 public class MonsterInformationDatabase //妖怪圖鑑妖怪趣聞
 {

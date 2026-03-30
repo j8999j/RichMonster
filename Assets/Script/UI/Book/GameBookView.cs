@@ -27,6 +27,7 @@ public class GameBookView : MonoBehaviour
     public Image RarityIcon;
     public Image TypeIcon;
     public Image WorldIcon;
+    
     [Header("妖怪圖鑑")]
     public TextMeshProUGUI MonsterName;
     public TextMeshProUGUI RaceName;
@@ -43,6 +44,9 @@ public class GameBookView : MonoBehaviour
     public Button StoryButton_1;
     public Button StoryButton_2;
     public List<Button> InformationButtonList;
+    public Image NewIcon;
+    public Image NewIcon_PageButton;
+    
     [Header("篩選按鈕物品")]
     public Button AllButton;
     public Button PropButton;
@@ -361,6 +365,7 @@ public class GameBookView : MonoBehaviour
         ApplyMonsterFilter();
         ShowMonsterBookSlots();
         UpdateMonsterFilterButtonStates();
+        UpdateGlobalNewIcon();
     }
 
     /// <summary>
@@ -432,7 +437,10 @@ public class GameBookView : MonoBehaviour
             // 檢查是否有任何該妖怪的資訊已解鎖
             bool isUnlocked = IsMonsterUnlocked(monsterDef.Id);
 
-            _activeMonsterSlots[i].Setup(monsterDef, isUnlocked, OnMonsterBookSlotSelected);
+            // 檢查是否有尚未確認的新情報或新故事
+            bool hasNewInfo = DataManager.Instance.HasNewMonsterInfo(monsterDef.Id);
+
+            _activeMonsterSlots[i].Setup(monsterDef, isUnlocked, OnMonsterBookSlotSelected, hasNewInfo);
             _activeMonsterSlots[i].gameObject.SetActive(true);
             _activeMonsterSlots[i].SetBlack(!isUnlocked);
         }
@@ -539,6 +547,9 @@ public class GameBookView : MonoBehaviour
 
         if (InformationButtonList != null)
         {
+            // 取得新情報 ID 列表用於判斷按鈕是否需要顯示 NewIcon
+            var newInfoIds = SaveBook?.MonsterBookData?.NewMonsterInformationID;
+
             for (int i = 0; i < InformationButtonList.Count; i++)
             {
                 if (InformationButtonList[i] != null)
@@ -546,17 +557,38 @@ public class GameBookView : MonoBehaviour
                     bool isVisible = i < unlockedInfoCount;
                     InformationButtonList[i].gameObject.SetActive(isVisible);
 
+                    // 顯示/隱藏按鈕上的 NewIcon (GetChild(1))
+                    GameObject btnNewIcon = null;
+                    bool isNewInfo = false;
+                    if (isVisible && InformationButtonList[i].transform.childCount > 1)
+                    {
+                        btnNewIcon = InformationButtonList[i].transform.GetChild(1).gameObject;
+                        isNewInfo = newInfoIds != null
+                            && newInfoIds.Contains(unlockedInfosList[i].InformationID);
+                        btnNewIcon.SetActive(isNewInfo);
+                    }
+
                     // 重新綁定點擊事件
                     InformationButtonList[i].onClick.RemoveAllListeners();
                     if (isVisible)
                     {
-                        var infoData = unlockedInfosList[i]; // 捕捉區域變數以便在 delegate 內使用
+                        var infoData = unlockedInfosList[i];
                         Button infoButton = InformationButtonList[i];
+                        var capturedNewIcon = btnNewIcon;
+                        bool capturedIsNew = isNewInfo;
                         infoButton.onClick.AddListener(() =>
                         {
                             if (MonsterDescription != null)
                             {
                                 MonsterDescription.text = infoData.MonsterInformation;
+                            }
+                            // 確認該筆新情報
+                            if (capturedIsNew && capturedNewIcon != null)
+                            {
+                                DataManager.Instance.ConfirmSingleNewInfo(infoData.InformationID);
+                                capturedNewIcon.SetActive(false);
+                                RefreshSlotNewIcon(slot);
+                                UpdateGlobalNewIcon();
                             }
                             HighlightMonsterContentButton(infoButton);
                         });
@@ -565,10 +597,19 @@ public class GameBookView : MonoBehaviour
             }
         }
 
-        // --- 更新 StoryButton 顯示狀態 ---
+        // --- 更新 StoryButton 顯示狀態與 NewIcon ---
         int unlockedStoryCount = unlockedInfoCount / 2; // 每2個情報解鎖1個故事
         if (StoryButton_1 != null) StoryButton_1.gameObject.SetActive(unlockedStoryCount >= 1);
         if (StoryButton_2 != null) StoryButton_2.gameObject.SetActive(unlockedStoryCount >= 2);
+
+        // 顯示故事按鈕的 NewIcon (GetChild(1)) 並綁定確認邏輯
+        var newStoryIds = SaveBook?.MonsterBookData?.NewMonsterStoryID;
+        var allStories = isUnlocked && slot.CurrentDefinition != null
+            ? DataManager.Instance.GetMonsterStoriesByMonsterID(slot.CurrentDefinition.Id)
+            : new List<MonsterStoryDatabase>();
+
+        SetupStoryButton(StoryButton_1, slot, allStories, 0, unlockedStoryCount >= 1, newStoryIds);
+        SetupStoryButton(StoryButton_2, slot, allStories, 1, unlockedStoryCount >= 2, newStoryIds);
 
         HighlightMonsterContentButton(DescriptionButton);
 
@@ -622,6 +663,75 @@ public class GameBookView : MonoBehaviour
         }
         ShowMonsterTags(likeTags, MonsterLikeTagContainer);
         ShowMonsterTags(hateTags, MonsterHateTagContainer);
+    }
+
+    /// <summary>
+    /// 更新全域新情報/故事提示圖示（只要還有任何未確認的新情報或故事就顯示）
+    /// </summary>
+    private void UpdateGlobalNewIcon()
+    {
+        bool hasAny = DataManager.Instance.HasAnyNewMonsterInfo();
+        if (NewIcon != null)
+            NewIcon.gameObject.SetActive(hasAny);
+        if (NewIcon_PageButton != null)
+            NewIcon_PageButton.gameObject.SetActive(hasAny);
+    }
+
+    /// <summary>
+    /// 重新檢查該 Slot 的妖怪是否還有未確認的新情報/故事，更新 NewIcon
+    /// </summary>
+    private void RefreshSlotNewIcon(BookMonsterSlot slot)
+    {
+        if (slot == null || slot.CurrentDefinition == null || slot.NewIcon == null) return;
+        bool stillHasNew = DataManager.Instance.HasNewMonsterInfo(slot.CurrentDefinition.Id);
+        slot.NewIcon.gameObject.SetActive(stillHasNew);
+    }
+
+    /// <summary>
+    /// 設定故事按鈕的文字顯示、NewIcon 顯示與點擊確認邏輯
+    /// </summary>
+    private void SetupStoryButton(Button storyButton, BookMonsterSlot slot,
+        List<MonsterStoryDatabase> stories, int storyIndex, bool isVisible, List<string> newStoryIds)
+    {
+        if (storyButton == null) return;
+
+        storyButton.onClick.RemoveAllListeners();
+
+        // NewIcon 處理
+        GameObject storyNewIcon = null;
+        bool isNewStory = false;
+        if (storyButton.transform.childCount > 1)
+        {
+            storyNewIcon = storyButton.transform.GetChild(1).gameObject;
+            isNewStory = isVisible && stories != null && storyIndex < stories.Count
+                && newStoryIds != null && newStoryIds.Contains(stories[storyIndex].MonsterStoryID);
+            storyNewIcon.SetActive(isNewStory);
+        }
+
+        // 綁定點擊事件：顯示故事文字 + 確認新標記
+        if (isVisible && stories != null && storyIndex < stories.Count)
+        {
+            var storyData = stories[storyIndex];
+            var capturedIcon = storyNewIcon;
+            bool capturedIsNew = isNewStory;
+            Button capturedButton = storyButton;
+            storyButton.onClick.AddListener(() =>
+            {
+                if (MonsterDescription != null)
+                {
+                    MonsterDescription.text = storyData.MonsterStory;
+                }
+                // 確認新故事
+                if (capturedIsNew && capturedIcon != null)
+                {
+                    DataManager.Instance.ConfirmSingleNewStory(storyData.MonsterStoryID);
+                    capturedIcon.SetActive(false);
+                    RefreshSlotNewIcon(slot);
+                    UpdateGlobalNewIcon();
+                }
+                HighlightMonsterContentButton(capturedButton);
+            });
+        }
     }
 
     /// <summary>

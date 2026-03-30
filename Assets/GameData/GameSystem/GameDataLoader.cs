@@ -130,7 +130,9 @@ public class GameDataLoader
             },
             MonsterBookData = new MonsterBookData
             {
-                UnlockMonsterInformationID = new List<string>()
+                UnlockMonsterInformationID = new List<string>(),
+                NewMonsterInformationID = new List<string>(),
+                NewMonsterStoryID = new List<string>()
             }
         };
     }
@@ -142,6 +144,8 @@ public class GameDataLoader
         bookData.ItemBookData.ItemBooks ??= new List<ItemBookDatabase>();
         bookData.MonsterBookData ??= new MonsterBookData();
         bookData.MonsterBookData.UnlockMonsterInformationID ??= new List<string>();
+        bookData.MonsterBookData.NewMonsterInformationID ??= new List<string>();
+        bookData.MonsterBookData.NewMonsterStoryID ??= new List<string>();
     }
     #endregion
 

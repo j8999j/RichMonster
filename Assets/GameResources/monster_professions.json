@@ -9,7 +9,7 @@
             ],
             "BaseBudgetMultiplier": 1,
             "PreferMaxPower": 3,
-            "Description": "",
+            "Description": "從北方雪原飄然而來的神秘女子，身上總縈繞著淡淡霧氣與涼意。她對人類世界的商品充滿好奇。「能讓空氣再冷一些嗎？」",
             "professionType": 1,
             "HateTags": [
                 "Dry"
@@ -26,12 +26,12 @@
             ],
             "BaseBudgetMultiplier": 2,
             "PreferMaxPower": 10,
-            "Description": "",
+            "Description": "歷盡千年修行的狐族貴眷，品味極高、眼光刁鑽。「我的眼睛只看得見真正有價值的東西。」",
             "professionType": 2,
             "HateTags": [
                 "Cursed"
             ],
-            "Race": "神族"
+            "Race": "獸族"
         },
         {
             "Id": "ApprenticeMage",
@@ -42,7 +42,7 @@
             ],
             "BaseBudgetMultiplier": 1,
             "PreferMaxPower": 3,
-            "Description": "",
+            "Description": "棲居深山的古老神靈，走南闖北見識過許多奇珍異寶「年輕人，這個……有點意思，帶著時間氣息的東西，本天狗喜歡。」",
             "professionType": 0,
             "HateTags": [
                 "Junk"
@@ -58,7 +58,7 @@
             ],
             "BaseBudgetMultiplier": 1,
             "PreferMaxPower": 3,
-            "Description": "",
+            "Description": "由千年古籍孕育而生的文字之魂，負責整理妖怪界的圖書與知識",
             "professionType": 0,
             "HateTags": [
                 "Corruption"
@@ -74,7 +74,7 @@
             ],
             "BaseBudgetMultiplier": 1,
             "PreferMaxPower": 3,
-            "Description": "",
+            "Description": "與古木共存的林間精靈，充滿蓬勃生命力，最喜歡的季節是春天",
             "professionType": 0,
             "HateTags": [
                 "Fire"
@@ -90,7 +90,7 @@
             ],
             "BaseBudgetMultiplier": 0.5,
             "PreferMaxPower": 5,
-            "Description": "",
+            "Description": "僵直跳行的行屍，表情嚴肅卻意外好說話，預算有限但需求特殊。對能「以毒攻毒」或緩解身體不適的物品格外感興趣，炎熱的天氣讓本就僵硬的關節更不靈活，令他煩躁難忍。「嘿……有沒有……對身體比較好的……東西……」",
             "professionType": 0,
             "HateTags": [
                 "Hot"
@@ -106,7 +106,7 @@
             ],
             "BaseBudgetMultiplier": 1,
             "PreferMaxPower": 3,
-            "Description": "",
+            "Description": "從清澈河川來到市集的水棲妖怪。力大無窮。",
             "professionType": 0,
             "HateTags": [
                 "Dirty"
@@ -118,13 +118,12 @@
             "ProfessionName": "牛魔王",
             "PreferredTags": [
                 "Dry",
-                "Tasty",
                 "Antique",
                 "Dessert"
             ],
             "BaseBudgetMultiplier": 1.5,
             "PreferMaxPower": 10,
-            "Description": "",
+            "Description": "聞名妖界的大魔王，外表威猛卻藏著一顆出人意料的細膩心。",
             "professionType": 1,
             "HateTags": [
                 "Spicy"
@@ -140,11 +139,11 @@
             ],
             "BaseBudgetMultiplier": 0.8,
             "PreferMaxPower": 5,
-            "Description": "",
+            "Description": "化為老嫗模樣的虎妖，對食物有著難以滿足的旺盛食欲。",
             "professionType": 1,
             "HateTags": [
-                "Hot",
-                "Fire"
+                "Fire",
+                "Oil"
             ],
             "Race": "獸族"
         },
@@ -158,7 +157,7 @@
             ],
             "BaseBudgetMultiplier": 0.8,
             "PreferMaxPower": 5,
-            "Description": "",
+            "Description": "以絕美外貌示人的千年妖怪「美麗的東西，永遠不嫌多。」",
             "professionType": 0,
             "HateTags": [
                 "Sour"

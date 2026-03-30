@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using Player;
 using TMPro;
 
-public class HumanOrderView : MonoBehaviour, IInteractable, IMapGuideTarget
+public class HumanOrderView : MonoBehaviour, IGuideInteractable
 {
     public GameObject Panel;
     public GameObject Prompt;
@@ -55,9 +55,14 @@ public class HumanOrderView : MonoBehaviour, IInteractable, IMapGuideTarget
     public event Action OnOpenOrderPanel;
     public event Action OnConfirmOrder;
     public event Action SwitchToAfterNoonClick;
+    public event Action<string> OnInteracted;
     public void SetMapGuide()
     {
         NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+    }
+    public void SetGuideID()
+    {
+         
     }
     private void Start()
     {

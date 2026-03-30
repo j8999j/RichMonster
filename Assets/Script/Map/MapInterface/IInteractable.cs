@@ -5,5 +5,6 @@ namespace Player
         void ShowPrompt();
         void HidePrompt();
         void Interact();
+        
     }
 }

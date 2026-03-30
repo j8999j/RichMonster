@@ -12,6 +12,7 @@ public class BookMonsterSlot : MonoBehaviour
     public Button InteractButton;
     public Image MonsterImage;
     public TextMeshProUGUI MonsterName;
+    public Image NewIcon;
 
     [Tooltip("預設圖 (載入失敗或載入中顯示)")]
     public Sprite DefaultSprite;
@@ -40,7 +41,7 @@ public class BookMonsterSlot : MonoBehaviour
     /// <summary>
     /// 設定欄位資料並載入圖片
     /// </summary>
-    public void Setup(MonsterProfessionDefinition definition, bool isUnlocked, Action<BookMonsterSlot, bool> onClick)
+    public void Setup(MonsterProfessionDefinition definition, bool isUnlocked, Action<BookMonsterSlot, bool> onClick, bool hasNewInfo = false)
     {
         CurrentDefinition = definition;
         IsUnlocked = isUnlocked;
@@ -49,6 +50,8 @@ public class BookMonsterSlot : MonoBehaviour
         LoadSprite(definition.Id);
         if (MonsterName != null)
             MonsterName.text = isUnlocked ? definition.ProfessionName : "???";
+        if (NewIcon != null)
+            NewIcon.gameObject.SetActive(hasNewInfo && isUnlocked);
     }
 
     /// <summary>

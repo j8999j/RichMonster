@@ -345,7 +345,7 @@ namespace GameSystem
                 return new GameSaveBook
                 {
                     ItemBookData = new ItemBookData { ItemBooks = new List<ItemBookDatabase>() },
-                    MonsterBookData = new MonsterBookData { UnlockMonsterInformationID = new List<string>() },
+                    MonsterBookData = new MonsterBookData { UnlockMonsterInformationID = new List<string>(), NewMonsterInformationID = new List<string>(), NewMonsterStoryID = new List<string>() },
                     AchievementData = new List<IAchievementSave>()
                 };
             }
@@ -356,7 +356,10 @@ namespace GameSystem
                 var data = JsonConvert.DeserializeObject<GameSaveBook>(json, _jsonSettings);
                 if (data == null) data = new GameSaveBook();
                 data.ItemBookData ??= new ItemBookData { ItemBooks = new List<ItemBookDatabase>() };
-                data.MonsterBookData ??= new MonsterBookData { UnlockMonsterInformationID = new List<string>() };
+                data.MonsterBookData ??= new MonsterBookData { UnlockMonsterInformationID = new List<string>(), NewMonsterInformationID = new List<string>(), NewMonsterStoryID = new List<string>() };
+                data.MonsterBookData.UnlockMonsterInformationID ??= new List<string>();
+                data.MonsterBookData.NewMonsterInformationID ??= new List<string>();
+                data.MonsterBookData.NewMonsterStoryID ??= new List<string>();
                 data.AchievementData ??= new List<IAchievementSave>();
                 Debug.Log($"[SaveManager] 圖鑑讀檔成功: {filePath}");
                 return data;
@@ -367,7 +370,7 @@ namespace GameSystem
                 return new GameSaveBook
                 {
                     ItemBookData = new ItemBookData { ItemBooks = new List<ItemBookDatabase>() },
-                    MonsterBookData = new MonsterBookData { UnlockMonsterInformationID = new List<string>() },
+                    MonsterBookData = new MonsterBookData { UnlockMonsterInformationID = new List<string>(), NewMonsterInformationID = new List<string>(), NewMonsterStoryID = new List<string>() },
                     AchievementData = new List<IAchievementSave>()
                 };
             }

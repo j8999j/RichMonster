@@ -1,24 +1,19 @@
 using UnityEngine;
 using TMPro;
-
+using System;
 public class GameFlowUI : MonoBehaviour
 {
     public GameObject GameFlowPanel;
     public TextMeshProUGUI GameFlowText;
+    public static Action<string, bool> SetGameFlowTextEvent;
     private void OnEnable()
     {
-        if (DataManager.Instance != null)
-        {
-            DataManager.Instance.GameFlowNoticeUpdate += SetGameFlowText;
-        }
+        SetGameFlowTextEvent += SetGameFlowText;
     }
 
     private void OnDisable()
     {
-        if (DataManager.Instance != null)
-        {
-            DataManager.Instance.GameFlowNoticeUpdate -= SetGameFlowText;
-        }
+        SetGameFlowTextEvent -= SetGameFlowText;
     }
     
     public void SetGameFlowText(string text, bool isActive)

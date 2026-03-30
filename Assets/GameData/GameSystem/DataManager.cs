@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 public class DataManager : Singleton<DataManager>
 {
+    #region Game Static Data (遊戲靜態資料)
     // 資料字典 - 由 GameDataLoader 載入
     private Dictionary<string, ItemTags> _itemTagsDict = new Dictionary<string, ItemTags>();
     private Dictionary<string, ItemDefinition> _itemDict = new Dictionary<string, ItemDefinition>();
@@ -20,24 +21,38 @@ public class DataManager : Singleton<DataManager>
     private Dictionary<string, HumanLargeOrder> _humanLargeOrderDict = new Dictionary<string, HumanLargeOrder>();
     private Dictionary<string, HumanSmallOrder> _humanSmallOrderDict = new Dictionary<string, HumanSmallOrder>();
     private Dictionary<string, NpcMission> _missionDict = new Dictionary<string, NpcMission>();
-    // 任務分類
-    private List<NpcMission> _humanInfoMissions = new List<NpcMission>();
-    private List<NpcMission> _humanNonInfoMissions = new List<NpcMission>();
-    private List<NpcMission> _monsterInfoMissions = new List<NpcMission>();
-    private List<NpcMission> _monsterNonInfoMissions = new List<NpcMission>();
     private Dictionary<string, AchievementConfig> _achievementDict = new Dictionary<string, AchievementConfig>();
     private Dictionary<string, MonsterInformationDatabase> _monsterInfoDict = new Dictionary<string, MonsterInformationDatabase>();
     private Dictionary<string, MonsterStoryDatabase> _monsterStoryDict = new Dictionary<string, MonsterStoryDatabase>();
     private Dictionary<string, NPCMissionData> _npcDataDict = new Dictionary<string, NPCMissionData>();
+    #endregion
 
+    #region Mission Caches (任務分類快取)
+    // 任務分類快取清單
+    private List<NpcMission> _humanInfoMissions = new List<NpcMission>();
+    private List<NpcMission> _humanNonInfoMissions = new List<NpcMission>();
+    private List<NpcMission> _monsterInfoMissions = new List<NpcMission>();
+    private List<NpcMission> _monsterNonInfoMissions = new List<NpcMission>();
+    #endregion
+
+    #region Save & Runtime Data (存檔與即時資料)
     private PlayerData _initialPlayerData;
     private PlayerData _currentPlayerData;
     private GameSaveBook _bookData;
     private Dictionary<string, IAchievementSave> _achievementSaveDict = new Dictionary<string, IAchievementSave>();
-    public bool OnPlayerDataChanged { get; private set; } = true;
-    public bool OnBookDataChanged { get; private set; } = true;
+    #endregion
 
-    // Read-only accessors
+    #region State Flags (狀態旗標)
+    /// <summary> 玩家資料是否已變更（用於判斷是否需要存檔） </summary>
+    public bool OnPlayerDataChanged { get; private set; } = true;
+    /// <summary> 圖鑑資料是否已變更（用於判斷是否需要存檔） </summary>
+    public bool OnBookDataChanged { get; private set; } = true;
+    /// <summary> 資料管理器是否已完成初始化 </summary>
+    public bool IsInitialized { get; private set; }
+    private Task _initTask;
+    #endregion
+
+    #region Read-only Data Accessors (唯讀屬性)
     public IReadOnlyDictionary<string, ItemTags> ItemTagsDict => _itemTagsDict;
     public IReadOnlyDictionary<string, ItemDefinition> ItemDict => _itemDict;
     public IReadOnlyDictionary<string, MonsterProfessionDefinition> MonsterProfessionDict => _monsterProfessionDict;
@@ -57,13 +72,12 @@ public class DataManager : Singleton<DataManager>
     public IReadOnlyDictionary<string, NPCMissionData> NPCDataDict => _npcDataDict;
     public PlayerData InitialPlayerData => ClonePlayerData(_initialPlayerData);
     public IReadOnlyPlayerData CurrentPlayerData => _currentPlayerData;
+    #endregion
 
-    public bool IsInitialized { get; private set; }
-    private Task _initTask;
-
+    #region Events (事件)
+    /// <summary> 玩家主畫面資料更新事件 (Day, Gold, PlayingStatus) </summary>
     public event Action<int, int, DayPhase> PlayerMainViewUpdate;
-    public event Action<string, bool> GameFlowNoticeUpdate;
-
+    #endregion
     protected override void Awake()
     {
         base.Awake();
@@ -149,7 +163,11 @@ public class DataManager : Singleton<DataManager>
         Debug.Log($"[DataManager] 任務分類完成 - 人間(情報:{_humanInfoMissions.Count}, 一般:{_humanNonInfoMissions.Count}), 妖界(情報:{_monsterInfoMissions.Count}, 一般:{_monsterNonInfoMissions.Count})");
     }
 
-    #region Data Queries
+    #region Data Queries (資料查詢)
+    
+    /// <summary>
+    /// 根據效果類型取得對應的特性設定
+    /// </summary>
     public List<TraitDefinition> GetTraits(string effectType)
     {
         if (_traitDict == null) return new List<TraitDefinition>();
@@ -158,6 +176,9 @@ public class DataManager : Singleton<DataManager>
             .ToList();
     }
 
+    /// <summary>
+    /// 根據時段取得對應的遊戲事件
+    /// </summary>
     public List<GameEventDefinition> GetEventsByPeriod(EventTime period)
     {
         if (_eventDict == null) return new List<GameEventDefinition>();
@@ -166,6 +187,9 @@ public class DataManager : Singleton<DataManager>
             .ToList();
     }
 
+    /// <summary>
+    /// 根據任務 ID 取得任務資料
+    /// </summary>
     public NpcMission GetMissionById(string missionId)
     {
         if (_missionDict != null && _missionDict.TryGetValue(missionId, out var mission))
@@ -175,12 +199,18 @@ public class DataManager : Singleton<DataManager>
         return null;
     }
 
+    /// <summary>
+    /// 取得所有任務資料
+    /// </summary>
     public List<NpcMission> GetAllMissions()
     {
         if (_missionDict == null) return new List<NpcMission>();
         return _missionDict.Values.ToList();
     }
 
+    /// <summary>
+    /// 根據商店類型取得在此販售的所有物品
+    /// </summary>
     public List<ItemDefinition> GetItemsByShopType(string shopType)
     {
         if (_itemDict == null || string.IsNullOrEmpty(shopType)) return new List<ItemDefinition>();
@@ -189,6 +219,9 @@ public class DataManager : Singleton<DataManager>
             .ToList();
     }
 
+    /// <summary>
+    /// 根據物品 ID 取得物品定義
+    /// </summary>
     public ItemDefinition GetItemById(string itemId)
     {
         if (_itemDict != null && _itemDict.TryGetValue(itemId, out var item))
@@ -198,10 +231,32 @@ public class DataManager : Singleton<DataManager>
         return null;
     }
 
+    /// <summary>
+    /// 根據標籤 ID 取得標籤名稱
+    /// </summary>
     public string GetTagNameByTag(string tag)
     {
         if (_itemTagsDict == null || string.IsNullOrEmpty(tag) || !_itemTagsDict.ContainsKey(tag)) return "";
         return _itemTagsDict[tag].TagName;
+    }
+
+    /// <summary>
+    /// 從所有物品庫抽選指定數量的不重複物品 ID
+    /// </summary>
+    /// <param name="world">界域</param>
+    /// <param name="rarity">稀有度</param>
+    /// <param name="count">抽選數量</param>
+    /// <returns>隨機的不重複物品 ID 列表</returns>
+    public List<string> GetRandomDistinctItemIds(ItemWorld world, Rarity rarity, int count)
+    {
+        if (_itemDict == null) return new List<string>();
+
+        return _itemDict
+            .Where(kvp => kvp.Value != null && kvp.Value.World == world && kvp.Value.Rarity == rarity)
+            .Select(kvp => kvp.Key)
+            .OrderBy(x => UnityEngine.Random.value)
+            .Take(count)
+            .ToList();
     }
     /// <summary>
     /// 依照 InformationID 查找妖怪趣聞
@@ -296,7 +351,48 @@ public class DataManager : Singleton<DataManager>
 
         if (!_bookData.MonsterBookData.UnlockMonsterInformationID.Contains(informationId))
         {
+            // 解鎖前計算該妖怪已解鎖數量（用於判斷是否跨越故事門檻）
+            var infoData = GetMonsterInfoById(informationId);
+            string monsterId = infoData?.MonsterID;
+            int prevCount = 0;
+            if (!string.IsNullOrEmpty(monsterId))
+            {
+                var allInfos = GetMonsterInfosByMonsterID(monsterId);
+                foreach (var info in allInfos)
+                {
+                    if (_bookData.MonsterBookData.UnlockMonsterInformationID.Contains(info.InformationID))
+                        prevCount++;
+                }
+            }
+
             _bookData.MonsterBookData.UnlockMonsterInformationID.Add(informationId);
+
+            // 記錄為新情報（尚未在圖鑑中確認）
+            _bookData.MonsterBookData.NewMonsterInformationID ??= new List<string>();
+            _bookData.MonsterBookData.NewMonsterInformationID.Add(informationId);
+
+            // 檢查是否跨越故事門檻（每 2 個情報解鎖 1 個故事）
+            if (!string.IsNullOrEmpty(monsterId))
+            {
+                int newCount = prevCount + 1;
+                int prevStoryCount = prevCount / 2;
+                int newStoryCount = newCount / 2;
+                if (newStoryCount > prevStoryCount)
+                {
+                    // 新故事解鎖，找到對應的故事並記錄
+                    var stories = GetMonsterStoriesByMonsterID(monsterId);
+                    if (stories != null && newStoryCount <= stories.Count)
+                    {
+                        var newStory = stories[newStoryCount - 1]; // StoryIndex 從 0 開始排序
+                        _bookData.MonsterBookData.NewMonsterStoryID ??= new List<string>();
+                        if (!string.IsNullOrEmpty(newStory.MonsterStoryID))
+                        {
+                            _bookData.MonsterBookData.NewMonsterStoryID.Add(newStory.MonsterStoryID);
+                        }
+                    }
+                }
+            }
+
             OnBookDataChanged = true;
             SaveManager.Instance.SaveBookData(_bookData);
         }
@@ -347,6 +443,123 @@ public class DataManager : Singleton<DataManager>
     {
         if (_bookData == null) return false;
         return _bookData.MonsterBookData.UnlockMonsterInformationID.Contains(informationId);
+    }
+
+    /// <summary>
+    /// 檢查是否有任何尚未確認的新妖怪情報或新故事（全域）
+    /// </summary>
+    public bool HasAnyNewMonsterInfo()
+    {
+        if (_bookData == null) return false;
+        if (_bookData.MonsterBookData.NewMonsterInformationID != null
+            && _bookData.MonsterBookData.NewMonsterInformationID.Count > 0)
+            return true;
+        if (_bookData.MonsterBookData.NewMonsterStoryID != null
+            && _bookData.MonsterBookData.NewMonsterStoryID.Count > 0)
+            return true;
+        return false;
+    }
+
+    /// <summary>
+    /// 檢查妖怪是否有尚未確認的新情報或新故事
+    /// </summary>
+    public bool HasNewMonsterInfo(string monsterId)
+    {
+        if (_bookData == null || string.IsNullOrEmpty(monsterId)) return false;
+
+        // 檢查新情報
+        if (_bookData.MonsterBookData.NewMonsterInformationID != null)
+        {
+            var infos = GetMonsterInfosByMonsterID(monsterId);
+            foreach (var info in infos)
+            {
+                if (_bookData.MonsterBookData.NewMonsterInformationID.Contains(info.InformationID))
+                    return true;
+            }
+        }
+
+        // 檢查新故事
+        if (_bookData.MonsterBookData.NewMonsterStoryID != null)
+        {
+            var stories = GetMonsterStoriesByMonsterID(monsterId);
+            foreach (var story in stories)
+            {
+                if (_bookData.MonsterBookData.NewMonsterStoryID.Contains(story.MonsterStoryID))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 確認妖怪的新情報與新故事（從 NewMonsterInformationID / NewMonsterStoryID 移除）
+    /// </summary>
+    public void ConfirmMonsterNewInfo(string monsterId)
+    {
+        if (_bookData == null || string.IsNullOrEmpty(monsterId)) return;
+
+        bool changed = false;
+
+        // 移除該妖怪的所有新情報
+        if (_bookData.MonsterBookData.NewMonsterInformationID != null)
+        {
+            var infos = GetMonsterInfosByMonsterID(monsterId);
+            foreach (var info in infos)
+            {
+                if (_bookData.MonsterBookData.NewMonsterInformationID.Remove(info.InformationID))
+                    changed = true;
+            }
+        }
+
+        // 移除該妖怪的所有新故事
+        if (_bookData.MonsterBookData.NewMonsterStoryID != null)
+        {
+            var stories = GetMonsterStoriesByMonsterID(monsterId);
+            foreach (var story in stories)
+            {
+                if (_bookData.MonsterBookData.NewMonsterStoryID.Remove(story.MonsterStoryID))
+                    changed = true;
+            }
+        }
+
+        if (changed)
+        {
+            OnBookDataChanged = true;
+            SaveManager.Instance.SaveBookData(_bookData);
+        }
+    }
+
+    /// <summary>
+    /// 確認單筆新情報（從 NewMonsterInformationID 移除）
+    /// </summary>
+    public bool ConfirmSingleNewInfo(string informationId)
+    {
+        if (_bookData == null || string.IsNullOrEmpty(informationId)) return false;
+        if (_bookData.MonsterBookData.NewMonsterInformationID != null
+            && _bookData.MonsterBookData.NewMonsterInformationID.Remove(informationId))
+        {
+            OnBookDataChanged = true;
+            SaveManager.Instance.SaveBookData(_bookData);
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 確認單筆新故事（從 NewMonsterStoryID 移除）
+    /// </summary>
+    public bool ConfirmSingleNewStory(string storyId)
+    {
+        if (_bookData == null || string.IsNullOrEmpty(storyId)) return false;
+        if (_bookData.MonsterBookData.NewMonsterStoryID != null
+            && _bookData.MonsterBookData.NewMonsterStoryID.Remove(storyId))
+        {
+            OnBookDataChanged = true;
+            SaveManager.Instance.SaveBookData(_bookData);
+            return true;
+        }
+        return false;
     }
     /// <summary>
     /// 檢查成就是否已完成 (從字典中查詢)
@@ -433,22 +646,37 @@ public class DataManager : Singleton<DataManager>
     }
     #endregion
 
-    #region Player Save/Load
+    #region Player Save/Load (玩家存檔/讀取)
+    
+    /// <summary>
+    /// 非同步儲存目前玩家資料至指定槽位
+    /// </summary>
     public async Task SaveCurrentPlayerAsync(int slot = 0)
     {
         var dataToSave = _currentPlayerData ?? _initialPlayerData ?? new PlayerData();
         await SaveManager.Instance.SaveGameAsync(dataToSave, slot);
     }
+
+    /// <summary>
+    /// 從指定的槽位讀取玩家存檔
+    /// </summary>
     public void LoadPlayerFromSave(int slot = 0)
     {
         var save = SaveManager.Instance.Load(slot);
         _currentPlayerData = ClonePlayerData(save?.Player ?? _initialPlayerData ?? new PlayerData());
     }
 
+    /// <summary>
+    /// 設定目前的玩家資料 (覆蓋)
+    /// </summary>
     public void SetCurrentPlayer(PlayerData data)
     {
         _currentPlayerData = ClonePlayerData(data);
     }
+
+    /// <summary>
+    /// 非同步儲存圖鑑資料
+    /// </summary>
     public async Task SaveBookAsync()
     {
         if (OnBookDataChanged)
@@ -457,11 +685,18 @@ public class DataManager : Singleton<DataManager>
             OnBookDataChanged = false;
         }
     }
+
+    /// <summary>
+    /// 設定玩家資料是否已被變更之標籤
+    /// </summary>
     public void SetPlayerDataChanged(bool value)
     {
         OnPlayerDataChanged = value;
     }
 
+    /// <summary>
+    /// 設定圖鑑資料是否已被變更之標籤
+    /// </summary>
     public void SetBookDataChanged(bool value)
     {
         OnBookDataChanged = value;
@@ -471,8 +706,6 @@ public class DataManager : Singleton<DataManager>
     #endregion
 
     #region ModifyPlayerAPI
-
-
     /// <summary>
     /// 新增或更新存檔資料到當前玩家的 GameSaveFile 中
     /// </summary>
@@ -727,6 +960,9 @@ public class DataManager : Singleton<DataManager>
         }
     }
 
+    /// <summary>
+    /// 變更當前時段並觸發相關 UI 視圖更新
+    /// </summary>
     public void ModifyCurrentDayPhase(DayPhase dayPhase)
     {
         _currentPlayerData.PlayingStatus = dayPhase;
@@ -735,39 +971,44 @@ public class DataManager : Singleton<DataManager>
         AdjustUpdateView();
     }
 
+    /// <summary>
+    /// 根據玩家當前狀態(時段與是否在開店)，調整並觸發主畫面數值(天數/對應貨幣)的更新通知
+    /// </summary>
     private void AdjustUpdateView()
     {
         if(_currentPlayerData.PlayingStatus == DayPhase.HumanDay && _currentPlayerData.IsTrade == true)
         {
             PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed, _currentPlayerData.Gold, _currentPlayerData.PlayingStatus);
-            GameFlowNoticeUpdate?.Invoke("採購商品或回家休息一下吧", true);
         }
         else if(_currentPlayerData.PlayingStatus == DayPhase.HumanDay && _currentPlayerData.IsTrade == false)
         {
             PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed, _currentPlayerData.Gold, _currentPlayerData.PlayingStatus);
-            GameFlowNoticeUpdate?.Invoke("採購商品並開店確認訂單", true);
         }
         else if(_currentPlayerData.PlayingStatus == DayPhase.AfterNoon)
         {
             PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed, _currentPlayerData.Gold, _currentPlayerData.PlayingStatus);
-            GameFlowNoticeUpdate?.Invoke("準備前往妖界", true);
         }
         else if(_currentPlayerData.PlayingStatus == DayPhase.Night && _currentPlayerData.IsTrade == true)
         {
             PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed - 1, _currentPlayerData.MonsterGold, _currentPlayerData.PlayingStatus);
-            GameFlowNoticeUpdate?.Invoke("接待結束可選擇回家休息", true);
         }
         else if(_currentPlayerData.PlayingStatus == DayPhase.Night && _currentPlayerData.IsTrade == false)
         {
             PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed - 1, _currentPlayerData.MonsterGold, _currentPlayerData.PlayingStatus);
-            GameFlowNoticeUpdate?.Invoke("採購商品並迎接客人", true);
         }
     }
+
+    /// <summary>
+    /// 對當前玩家狀態進行主畫面資料更新
+    /// </summary>
     public void ShowPlayerMainData()
     {
         AdjustUpdateView();
     }
 
+    /// <summary>
+    /// 修改當前天數
+    /// </summary>
     public void ModifyCurrentDay(int CurrentDay)
     {
         _currentPlayerData.DaysPlayed = CurrentDay;
@@ -776,7 +1017,12 @@ public class DataManager : Singleton<DataManager>
     }
     #endregion
 
-    #region GetPlayerSaveDataAPI
+    #region GetPlayerSaveDataAPI (存檔紀錄查詢)
+    /// <summary>
+    /// 取得玩家存檔中特定鍵值的資料，如果資料不存在或為舊的(非今日)，則回傳一個新的實例
+    /// </summary>
+    /// <typeparam name="T">必須實作 ISaveData 的資料類型</typeparam>
+    /// <param name="key">對應的存檔鍵值</param>
     public T GetPlayerSaveData<T>(string key) where T : class, ISaveData, new()
     {
         if (_currentPlayerData == null)
@@ -806,6 +1052,10 @@ public class DataManager : Singleton<DataManager>
         }
         return data;
     }
+
+    /// <summary>
+    /// 讀取妖怪交易紀錄，如果不存在則回傳新的紀錄
+    /// </summary>
     public MonsterTradeProgress LoadMonsterTradeHistory()
     {
         if (_currentPlayerData.GameSaveFile.GameData.ContainsKey("MonsterTradeHistory"))

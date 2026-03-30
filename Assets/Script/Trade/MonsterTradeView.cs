@@ -44,6 +44,12 @@ public class MonsterTradeView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI CustomerIndex;//剩餘客人
     [SerializeField] private TextMeshProUGUI NowSoul;//目前妖界貨幣
     public TextMeshProUGUI CustomerDialogText;//客人對話
+    [Header("妖怪資訊組件")]
+    public TextMeshProUGUI MonsterText;
+    public Transform PreferContain;
+    public Transform HateContain;
+    [Tooltip("妖怪標籤圖片長邊目標尺寸")]
+    public float MonsterTagTargetSize = 70f;
     [Header("拖曳放置區域")]
     [SerializeField] private RectTransform TradeDropZone;//交易放置區域
     // ======= Events to Presenter =======
@@ -110,6 +116,122 @@ public class MonsterTradeView : MonoBehaviour
                 CustomerImage.SetNativeSize();
             }
         });
+
+        // 無論是否有已解鎖資訊，都顯示妖怪簡介
+        if (MonsterText != null)
+        {
+            MonsterText.text = guest.monsterCustomer.Description ?? "";
+        }
+
+        // 清空舊的標籤
+        ClearContainer(PreferContain);
+        ClearContainer(HateContain);
+
+        // 顯示已解鎖資訊對應的標籤
+        string monsterId = guest.monsterCustomer.Profession;
+        if (!string.IsNullOrEmpty(monsterId))
+        {
+            var saveBook = DataManager.Instance.GetBookData();
+            if (saveBook?.MonsterBookData?.UnlockMonsterInformationID != null)
+            {
+                var infos = DataManager.Instance.GetMonsterInfosByMonsterID(monsterId);
+                var likeTags = new List<string>();
+                var hateTags = new List<string>();
+
+                foreach (var info in infos)
+                {
+                    if (saveBook.MonsterBookData.UnlockMonsterInformationID.Contains(info.InformationID))
+                    {
+                        if (!string.IsNullOrEmpty(info.TagID))
+                        {
+                            if (guest.monsterCustomer.PreferredTags != null
+                                && guest.monsterCustomer.PreferredTags.Contains(info.TagID))
+                            {
+                                if (!likeTags.Contains(info.TagID)) likeTags.Add(info.TagID);
+                            }
+                            else if (guest.monsterCustomer.HateTags != null
+                                && guest.monsterCustomer.HateTags.Contains(info.TagID))
+                            {
+                                if (!hateTags.Contains(info.TagID)) hateTags.Add(info.TagID);
+                            }
+                        }
+                    }
+                }
+
+                ShowMonsterTags(likeTags, PreferContain);
+                ShowMonsterTags(hateTags, HateContain);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 清空容器內的所有子物件
+    /// </summary>
+    private void ClearContainer(Transform container)
+    {
+        if (container == null) return;
+        foreach (Transform child in container)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    /// <summary>
+    /// 顯示妖怪標籤（參考 GameBookView 的 ShowMonsterTags）
+    /// </summary>
+    private void ShowMonsterTags(List<string> tags, Transform container)
+    {
+        if (tags == null || TagsPrefab == null || container == null) return;
+
+        for (int i = 0; i < tags.Count; i++)
+        {
+            string tagId = tags[i];
+            string tagName = DataManager.Instance.GetTagNameByTag(tagId);
+
+            if (tagName != "")
+            {
+                GameObject newSlot = Instantiate(TagsPrefab, container);
+
+                TextMeshProUGUI textComp = newSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                textComp.text = tagName;
+
+                // 建立Tag圖片物件
+                GameObject imgObj = new GameObject("TagImage");
+                imgObj.transform.SetParent(newSlot.transform, false);
+                Image tagImage = imgObj.AddComponent<Image>();
+                imgObj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                imgObj.GetComponent<RectTransform>().sizeDelta = new Vector2(MonsterTagTargetSize, MonsterTagTargetSize);
+
+                // 預設隱藏圖片，顯示文字
+                imgObj.SetActive(false);
+                textComp.gameObject.SetActive(true);
+
+                Image capturedImage = tagImage;
+                TextMeshProUGUI capturedText = textComp;
+                GameObject capturedImgObj = imgObj;
+
+                // 嘗試載入Tag圖片
+                SpriteLoader.LoadSpriteAsync(tagId, sprite =>
+                {
+                    if (capturedImgObj == null) return;
+                    if (sprite != null)
+                    {
+                        capturedImage.sprite = sprite;
+                        capturedImage.SetNativeSize();
+                        RectTransform rt = capturedImage.GetComponent<RectTransform>();
+                        float ratio = MonsterTagTargetSize / Mathf.Max(rt.sizeDelta.x, rt.sizeDelta.y);
+                        rt.sizeDelta = new Vector2(rt.sizeDelta.x * ratio, rt.sizeDelta.y * ratio);
+                        capturedImgObj.SetActive(true);
+                        capturedText.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        capturedImgObj.SetActive(false);
+                        capturedText.gameObject.SetActive(true);
+                    }
+                });
+            }
+        }
     }
     public void UpdateDialog(string dialog)
     {
@@ -130,7 +252,7 @@ public class MonsterTradeView : MonoBehaviour
     }
     public void UpdateSoulDisplayAnimation(int price)//更新妖界貨幣顯示
     {
-        SoulAddAnimationText.text = "+" + price.ToString()+"$";
+        SoulAddAnimationText.text = "+" + price.ToString() + "$";
         SoulAddAnimationText.gameObject.SetActive(true);
     }
     public void UpdateSoulDisplay(int currentSoul)//更新妖界貨幣顯示
