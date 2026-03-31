@@ -24,11 +24,10 @@ public class Task1_FirstTutorial : GuideTask
             // 步驟一：進入對話模式
             new ForceDialogueStep(
                 GuideIDs.Dialogue.Task1_FirstTutorial_Dialogue),
-
             // 步驟二：對話結束後提示前往雜貨店
-            //         同時啟動背景監聽「購買物品」(提早監聽步驟四)
+            // 同時啟動背景監聽「購買物品」(提早監聽步驟四)
             new ShowHintAndWaitStep(
-                "前往雜貨店查看",
+                "前往爺爺的雜貨店查看",
                 new InteractWithObjectListener(GuideIDs.Interactable.GuideOrderShop),
                 onExecuteCallback: () =>
                     earlyPurchaseListener.StartEarly(new PurchaseItemListener())),
@@ -41,14 +40,14 @@ public class Task1_FirstTutorial : GuideTask
                 }),
             // 步驟四：購買任一物品（提早買過 or 已有購買紀錄則跳過）
             new SkippableListenStep(
-                "請在商店中購買任一物品",
+                "請在其他商店中購買任一物品",
                 listener:           null,
                 skipCondition:      () => IsPurchased,
                 backgroundListener: earlyPurchaseListener),
 
             // 步驟五：提示再次與雜貨店互動（準備切換到午後）
             new ShowHintAndWaitStep(
-                "前往與雜貨店互動，準備切換到午後",
+                "前往爺爺的雜貨店，休息一下",
                 new InteractWithObjectListener(GuideIDs.Interactable.GuideOrderShop)),
 
             // 步驟六：強制提示點擊「休息一下」（開啟面板）
@@ -71,5 +70,11 @@ public class Task1_FirstTutorial : GuideTask
         {
             DataManager.Instance.AddItem(itemID, 0);
         }
+        List<NoticeItemEntry> noticeItems = new List<NoticeItemEntry>();
+        foreach (var itemID in itemIDs)
+        {
+            noticeItems.Add(NoticeItemEntry.ItemEntry(itemID,1));
+        }
+        NoticeGetItemEvents.InvokeShowNotice("爺爺的庫存", noticeItems);
     }
 }

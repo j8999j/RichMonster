@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using Player;
+using GameSystem;
 
 public class TrashCanController : MonoBehaviour, IInteractable, IMapGuideTarget
 {
@@ -17,7 +18,7 @@ public class TrashCanController : MonoBehaviour, IInteractable, IMapGuideTarget
     private TradeSlot _pendingDiscardSlot;
     public void SetMapGuide()
     {
-        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+        NoticeGetItemEvents.InvokeSetMapGuide(ID, transform);
     }
     void Start()
     {
@@ -53,16 +54,22 @@ public class TrashCanController : MonoBehaviour, IInteractable, IMapGuideTarget
     public void Interact()
     {
         OpenTrashCan();
+        GameManager.Instance.SetPlayerMove(!GameManager.Instance.GetPlayerMove());
+    }
+    public void ClosePanel()
+    {
+        View.CloseUI();
+        GameManager.Instance.SetPlayerMove(true);
     }
 
-    public void ShowPrompt() 
+    public void ShowPrompt()
     {
         if (Prompt != null) Prompt.SetActive(true);
-     }
-    public void HidePrompt() 
+    }
+    public void HidePrompt()
     {
         if (Prompt != null) Prompt.SetActive(false);
-     }
+    }
 
     /// <summary>
     /// 刷新背包物品顯示
@@ -106,7 +113,7 @@ public class TrashCanController : MonoBehaviour, IInteractable, IMapGuideTarget
             {
                 View.ShowItemAtCenter(slot._targetImage.sprite, slot._targetImage.rectTransform.sizeDelta);
             }
-            
+
             // 暫時隱藏背包中的格位，營造物品移至垃圾桶的視覺效果
             slot.gameObject.SetActive(false);
             View.ShowConfirmUI(itemName);
@@ -153,7 +160,7 @@ public class TrashCanController : MonoBehaviour, IInteractable, IMapGuideTarget
             _pendingDiscardSlot.gameObject.SetActive(true); // 恢復顯示
             _pendingDiscardSlot = null;
         }
-        
+
         if (View != null)
         {
             View.HideConfirmUI();

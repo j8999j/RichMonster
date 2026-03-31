@@ -22,6 +22,8 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     public Button BuyScratchButton;
     public GameObject CompletePrizePanel;
     public GameObject BuyPanelRaycastImage;
+    private bool PanelIsVisible;
+    public bool CanClosePanel{private set; get;} = true;
     [SerializeField] private Button[] ScratchCardSelect;
     [Header("得獎設定")]
     public GameObject PrizePanel;
@@ -96,17 +98,21 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     }
     public void ShowCardPanel(bool isScratched)
     {
-        CardPanel.SetActive(true);
-        if (isScratched)
+        if (CanClosePanel)
         {
-            ShowScratchCard(true);
-            ScratchPanel.SetActive(true);
-            BuyPanel.SetActive(false);
-            CompletePrizePanel.SetActive(true);
-        }
-        else
-        {
-            ShowBuyPanel();
+            PanelIsVisible = !PanelIsVisible;
+            CardPanel.SetActive(PanelIsVisible);
+            if (isScratched)
+            {
+                ShowScratchCard(true);
+                ScratchPanel.SetActive(true);
+                BuyPanel.SetActive(false);
+                CompletePrizePanel.SetActive(true);
+            }
+            else
+            {
+                ShowBuyPanel();
+            }
         }
     }
     public void ShowScratchPanel()
@@ -163,18 +169,12 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
             LeaveButton.SetActive(false);
             BuyScratchButton.gameObject.SetActive(false);
             BuyPanelRaycastImage.SetActive(false);
-        }
-        else
-        {
-            NotEnoughGold();
+            CanClosePanel = false;
         }
     }
-    /// <summary>
-    /// 金幣不足
-    /// </summary>
-    public void NotEnoughGold()
+    public void ConfirmRewardButton()
     {
-
+        CanClosePanel = true;
     }
     [Header("筆刷設定")]
     [Range(10, 200)]

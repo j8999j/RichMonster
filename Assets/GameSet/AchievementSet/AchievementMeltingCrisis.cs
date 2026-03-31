@@ -1,41 +1,41 @@
 using System;
 namespace AchievementLibrary
 {
-public class AchievementMeltingCrisis : AchievementBase, IAchievementHiddenCondition
-{
-    public AchievementMeltingCrisis()
+    public class AchievementMeltingCrisis : AchievementBase, IAchievementHiddenCondition
     {
-        AchievementID = "MeltingCrisis";
-    }
-    public override void Initialize()
-    {
-        var data = DataManager.Instance.GetAchievementSaveData(AchievementID);
-        if (data != null)
+        public AchievementMeltingCrisis()
         {
-            IsCompleted = (data as AchievementMeltingCrisis).IsCompleted;
+            AchievementID = "MeltingCrisis";
         }
-        if (IsCompleted) return;
-        base.Initialize();
-    }
-    protected override void SaveData()
-    {
-        FinishDay = DateTime.Now.ToString("yyyy-MM-dd");
-        DataManager.Instance.UpdateAchievementSaveData(this);
-    }
-    protected override void SubscribeEvents() =>
-        AchievementEvents.OnTransactionCompleted += CheckCondition;
-
-    protected override void UnsubscribeEvents() =>
-        AchievementEvents.OnTransactionCompleted -= CheckCondition;
-
-    private void CheckCondition(string customerId, string itemId)
-    {
-        if (customerId == "YukiOnna" && itemId == "HairDryer")
+        public override void Initialize()
         {
-            CompletedAchievement();
-            SaveData();
-            UnsubscribeEvents();
+            var data = DataManager.Instance.GetAchievementSaveData(AchievementID);
+            if (data != null)
+            {
+                IsCompleted = (data as AchievementMeltingCrisis).IsCompleted;
+            }
+            if (IsCompleted) return;
+            base.Initialize();
+        }
+        protected override void SaveData()
+        {
+            FinishDay = DateTime.Now.ToString("yyyy-MM-dd");
+            DataManager.Instance.UpdateAchievementSaveData(this);
+        }
+        protected override void SubscribeEvents() =>
+            AchievementEvents.OnTransactionCompleted += CheckCondition;
+
+        protected override void UnsubscribeEvents() =>
+            AchievementEvents.OnTransactionCompleted -= CheckCondition;
+
+        private void CheckCondition(string customerId, string itemId)
+        {
+            if (customerId == "RookieAdventurer" && itemId == "Hairdryer")
+            {
+                CompletedAchievement();
+                SaveData();
+                UnsubscribeEvents();
+            }
         }
     }
-}
 }

@@ -12,7 +12,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     public GameObject Panel;
     public GameObject Prompt;
     public GameObject CheckSwitchToAfterNoonPanel;
-    public string ID => "HumanOrderView";
+    public string ID => GuideIDs.Interactable.GuideOrderShop;
     //可提交背包
     public OrderBagSlot BagSlotPrefab;//背包欄位預製物件
     public OrderSlot OrderSlotPrefab;//訂單選擇預製物件
@@ -60,9 +60,13 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     {
         NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
     }
-    public void SetGuideID()
+    public void OnEnable()
     {
-         
+        GuideLookupRegistry.Instance.RegisterInteractable(this);
+    }
+    public void OnDisable()
+    {
+        GuideLookupRegistry.Instance.UnregisterInteractable(this);
     }
     private void Start()
     {
@@ -84,6 +88,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
 
     public void Interact()
     {
+        OnInteracted?.Invoke(ID);
         Panel.SetActive(!Panel.activeSelf);
         if(Panel.activeSelf)
         {

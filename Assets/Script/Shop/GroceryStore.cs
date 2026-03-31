@@ -38,15 +38,14 @@ namespace Shop
             {
                 // 3. 把資料丟給 View，並註冊「當玩家想買東西時」的回呼函式
                 _shopUIView.ShowItems(items, OnPlayerTryToBuyItem);
-                _shopUIView.SetVisible(true);
+
             }
-            GameManager.Instance.SetPlayerInteract(false);
-            GameManager.Instance.SetPlayerMove(false);
+            _shopUIView.SetVisible();
+            GameManager.Instance.SetPlayerMove(!GameManager.Instance.GetPlayerMove());
         }
         private async void EndInteract()
         {
             await GameManager.Instance.gameFlow.SaveGameAsync();
-            GameManager.Instance.SetPlayerInteract(true);
             GameManager.Instance.SetPlayerMove(true);
         }
         private void OnPlayerTryToBuyItem(ShelfSlot slotData)

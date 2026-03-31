@@ -11,10 +11,12 @@ public class GameFlow
     public int CurrentDay { get; private set; }
     private readonly IReadOnlyPlayerData _currentPlayerData;
     private readonly int _saveSlot;
+    private readonly TutorialFlow _tutorialFlow;
     public GameFlow(IReadOnlyPlayerData playerData, int saveSlot)
     {
         _currentPlayerData = playerData ?? new PlayerData();
         CurrentDay = _currentPlayerData.DaysPlayed;
+        _tutorialFlow = new TutorialFlow();
         _saveSlot = Mathf.Max(0, saveSlot);
         //確定種子
         GameRng.InitDailySeed(_currentPlayerData.MasterSeed, CurrentDay);
@@ -46,6 +48,13 @@ public class GameFlow
             AchievementEvents.DayEndGold(_currentPlayerData.Gold);
         }
         await SaveGameAsync();
+    }
+    public void StartTutorial()
+    {
+        if(_currentPlayerData.DaysPlayed == 0)
+        {
+            _tutorialFlow.Start();
+        }
     }
     public async Task SaveGameAsync()
     {

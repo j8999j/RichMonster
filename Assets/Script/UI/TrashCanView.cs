@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 using DG.Tweening;
+using GameSystem;
 
 public class TrashCanView : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class TrashCanView : MonoBehaviour
 
     private List<TradeSlot> _activeSlots = new List<TradeSlot>();
     private Item _onSelectDiscardItem;
-
+    private bool PanelIsVisible = false;
     // ======= Events to Presenter =======
     public event Action<TradeSlot> OnItemDropToTrash; // 當物品拖入垃圾桶
     public event Action OnConfirmDiscard; // 當點擊確認
@@ -39,7 +40,7 @@ public class TrashCanView : MonoBehaviour
         if (CloseButton != null) CloseButton.onClick.AddListener(() => OnCloseDiscardUI?.Invoke());
         if (ConfirmButton != null) ConfirmButton.onClick.AddListener(() => OnConfirmDiscard?.Invoke());
         if (CancelButton != null) CancelButton.onClick.AddListener(() => OnCancelDiscard?.Invoke());
-        
+
         // 預設關閉
         if (DiscardPanel != null) DiscardPanel.SetActive(false);
         if (ConfirmPanel != null) ConfirmPanel.SetActive(false);
@@ -47,12 +48,13 @@ public class TrashCanView : MonoBehaviour
 
     public void OpenUI()
     {
-        DiscardPanel.SetActive(true);
-        ConfirmPanel.SetActive(false);
+        PanelIsVisible = !PanelIsVisible;
+        DiscardPanel.SetActive(PanelIsVisible);
+        ConfirmPanel.SetActive(!PanelIsVisible);
     }
-
     public void CloseUI()
     {
+        PanelIsVisible = false;
         DiscardPanel.SetActive(false);
         ConfirmPanel.SetActive(false);
         HideCenterItem();
@@ -76,13 +78,13 @@ public class TrashCanView : MonoBehaviour
         {
             CenterItemImage.sprite = sprite;
             CenterItemImage.gameObject.SetActive(true);
-            
+
             if (CenterAnchor != null)
             {
                 CenterItemImage.rectTransform.anchoredPosition = CenterAnchor.anchoredPosition;
             }
             CenterItemImage.rectTransform.sizeDelta = size;
-            
+
             // 重置動畫狀態
             CenterItemImage.rectTransform.localScale = Vector3.one;
             CenterItemImage.rectTransform.localRotation = Quaternion.identity;

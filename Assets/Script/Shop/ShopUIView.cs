@@ -35,6 +35,7 @@ public class ShopUIView : MonoBehaviour
     public Button CloseButton;// 關閉按鈕
     public GameObject TagsPrefab;
     public Transform ItemTagCotainer;
+    private bool PanelisVisible = false;
 
     private ShelfSlot _currentSelectedData; // 目前選中的資料
     public event Action OnCloseShopUI;
@@ -48,13 +49,14 @@ public class ShopUIView : MonoBehaviour
     }
 
     // 開關介面
-    public void SetVisible(bool isVisible)
+    public void SetVisible()
     {
+        PanelisVisible = !PanelisVisible;
         ClearDetailPanel();
-        PanelRoot.SetActive(isVisible);
-        ShopShelfUI.SetActive(isVisible);
-        DetailRoot.SetActive(isVisible);
-        CloseButton.gameObject.SetActive(isVisible);
+        PanelRoot.SetActive(PanelisVisible);
+        ShopShelfUI.SetActive(PanelisVisible);
+        DetailRoot.SetActive(PanelisVisible);
+        CloseButton.gameObject.SetActive(PanelisVisible);
     }
 
     public bool IsVisible => PanelRoot.activeSelf;
@@ -107,14 +109,14 @@ public class ShopUIView : MonoBehaviour
         RectTransform rt = targetImage.rectTransform;
         float width = rt.sizeDelta.x;
         float height = rt.sizeDelta.y;
-        
+
         // 取得長邊
         float longEdge = Mathf.Max(width, height);
         if (longEdge <= 0) return;
-        
+
         // 計算縮放倍數
         float scale = TargetLongEdgeSize / longEdge;
-        
+
         // 調整尺寸
         rt.sizeDelta = new Vector2(width * scale, height * scale);
     }
@@ -129,7 +131,7 @@ public class ShopUIView : MonoBehaviour
     // 3. 更新 UI
     private void UpdateDetailPanel(ShopSlot slotUI)
     {
-        foreach(Transform child in ItemTagCotainer)
+        foreach (Transform child in ItemTagCotainer)
         {
             Destroy(child.gameObject);
         }
@@ -235,7 +237,7 @@ public class ShopUIView : MonoBehaviour
     }
     private void ClearDetailPanel()
     {
-        foreach(Transform child in ItemTagCotainer)
+        foreach (Transform child in ItemTagCotainer)
         {
             Destroy(child.gameObject);
         }
@@ -261,7 +263,7 @@ public class ShopUIView : MonoBehaviour
     //按下關閉
     private void OnCloseButtonClicked()
     {
-        SetVisible(false);
+        SetVisible();
         OnCloseShopUI?.Invoke();
     }
     #endregion

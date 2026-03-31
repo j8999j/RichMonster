@@ -13,7 +13,7 @@ public class ScratchCardShop : MonoBehaviour, IInteractable, IMapGuideTarget
     private ScratchCardPrizeType currentPrize;
     public void SetMapGuide()
     {
-        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+        NoticeGetItemEvents.InvokeSetMapGuide(ID, transform);
     }
     private void OnEnable()
     {
@@ -155,6 +155,15 @@ public class ScratchCardShop : MonoBehaviour, IInteractable, IMapGuideTarget
     public void Interact()
     {
         scratchCard.ShowCardPanel(isScratched);
+        if (scratchCard.CanClosePanel)
+        {
+            GameManager.Instance.SetPlayerMove(!GameManager.Instance.GetPlayerMove());
+        }
+    }
+    public void ExitPanel()
+    {
+        scratchCard.ShowCardPanel(isScratched);
+        GameManager.Instance.SetPlayerMove(true);
     }
 }
 

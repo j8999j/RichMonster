@@ -3,7 +3,10 @@
 // ============================================================
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using Talksystem;
+using GameSystem;
 /// <summary>所有引導步驟的抽象基底</summary>
 public abstract class GuideStep
 {
@@ -24,7 +27,19 @@ public class ForceDialogueStep : GuideStep
     {
         listener = new DialogueEndListener();
         listener.StartListen(() => { listener.StopListen(); onComplete?.Invoke(); });
-        //talkSystem.StartDialogue(dialogueId);
+        Addressables.LoadAssetAsync<TextAsset>(dialogueId).Completed += handle =>
+        {
+            if (handle.Status == AsyncOperationStatus.Succeeded && handle.Result != null)
+            {
+                GameManager.Instance.talkSystem.StartDialogue(handle.Result);
+            }
+            else
+            {
+                Debug.LogError($"[ForceDialogueStep] Addressables 找不到對應名稱的 TextAsset: {dialogueId}");
+                listener.StopListen();
+                onComplete?.Invoke(); // 如果找不到，直接結束步驟避免卡死
+            }
+        };
     }
 
     public override void Dispose() => listener?.StopListen();
@@ -109,6 +124,7 @@ public class SkippableListenStep : GuideStep
     public override void Execute(System.Action onComplete)
     {
         // 優先消費背景監聽結果
+        GameFlowUI.SetGameFlowTextEvent?.Invoke(hintMessage, true);
         if (backgroundListener != null)
         {
             if (CanSkip()) { onComplete?.Invoke(); return; }
@@ -117,8 +133,6 @@ public class SkippableListenStep : GuideStep
         }
 
         if (CanSkip()) { onComplete?.Invoke(); return; }
-
-        GameFlowUI.SetGameFlowTextEvent?.Invoke(hintMessage, true);
         listener.StartListen(() =>
         {
             GameFlowUI.SetGameFlowTextEvent?.Invoke("", false);

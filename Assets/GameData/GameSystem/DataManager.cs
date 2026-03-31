@@ -77,6 +77,7 @@ public class DataManager : Singleton<DataManager>
     #region Events (事件)
     /// <summary> 玩家主畫面資料更新事件 (Day, Gold, PlayingStatus) </summary>
     public event Action<int, int, DayPhase> PlayerMainViewUpdate;
+    public event Action OnItemPurchased;
     #endregion
     protected override void Awake()
     {
@@ -766,7 +767,6 @@ public class DataManager : Singleton<DataManager>
         OnPlayerDataChanged = true;
         AdjustUpdateView();
     }
-
     /// <summary>
     /// 嘗試消費金幣 (如果足夠則扣除並回傳 true，否則 false)
     /// </summary>
@@ -776,11 +776,11 @@ public class DataManager : Singleton<DataManager>
         if (_currentPlayerData.Gold >= amount)
         {
             ModifyGold(-amount);
+            OnItemPurchased?.Invoke();
             return true;
         }
         return false;
     }
-
     public bool TrySpendMonsterGold(int amount)
     {
         if (_currentPlayerData == null) return false;

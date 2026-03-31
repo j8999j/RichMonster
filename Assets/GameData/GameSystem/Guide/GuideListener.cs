@@ -2,6 +2,7 @@
 // GuideListener.cs - 抽象監聽器 + 所有具體監聽器
 // ============================================================
 using UnityEngine;
+using GameSystem;
 /// <summary>所有監聽器的抽象基底</summary>
 public abstract class GuideListener
 {
@@ -28,10 +29,10 @@ public abstract class GuideListener
 public class DialogueEndListener : GuideListener
 {
     protected override void OnStartListen()
-        => Debug.Log("DialogueEndListener");
+        => GameManager.Instance.talkSystem.OnDialogueEnd += onTriggered;
 
     protected override void OnStopListen()
-        => Debug.Log("DialogueEndListener");
+        => GameManager.Instance.talkSystem.OnDialogueEnd -= onTriggered;
 }
 
 // ─────────────────────────────────────────────────────
@@ -39,12 +40,12 @@ public class DialogueEndListener : GuideListener
 public class PurchaseItemListener : GuideListener
 {
     protected override void OnStartListen()
-        => Debug.Log("PurchaseItemListener");
+        => DataManager.Instance.OnItemPurchased += OnPurchased;
 
     protected override void OnStopListen()
-        => Debug.Log("PurchaseItemListener");
+        => DataManager.Instance.OnItemPurchased -= OnPurchased;
 
-    private void OnPurchased(string itemId) => onTriggered?.Invoke();
+    private void OnPurchased() => onTriggered?.Invoke();
 }
 
 // ─────────────────────────────────────────────────────
@@ -156,7 +157,6 @@ public class BackgroundListener
         if (isTriggered) onComplete?.Invoke();
         else             pendingCallback = onComplete;
     }
-
     public void Dispose()
     {
         listener?.StopListen();

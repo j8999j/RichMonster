@@ -7,7 +7,6 @@ public interface IGuideInteractable : IInteractable, IMapGuideTarget
 {
     string GuideInteractableId => ID;
     event System.Action<string> OnInteracted;
-    void SetGuideID();
 }
 public interface IGuideButton
 {

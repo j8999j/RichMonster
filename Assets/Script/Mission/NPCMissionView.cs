@@ -26,7 +26,7 @@ public class NPCMissionView : MonoBehaviour
     public Button SubmitButton;
     private NpcMission _currentMission;
     private List<GameObject> _spawnedRewards = new List<GameObject>();
-    
+
     [Header("Bag UI")]
     public Transform BagContainer;             // 顯示背包的容器
     public NPCTradeSlot NPCTradeSlotPrefab;    // 背包道具的 Prefab
@@ -43,10 +43,10 @@ public class NPCMissionView : MonoBehaviour
     public TextMeshProUGUI DetailDescText;//背包物品描述
     public TextMeshProUGUI DetailPriceText;//背包物品購買成本
     public GameObject TagsPrefab; // 標籤 Prefab
-    
+
     public Item SubmitItem { get; private set; }
     public event Action OnSubmitClick;
-
+    private bool PanelIsVisible = false;
 
     private void Start()
     {
@@ -57,10 +57,12 @@ public class NPCMissionView : MonoBehaviour
 
     public void ShowPanel()
     {
-        MissionPanel.SetActive(true);
+        PanelIsVisible = !PanelIsVisible;
+        MissionPanel.SetActive(PanelIsVisible);
     }
     public void HidePanel()
     {
+        PanelIsVisible = false;
         MissionPanel.SetActive(false);
     }
     /// <summary>
@@ -110,7 +112,7 @@ public class NPCMissionView : MonoBehaviour
         }
         if (NPCHeadshotImage != null)
         {
-            SpriteLoader.LoadSpriteAsync(_currentMission.NpcID+"_head", s => 
+            SpriteLoader.LoadSpriteAsync(_currentMission.NpcID + "_head", s =>
             {
                 NPCHeadshotImage.sprite = s;
                 AdjustImageScale(NPCHeadshotImage, 75);
@@ -123,7 +125,7 @@ public class NPCMissionView : MonoBehaviour
                 reqStr += itemDef != null ? itemDef.Name : "未知物品";
                 if (RequirementImage != null)
                 {
-                    SpriteLoader.LoadSpriteAsync(req.TargetItemID, s => 
+                    SpriteLoader.LoadSpriteAsync(req.TargetItemID, s =>
                     {
                         RequirementImage.sprite = s;
                         AdjustImageScale(RequirementImage, 100);
@@ -134,7 +136,7 @@ public class NPCMissionView : MonoBehaviour
                 reqStr += $"任意含有 [{DataManager.Instance.GetTagNameByTag(req.TargetTag)}] 標籤的物品";
                 if (RequirementImage != null)
                 {
-                    SpriteLoader.LoadSpriteAsync(req.TargetTag, s => 
+                    SpriteLoader.LoadSpriteAsync(req.TargetTag, s =>
                     {
                         RequirementImage.sprite = s;
                         AdjustImageScale(RequirementImage, 100);
@@ -142,7 +144,7 @@ public class NPCMissionView : MonoBehaviour
                 }
                 break;
             case RequirementType.SpecificType:
-                
+
                 if (RequirementImage != null)
                 {
                     switch (req.TargetType)
@@ -198,7 +200,7 @@ public class NPCMissionView : MonoBehaviour
         _spawnedBagSlots.Clear();
 
         if (BagContainer == null || NPCTradeSlotPrefab == null) return;
-        
+
         var inventory = DataManager.Instance.CurrentPlayerData.InventoryItems;
         int Count = 0;
         NoneItemCanTradeText.SetActive(false);
@@ -228,8 +230,8 @@ public class NPCMissionView : MonoBehaviour
         SubmitItem = slot._currentData;
         SpriteLoader.LoadSpriteAsync(slot._currentData.ItemId, sprite =>
         {
-                SelectedImage.sprite = sprite;
-                AdjustImageScale(SelectedImage, 70);
+            SelectedImage.sprite = sprite;
+            AdjustImageScale(SelectedImage, 70);
         });
 
         //處理選中背包物品的邏輯
@@ -240,7 +242,7 @@ public class NPCMissionView : MonoBehaviour
 
         if (WorldIcon != null)
         {
-            switch(slot._currentDefinition.World)
+            switch (slot._currentDefinition.World)
             {
                 case ItemWorld.Monster:
                     WorldIcon.sprite = MonsterTagSprite;
@@ -250,7 +252,7 @@ public class NPCMissionView : MonoBehaviour
 
         if (TypeIcon != null)
         {
-            switch(slot._currentDefinition.Type)
+            switch (slot._currentDefinition.Type)
             {
                 case ItemType.Food:
                     TypeIcon.sprite = FoodSprite;
@@ -283,7 +285,7 @@ public class NPCMissionView : MonoBehaviour
     private void ClearSelected()
     {
         //清空選中背包物品的邏輯
-        
+
         DetailNameText.text = "";
         DetailDescText.text = "";
         DetailPriceText.text = "";
@@ -294,7 +296,7 @@ public class NPCMissionView : MonoBehaviour
         RareLevelImage.sprite = NullSprite;
         if (TagSlotContainer != null)
         {
-            foreach(Transform child in TagSlotContainer)
+            foreach (Transform child in TagSlotContainer)
             {
                 Destroy(child.gameObject);
             }
@@ -305,15 +307,15 @@ public class NPCMissionView : MonoBehaviour
     {
         if (TagSlotContainer == null || TagsPrefab == null || tags == null) return;
 
-        for(int i = 0; i < tags.Count; i++)
+        for (int i = 0; i < tags.Count; i++)
         {
             string tagId = tags[i];
             string tagName = DataManager.Instance.GetTagNameByTag(tagId);
 
-            if(tagName != "")
+            if (tagName != "")
             {
                 GameObject newSlot = Instantiate(TagsPrefab, TagSlotContainer);
-                
+
                 TextMeshProUGUI textComp = newSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
                 textComp.text = tagName;
 

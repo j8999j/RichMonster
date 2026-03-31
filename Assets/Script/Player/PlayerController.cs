@@ -24,7 +24,7 @@ namespace Player
         private float _moveInput;
         private IInteractable _currentInteractable;
         private bool _CanInteract = true;
-        private bool _CanMove = true;
+        public bool _CanMove { get; private set; } = true;
         private bool _IsNight = false;
 
         // [新增] 動畫參數優化 (Hash ID)
@@ -46,7 +46,7 @@ namespace Player
             {
                 interactionOrigin = transform;
             }
-            
+
             // 記錄初始位置，以便翻轉計算
             _originalInteractionPos = interactionOrigin.localPosition;
         }
@@ -79,10 +79,10 @@ namespace Player
         private void FixedUpdate()
         {
             var velocity = _rigidbody.velocity;
-            
+
             // 保持 Y 軸速度 (重力)，只改變 X 軸
-            velocity.x = _moveInput * moveSpeed; 
-            
+            velocity.x = _moveInput * moveSpeed;
+
             _rigidbody.velocity = velocity;
         }
 
@@ -98,12 +98,12 @@ namespace Player
             {
                 // 向左(-1)時 flipX = true，向右(1)時 flipX = false
                 bool faceLeft = _moveInput < 0;
-                
+
                 // 只有狀態改變時才執行賦值，微幅優化
                 if (_spriteRenderer.flipX != faceLeft)
                 {
                     _spriteRenderer.flipX = faceLeft;
-                    
+
                     // [進階] 同步翻轉互動判定點
                     // 如果 interactionOrigin 不是角色本身，而是子物件，需要同步位移
                     if (interactionOrigin != transform)
@@ -120,7 +120,7 @@ namespace Player
             if (_currentInteractable != null)
             {
                 _currentInteractable.Interact();
-                
+
                 // [選用] 如果你有做撿東西或對話的動畫，可以在這裡觸發
                 // _animator.SetTrigger(InteractTriggerKey); 
             }

@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using Player;
 using Cinemachine;
+using Talksystem;
 
 namespace GameSystem
 {
@@ -10,6 +11,7 @@ namespace GameSystem
         private DataManager dataManager;
         private SceneTransitionManager sceneTransitionManager;
         public SaveManager saveManager;
+        public TalkSystem talkSystem;
         public GameFlow gameFlow { private set; get; }
         public GameObject PlayerPrefab;
         private PlayerController PlayerController;
@@ -80,10 +82,9 @@ namespace GameSystem
 
             // 取得初始玩家資料並生成新的隨機種子
             var newPlayerData = dataManager.InitialPlayerData;
-            newPlayerData.MasterSeed = UnityEngine.Random.Range(1, int.MaxValue);
+            newPlayerData.MasterSeed = Random.Range(1, int.MaxValue);
             // 使用新種子的玩家資料創建新遊戲
             dataManager.SetCurrentPlayer(newPlayerData);
-            gameFlow = new GameFlow(newPlayerData, slot);
             await dataManager.SaveCurrentPlayerAsync(slot);
             Debug.Log($"[GameManager] 開始新遊戲，存檔欄位: {slot}, 種子: {newPlayerData.MasterSeed}");
             InitializeGame(slot);
@@ -106,6 +107,7 @@ namespace GameSystem
                 // 場景載入完成後才執行
                 DataManager.Instance.ModifyCurrentDay(playerData.DaysPlayed);
                 GameFlowEvents.InvokeDayPhaseChanged(playerData.PlayingStatus);
+                gameFlow.StartTutorial();
                 // 玩家初始化已由 OnSceneLoadComplete 事件處理
             });
         }
@@ -118,6 +120,10 @@ namespace GameSystem
         public void SetPlayerPosition(Vector3 position)
         {
             Player.transform.position = position;
+        }
+        public bool GetPlayerMove()
+        {
+            return PlayerController._CanMove;
         }
         public void SetPlayerMove(bool CanMove)
         {

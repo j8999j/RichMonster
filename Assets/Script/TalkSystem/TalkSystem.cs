@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Talksystem
 {
@@ -47,7 +48,6 @@ namespace Talksystem
         [SerializeField] private KeyCode skipKey = KeyCode.Return;
         [Tooltip("是否啟用按鍵輸入 (設為 false 時需手動呼叫 Next())")]
         [SerializeField] private bool enableKeyInput = true;
-
         // === 事件 ===
         /// <summary>對話結束時觸發</summary>
         public event Action OnDialogueEnd;

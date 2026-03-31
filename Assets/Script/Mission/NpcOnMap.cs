@@ -11,7 +11,7 @@ public class NpcOnMap : MonoBehaviour, IInteractable, IMapGuideTarget
     public string ID => NpcMission.MissionID;
     public void SetMapGuide()
     {
-        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+        NoticeGetItemEvents.InvokeSetMapGuide(ID, transform);
     }
     public void LoadData()
     {
@@ -140,7 +140,7 @@ public class NpcOnMap : MonoBehaviour, IInteractable, IMapGuideTarget
                         break;
                 }
             }
-            
+
             // 3. 標記完成
             NpcMission.IsFinish = true;
             Debug.Log($"[NpcOnMap] 任務 '{NpcMission.MissionName}' 已提交完成！");
@@ -153,7 +153,6 @@ public class NpcOnMap : MonoBehaviour, IInteractable, IMapGuideTarget
             SaveData();
         }
     }
-
     private void OnDestroy()
     {
         if (missionView != null)
@@ -161,14 +160,19 @@ public class NpcOnMap : MonoBehaviour, IInteractable, IMapGuideTarget
             missionView.OnSubmitClick -= HandleMissionSubmit;
         }
     }
-
     public void Interact()
     {
         if (missionView != null)
         {
             missionView.Bind(NpcMission);
-            missionView.ShowPanel();
         }
+        missionView.ShowPanel();
+        GameManager.Instance.SetPlayerMove(!GameManager.Instance.GetPlayerMove());
+    }
+    public void HidePanel()
+    {
+        missionView.HidePanel();
+        GameManager.Instance.SetPlayerMove(true);
     }
     public void ShowPrompt()
     {

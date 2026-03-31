@@ -300,8 +300,6 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
         {
             NoticeGetItemEvents.InvokeShowNotice("貪婪之淵探索獎勵", noticeItems);
         }
-
-        Debug.Log($"[AbyssShop] 結算退出。獲得妖怪幣: {_accumulatedMonsterGold}，物品數: {_accumulatedItems.Count}");
         _accumulatedMonsterGold = 0;
         _accumulatedItems.Clear();
         
