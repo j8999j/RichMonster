@@ -3,6 +3,8 @@ using UnityEngine;
 using System.Linq;
 using GameSystem;
 
+
+
 public class MonsterTradeMode : MonoBehaviour
 {
     private MonsterTradeView tradeView;
@@ -22,7 +24,8 @@ public class MonsterTradeMode : MonoBehaviour
         _generator = new MonsterGuestGenerator(
             new Dictionary<string, MonsterProfessionDefinition>(DataManager.Instance.MonsterProfessionDict),
             new Dictionary<string, MonsterTraitDefinition>(DataManager.Instance.MonsterTraitDict),
-            new Dictionary<string, ItemTags>(DataManager.Instance.ItemTagsDict)
+            new Dictionary<string, ItemTags>(DataManager.Instance.ItemTagsDict),
+            new Dictionary<string, ItemDefinition>(DataManager.Instance.ItemDict)
         );
 
     }
@@ -52,13 +55,13 @@ public class MonsterTradeMode : MonoBehaviour
     {
         GenerateGuestList();
         LoadHistory();
-        
+
         tradeView.UpdateTradeInfo(_TodayMonsterGuestList[monsterTradeProgress.CustomerIndex], DataManager.Instance.CurrentPlayerData.InventoryItems.ToList(), monsterTradeProgress.CustomerIndex, _TodayMonsterGuestList.Count, DataManager.Instance.CurrentPlayerData.MonsterGold);
         UpdateGuestDialog();
     }
 
     /// <summary>
-    /// 記錄所有Guest的詳細資訊（用於測試）
+    /// 記錄所有Guest的詳細資訊
     /// </summary>
     private void LogAllGuestDetails()
     {
@@ -86,8 +89,11 @@ public class MonsterTradeMode : MonoBehaviour
                 $"職業: {customer.ProfessionName} ({customer.Type}) | " +
                 $"種族: {customer.Race} | " +
                 $"預算乘數: {customer.BudgetMultiplier:F2}");
+            
+            string categoryStr = request.IsType2Category ? "種類2(實體配對)" : "種類1(隨機屬性)";
+            string preferStr = request.TriggeredPreference ? "【有觸發】" : "無";
 
-            Debug.Log($"    特質: {traits}");
+            Debug.Log($"    生成來源: {categoryStr} | 偏好加成: {preferStr}");
             Debug.Log($"    偏好標籤: {preferredTags}");
             Debug.Log($"    請求類型: {request.itemType} | 請求標籤: {tags}");
         }
@@ -123,7 +129,6 @@ public class MonsterTradeMode : MonoBehaviour
 
         var request = guest.monsterRequest;
         var customer = guest.monsterCustomer;
-
         // 對話模板列表
         var dialogTemplates = new List<string>
         {
@@ -153,20 +158,18 @@ public class MonsterTradeMode : MonoBehaviour
             ItemType.Prop => "道具",
             _ => "東西"
         };
-
         string dialog;
-
-        // 如果有請求標籤，有機率使用帶標籤的對話
-        if (request.RequestTags != null && request.RequestTags.Count > 0 && GameRng.Value() > 0.3f)
+        // 如果有請求標籤，必定使用帶標籤的對話以給予玩家完整提示
+        if (request.RequestTags != null && request.RequestTags.Count > 0)
         {
-            // 隨機選一個標籤
-            int tagIndex = GameRng.Range(0, request.RequestTags.Count);
-            string tagName = GetTagDisplayName(request.RequestTags[tagIndex]);
+            // 將所有請求標籤都轉為顯示名稱，如果有多個則用「又」連接
+            var tagNames = request.RequestTags.Select(t => GetTagDisplayName(t)).ToList();
+            string combinedTags = string.Join("又", tagNames);
 
             // 隨機選一個帶標籤的模板
             int templateIndex = GameRng.Range(0, tagDialogTemplates.Count);
             dialog = tagDialogTemplates[templateIndex]
-                .Replace("{tag}", tagName)
+                .Replace("{tag}", combinedTags)
                 .Replace("{type}", typeName);
         }
         else
@@ -245,19 +248,34 @@ public class MonsterTradeMode : MonoBehaviour
     {
         var price = CaculatePrice(item);
         AchievementEvents.TradeItem(currentmonsterGuest.monsterCustomer.Profession, item.ItemId);
-        if (TradeSuccess(item))
+        
+        TradeSatisfaction satisfaction = CalculateSatisfaction(item);
+        
+        // 呼叫 View 表達視覺 (先留空)
+        tradeView.ShowSatisfactionVisual(satisfaction);
+
+        if (satisfaction != TradeSatisfaction.Hated)
         {
-            //交易成功
+            // 交易成功
             DataManager.Instance.ModifyMonsterGold((int)price);
             tradeView.UpdateSoulDisplayAnimation((int)price);
             tradeView.UpdateSoulDisplay(DataManager.Instance.CurrentPlayerData.MonsterGold);
             DataManager.Instance.RemoveItem(item);
-            NextGuest();
+
+            // 交易成功，立刻更新畫面上的背包並清除已選取的物品顯示
+            var updatedInventory = DataManager.Instance.CurrentPlayerData.InventoryItems.ToList();
+            tradeView.ShowBagItems(updatedInventory);
+            tradeView.ClearBagImage();
+
+            // 廣播給紀念品系統（例如：交易滿意時給額外獎勵）
+            Souvenir.SouvenirManager.Instance.NotifyMonsterTradeCompleted(satisfaction);
+
+            tradeView.FadeOutCustomerThenCallback(() => NextGuest());
         }
         else
         {
-            Debug.Log($"交易失敗");
-            //交易失敗
+            Debug.Log($"交易失敗: {satisfaction}");
+            // 交易失敗
             GuestLeave();
         }
     }
@@ -267,31 +285,59 @@ public class MonsterTradeMode : MonoBehaviour
     private void GuestLeave()
     {
         Debug.Log($"顧客討厭該商品，顧客離開");
+        // 即刻清除被選取的物品顯示
+        tradeView.ClearBagImage();
         // 切換到下一位顧客
-        NextGuest();
+        tradeView.FadeOutCustomerThenCallback(() => NextGuest());
     }
     /// <summary>
-    /// 檢查交易是否成功（物品標籤不能包含顧客的 HateTags）
+    /// 檢查交易滿意度
     /// </summary>
-    private bool TradeSuccess(Item item)
+    private TradeSatisfaction CalculateSatisfaction(Item item)
     {
-        if (item == null || currentmonsterGuest == null) return false;
+        if (item == null || currentmonsterGuest == null) return TradeSatisfaction.Hated;
 
         var itemDefinition = DataManager.Instance.GetItemById(item.ItemId);
-        if (itemDefinition == null) return false;
+        if (itemDefinition == null) return TradeSatisfaction.Hated;
 
-        var hateTags = currentmonsterGuest.monsterCustomer.HateTags;
-        if (hateTags == null || hateTags.Count == 0) return true;
+        var request = currentmonsterGuest.monsterRequest;
+        var customer = currentmonsterGuest.monsterCustomer;
 
-        // 檢查物品標籤是否與 HateTags 有交集
-        foreach (var tag in itemDefinition.Tags)
+        // 1. 厭惡 (Hated): 包含厭惡標籤
+        if (customer.HateTags != null && customer.HateTags.Any(t => itemDefinition.Tags.Contains(t)))
         {
-            if (hateTags.Contains(tag))
-            {
-                return false; // 物品包含顧客討厭的標籤
-            }
+            return TradeSatisfaction.Hated;
         }
-        return true;
+
+        bool isTypeMatch = itemDefinition.Type == request.itemType;
+        bool hasAllRequestTags = request.RequestTags == null || !request.RequestTags.Except(itemDefinition.Tags).Any();
+        bool hasAnyPreferTag = customer.PreferredTags != null && customer.PreferredTags.Any(t => itemDefinition.Tags.Contains(t));
+        bool hasAllPreferTags = customer.PreferredTags != null && customer.PreferredTags.Count > 0 && !customer.PreferredTags.Except(itemDefinition.Tags).Any();
+
+        // 4. 非常滿意 (VerySatisfied)
+        // 條件 A: 符合需求類型且具有所有需求標籤並包含任意偏好標籤
+        bool verySatisfiedA = isTypeMatch && hasAllRequestTags && hasAnyPreferTag;
+        // 條件 B: 提交物品符合所有偏好標籤(忽略需求部分)
+        bool verySatisfiedB = hasAllPreferTags;
+
+        if (verySatisfiedA || verySatisfiedB)
+        {
+            return TradeSatisfaction.VerySatisfied;
+        }
+
+        // 3. 滿意 (Satisfied)
+        // 條件 A: 符合需求類型且具有所有需求標籤
+        bool satisfiedA = isTypeMatch && hasAllRequestTags;
+        // 條件 B: 需求類型符合且物品包含任意偏好標籤
+        bool satisfiedB = isTypeMatch && hasAnyPreferTag;
+
+        if (satisfiedA || satisfiedB)
+        {
+            return TradeSatisfaction.Satisfied;
+        }
+
+        // 2. 尚可 (Okay): 不包含厭惡標籤但未達到滿意與非常滿意標準
+        return TradeSatisfaction.Okay;
     }
     private float CaculatePrice(Item item)
     {

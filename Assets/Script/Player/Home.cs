@@ -12,7 +12,7 @@ public class Home : MonoBehaviour, IInteractable, IMapGuideTarget
     public string ID => "Home";
     public void SetMapGuide()
     {
-        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+        NoticeGetItemEvents.InvokeSetMapGuide(ID, transform);
     }
     void Start()
     {
@@ -31,7 +31,7 @@ public class Home : MonoBehaviour, IInteractable, IMapGuideTarget
     {
         if (interactPrompt != null)
         {
-            
+
             interactPrompt.SetActive(false);
         }
     }
@@ -53,7 +53,6 @@ public class Home : MonoBehaviour, IInteractable, IMapGuideTarget
         CanInteract = false;
         //TradeCamera.SetActive(!TradeCamera.activeSelf);
         yield return new WaitForSeconds(0.8f);
-        Debug.Log("open");
         monsterTradeView.OpenShopUI();
         CanInteract = true;
 

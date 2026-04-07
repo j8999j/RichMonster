@@ -10,8 +10,10 @@ namespace Shop
     {
         public int SlotIndex;
         public ItemDefinition Item;
-        public int Price;//商品售價
-        public bool Purchased; // true: 已被購買, false: 尚未購買
+        public int Price;       // 商品售價 (已含折扣)
+        public bool Purchased;  // true: 已被購買, false: 尚未購買
+        /// <summary> 紀念品效果填入的視覺資訊，UI 讀取此欄位顯示折扣標籤、刪除線等 </summary>
+        public ShelfSlotVisualInfo VisualInfo;
     }
     public class ShopBase : MonoBehaviour, IInteractable, IMapGuideTarget
     {
@@ -143,6 +145,7 @@ namespace Shop
             {
                 slot.Price = PriceCalculationResult(slot);
             }
+            Souvenir.SouvenirManager.Instance.ApplyAllShopDiscounts(ShopID, shelves);
             return shelves;
         }
         /// <summary>

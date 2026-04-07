@@ -32,6 +32,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2effdc490ffa296489170875c63b3f09
+    m_Address: Souvenirs_Special
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 37915a33485342c41b5363cbca61d47e
+    m_Address: Souvenirs_Achievement
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 559206c2b7347d14580676b69f5a5005
     m_Address: itemtags
     m_ReadOnly: 0

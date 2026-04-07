@@ -19,6 +19,7 @@ public class Task1_FirstTutorial : GuideTask
     private BackgroundListener earlyPurchaseListener = new BackgroundListener();
     protected override List<GuideStep> BuildSteps()
     {
+        earlyPurchaseListener.OnTriggered = () => IsPurchased = true;
         return new List<GuideStep>
         {
             // 步驟一：進入對話模式
@@ -26,11 +27,14 @@ public class Task1_FirstTutorial : GuideTask
                 GuideIDs.Dialogue.Task1_FirstTutorial_Dialogue),
             // 步驟二：對話結束後提示前往雜貨店
             // 同時啟動背景監聽「購買物品」(提早監聽步驟四)
-            new ShowHintAndWaitStep(
+            new WithMapGuideStep(
+            inner: new ShowHintAndWaitStep(
                 "前往爺爺的雜貨店查看",
                 new InteractWithObjectListener(GuideIDs.Interactable.GuideOrderShop),
                 onExecuteCallback: () =>
                     earlyPurchaseListener.StartEarly(new PurchaseItemListener())),
+            targetId: GuideIDs.Interactable.GuideOrderShop),
+            //  ↑ 到達雜貨店後自動清除地圖點位
 
             // 步驟三：雜貨店互動結束後給予獎勵（剩餘庫存）
             new GiveRewardStep(

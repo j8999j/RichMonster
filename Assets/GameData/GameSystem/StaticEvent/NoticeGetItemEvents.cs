@@ -14,7 +14,7 @@ public static class NoticeGetItemEvents
     /// <summary>
     /// 地圖指引設定，傳入目標ID
     /// </summary>
-    public static event Action<string,Transform> OnSetMapGuide;
+    public static event Action<string, Transform> OnSetMapGuide;
     /// <summary>
     /// 開始地圖指引
     /// </summary>
@@ -32,9 +32,9 @@ public static class NoticeGetItemEvents
     {
         OnClearNotice?.Invoke();
     }
-    public static void InvokeSetMapGuide(string targetId,Transform targetPos)
+    public static void InvokeSetMapGuide(string targetId, Transform targetPos)
     {
-        OnSetMapGuide?.Invoke(targetId,targetPos);
+        OnSetMapGuide?.Invoke(targetId, targetPos);
     }
     public static void InvokeStartMapGuide(string targetId)
     {

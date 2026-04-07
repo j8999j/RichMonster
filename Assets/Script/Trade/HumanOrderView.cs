@@ -46,6 +46,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     public Button ConfirmAfterNoonButton;
     //不符合類型物品
     public Transform OrderObjContainer;//訂單物件容器
+    [SerializeField]private Transform GuideTransform;
     private List<BagSlot> _unmatchedSlots = new List<BagSlot>();//不符合類型物品列表
     //當前選擇訂單
     public event Action<OrderBagSlot> AddItemToOrder;
@@ -58,7 +59,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     public event Action<string> OnInteracted;
     public void SetMapGuide()
     {
-        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+        NoticeGetItemEvents.InvokeSetMapGuide(ID,GuideTransform);
     }
     public void OnEnable()
     {
@@ -70,6 +71,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     }
     private void Start()
     {
+        SetMapGuide();
         Prompt.SetActive(false);
         Confirmbutton.onClick.AddListener(OnConfirmOrderClick);
         ExitButton.onClick.AddListener(ExitOrderPanel);

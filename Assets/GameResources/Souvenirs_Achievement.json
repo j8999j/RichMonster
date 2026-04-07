@@ -1,0 +1,60 @@
+{
+  "AchievementSouvenirs": [
+    {
+      "SouvenirID": "SouAch_key",
+      "SouvenirName": "黃昏鑰匙",
+      "PointsFee": 0,
+      "SouvenirFunctionDescription": "能夠讓人穿梭於人界與妖界的物品",
+      "SouvenirDescription": "一把長型的古銅色黃銅鑰匙，表面佈滿了細小的齒輪與不規律的刻痕，鑰匙柄部鑲嵌著一顆黃色透明的石頭，在黃昏的夕陽下閃閃發光"
+    },
+    {
+      "SouvenirID": "SouAch_PiggyBank",
+      "SouvenirName": "爺爺的存錢筒",
+      "PointsFee": 5,
+      "SouvenirFunctionDescription": "初始資金增加3000元",
+      "SouvenirDescription": "爺爺留下的陶製存錢筒，外型是一隻憨態可掬的胖豬，全身漆成粉紅色但漆面已有些剝落。搖一搖還能聽見硬幣碰撞的聲音，裡面居然還有不少存款。"
+    },
+    {
+      "SouvenirID": "SouAch_GroceryCards",
+      "SouvenirName": "雜貨店的集點卡",
+      "PointsFee": 5,
+      "SouvenirFunctionDescription": "在雜貨店每購買10項商品隨機獲得一項隨機贈品",
+      "SouvenirDescription": "雜貨店老闆娘親手設計的集點卡，封面印著一隻笑瞇瞇的貓咪，背面設有10格蓋章欄，卡面已被翻閱得有些起毛。"
+    },
+    {
+      "SouvenirID": "SouAch_ExquisitePaper",
+      "SouvenirName": "精美的包裝紙",
+      "PointsFee": 5,
+      "SouvenirFunctionDescription": "與妖怪交易達到滿意時獲得額外獎勵",
+      "SouvenirDescription": "質感細膩的米白色包裝紙，印有細緻的金色纏枝花紋，摸起來帶有一種說不清的絲滑感。據說只要用它包裝商品，顧客便會格外滿意。"
+    },
+    {
+      "SouvenirID": "SouAch_TravelBag",
+      "SouvenirName": "旅行背包",
+      "PointsFee": 1,
+      "SouvenirFunctionDescription": "背包容量上限增加5格",
+      "SouvenirDescription": "一只棕色帆布旅行背包，正面繡有已褪色的指南針圖案，每個口袋都被前任主人仔細縫補過，雖然舊了些，但整體結構依然紮實可靠。"
+    },
+    {
+      "SouvenirID": "SouAch_HikingBag",
+      "SouvenirName": "登山背包",
+      "PointsFee": 5,
+      "SouvenirFunctionDescription": "背包容量上限增加15格",
+      "SouvenirDescription": "深墨綠色的專業級登山背包，配備透氣網格背板與腰部固定帶，多個分類暗袋設計合理，是值得信賴的旅途好物。"
+    },
+    {
+      "SouvenirID": "SouAch_LotteryTicket",
+      "SouvenirName": "刮刮樂兌換卷",
+      "PointsFee": 1,
+      "SouvenirFunctionDescription": "每日可免費兌換一張刮刮樂",
+      "SouvenirDescription": "印刷精美的淡金色兌換券，正面印有放大版的刮刮樂圖案，紅色的官方印章。"
+    },
+    {
+      "SouvenirID": "SouAch_GroceryCoupon",
+      "SouvenirName": "雜貨店的折價券",
+      "PointsFee": 1,
+      "SouvenirFunctionDescription": "雜貨店每日隨機一件物品獲得8折折扣",
+      "SouvenirDescription": "略顯泛黃的長條形折價券，印有雜貨店手繪風格的招牌圖案，折痕明顯，像是被人揉進口袋又展開了無數次。"
+    }
+  ]
+}

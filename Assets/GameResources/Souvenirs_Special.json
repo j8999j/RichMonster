@@ -1,0 +1,34 @@
+{
+  "SpecialSouvenirs": [
+    {
+      "SouvenirID": "Sou_GhostTribute",
+      "SouvenirName": "幽冥羽翎",
+      "SouvenirCondition": "交易使幽靈客人滿意達到50次",
+      "SouvenirDescription": "幽靈族的信物，半透明的藍白色羽毛，觸碰時毫無重量感，卻帶著一絲難以言說的涼意。據說能讓持有者在夜間看見平時看不見的事物。"
+    },
+    {
+      "SouvenirID": "Sou_DivineTribute",
+      "SouvenirName": "神諭玉璧",
+      "SouvenirCondition": "交易使神族客人滿意達到50次",
+      "SouvenirDescription": "神族的信物，刻有古老神紋的純白玉石圓牌，紋路細如髮絲卻從不磨損，在光線充足的地方會折射出七彩光芒，據說持有者有時能聽見旁人聽不到的聲音。"
+    },
+    {
+      "SouvenirID": "Sou_BeastTribute",
+      "SouvenirName": "荒魂牙墜",
+      "SouvenirCondition": "交易使獸族客人滿意達到50次",
+      "SouvenirDescription": "獸族族的信物，一枚用獸族長老獠牙磨製而成的墜飾，表面粗獷地刻著獸族圖騰，穿有一條磨損的皮繩。據說持有者走過荒野時，腳邊偶爾會出現一行不知是誰留下的獸蹄印。陌生之地時，總會莫名地知道該往哪個方向走。"
+    },
+    {
+      "SouvenirID": "Sou_FairyTribute",
+      "SouvenirName": "永綻星華",
+      "SouvenirCondition": "交易使妖精客人滿意達到50次",
+      "SouvenirDescription": "妖精族的信物，被壓製在透明樹脂中的一朵乾燥星形小花，花瓣顏色七彩繽紛且永不褪色。據說持有者有時能看見隨風飄散的花瓣。"
+    },
+    {
+      "SouvenirID": "Sou_RuinedDeal",
+      "SouvenirName": "妖怪的退貨單",
+      "SouvenirCondition": "累計與妖怪交易失敗達到20次",
+      "SouvenirDescription": "一疊皺巴巴的退貨單，每一張都有妖怪用爪子按上的不滿印記，最上面一張還附有一個憤怒表情的手繪塗鴉。"
+    }
+  ]
+}

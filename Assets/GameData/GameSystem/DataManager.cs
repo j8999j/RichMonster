@@ -5,15 +5,13 @@ using UnityEngine;
 using Newtonsoft.Json;
 using GameSystem;
 using System.Threading.Tasks;
-
+using Souvenir;
 public class DataManager : Singleton<DataManager>
 {
     #region Game Static Data (遊戲靜態資料)
     // 資料字典 - 由 GameDataLoader 載入
     private Dictionary<string, ItemTags> _itemTagsDict = new Dictionary<string, ItemTags>();
     private Dictionary<string, ItemDefinition> _itemDict = new Dictionary<string, ItemDefinition>();
-    private Dictionary<string, ProfessionDefinition> _professionDict = new Dictionary<string, ProfessionDefinition>();
-    private Dictionary<string, TraitDefinition> _traitDict = new Dictionary<string, TraitDefinition>();
     private Dictionary<string, MonsterProfessionDefinition> _monsterProfessionDict = new Dictionary<string, MonsterProfessionDefinition>();
     private Dictionary<string, MonsterTraitDefinition> _monsterTraitDict = new Dictionary<string, MonsterTraitDefinition>();
     private Dictionary<string, GameEventDefinition> _eventDict = new Dictionary<string, GameEventDefinition>();
@@ -25,6 +23,8 @@ public class DataManager : Singleton<DataManager>
     private Dictionary<string, MonsterInformationDatabase> _monsterInfoDict = new Dictionary<string, MonsterInformationDatabase>();
     private Dictionary<string, MonsterStoryDatabase> _monsterStoryDict = new Dictionary<string, MonsterStoryDatabase>();
     private Dictionary<string, NPCMissionData> _npcDataDict = new Dictionary<string, NPCMissionData>();
+    private Dictionary<string, AchievementSouvenirData> _achievementSouvenirDict = new Dictionary<string, AchievementSouvenirData>();
+    private Dictionary<string, SpecialSouvenirData> _specialSouvenirDict = new Dictionary<string, SpecialSouvenirData>();
     #endregion
 
     #region Mission Caches (任務分類快取)
@@ -70,6 +70,8 @@ public class DataManager : Singleton<DataManager>
     public IReadOnlyDictionary<string, MonsterInformationDatabase> MonsterInfoDict => _monsterInfoDict;
     public IReadOnlyDictionary<string, MonsterStoryDatabase> MonsterStoryDict => _monsterStoryDict;
     public IReadOnlyDictionary<string, NPCMissionData> NPCDataDict => _npcDataDict;
+    public IReadOnlyDictionary<string, AchievementSouvenirData> AchievementSouvenirDict => _achievementSouvenirDict;
+    public IReadOnlyDictionary<string, SpecialSouvenirData> SpecialSouvenirDict => _specialSouvenirDict;
     public PlayerData InitialPlayerData => ClonePlayerData(_initialPlayerData);
     public IReadOnlyPlayerData CurrentPlayerData => _currentPlayerData;
     #endregion
@@ -113,6 +115,8 @@ public class DataManager : Singleton<DataManager>
         _monsterInfoDict = result.MonsterInfoDict;
         _monsterStoryDict = result.MonsterStoryDict;
         _npcDataDict = result.NPCDataDict;
+        _achievementSouvenirDict = result.AchievementSouvenirDict;
+        _specialSouvenirDict = result.SpecialSouvenirDict;
         _initialPlayerData = result.InitialPlayerData;
         _bookData = result.BookData;
 
@@ -124,6 +128,7 @@ public class DataManager : Singleton<DataManager>
 
         // 初始化成就系統
         AchievementManager.Instance.Initialize(_achievementDict);
+        SouvenirManager.Instance.Initialize();
 
         _currentPlayerData = ClonePlayerData(_initialPlayerData);
     }
@@ -165,18 +170,6 @@ public class DataManager : Singleton<DataManager>
     }
 
     #region Data Queries (資料查詢)
-    
-    /// <summary>
-    /// 根據效果類型取得對應的特性設定
-    /// </summary>
-    public List<TraitDefinition> GetTraits(string effectType)
-    {
-        if (_traitDict == null) return new List<TraitDefinition>();
-        return _traitDict.Values
-            .Where(evt => evt.OtherEffect != null && evt.OtherEffect.Any(e => e.EffectType == effectType))
-            .ToList();
-    }
-
     /// <summary>
     /// 根據時段取得對應的遊戲事件
     /// </summary>
@@ -1053,6 +1046,36 @@ public class DataManager : Singleton<DataManager>
         return data;
     }
 
+    /// <summary>
+    /// 取得玩家存檔中特定鍵值的資料 (此方法不會因為跨日而重置資料)
+    /// </summary>
+    /// <typeparam name="T">必須實作 ISaveData 的資料類型</typeparam>
+    /// <param name="key">對應的存檔鍵值</param>
+    public T GetPersistentSaveData<T>(string key) where T : class, ISaveData, new()
+    {
+        if (_currentPlayerData == null)
+        {
+            Debug.LogError("[DataManager] _currentPlayerData is null");
+            return new T();
+        }
+        if (_currentPlayerData.GameSaveFile == null)
+        {
+            _currentPlayerData.GameSaveFile = new GameSaveFile();
+            _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
+            return new T();
+        }
+        if (_currentPlayerData.GameSaveFile.GameData == null)
+        {
+            _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
+            return new T();
+        }
+        if (!_currentPlayerData.GameSaveFile.GameData.ContainsKey(key))
+        {
+            return new T();
+        }
+        T data = _currentPlayerData.GameSaveFile.GameData[key] as T;
+        return data ?? new T();
+    }
     /// <summary>
     /// 讀取妖怪交易紀錄，如果不存在則回傳新的紀錄
     /// </summary>

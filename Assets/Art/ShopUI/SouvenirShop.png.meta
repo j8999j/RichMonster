@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1de99ac5ab9aeac4f8e05a2c68b2f56e
+guid: c828f28ba174230459376b1b1096f8b9
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -110,127 +110,190 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: menu_0
+      name: SouvenirShop_0
       rect:
         serializedVersion: 2
-        x: 189
-        y: 762
-        width: 120
-        height: 120
+        x: 17
+        y: 145
+        width: 98
+        height: 44
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c7695090e7ce591418f7b3fc55373e7e
-      internalID: 1407806042
+      spriteID: 0ceb7753145c69747bd0a936ec19f1a7
+      internalID: -1328895300
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: menu_1
+      name: SouvenirShop_1
       rect:
         serializedVersion: 2
-        x: 412
-        y: 203
-        width: 824
-        height: 580
+        x: 126
+        y: 104
+        width: 45
+        height: 56
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9c3bc7f2b577bce45a1d034ebdc944b9
-      internalID: -1428689844
+      spriteID: dd12dda57994b944ab80c7722d03104e
+      internalID: -937866706
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Exit
+      name: SouvenirShop_2
       rect:
         serializedVersion: 2
-        x: 1519
-        y: 726
-        width: 119
-        height: 118
+        x: 191
+        y: 68
+        width: 195
+        height: 114
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cd69a678e8a24964eac70222f99c8fd9
-      internalID: 1262712859
+      spriteID: 936e566aad54eb543a86042b919d8db1
+      internalID: 863322953
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: menu_3
+      name: SouvenirShop_3
       rect:
         serializedVersion: 2
-        x: 1291
-        y: 494
-        width: 574
-        height: 181
+        x: 17
+        y: 99
+        width: 98
+        height: 44
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b84f3c83e325a2d41ab0689014dfcf0b
-      internalID: -2061194131
+      spriteID: 0d7b5f05f2c5ffd4e830ca1c5bcd7279
+      internalID: 1635315628
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: menu_4
+      name: SouvenirShop_4
       rect:
         serializedVersion: 2
-        x: 1444
-        y: 323
-        width: 268
-        height: 92
+        x: 124
+        y: 50
+        width: 49
+        height: 51
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5ac1df35b6b608b4a9f1812cd89fcee9
-      internalID: 2018597173
+      spriteID: 03e09625cbb9588468b60327677b5770
+      internalID: -516606620
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: NullSprite
+      name: SouvenirShop_5
       rect:
         serializedVersion: 2
-        x: 1227
-        y: 913
-        width: 100
-        height: 100
+        x: 21
+        y: 60
+        width: 94
+        height: 37
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f8a18040f60f5ed4795e05dea969c3a5
-      internalID: -1680765899
+      spriteID: cbb62d39d9936424c99a99ba1ff309ac
+      internalID: 132789436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SouvenirShop_6
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 38
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c6fc7bae7442fe448c1d4959927d7e9
+      internalID: 1676219787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SouvenirShop_7
+      rect:
+        serializedVersion: 2
+        x: 267
+        y: 31
+        width: 14
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a274d7d29956a67459ebcb4a07a3985a
+      internalID: -422296046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SouvenirShop_8
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 31
+        width: 13
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 857b55184128bbe449a794bb4dfc8807
+      internalID: -1759526372
       vertices: []
       indices: 
       edges: []
@@ -238,7 +301,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 5ab5f2a67ced3334e905ecf979d37b9c
+    spriteID: 201d4a1908042464b8a26c7b4c7685cb
     internalID: 0
     vertices: []
     indices: 
@@ -246,12 +309,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Exit: 1262712859
-      NullSprite: -1680765899
-      menu_0: 1407806042
-      menu_1: -1428689844
-      menu_3: -2061194131
-      menu_4: 2018597173
+      SouvenirShop_0: -1328895300
+      SouvenirShop_1: -937866706
+      SouvenirShop_2: 863322953
+      SouvenirShop_3: 1635315628
+      SouvenirShop_4: -516606620
+      SouvenirShop_5: 132789436
+      SouvenirShop_6: 1676219787
+      SouvenirShop_7: -422296046
+      SouvenirShop_8: -1759526372
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

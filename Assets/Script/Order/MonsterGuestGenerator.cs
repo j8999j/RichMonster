@@ -19,7 +19,7 @@ public class MonsterGuestGenerator
 
     // 請求標籤數量範圍
     private const int MinRequestTagCount = 0;
-    private const int MaxRequestTagCount = 3;
+    private const int MaxRequestTagCount = 1;
 
     // 每日客人數量範圍
     private const int DayMinGuestCount = 6;
@@ -28,15 +28,18 @@ public class MonsterGuestGenerator
     private readonly Dictionary<string, MonsterProfessionDefinition> _professionData;
     private readonly Dictionary<string, MonsterTraitDefinition> _traitData;
     private readonly Dictionary<string, ItemTags> _itemTagsData;
+    private readonly IReadOnlyDictionary<string, ItemDefinition> _itemData;
 
     public MonsterGuestGenerator(
         Dictionary<string, MonsterProfessionDefinition> professionData,
         Dictionary<string, MonsterTraitDefinition> traitData,
-        Dictionary<string, ItemTags> itemTagsData)
+        Dictionary<string, ItemTags> itemTagsData,
+        IReadOnlyDictionary<string, ItemDefinition> itemData = null)
     {
         _professionData = professionData;
         _traitData = traitData;
         _itemTagsData = itemTagsData;
+        _itemData = itemData;
     }
 
     /// <summary>
@@ -51,28 +54,34 @@ public class MonsterGuestGenerator
             ?? GameRng.RangeKeyed(DayMinGuestCount, DayMaxGuestCount + 1, $"MonsterGuest:Day:{dayNumber}:Count");
 
         var guests = new List<MonsterGuest>();
+        var usedProfessions = new HashSet<string>();
+
         for (int i = 0; i < guestCount; i++)
         {
             // 使用 dayNumber 和 index 組合作為唯一 key
-            guests.Add(GenerateGuestForDay(dayNumber, i));
+            var guest = GenerateGuestForDay(dayNumber, i, usedProfessions);
+            if (guest?.monsterCustomer?.Profession != null)
+            {
+                usedProfessions.Add(guest.monsterCustomer.Profession);
+            }
+            guests.Add(guest);
         }
         return guests;
     }
     /// <summary>
     /// 生成單一妖怪客人 (帶天數資訊)
     /// </summary>
-    private MonsterGuest GenerateGuestForDay(int dayNumber, int guestIndex)
+    private MonsterGuest GenerateGuestForDay(int dayNumber, int guestIndex, HashSet<string> usedProfessions = null)
     {
         string keyPrefix = $"Day:{dayNumber}:Guest:{guestIndex}";
         
-        // 先選擇職業以取得 HateTags
-        var profession = PickProfessionKeyed(keyPrefix);
+        // 先選擇職業以取得 HateTags，傳入已使用的職業清單避免重複
+        var profession = PickProfessionKeyed(keyPrefix, usedProfessions);
         var traits = GenerateTraitsKeyed(keyPrefix);
         var customer = new MonsterCustomer(profession, traits);
         
-        // 生成請求時排除 HateTags
-        var hateTags = profession?.HateTags ?? new HashSet<string>();
-        var request = GenerateRequestKeyed(keyPrefix, hateTags);
+        // 生成請求時傳入顧客資料以判定偏好標籤與 HateTags
+        var request = GenerateRequestKeyed(customer, keyPrefix);
 
         return new MonsterGuest
         {
@@ -88,7 +97,7 @@ public class MonsterGuestGenerator
     public MonsterGuest GenerateGuest(int guestIndex)
     {
         var customer = GenerateCustomer(guestIndex);
-        var request = GenerateRequest(guestIndex);
+        var request = GenerateRequest(customer, guestIndex);
 
         return new MonsterGuest
         {
@@ -134,11 +143,22 @@ public class MonsterGuestGenerator
     /// <summary>
     /// 按職業稀有度權重選擇職業
     /// </summary>
-    private MonsterProfessionDefinition PickProfessionKeyed(string keyPrefix)
+    private MonsterProfessionDefinition PickProfessionKeyed(string keyPrefix, HashSet<string> usedProfessions = null)
     {
         if (_professionData == null || _professionData.Count == 0) return null;
 
         var professionList = _professionData.Values.ToList();
+        
+        // 過濾掉已經出現過的職業
+        if (usedProfessions != null && usedProfessions.Count > 0)
+        {
+            var filtered = professionList.Where(p => !usedProfessions.Contains(p.Id)).ToList();
+            if (filtered.Count > 0)
+            {
+                professionList = filtered;
+            }
+        }
+
         var weightedList = new List<(MonsterProfessionDefinition prof, int weight)>();
 
         foreach (var prof in professionList)
@@ -219,35 +239,129 @@ public class MonsterGuestGenerator
     #endregion
 
     #region MonsterRequest 生成
-
     /// <summary>
-    /// 生成 MonsterRequest：隨機選擇物品類型，隨機 0-3 個標籤
+    /// 生成 MonsterRequest：處理第一類與第二類邏輯
     /// </summary>
-    private MonsterRequest GenerateRequest(int guestIndex)
+    private MonsterRequest GenerateRequest(MonsterCustomer customer, int guestIndex)
     {
-        return GenerateRequestKeyed($"MonsterGuest:{guestIndex}");
+        return GenerateRequestKeyed(customer, $"MonsterGuest:{guestIndex}");
     }
 
     /// <summary>
-    /// 使用指定的 key 前綴生成 MonsterRequest
+    /// 使用指定的 key 前綴生成 MonsterRequest（支援雙類型及偏好機率）
     /// </summary>
-    /// <param name="excludeTags">要排除的標籤 (HateTags)</param>
-    private MonsterRequest GenerateRequestKeyed(string keyPrefix, IEnumerable<string> excludeTags = null)
+    /// <param name="customer">顧各資料 (讀取 PreferredTags 與 HateTags)</param>
+    private MonsterRequest GenerateRequestKeyed(MonsterCustomer customer, string keyPrefix)
     {
         var request = new MonsterRequest();
+        var hateSet = customer.HateTags != null ? new HashSet<string>(customer.HateTags) : new HashSet<string>();
 
+        // 步驟一：判定是否觸發偏好（25%）
+        string targetPreferTag = null;
+        if (customer.PreferredTags != null && customer.PreferredTags.Count > 0)
+        {
+            if (GameRng.ValueKeyed($"{keyPrefix}:PreferTrigger") < 0.25f)
+            {
+                // 隨機選一個偏好標籤
+                int pIndex = GameRng.RangeKeyed(0, customer.PreferredTags.Count, $"{keyPrefix}:PreferTagIndex");
+                targetPreferTag = customer.PreferredTags[pIndex];
+            }
+        }
+
+        // 步驟二：判定需求種類（Type1: 2/3, Type2: 1/3）
+        bool isType2 = GameRng.ValueKeyed($"{keyPrefix}:RequestCategory") < (1f / 3f);
+
+        if (isType2 && _itemData != null && _itemData.Count > 0)
+        {
+            // 種類 2 (實際人界商品)
+            var candidateItems = _itemData.Values.Where(item => item.World == ItemWorld.Human).ToList();
+            
+            // 排除本身含有 HateTags 的商品
+            candidateItems = candidateItems.Where(item => !item.Tags.Any(t => hateSet.Contains(t))).ToList();
+
+            if (!string.IsNullOrEmpty(targetPreferTag))
+            {
+                // 需要含有指定偏好標籤
+                var preferItems = candidateItems.Where(item => item.Tags.Contains(targetPreferTag)).ToList();
+                if (preferItems.Count > 0)
+                {
+                    candidateItems = preferItems;
+                }
+                else
+                {
+                    // 若剛好沒有任何人界商品同時滿足 (無 HateTag + 包含該 PreferTag)，退回為種類 1 並指定該標籤
+                    isType2 = false; 
+                }
+            }
+            
+            if (isType2) 
+            {
+                 if(candidateItems.Count > 0)
+                 {
+                     int itemIndex = GameRng.RangeKeyed(0, candidateItems.Count, $"{keyPrefix}:TargetItemIndex");
+                     var pickedItem = candidateItems[itemIndex];
+                     request.itemType = pickedItem.Type;
+            
+                     // 擷取最多 3 個標籤
+                     var itemTags = pickedItem.Tags.ToList();
+                     if (itemTags.Count > 3)
+                     {
+                         // 先確保 targetPreferTag 一定會被選入
+                         var selectedTags = new List<string>();
+                         if (!string.IsNullOrEmpty(targetPreferTag) && itemTags.Contains(targetPreferTag))
+                         {
+                             selectedTags.Add(targetPreferTag);
+                             itemTags.Remove(targetPreferTag);
+                         }
+                         
+                         // 將剩下的洗牌取到滿 3 個
+                         var shuffledRest = itemTags.OrderBy(t => GameRng.ValueKeyed($"{keyPrefix}:TagShuffle:{t}")).ToList();
+                         int needed = 3 - selectedTags.Count;
+                         selectedTags.AddRange(shuffledRest.Take(needed));
+                         request.RequestTags = selectedTags;
+                     }
+                     else
+                     {
+                         request.RequestTags = itemTags;
+                     }
+
+                     request.TriggeredPreference = !string.IsNullOrEmpty(targetPreferTag);
+                     request.IsType2Category = true;
+
+                     return request; // 成功回傳 Type 2 請求
+                 }
+                 else
+                 {
+                     // 完全沒有任何可用人類商品，退回種類 1 處理
+                     isType2 = false;
+                 }
+            }
+        }
+
+        // --- 若為種類 1 (或從種類 2 退回) ---
         // 隨機選擇物品類型 (3種，機率相同)
-        int typeRoll = GameRng.RangeKeyed(0, 3, $"{keyPrefix}:RequestType");
+        int typeRoll = GameRng.RangeKeyed(0, 3, $"{keyPrefix}:RequestType_Type1");
         request.itemType = (ItemType)typeRoll;
 
-        // 隨機選擇 0-3 個標籤 (排除 HateTags)
-        request.RequestTags = GenerateRequestTagsKeyed(keyPrefix, excludeTags);
+        if (!string.IsNullOrEmpty(targetPreferTag))
+        {
+            // 強制包含偏好標籤 (數量為 1)
+            request.RequestTags = new List<string> { targetPreferTag };
+        }
+        else
+        {
+            // 隨機抽選 0-1 個標籤，排除 HateTags
+            request.RequestTags = GenerateRequestTagsKeyed(keyPrefix, customer.HateTags);
+        }
+
+        request.TriggeredPreference = !string.IsNullOrEmpty(targetPreferTag);
+        request.IsType2Category = false; // 此區塊為種類 1
 
         return request;
     }
 
     /// <summary>
-    /// 從所有標籤中隨機抽取 0-3 個，機率相同
+    /// 從所有標籤中隨機抽取 0-1 個，機率相同
     /// </summary>
     /// <param name="excludeTags">要排除的標籤 (HateTags)</param>
     private List<string> GenerateRequestTagsKeyed(string keyPrefix, IEnumerable<string> excludeTags = null)

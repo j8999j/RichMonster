@@ -184,3 +184,62 @@ public class ForceUIButtonStep : GuideStep
         GameFlowUI.SetGameFlowTextEvent?.Invoke("", false);
     }
 }
+// ============================================================
+// GuideStepDecorator.cs - 步驟裝飾器基底
+// ============================================================
+
+/// <summary>
+/// 包裝任意步驟，在執行前後插入附加行為
+/// 不修改任何現有步驟類別，符合 OCP
+/// </summary>
+public abstract class GuideStepDecorator : GuideStep
+{
+    protected readonly GuideStep inner;  // 被包裝的步驟
+
+    protected GuideStepDecorator(GuideStep inner)
+        => this.inner = inner;
+
+    public override void Execute(System.Action onComplete)
+    {
+        OnBeforeExecute();
+        inner.Execute(() =>
+        {
+            OnAfterComplete();
+            onComplete?.Invoke();
+        });
+    }
+
+    public override void Dispose()
+    {
+        OnDispose();
+        inner.Dispose();
+    }
+
+    protected virtual void OnBeforeExecute() { }  // 步驟開始前
+    protected virtual void OnAfterComplete() { }  // 步驟完成後
+    protected virtual void OnDispose()       { }  // 清理時
+}
+// ============================================================
+// WithMapGuideStep.cs - 地圖點位裝飾器
+// ============================================================
+
+/// <summary>
+/// 包裝任意步驟，執行時顯示地圖點位，完成後自動清除
+/// </summary>
+public class WithMapGuideStep : GuideStepDecorator
+{
+    private readonly string targetId;
+
+    public WithMapGuideStep(GuideStep inner, string targetId)
+        : base(inner)
+        => this.targetId = targetId;
+
+    protected override void OnBeforeExecute()
+        => NoticeGetItemEvents.InvokeStartMapGuide(targetId);  // 步驟開始 → 顯示點位
+
+    protected override void OnAfterComplete()
+        => NoticeGetItemEvents.InvokeClearMapGuide();          // 步驟完成 → 清除點位
+
+    protected override void OnDispose()
+        => NoticeGetItemEvents.InvokeClearMapGuide();          // 異常中斷也確保清除
+}

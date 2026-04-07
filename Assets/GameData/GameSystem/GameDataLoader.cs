@@ -28,6 +28,8 @@ public class GameDataLoader
     private const string KEY_ACHIEVEMENTS = "Achievements";
     private const string KEY_MONSTER_INFO = "MonsterInfo";
     private const string KEY_MONSTER_STORY = "MonsterStory";
+    private const string KEY_ACHIEVEMENT_SOUVENIRS = "Souvenirs_Achievement";
+    private const string KEY_SPECIAL_SOUVENIRS = "Souvenirs_Special";
     // Book save file
     private const string BOOK_SAVE_FILE = "illustrated_book.json";
 
@@ -49,6 +51,8 @@ public class GameDataLoader
         public Dictionary<string, MonsterInformationDatabase> MonsterInfoDict = new Dictionary<string, MonsterInformationDatabase>();
         public Dictionary<string, MonsterStoryDatabase> MonsterStoryDict = new Dictionary<string, MonsterStoryDatabase>();
         public Dictionary<string, NPCMissionData> NPCDataDict = new Dictionary<string, NPCMissionData>();
+        public Dictionary<string, AchievementSouvenirData> AchievementSouvenirDict = new Dictionary<string, AchievementSouvenirData>();
+        public Dictionary<string, SpecialSouvenirData> SpecialSouvenirDict = new Dictionary<string, SpecialSouvenirData>();
         public PlayerData InitialPlayerData;
         public GameSaveBook BookData;
     }
@@ -74,6 +78,8 @@ public class GameDataLoader
         result.NPCDataDict = await LoadNPCDataAsync();
         result.InitialPlayerData = await LoadInitialPlayerDataAsync();
         result.EventDict = await LoadEventDataAsync();
+        result.AchievementSouvenirDict = await LoadAchievementSouvenirsAsync();
+        result.SpecialSouvenirDict = await LoadSpecialSouvenirsAsync();
         result.BookData = LoadBookData();
 
         return result;
@@ -146,7 +152,10 @@ public class GameDataLoader
         bookData.MonsterBookData.UnlockMonsterInformationID ??= new List<string>();
         bookData.MonsterBookData.NewMonsterInformationID ??= new List<string>();
         bookData.MonsterBookData.NewMonsterStoryID ??= new List<string>();
+        bookData.UnLockAchievementSouvenirID ??= new List<string>();
+        bookData.UnLockSpecialSouvenirID ??= new List<string>();
     }
+
     #endregion
 
     #region Individual Loaders
@@ -706,6 +715,98 @@ public class GameDataLoader
         {
             Debug.LogError($"[GameDataLoader] LoadNPCDataAsync failed: {e}");
             return new Dictionary<string, NPCMissionData>();
+        }
+        finally
+        {
+            if (handle.IsValid()) Addressables.Release(handle);
+        }
+    }
+
+    private async Task<Dictionary<string, AchievementSouvenirData>> LoadAchievementSouvenirsAsync()
+    {
+        AsyncOperationHandle<TextAsset> handle = default;
+        try
+        {
+            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_ACHIEVEMENT_SOUVENIRS);
+            TextAsset jsonFile = await handle.Task;
+
+            if (jsonFile == null)
+            {
+                Debug.LogError("[GameDataLoader] 找不到 AchievementSouvenirs (Addressables)");
+                return new Dictionary<string, AchievementSouvenirData>();
+            }
+
+            List<AchievementSouvenirData> souvenirList = null;
+            string jsonText = jsonFile.text.TrimStart();
+            if (jsonText.StartsWith("["))
+            {
+                souvenirList = JsonConvert.DeserializeObject<List<AchievementSouvenirData>>(jsonFile.text);
+            }
+            else
+            {
+                var db = JsonConvert.DeserializeObject<AchievementSouvenirDatabaseRoot>(jsonFile.text);
+                souvenirList = db?.AchievementSouvenirs;
+            }
+
+            var dict = souvenirList?
+                .Where(s => s != null && !string.IsNullOrEmpty(s.SouvenirID))
+                .GroupBy(s => s.SouvenirID)
+                .ToDictionary(g => g.Key, g => g.First())
+                ?? new Dictionary<string, AchievementSouvenirData>();
+
+            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆成就紀念品資料");
+            return dict;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GameDataLoader] LoadAchievementSouvenirsAsync failed: {e}");
+            return new Dictionary<string, AchievementSouvenirData>();
+        }
+        finally
+        {
+            if (handle.IsValid()) Addressables.Release(handle);
+        }
+    }
+
+    private async Task<Dictionary<string, SpecialSouvenirData>> LoadSpecialSouvenirsAsync()
+    {
+        AsyncOperationHandle<TextAsset> handle = default;
+        try
+        {
+            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_SPECIAL_SOUVENIRS);
+            TextAsset jsonFile = await handle.Task;
+
+            if (jsonFile == null)
+            {
+                Debug.LogError("[GameDataLoader] 找不到 SpecialSouvenirs (Addressables)");
+                return new Dictionary<string, SpecialSouvenirData>();
+            }
+
+            List<SpecialSouvenirData> souvenirList = null;
+            string jsonText = jsonFile.text.TrimStart();
+            if (jsonText.StartsWith("["))
+            {
+                souvenirList = JsonConvert.DeserializeObject<List<SpecialSouvenirData>>(jsonFile.text);
+            }
+            else
+            {
+                var db = JsonConvert.DeserializeObject<SpecialSouvenirDatabaseRoot>(jsonFile.text);
+                souvenirList = db?.SpecialSouvenirs;
+            }
+
+            var dict = souvenirList?
+                .Where(s => s != null && !string.IsNullOrEmpty(s.SouvenirID))
+                .GroupBy(s => s.SouvenirID)
+                .ToDictionary(g => g.Key, g => g.First())
+                ?? new Dictionary<string, SpecialSouvenirData>();
+
+            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆特別紀念品資料");
+            return dict;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GameDataLoader] LoadSpecialSouvenirsAsync failed: {e}");
+            return new Dictionary<string, SpecialSouvenirData>();
         }
         finally
         {

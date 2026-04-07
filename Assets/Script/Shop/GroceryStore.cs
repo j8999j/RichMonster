@@ -33,6 +33,8 @@ namespace Shop
             var CurrentDay = GameManager.Instance.gameFlow.CurrentDay;
             var items = SyncPurchaseState(GenerateTodayShopItems(CurrentDay));
             items = ApplyPriceFactor(items);
+            // 讓紀念品填入視覺資訊（折扣標籤等），UI 透過 slot.VisualInfo 讀取
+            Souvenir.SouvenirManager.Instance.BuildShopVisualInfos(ShopID, items);
             // 2. 顯示 UI
             if (_shopUIView != null)
             {
@@ -128,6 +130,9 @@ namespace Shop
                 SyncPurchaseState(TodayShopItemList);
                 // **關鍵：通知 View 刷新 (包含列表變灰 + 按鈕變灰)**
                 _shopUIView.RefreshAll();
+                
+                // 通知紀念品系統 (觸發買十送一等效果)
+                Souvenir.SouvenirManager.Instance.NotifyItemPurchased(ShopID, shelfSlot.Item.Id, 1);
             }
         }
         /// <summary>

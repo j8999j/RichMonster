@@ -51,11 +51,11 @@ public class MonsterCustomer
         Traits = traits.Select(t => t.Id).ToList();
         TraitNames = traits.Select(t => t.TraitName).ToList();
 
-        // Budget multiplier: base * average of all BudgetModifier
+        // Budget multiplier: base (暫時不套用 trait 的 BudgetModifier 影響)
         float baseBudget = professionDefinition?.BaseBudgetMultiplier ?? 1f;
-        var budgetMods = traits.Select(t => t.BudgetModifier);
-        float averageBudgetMod = budgetMods.Any() ? budgetMods.Average() : 1f;
-        BudgetMultiplier = baseBudget * averageBudgetMod;
+        // var budgetMods = traits.Select(t => t.BudgetModifier);
+        // float averageBudgetMod = budgetMods.Any() ? budgetMods.Average() : 1f;
+        BudgetMultiplier = baseBudget; // 暫時移除 * averageBudgetMod
 
         // PreferMaxPower from profession
         PreferMaxPower = professionDefinition?.PreferMaxPower ?? 1f;
@@ -66,6 +66,8 @@ public class MonsterCustomer
         // Hate tags from profession
         HateTags = professionDefinition?.HateTags?.ToList() ?? new List<string>();
 
+        // 暫時不套用 Trait 對 PreferredTags 的 Add/Remove 影響
+        /*
         // Apply Add/Remove tags from traits to modify PreferredTags
         // RemoveTags 優先級較高：先收集所有標籤，先加後移
         var allAddTags = new HashSet<string>();
@@ -102,6 +104,7 @@ public class MonsterCustomer
         {
             PreferredTags.Remove(tag);
         }
+        */
         Description = professionDefinition?.Description;
     }
 
@@ -132,6 +135,9 @@ public class MonsterRequest
 {
     public ItemType itemType;
     public List<string> RequestTags = new List<string>();
+    // 記錄生成時的屬性 (用於 UI 與 Debug 觀察)
+    public bool IsType2Category;
+    public bool TriggeredPreference;
 }
 
 

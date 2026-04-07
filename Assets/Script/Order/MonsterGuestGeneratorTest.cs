@@ -50,7 +50,8 @@ public class MonsterGuestGeneratorTest : MonoBehaviour
         _generator = new MonsterGuestGenerator(
             new Dictionary<string, MonsterProfessionDefinition>(DataManager.Instance.MonsterProfessionDict),
             new Dictionary<string, MonsterTraitDefinition>(DataManager.Instance.MonsterTraitDict),
-            new Dictionary<string, ItemTags>(DataManager.Instance.ItemTagsDict)
+            new Dictionary<string, ItemTags>(DataManager.Instance.ItemTagsDict),
+            new Dictionary<string, ItemDefinition>(DataManager.Instance.ItemDict)
         );
 
         // 生成客人 (使用天數生成，數量按種子隨機 6-10 或強制指定)
@@ -91,7 +92,11 @@ public class MonsterGuestGeneratorTest : MonoBehaviour
                 $"種族: {customer.Race} | " +
                 $"預算乘數: {customer.BudgetMultiplier:F2}");
 
+            string categoryStr = request.IsType2Category ? "種類2(實體配對)" : "種類1(隨機屬性)";
+            string preferStr = request.TriggeredPreference ? "【有觸發】" : "無";
+
             Debug.Log($"    特質: {traits}");
+            Debug.Log($"    生成來源: {categoryStr} | 偏好加成: {preferStr}");
             Debug.Log($"    偏好標籤: {preferredTags}");
             Debug.Log($"    請求類型: {request.itemType} | 請求標籤: {tags}");
         }

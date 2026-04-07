@@ -35,12 +35,14 @@ public class WaypointIndicator : MonoBehaviour
     }
     void StartMapGuide(string id)
     {
+        iconImage.gameObject.SetActive(true);
         target = mapGuide[id];
     }
     void ClearMapGuide()
     {
         mapGuide.Clear();
         target = null;
+        iconImage.gameObject.SetActive(false);
     }
     void Start()
     {

@@ -1,8 +1,6 @@
 using UnityEngine;
 using GameSystem;
 using Player;
-using Unity.VisualScripting;
-
 public class ScratchCardShop : MonoBehaviour, IInteractable, IMapGuideTarget
 {
     [SerializeField] private ScratchCard scratchCard;

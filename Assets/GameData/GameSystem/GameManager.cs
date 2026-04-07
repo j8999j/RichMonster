@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Player;
+
 using Cinemachine;
 using Talksystem;
 
@@ -83,6 +85,14 @@ namespace GameSystem
             // 取得初始玩家資料並生成新的隨機種子
             var newPlayerData = dataManager.InitialPlayerData;
             newPlayerData.MasterSeed = Random.Range(1, int.MaxValue);
+
+            // 記錄目前持有的紀念品
+            var bookData = dataManager.GetBookData();
+            if (bookData != null)
+            {
+                newPlayerData.HoldAchievementSouvenirID = new List<string>(bookData.UnLockAchievementSouvenirID ?? new List<string>());
+            }
+
             // 使用新種子的玩家資料創建新遊戲
             dataManager.SetCurrentPlayer(newPlayerData);
             await dataManager.SaveCurrentPlayerAsync(slot);

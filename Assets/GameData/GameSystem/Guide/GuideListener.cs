@@ -138,6 +138,7 @@ public class BackgroundListener
     private System.Action pendingCallback;
 
     public bool IsTriggered => isTriggered;
+    public System.Action OnTriggered { get; set; }
 
     public void StartEarly(GuideListener guideListener)
     {

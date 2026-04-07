@@ -654,9 +654,9 @@ MonoBehaviour:
   completedMark: {fileID: 2014232754106906707}
   LevelImage: {fileID: 2719895333824114736}
   LevelImageList:
-  - {fileID: -947243859, guid: 911ca98febc4b764bb71ce3b291792db, type: 3}
-  - {fileID: 1277845291, guid: 911ca98febc4b764bb71ce3b291792db, type: 3}
-  - {fileID: -157221908, guid: 911ca98febc4b764bb71ce3b291792db, type: 3}
+  - {fileID: -2014589599, guid: 394fbcc847aa7a046a8a4d0e7d141f98, type: 3}
+  - {fileID: 1945765619, guid: 394fbcc847aa7a046a8a4d0e7d141f98, type: 3}
+  - {fileID: 424174311, guid: 394fbcc847aa7a046a8a4d0e7d141f98, type: 3}
   PrgrassBar: {fileID: 109153374153864017}
   Percentage: {fileID: 5720575306797380632}
   ProgressText: {fileID: 4852264603230267309}
