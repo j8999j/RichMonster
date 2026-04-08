@@ -108,4 +108,27 @@ public class SpriteLoader
         }
         _cachedHandles.Clear();
     }
+
+    /// <summary>
+    /// 調整圖片縮放，使長邊達到目標尺寸
+    /// </summary>
+    public static void AdjustImageScale(UnityEngine.UI.Image targetImage, float targetLongEdgeSize)
+    {
+        if (targetImage == null || targetLongEdgeSize <= 0) return;
+        
+        targetImage.SetNativeSize();
+        RectTransform rt = targetImage.rectTransform;
+        float width = rt.sizeDelta.x;
+        float height = rt.sizeDelta.y;
+        
+        // 取得長邊
+        float longEdge = Mathf.Max(width, height);
+        if (longEdge <= 0) return;
+        
+        // 計算縮放倍數
+        float scale = targetLongEdgeSize / longEdge;
+        
+        // 調整尺寸
+        rt.sizeDelta = new Vector2(width * scale, height * scale);
+    }
 }

@@ -168,24 +168,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
             _orderSlots.Add(newSlot);
         }
     }
-    private void AdjustImageScale(Image targetImage, int TargetLongEdgeSize)
-    {
-        if (targetImage == null || TargetLongEdgeSize <= 0) return;
-        targetImage.SetNativeSize();
-        RectTransform rt = targetImage.rectTransform;
-        float width = rt.sizeDelta.x;
-        float height = rt.sizeDelta.y;
 
-        // 取得長邊
-        float longEdge = Mathf.Max(width, height);
-        if (longEdge <= 0) return;
-
-        // 計算縮放倍數
-        float scale = TargetLongEdgeSize / longEdge;
-
-        // 調整尺寸
-        rt.sizeDelta = new Vector2(width * scale, height * scale);
-    }
     #endregion
     #region ClickEvent
     private void OnBagSelected(BagSlot slot)
@@ -195,7 +178,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         DetailDescText.text = slot._currentDefinition.Description;
         DetailPriceText.text = slot._currentData.CostPrice.ToString();
         DetailIcon.sprite = slot._targetImage.sprite;
-        AdjustImageScale(DetailIcon, 150);
+        SpriteLoader.AdjustImageScale(DetailIcon, 150);
         switch (slot._currentDefinition.Type)
         {
             case ItemType.Equipment:
@@ -248,7 +231,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         {
             _orderSlots[slotIndex].Setup(sortedLargeOrders[i], InvokeSelectedOrder);
             _orderSlots[slotIndex].gameObject.SetActive(true);
-            AdjustImageScale(_orderSlots[slotIndex]._targetImage, 180);
+            SpriteLoader.AdjustImageScale(_orderSlots[slotIndex]._targetImage, 180);
             slotIndex++;
         }
         // 再顯示小訂單
@@ -256,7 +239,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         {
             _orderSlots[slotIndex].Setup(smallOrders[i], InvokeSelectedOrder);
             _orderSlots[slotIndex].gameObject.SetActive(true);
-            AdjustImageScale(_orderSlots[slotIndex]._targetImage, 120);
+            SpriteLoader.AdjustImageScale(_orderSlots[slotIndex]._targetImage, 120);
             slotIndex++;
         }
         // 隱藏多餘的 Slot

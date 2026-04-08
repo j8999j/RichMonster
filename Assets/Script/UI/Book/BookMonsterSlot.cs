@@ -75,7 +75,7 @@ public class BookMonsterSlot : MonoBehaviour
             if (MonsterImage != null && _currentMonsterId == monsterId)
             {
                 MonsterImage.sprite = sprite ?? DefaultSprite;
-                AdjustImageScale();
+                SpriteLoader.AdjustImageScale(MonsterImage, TargetLongEdgeSize);
                 MonsterImage.enabled = true;
             }
         });
@@ -90,23 +90,6 @@ public class BookMonsterSlot : MonoBehaviour
         MonsterImage.color = black ? Color.black : Color.white;
     }
 
-    /// <summary>
-    /// 調整圖片縮放，使長邊達到目標尺寸
-    /// </summary>
-    private void AdjustImageScale()
-    {
-        if (MonsterImage == null || TargetLongEdgeSize <= 0) return;
-        MonsterImage.SetNativeSize();
-        RectTransform rt = MonsterImage.rectTransform;
-        float width = rt.sizeDelta.x;
-        float height = rt.sizeDelta.y;
-
-        float longEdge = Mathf.Max(width, height);
-        if (longEdge <= 0) return;
-
-        float scale = TargetLongEdgeSize / longEdge;
-        rt.sizeDelta = new Vector2(width * scale, height * scale);
-    }
 
     private void OnClicked()
     {

@@ -39,7 +39,7 @@ public class NoticeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         if (_targetImage != null && goldSprite != null)
         {
             _targetImage.sprite = goldSprite;
-            AdjustImageScale();
+            SpriteLoader.AdjustImageScale(_targetImage, _targetLongEdgeSize);
         }
         if (_amountText != null) _amountText.text = $"x{amount}";
     }
@@ -57,7 +57,7 @@ public class NoticeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         if (_targetImage != null && goldSprite != null)
         {
             _targetImage.sprite = goldSprite;
-            AdjustImageScale();
+            SpriteLoader.AdjustImageScale(_targetImage, _targetLongEdgeSize);
         }
         if (_amountText != null) _amountText.text = $"x{amount}";
     }
@@ -83,7 +83,7 @@ public class NoticeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
                 if (this != null && _targetImage != null && sprite != null)
                 {
                     _targetImage.sprite = sprite;
-                    AdjustImageScale();
+                    SpriteLoader.AdjustImageScale(_targetImage, _targetLongEdgeSize);
                 }
             });
         }
@@ -104,7 +104,7 @@ public class NoticeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         if (_targetImage != null && sprite != null)
         {
             _targetImage.sprite = sprite;
-            AdjustImageScale();
+            SpriteLoader.AdjustImageScale(_targetImage, _targetLongEdgeSize);
         }
         if (_amountText != null) _amountText.text = $"x{amount}";
     }
@@ -131,26 +131,6 @@ public class NoticeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     {
         _onHoverExit?.Invoke();
     }
-
-    /// <summary>
-    /// 調整圖片縮放，使長邊達到目標尺寸
-    /// </summary>
-    private void AdjustImageScale()
-    {
-        if (_targetImage == null || _targetLongEdgeSize <= 0) return;
-        _targetImage.SetNativeSize();
-        RectTransform rt = _targetImage.rectTransform;
-        float width = rt.sizeDelta.x;
-        float height = rt.sizeDelta.y;
-
-        // 取得長邊
-        float longEdge = Mathf.Max(width, height);
-        if (longEdge <= 0) return;
-
-        // 計算縮放倍數
-        float scale = _targetLongEdgeSize / longEdge;
-
-        // 調整尺寸
-        rt.sizeDelta = new Vector2(width * scale, height * scale);
-    }
 }
+
+

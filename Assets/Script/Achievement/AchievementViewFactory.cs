@@ -52,8 +52,11 @@ public class AchievementViewFactory : MonoBehaviour
         btnTransaction?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Transaction));
         btnRecord?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Record));
         btnOthers?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Others));
+    }
 
-        // 預設顯示第一個分類
+    private void OnEnable()
+    {
+        // 開啟時預設選取第一個分類
         SwitchCategory(AchievementCategory.Item);
     }
 
@@ -62,6 +65,8 @@ public class AchievementViewFactory : MonoBehaviour
     {
         _currentCategory = category;
 
+        UpdateButtonVisuals();
+
         var achievements = AchievementManager.Instance.GetAchievementsByCategory(category);
         BuildAll(achievements);
 
@@ -69,6 +74,22 @@ public class AchievementViewFactory : MonoBehaviour
         if (scrollRect != null)
         {
             scrollRect.verticalNormalizedPosition = 1f;
+        }
+    }
+
+    private void UpdateButtonVisuals()
+    {
+        SetButtonActive(btnItem, _currentCategory == AchievementCategory.Item);
+        SetButtonActive(btnTransaction, _currentCategory == AchievementCategory.Transaction);
+        SetButtonActive(btnRecord, _currentCategory == AchievementCategory.Record);
+        SetButtonActive(btnOthers, _currentCategory == AchievementCategory.Others);
+    }
+
+    private void SetButtonActive(Button btn, bool isActive)
+    {
+        if (btn != null && btn.transform.childCount > 0)
+        {
+            btn.transform.GetChild(0).gameObject.SetActive(isActive);
         }
     }
 

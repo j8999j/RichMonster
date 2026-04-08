@@ -70,7 +70,7 @@ public class BookItemSlot : MonoBehaviour
             if (ItemImage != null && _currentItemId == itemId)
             {
                 ItemImage.sprite = sprite ?? DefaultSprite;
-                AdjustImageScale();
+                SpriteLoader.AdjustImageScale(ItemImage, TargetLongEdgeSize);
                 ItemImage.enabled = true;
             }
         });
@@ -95,23 +95,6 @@ public class BookItemSlot : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 調整圖片縮放，使長邊達到目標尺寸
-    /// </summary>
-    private void AdjustImageScale()
-    {
-        if (ItemImage == null || TargetLongEdgeSize <= 0) return;
-        ItemImage.SetNativeSize();
-        RectTransform rt = ItemImage.rectTransform;
-        float width = rt.sizeDelta.x;
-        float height = rt.sizeDelta.y;
-
-        float longEdge = Mathf.Max(width, height);
-        if (longEdge <= 0) return;
-
-        float scale = TargetLongEdgeSize / longEdge;
-        rt.sizeDelta = new Vector2(width * scale, height * scale);
-    }
 
     private void OnClicked()
     {

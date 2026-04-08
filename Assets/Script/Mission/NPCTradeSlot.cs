@@ -84,26 +84,12 @@ public class NPCTradeSlot : MonoBehaviour
             if (_targetImage != null && _currentItemId == itemId)
             {
                 _targetImage.sprite = sprite ?? DefaultSprite;
-                AdjustImageScale();
+                SpriteLoader.AdjustImageScale(_targetImage, TargetLongEdgeSize);
                 _targetImage.enabled = true;
             }
         });
     }
     
-    private void AdjustImageScale()
-    {
-        if (_targetImage == null || TargetLongEdgeSize <= 0) return;
-        _targetImage.SetNativeSize();
-        RectTransform rt = _targetImage.rectTransform;
-        float width = rt.sizeDelta.x;
-        float height = rt.sizeDelta.y;
-        
-        float longEdge = Mathf.Max(width, height);
-        if (longEdge <= 0) return;
-        
-        float scale = TargetLongEdgeSize / longEdge;
-        rt.sizeDelta = new Vector2(width * scale, height * scale);
-    }
 
     protected void OnClicked()
     {

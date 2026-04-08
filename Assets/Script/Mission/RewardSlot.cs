@@ -22,7 +22,7 @@ public class RewardSlot : MonoBehaviour
                 if (RewardIcon != null)
                 {
                     RewardIcon.sprite = GoldSprite;
-                    AdjustImageScale(RewardIcon, 100);
+                    SpriteLoader.AdjustImageScale(RewardIcon, 100);
                 }
                 if (NameText != null) NameText.text = $"x{reward.GoldAmount}";
                 break;
@@ -35,7 +35,7 @@ public class RewardSlot : MonoBehaviour
                     SpriteLoader.LoadSpriteAsync(reward.ItemID, s => 
                     {
                         RewardIcon.sprite = s;
-                        AdjustImageScale(RewardIcon, 100);
+                        SpriteLoader.AdjustImageScale(RewardIcon, 100);
                     });
                 }
                 break;
@@ -43,28 +43,12 @@ public class RewardSlot : MonoBehaviour
                 if (RewardIcon != null)
                 {
                     RewardIcon.sprite = InfoSprite;
-                    AdjustImageScale(RewardIcon, 100);
+                    SpriteLoader.AdjustImageScale(RewardIcon, 100);
                 }
                 if (NameText != null) NameText.text = "妖怪情報";
                 break;
         }
     }
 
-    /// <summary>
-    /// 調整圖片縮放，使長邊達到目標尺寸
-    /// </summary>
-    private void AdjustImageScale(Image targetImage, int targetLongEdgeSize)
-    {
-        if (targetImage == null || targetLongEdgeSize <= 0) return;
-        targetImage.SetNativeSize();
-        RectTransform rt = targetImage.rectTransform;
-        float width = rt.sizeDelta.x;
-        float height = rt.sizeDelta.y;
 
-        float longEdge = Mathf.Max(width, height);
-        if (longEdge <= 0) return;
-
-        float scale = targetLongEdgeSize / longEdge;
-        rt.sizeDelta = new Vector2(width * scale, height * scale);
-    }
 }

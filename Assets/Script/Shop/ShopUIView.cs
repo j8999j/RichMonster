@@ -102,24 +102,7 @@ public class ShopUIView : MonoBehaviour
             _activeSlots.Add(newSlot);
         }
     }
-    private void AdjustImageScale(Image targetImage)
-    {
-        if (targetImage == null || TargetLongEdgeSize <= 0) return;
-        targetImage.SetNativeSize();
-        RectTransform rt = targetImage.rectTransform;
-        float width = rt.sizeDelta.x;
-        float height = rt.sizeDelta.y;
 
-        // 取得長邊
-        float longEdge = Mathf.Max(width, height);
-        if (longEdge <= 0) return;
-
-        // 計算縮放倍數
-        float scale = TargetLongEdgeSize / longEdge;
-
-        // 調整尺寸
-        rt.sizeDelta = new Vector2(width * scale, height * scale);
-    }
     #region View & Buy
     //選定物品
     private void OnSlotSelected(ShopSlot selectedSlot)
@@ -150,7 +133,7 @@ public class ShopUIView : MonoBehaviour
         // 更新圖片 (直接拿 Slot 已經載好的圖，省效能)
         if (DetailIcon != null) DetailIcon.sprite = slotUI._targetImage.sprite;
         //調整圖片大小
-        AdjustImageScale(DetailIcon);
+        SpriteLoader.AdjustImageScale(DetailIcon, TargetLongEdgeSize);
         // 更新按鈕狀態
         UpdateButtonState();
         string rarityId = ItemData.Rarity.ToString();

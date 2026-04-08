@@ -9,8 +9,8 @@ namespace Souvenir
     /// </summary>
     public class FreeScratchCardSouvenir : AchievementSouvenirBase, IFreeScratchCardProvider
     {
-        public override string SouvenirID => "SouAch_FreeScratchCard";
-        
+        public override string SouvenirID => "SouAch_LotteryTicket";
+
         public bool IsScratchCardFree() => true;
     }
 }

@@ -115,7 +115,7 @@ public class NPCMissionView : MonoBehaviour
             SpriteLoader.LoadSpriteAsync(_currentMission.NpcID + "_head", s =>
             {
                 NPCHeadshotImage.sprite = s;
-                AdjustImageScale(NPCHeadshotImage, 75);
+                SpriteLoader.AdjustImageScale(NPCHeadshotImage, 75);
             });
         }
         switch (req.Type)
@@ -128,7 +128,7 @@ public class NPCMissionView : MonoBehaviour
                     SpriteLoader.LoadSpriteAsync(req.TargetItemID, s =>
                     {
                         RequirementImage.sprite = s;
-                        AdjustImageScale(RequirementImage, 100);
+                        SpriteLoader.AdjustImageScale(RequirementImage, 100);
                     });
                 }
                 break;
@@ -139,7 +139,7 @@ public class NPCMissionView : MonoBehaviour
                     SpriteLoader.LoadSpriteAsync(req.TargetTag, s =>
                     {
                         RequirementImage.sprite = s;
-                        AdjustImageScale(RequirementImage, 100);
+                        SpriteLoader.AdjustImageScale(RequirementImage, 100);
                     });
                 }
                 break;
@@ -162,7 +162,7 @@ public class NPCMissionView : MonoBehaviour
                             reqStr += $"任意裝備類型物品";
                             break;
                     }
-                    AdjustImageScale(RequirementImage, 100);
+                    SpriteLoader.AdjustImageScale(RequirementImage, 100);
                 }
                 break;
             case RequirementType.None:
@@ -231,7 +231,7 @@ public class NPCMissionView : MonoBehaviour
         SpriteLoader.LoadSpriteAsync(slot._currentData.ItemId, sprite =>
         {
             SelectedImage.sprite = sprite;
-            AdjustImageScale(SelectedImage, 70);
+            SpriteLoader.AdjustImageScale(SelectedImage, 70);
         });
 
         //處理選中背包物品的邏輯
@@ -278,7 +278,7 @@ public class NPCMissionView : MonoBehaviour
         }
 
         ShowTags(slot._currentDefinition.Tags);
-        if (DetailIcon != null) AdjustImageScale(DetailIcon, 100);
+        if (DetailIcon != null) SpriteLoader.AdjustImageScale(DetailIcon, 100);
         RefreshSubmitButton(true);
     }
 
@@ -388,22 +388,6 @@ public class NPCMissionView : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
-    /// <summary>
-    /// 調整圖片縮放，使長邊達到目標尺寸
-    /// </summary>
-    private void AdjustImageScale(Image targetImage, int targetLongEdgeSize)
-    {
-        if (targetImage == null || targetLongEdgeSize <= 0) return;
-        targetImage.SetNativeSize();
-        RectTransform rt = targetImage.rectTransform;
-        float width = rt.sizeDelta.x;
-        float height = rt.sizeDelta.y;
 
-        float longEdge = Mathf.Max(width, height);
-        if (longEdge <= 0) return;
-
-        float scale = targetLongEdgeSize / longEdge;
-        rt.sizeDelta = new Vector2(width * scale, height * scale);
-    }
 }
 

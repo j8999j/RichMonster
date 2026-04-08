@@ -88,6 +88,8 @@ namespace Souvenir
             }
 
             _isInitialized = true;
+            SnapshotOwnedSouvenirs();
+            RegisterAll();
             Debug.Log($"[SouvenirManager] 初始化完成，共載入 {_achievementSouvenirs.Count} 個成就紀念品與 {_specialSouvenirs.Count} 個特殊紀念品");
         }
 
@@ -164,15 +166,40 @@ namespace Souvenir
         public void SnapshotOwnedSouvenirs()
         {
             _ownedSouvenirIds.Clear();
-            var saveData = DataManager.Instance.GetPersistentSaveData<SouvenirShopSaveData>("SouvenirShopSaveData");
-            if (saveData != null && saveData.PurchasedSouvenirIDs != null)
+            var bookData = DataManager.Instance.GetBookData();
+            if (bookData != null)
             {
-                foreach (var id in saveData.PurchasedSouvenirIDs)
+                if (bookData.UnLockAchievementSouvenirID != null)
                 {
-                    _ownedSouvenirIds.Add(id);
+                    foreach (var id in bookData.UnLockAchievementSouvenirID)
+                    {
+                        _ownedSouvenirIds.Add(id);
+                    }
+                }
+                if (bookData.UnLockSpecialSouvenirID != null)
+                {
+                    foreach (var id in bookData.UnLockSpecialSouvenirID)
+                    {
+                        _ownedSouvenirIds.Add(id);
+                    }
+                }
+
+                // 檢查是否擁有預設的 Sou_key，沒有的話加入為第一項
+                if (!_ownedSouvenirIds.Contains("Sou_key"))
+                {
+                    _ownedSouvenirIds.Add("Sou_key");
+                    if (bookData.UnLockSpecialSouvenirID == null)
+                        bookData.UnLockSpecialSouvenirID = new List<string>();
+
+                    if (!bookData.UnLockSpecialSouvenirID.Contains("Sou_key"))
+                    {
+                        bookData.UnLockSpecialSouvenirID.Insert(0, "Sou_key");
+                        DataManager.Instance.SetBookDataChanged(true);
+                        _ = DataManager.Instance.SaveBookAsync();
+                    }
                 }
             }
-            Debug.Log($"[SouvenirManager] 已從存檔載入快照，目前持有 {_ownedSouvenirIds.Count} 個紀念品");
+            Debug.Log($"[SouvenirManager] 已從圖鑑存檔載入快照，目前持有 {_ownedSouvenirIds.Count} 個紀念品");
         }
 
         private void ForEachOwnedSouvenir<T>(Action<T> action) where T : class
@@ -248,25 +275,18 @@ namespace Souvenir
                 {
                     // 購買成功
                     _ownedSouvenirIds.Add(souvenirId);
-                    
-                    // 從存檔取出並更新
-                    var saveData = DataManager.Instance.GetPersistentSaveData<SouvenirShopSaveData>("SouvenirShopSaveData");
-                    if (string.IsNullOrEmpty(saveData.UniqueID))
+                    var bookData = DataManager.Instance.GetBookData();
+                    if (bookData != null)
                     {
-                        saveData.UniqueID = "SouvenirShopSaveData";
-                    }
-                    if (GameManager.Instance != null && GameManager.Instance.gameFlow != null)
-                    {
-                        saveData.LastUpdatedDay = GameManager.Instance.gameFlow.CurrentDay;
-                    }
+                        if (bookData.UnLockAchievementSouvenirID == null)
+                            bookData.UnLockAchievementSouvenirID = new List<string>();
 
-                    if (!saveData.PurchasedSouvenirIDs.Contains(souvenirId))
-                    {
-                        saveData.PurchasedSouvenirIDs.Add(souvenirId);
+                        if (!bookData.UnLockAchievementSouvenirID.Contains(souvenirId))
+                        {
+                            bookData.UnLockAchievementSouvenirID.Add(souvenirId);
+                            DataManager.Instance.SetBookDataChanged(true);
+                        }
                     }
-                    
-                    // 存入 DataManager
-                    DataManager.Instance.SetPlayerData("SouvenirShopSaveData", saveData);
 
                     Debug.Log($"[SouvenirShop] 購買紀念品 {souvenirId} 成功！花費 {ach.Cost} 點，剩餘 {GetRemainingPoints()} 點");
                     return true;

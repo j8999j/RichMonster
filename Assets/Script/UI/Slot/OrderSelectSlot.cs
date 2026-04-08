@@ -20,28 +20,11 @@ public class OrderSelectSlot : MonoBehaviour
         item = bagSlot;
         icon.sprite = bagSlot._targetImage.sprite;
         _onClickedCallback = onCancel;
-        AdjustImageScale(icon, SizeMaxEdge);
+        SpriteLoader.AdjustImageScale(icon, SizeMaxEdge);
     }
     private void OnClicked()
     {
         _onClickedCallback?.Invoke(item);
     }
-    private void AdjustImageScale(Image targetImage, int TargetLongEdgeSize)
-    {
-        if (targetImage == null || TargetLongEdgeSize <= 0) return;
-        targetImage.SetNativeSize();
-        RectTransform rt = targetImage.rectTransform;
-        float width = rt.sizeDelta.x;
-        float height = rt.sizeDelta.y;
 
-        // 取得長邊
-        float longEdge = Mathf.Max(width, height);
-        if (longEdge <= 0) return;
-
-        // 計算縮放倍數
-        float scale = TargetLongEdgeSize / longEdge;
-
-        // 調整尺寸
-        rt.sizeDelta = new Vector2(width * scale, height * scale);
-    }
 }

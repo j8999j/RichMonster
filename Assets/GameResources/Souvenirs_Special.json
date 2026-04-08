@@ -1,6 +1,12 @@
 {
   "SpecialSouvenirs": [
     {
+      "SouvenirID": "Sou_key",
+      "SouvenirName": "黃昏鑰匙",
+      "SouvenirCondition": "爺爺留下的神祕鑰匙",
+      "SouvenirDescription": "一把長型的古銅色黃銅鑰匙，表面佈滿了細小的齒輪與不規律的刻痕，鑰匙柄部鑲嵌著一顆黃色透明的石頭，在黃昏的夕陽下閃閃發光"
+    },
+    {
       "SouvenirID": "Sou_GhostTribute",
       "SouvenirName": "幽冥羽翎",
       "SouvenirCondition": "交易使幽靈客人滿意達到50次",

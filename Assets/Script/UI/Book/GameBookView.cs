@@ -277,7 +277,7 @@ public class GameBookView : MonoBehaviour
         {
             DetailIcon.sprite = slot.ItemImage.sprite;
             DetailIcon.color = isUnlocked ? Color.white : Color.black;
-            AdjustImageScale(DetailIcon);
+            SpriteLoader.AdjustImageScale(DetailIcon, TargetLongEdgeSize);
         }
         if (TypeIcon != null)
         {
@@ -620,7 +620,7 @@ public class GameBookView : MonoBehaviour
         {
             MonsterDetailIcon.sprite = slot.MonsterImage.sprite;
             MonsterDetailIcon.color = isUnlocked ? Color.white : Color.black;
-            AdjustImageScale(MonsterDetailIcon);
+            SpriteLoader.AdjustImageScale(MonsterDetailIcon, TargetLongEdgeSize);
         }
 
         // 載入種族圖示
@@ -1023,23 +1023,5 @@ public class GameBookView : MonoBehaviour
     }
     #endregion
 
-    #region 共用工具
-    /// <summary>
-    /// 調整圖片縮放，使長邊達到目標尺寸
-    /// </summary>
-    private void AdjustImageScale(Image targetImage)
-    {
-        if (targetImage == null || TargetLongEdgeSize <= 0) return;
-        targetImage.SetNativeSize();
-        RectTransform rt = targetImage.rectTransform;
-        float width = rt.sizeDelta.x;
-        float height = rt.sizeDelta.y;
 
-        float longEdge = Mathf.Max(width, height);
-        if (longEdge <= 0) return;
-
-        float scale = TargetLongEdgeSize / longEdge;
-        rt.sizeDelta = new Vector2(width * scale, height * scale);
-    }
-    #endregion
 }

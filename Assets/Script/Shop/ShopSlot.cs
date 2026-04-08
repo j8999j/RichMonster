@@ -97,7 +97,7 @@ public class ShopSlot : MonoBehaviour
             if (_targetImage != null && _currentItemId == itemId)
             {
                 _targetImage.sprite = sprite ?? DefaultSprite;
-                AdjustImageScale();
+                SpriteLoader.AdjustImageScale(_targetImage, TargetLongEdgeSize);
                 _targetImage.enabled = true;
             }
         });
@@ -130,24 +130,7 @@ public class ShopSlot : MonoBehaviour
             Addressables.Release(_currentHandle);
         }
     }
-    private void AdjustImageScale()
-    {
-        if (_targetImage == null || TargetLongEdgeSize <= 0) return;
-        _targetImage.SetNativeSize();
-        RectTransform rt = _targetImage.rectTransform;
-        float width = rt.sizeDelta.x;
-        float height = rt.sizeDelta.y;
-        
-        // 取得長邊
-        float longEdge = Mathf.Max(width, height);
-        if (longEdge <= 0) return;
-        
-        // 計算縮放倍數
-        float scale = TargetLongEdgeSize / longEdge;
-        
-        // 調整尺寸
-        rt.sizeDelta = new Vector2(width * scale, height * scale);
-    }
+
     // 當這個 UI 物件被銷毀時 (例如關閉視窗)，自動釋放記憶體
     private void OnDestroy()
     {
