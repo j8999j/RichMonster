@@ -24,7 +24,12 @@ namespace Souvenir
         public TextMeshProUGUI DetailDescriptionText;
         public TextMeshProUGUI DetailFunctionText; // 成就功能 or 特殊解鎖條件
         public Image DetailIcon;
+        public Button InteractButton;           // 互動按鈕 (查看/使用)
+        public TextMeshProUGUI InteractButtonText; // 互動按鈕文字
         public float TargetLongEdgeSize = 150f;
+
+        [Header("Settings")]
+        public bool ShowInteractionButton = true;
 
         private List<SouvenirBagSlot> _spawnedSlots = new List<SouvenirBagSlot>();
         private List<SouvenirBagItemData> _bagItems = new List<SouvenirBagItemData>();
@@ -47,6 +52,18 @@ namespace Souvenir
             RefreshPage();
         }
 
+        /// <summary>
+        /// 設定能否顯示互動按鈕
+        /// </summary>
+        public void SetInteractionButtonVisible(bool visible)
+        {
+            ShowInteractionButton = visible;
+            if (MainPanel != null && MainPanel.activeSelf && _currentSelectedSlot != null)
+            {
+                OnSlotClicked(_currentSelectedSlot);
+            }
+        }
+
         public void CloseBag()
         {
             if (MainPanel != null) MainPanel.SetActive(false);
@@ -59,9 +76,6 @@ namespace Souvenir
             var bookData = DataManager.Instance.GetBookData();
             if (bookData == null) return;
 
-            var achieveDataDict = DataManager.Instance.AchievementSouvenirDict;
-            var specialDataDict = DataManager.Instance.SpecialSouvenirDict;
-            
             var unlockAchList = bookData.UnLockAchievementSouvenirID ?? new List<string>();
             var unlockSplList = bookData.UnLockSpecialSouvenirID ?? new List<string>();
 
@@ -71,56 +85,24 @@ namespace Souvenir
             string keyId = "Sou_key";
             if (unlockAchList.Contains(keyId) || unlockSplList.Contains(keyId) || SouvenirManager.Instance.IsOwned(keyId))
             {
-                if (specialDataDict != null && specialDataDict.TryGetValue(keyId, out var splData))
-                {
-                    _bagItems.Add(new SouvenirBagItemData
-                    {
-                        SouvenirID = splData.SouvenirID,
-                        SouvenirName = splData.SouvenirName,
-                        SouvenirDescription = splData.SouvenirDescription,
-                        FunctionOrConditionDesc = splData.SouvenirCondition,
-                        IsSpecial = true
-                    });
-                    addedIds.Add(keyId);
-                }
+                _bagItems.Add(new SouvenirBagItemData { SouvenirID = keyId, IsSpecial = true });
+                addedIds.Add(keyId);
             }
 
             // 2. 特殊紀念品前置
             foreach (var id in unlockSplList)
             {
                 if (addedIds.Contains(id)) continue;
-                
-                if (specialDataDict != null && specialDataDict.TryGetValue(id, out var splData))
-                {
-                    _bagItems.Add(new SouvenirBagItemData
-                    {
-                        SouvenirID = splData.SouvenirID,
-                        SouvenirName = splData.SouvenirName,
-                        SouvenirDescription = splData.SouvenirDescription,
-                        FunctionOrConditionDesc = splData.SouvenirCondition, // 使用解鎖條件作為功能描述
-                        IsSpecial = true
-                    });
-                    addedIds.Add(id);
-                }
+                _bagItems.Add(new SouvenirBagItemData { SouvenirID = id, IsSpecial = true });
+                addedIds.Add(id);
             }
 
             // 3. 成就紀念品後置
             foreach (var id in unlockAchList)
             {
                 if (addedIds.Contains(id)) continue;
-
-                if (achieveDataDict != null && achieveDataDict.TryGetValue(id, out var achData))
-                {
-                    _bagItems.Add(new SouvenirBagItemData
-                    {
-                        SouvenirID = achData.SouvenirID,
-                        SouvenirName = achData.SouvenirName,
-                        SouvenirDescription = achData.SouvenirDescription,
-                        FunctionOrConditionDesc = achData.SouvenirFunctionDescription,
-                        IsSpecial = false
-                    });
-                    addedIds.Add(id);
-                }
+                _bagItems.Add(new SouvenirBagItemData { SouvenirID = id, IsSpecial = false });
+                addedIds.Add(id);
             }
         }
 
@@ -191,9 +173,17 @@ namespace Souvenir
             var data = slot.CurrentData;
             if (data == null) return;
 
-            if (DetailNameText != null) DetailNameText.text = data.SouvenirName;
-            if (DetailDescriptionText != null) DetailDescriptionText.text = data.SouvenirDescription;
-            if (DetailFunctionText != null) DetailFunctionText.text = data.FunctionOrConditionDesc;
+            // 從 SouvenirManager 取得實例，透過 ISouvenirBagView 讀取顯示資訊
+            ISouvenirBagView bagView = data.IsSpecial
+                ? SouvenirManager.Instance.GetSpecialSouvenir(data.SouvenirID)
+                : SouvenirManager.Instance.GetAchievementSouvenir(data.SouvenirID);
+
+            if (bagView != null)
+            {
+                if (DetailNameText != null) DetailNameText.text = bagView.SouvenirName;
+                if (DetailDescriptionText != null) DetailDescriptionText.text = bagView.SouvenirDescription;
+                if (DetailFunctionText != null) DetailFunctionText.text = bagView.EffectName;
+            }
 
             if (DetailIcon != null)
             {
@@ -206,6 +196,40 @@ namespace Souvenir
                         SpriteLoader.AdjustImageScale(DetailIcon, TargetLongEdgeSize);
                     }
                 });
+            }
+
+            // 處理 ISouvenirInteractive 互動按鈕
+            if (InteractButton != null)
+            {
+                InteractButton.gameObject.SetActive(false); // 預設隱藏
+                InteractButton.onClick.RemoveAllListeners();
+
+                if (!ShowInteractionButton) return;
+
+                // 從 Manager 取得這項紀念品的實例來確認是否實作介面
+                ISouvenirInteractive interactiveSouvenir = null;
+                if (data.IsSpecial)
+                {
+                    interactiveSouvenir = SouvenirManager.Instance.GetSpecialSouvenir(data.SouvenirID) as ISouvenirInteractive;
+                }
+                else
+                {
+                    interactiveSouvenir = SouvenirManager.Instance.GetAchievementSouvenir(data.SouvenirID) as ISouvenirInteractive;
+                }
+
+                if (interactiveSouvenir != null && interactiveSouvenir.HasInteraction)
+                {
+                    InteractButton.gameObject.SetActive(true);
+                    if (InteractButtonText != null)
+                    {
+                        InteractButtonText.text = interactiveSouvenir.InteractionButtonText;
+                    }
+                    
+                    InteractButton.onClick.AddListener(() =>
+                    {
+                        interactiveSouvenir.OnInteraction();
+                    });
+                }
             }
         }
 

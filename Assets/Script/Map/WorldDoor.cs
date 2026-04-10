@@ -1,14 +1,9 @@
 using GameSystem;
 using Player;
 using UnityEngine;
-public class WorldDoor : MonoBehaviour, IInteractable, IMapGuideTarget
+public class WorldDoor : MonoBehaviour, IInteractable
 {
     [SerializeField] private GameObject interactPrompt;
-    public string ID => "WorldDoor";
-    public void SetMapGuide()
-    {
-        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
-    }
     public void Interact()
     {
         //傳送前往妖界

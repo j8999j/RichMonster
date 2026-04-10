@@ -283,6 +283,8 @@ public class GameSaveBook
     public List<string> UnLockAchievementSouvenirID;
     /// <summary> 永久解鎖的特殊紀念品 ID 列表 </summary>
     public List<string> UnLockSpecialSouvenirID;
+    /// <summary> 特殊紀念品的獨立進度追蹤資料 </summary>
+    public List<Souvenir.ISpecialSouvenirSave> SpecialSouvenirProgressData;
 }
 
 /// <summary>

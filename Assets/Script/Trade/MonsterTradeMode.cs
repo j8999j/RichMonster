@@ -268,13 +268,18 @@ public class MonsterTradeMode : MonoBehaviour
             tradeView.ClearBagImage();
 
             // 廣播給紀念品系統（例如：交易滿意時給額外獎勵）
+            string race = currentmonsterGuest?.monsterCustomer?.Race ?? string.Empty;
             Souvenir.SouvenirManager.Instance.NotifyMonsterTradeCompleted(satisfaction);
+            Souvenir.SouvenirManager.Instance.NotifyMonsterTradeCompletedWithRace(satisfaction, race);
 
             tradeView.FadeOutCustomerThenCallback(() => NextGuest());
         }
         else
         {
             Debug.Log($"交易失敗: {satisfaction}");
+            // 廣播交易失敗給紀念品系統（例如：累積失敗次數）
+            string failedRace = currentmonsterGuest?.monsterCustomer?.Race ?? string.Empty;
+            Souvenir.SouvenirManager.Instance.NotifyMonsterTradeFailed(failedRace);
             // 交易失敗
             GuestLeave();
         }

@@ -7,9 +7,6 @@ using Souvenir;
 public class SouvenirBagItemData
 {
     public string SouvenirID;
-    public string SouvenirName;
-    public string SouvenirDescription;
-    public string FunctionOrConditionDesc;
     public bool IsSpecial;
 }
 

@@ -17,12 +17,14 @@ namespace GameSystem
         private SaveFileData _lastLoaded;
         private GameSaveBook _cachedBookData;
         private Dictionary<string, IAchievementSave> _achievementDict = new Dictionary<string, IAchievementSave>();
+        private Dictionary<string, Souvenir.ISpecialSouvenirSave> _specialSouvenirDict = new Dictionary<string, Souvenir.ISpecialSouvenirSave>();
 
         protected override void Awake()
         {
             base.Awake();
             _cachedBookData = LoadBookData();
             _achievementDict = ListToDict(_cachedBookData.AchievementData);
+            _specialSouvenirDict = ListToSpecialSouvenirDict(_cachedBookData.SpecialSouvenirProgressData);
         }
 
         /// <summary>
@@ -282,6 +284,7 @@ namespace GameSystem
         {
             _cachedBookData = bookData;
             _achievementDict = ListToDict(bookData?.AchievementData);
+            _specialSouvenirDict = ListToSpecialSouvenirDict(bookData?.SpecialSouvenirProgressData);
         }
 
         /// <summary>
@@ -333,6 +336,46 @@ namespace GameSystem
         }
 
         /// <summary>
+        /// 取得特殊紀念品進度字典
+        /// </summary>
+        public Dictionary<string, Souvenir.ISpecialSouvenirSave> GetSpecialSouvenirDict()
+        {
+            return _specialSouvenirDict;
+        }
+
+        /// <summary>
+        /// 非同步儲存特殊紀念品進度資料
+        /// </summary>
+        public async Task SaveSpecialSouvenirDataAsync(Dictionary<string, Souvenir.ISpecialSouvenirSave> specialSouvenirDict)
+        {
+            if (_cachedBookData == null)
+            {
+                Debug.LogWarning("[SaveManager] 圖鑑快取為空，無法儲存特殊紀念品資料");
+                return;
+            }
+
+            _specialSouvenirDict = specialSouvenirDict;
+            _cachedBookData.SpecialSouvenirProgressData = DictToListSpecialSouvenir(specialSouvenirDict);
+            await SaveBookDataAsync(_cachedBookData);
+        }
+
+        /// <summary>
+        /// 同步儲存特殊紀念品進度資料
+        /// </summary>
+        public void SaveSpecialSouvenirData(Dictionary<string, Souvenir.ISpecialSouvenirSave> specialSouvenirDict)
+        {
+            if (_cachedBookData == null)
+            {
+                Debug.LogWarning("[SaveManager] 圖鑑快取為空，無法儲存特殊紀念品資料");
+                return;
+            }
+
+            _specialSouvenirDict = specialSouvenirDict;
+            _cachedBookData.SpecialSouvenirProgressData = DictToListSpecialSouvenir(specialSouvenirDict);
+            SaveBookData(_cachedBookData);
+        }
+
+        /// <summary>
         /// 從檔案讀取圖鑑資料，若不存在則建立預設空資料
         /// </summary>
         private GameSaveBook LoadBookData()
@@ -361,6 +404,7 @@ namespace GameSystem
                 data.MonsterBookData.NewMonsterInformationID ??= new List<string>();
                 data.MonsterBookData.NewMonsterStoryID ??= new List<string>();
                 data.AchievementData ??= new List<IAchievementSave>();
+                data.SpecialSouvenirProgressData ??= new List<Souvenir.ISpecialSouvenirSave>();
                 Debug.Log($"[SaveManager] 圖鑑讀檔成功: {filePath}");
                 return data;
             }
@@ -371,7 +415,8 @@ namespace GameSystem
                 {
                     ItemBookData = new ItemBookData { ItemBooks = new List<ItemBookDatabase>() },
                     MonsterBookData = new MonsterBookData { UnlockMonsterInformationID = new List<string>(), NewMonsterInformationID = new List<string>(), NewMonsterStoryID = new List<string>() },
-                    AchievementData = new List<IAchievementSave>()
+                    AchievementData = new List<IAchievementSave>(),
+                    SpecialSouvenirProgressData = new List<Souvenir.ISpecialSouvenirSave>()
                 };
             }
         }
@@ -398,6 +443,20 @@ namespace GameSystem
         private static List<IAchievementSave> DictToList(Dictionary<string, IAchievementSave> dict)
         {
             if (dict == null) return new List<IAchievementSave>();
+            return dict.Values.ToList();
+        }
+
+        private static Dictionary<string, Souvenir.ISpecialSouvenirSave> ListToSpecialSouvenirDict(List<Souvenir.ISpecialSouvenirSave> list)
+        {
+            if (list == null) return new Dictionary<string, Souvenir.ISpecialSouvenirSave>();
+            return list
+                .Where(x => x != null && !string.IsNullOrEmpty(x.SouvenirID))
+                .ToDictionary(x => x.SouvenirID, x => x);
+        }
+
+        private static List<Souvenir.ISpecialSouvenirSave> DictToListSpecialSouvenir(Dictionary<string, Souvenir.ISpecialSouvenirSave> dict)
+        {
+            if (dict == null) return new List<Souvenir.ISpecialSouvenirSave>();
             return dict.Values.ToList();
         }
         #endregion

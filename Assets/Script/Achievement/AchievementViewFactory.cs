@@ -19,17 +19,21 @@ public class AchievementViewFactory : MonoBehaviour
 {
     [Header("Prefabs")]
     [SerializeField] private AchievementDefaultItemView defaultPrefab;
-    [SerializeField] private AchievementProgressItemView  progressPrefab;
+    [SerializeField] private AchievementProgressItemView progressPrefab;
 
     [Header("Scroll View")]
     [SerializeField] private Transform container;
     [SerializeField] private ScrollRect scrollRect;
 
-    [Header("Category Buttons (依序: Item, Transaction, Record, Others)")]
+    [Header("Dependencies")]
+    [SerializeField] private Souvenir.SouvenirManager _souvenirProvider;
+
+    [Header("Category Buttons (依序: Item, Transaction, Record, Others, SpecialSouvenir)")]
     [SerializeField] private Button btnItem;
     [SerializeField] private Button btnTransaction;
     [SerializeField] private Button btnRecord;
     [SerializeField] private Button btnOthers;
+    [SerializeField] private Button btnSpecialSouvenir;
 
     // Binder 清單：順序即優先權，DefaultBinder 永遠放最後
     private static readonly List<IAchievementViewBinder> Binders = new()
@@ -40,7 +44,7 @@ public class AchievementViewFactory : MonoBehaviour
     };
 
     // 紀錄所有生成的 View 與對應 Binder，供 Manager 統一 Refresh 使用
-    private readonly List<(AchievementBase achievement, IAchievementDisplayView view, IAchievementViewBinder binder)> _entries = new();
+    private readonly List<(IAchievementDisplayData data, IAchievementDisplayView view, IAchievementViewBinder binder)> _entries = new();
 
     // 目前選取的分類
     private AchievementCategory _currentCategory = AchievementCategory.Item;
@@ -52,6 +56,8 @@ public class AchievementViewFactory : MonoBehaviour
         btnTransaction?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Transaction));
         btnRecord?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Record));
         btnOthers?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Others));
+        btnSpecialSouvenir?.onClick.AddListener(() => SwitchCategory(AchievementCategory.SpecialSouvenir));
+        _souvenirProvider = Souvenir.SouvenirManager.Instance;
     }
 
     private void OnEnable()
@@ -67,8 +73,24 @@ public class AchievementViewFactory : MonoBehaviour
 
         UpdateButtonVisuals();
 
-        var achievements = AchievementManager.Instance.GetAchievementsByCategory(category);
-        BuildAll(achievements);
+        if (category == AchievementCategory.SpecialSouvenir)
+        {
+            ISpecialSouvenirProvider provider = _souvenirProvider;
+            var displayDataList = provider.GetAllSpecialSouvenirSaves()
+                .Cast<IAchievementDisplayData>()
+                .ToList();
+            BuildAll(displayDataList);
+        }
+        else
+        {
+            var achievements = AchievementManager.Instance.GetAchievementsByCategory(category);
+            var displayDataList = new List<IAchievementDisplayData>();
+            foreach (var achievement in achievements)
+            {
+                displayDataList.Add(achievement);
+            }
+            BuildAll(displayDataList);
+        }
 
         // 切換分類後將捲動位置重置到最上方
         if (scrollRect != null)
@@ -83,6 +105,7 @@ public class AchievementViewFactory : MonoBehaviour
         SetButtonActive(btnTransaction, _currentCategory == AchievementCategory.Transaction);
         SetButtonActive(btnRecord, _currentCategory == AchievementCategory.Record);
         SetButtonActive(btnOthers, _currentCategory == AchievementCategory.Others);
+        SetButtonActive(btnSpecialSouvenir, _currentCategory == AchievementCategory.SpecialSouvenir);
     }
 
     private void SetButtonActive(Button btn, bool isActive)
@@ -94,44 +117,44 @@ public class AchievementViewFactory : MonoBehaviour
     }
 
     /// <summary>一次生成所有成就 View（初始化時呼叫）</summary>
-    public void BuildAll(List<AchievementBase> achievements)
+    public void BuildAll(List<IAchievementDisplayData> dataList)
     {
         ClearAll();
-        foreach (var achievement in achievements)
-            CreateOne(achievement);
+        foreach (var data in dataList)
+            CreateOne(data);
     }
 
     /// <summary>生成單一成就 View</summary>
-    public IAchievementDisplayView CreateOne(AchievementBase achievement)
+    public IAchievementDisplayView CreateOne(IAchievementDisplayData data)
     {
-        var view     = InstantiateView(achievement);
-        var binder   = Binders.First(b => b.CanBind(achievement));
+        var view = InstantiateView(data);
+        var binder = Binders.First(b => b.CanBind(data));
 
         // 初次顯示
-        binder.Refresh(achievement, view);
+        binder.Refresh(data, view);
         view.Refresh();
 
-        _entries.Add((achievement, view, binder));
+        _entries.Add((data, view, binder));
         return view;
     }
 
     /// <summary>Manager 呼叫：刷新所有 View（例如開啟成就面板時）</summary>
     public void RefreshAll()
     {
-        foreach (var (achievement, view, binder) in _entries)
+        foreach (var (data, view, binder) in _entries)
         {
-            binder.Refresh(achievement, view);
+            binder.Refresh(data, view);
             view.Refresh();
         }
     }
 
     /// <summary>Manager 呼叫：刷新特定成就 View（例如某成就剛解鎖時）</summary>
-    public void RefreshOne(AchievementBase achievement)
+    public void RefreshOne(IAchievementDisplayData data)
     {
-        var entry = _entries.FirstOrDefault(e => e.achievement == achievement);
+        var entry = _entries.FirstOrDefault(e => e.data == data);
         if (entry == default) return;
 
-        entry.binder.Refresh(entry.achievement, entry.view);
+        entry.binder.Refresh(entry.data, entry.view);
         entry.view.Refresh();
     }
 
@@ -151,23 +174,23 @@ public class AchievementViewFactory : MonoBehaviour
 
     // --- 私有輔助 ---
 
-    /// <summary>根據成就類型選擇對應 Prefab 並實例化</summary>
-    private IAchievementDisplayView InstantiateView(AchievementBase achievement)
+    /// <summary>根據顯示資料類型選擇對應 Prefab 並實例化</summary>
+    private IAchievementDisplayView InstantiateView(IAchievementDisplayData data)
     {
-        switch (achievement)
+        switch (data)
         {
             case IAchievementWithProgress:
                 var progressView = Instantiate(progressPrefab, container);
-                progressView.Bind(achievement);
+                progressView.Bind(data);
                 return progressView;
             case IAchievementHiddenCondition:
                 var hiddenView = Instantiate(defaultPrefab, container);
-                hiddenView.Bind(achievement);
+                hiddenView.Bind(data);
                 return hiddenView;
 
             default:
                 var defaultView = Instantiate(defaultPrefab, container);
-                defaultView.Bind(achievement);
+                defaultView.Bind(data);
                 return defaultView;
         }
     }
@@ -178,5 +201,6 @@ public class AchievementViewFactory : MonoBehaviour
         btnTransaction?.onClick.RemoveAllListeners();
         btnRecord?.onClick.RemoveAllListeners();
         btnOthers?.onClick.RemoveAllListeners();
+        btnSpecialSouvenir?.onClick.RemoveAllListeners();
     }
 }

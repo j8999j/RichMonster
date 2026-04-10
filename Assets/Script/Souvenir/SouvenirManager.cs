@@ -9,7 +9,7 @@ namespace Souvenir
     /// <summary>
     /// 紀念品管理器 - 負責載入並初始化對應的紀念品腳本 (參考 AchievementManager)
     /// </summary>
-    public class SouvenirManager : Singleton<SouvenirManager>
+    public class SouvenirManager : Singleton<SouvenirManager>, ISpecialSouvenirProvider
     {
         // 存放所有成就紀念品實例
         private Dictionary<string, AchievementSouvenirBase> _achievementSouvenirs
@@ -51,6 +51,15 @@ namespace Souvenir
                         {
                             Debug.LogWarning($"[SouvenirManager] 重複的 SouvenirID '{instance.SouvenirID}'，類別: {type.Name}，將覆蓋先前的類別");
                         }
+                        // 從 DataManager 填充 ISouvenirBagView 顯示欄位
+                        if (DataManager.Instance.AchievementSouvenirDict != null
+                            && DataManager.Instance.AchievementSouvenirDict.TryGetValue(instance.SouvenirID, out var achData))
+                        {
+                            instance.SouvenirName = achData.SouvenirName;
+                            instance.SouvenirDescription = achData.SouvenirDescription;
+                            instance.EffectName = achData.SouvenirFunctionDescription;
+                        }
+
                         _achievementSouvenirs[instance.SouvenirID] = instance;
                         Debug.Log($"[SouvenirManager] 載入成就紀念品: {instance.SouvenirID}");
                     }
@@ -77,6 +86,14 @@ namespace Souvenir
                         {
                             Debug.LogWarning($"[SouvenirManager] 重複的 SouvenirID '{instance.SouvenirID}'，類別: {type.Name}，將覆蓋先前的類別");
                         }
+                        // 從 DataManager 填充 ISouvenirBagView 顯示欄位
+                        if (DataManager.Instance.SpecialSouvenirDict != null
+                            && DataManager.Instance.SpecialSouvenirDict.TryGetValue(instance.SouvenirID, out var splData))
+                        {
+                            instance.SouvenirName = splData.SouvenirName;
+                            instance.SouvenirDescription = splData.SouvenirDescription;
+                        }
+
                         _specialSouvenirs[instance.SouvenirID] = instance;
                         Debug.Log($"[SouvenirManager] 載入特殊紀念品: {instance.SouvenirID}");
                     }
@@ -129,6 +146,11 @@ namespace Souvenir
         public List<AchievementSouvenirBase> GetAllAchievementSouvenirs()
         {
             return _achievementSouvenirs.Values.ToList();
+        }
+
+        public IReadOnlyList<ISpecialSouvenirSave> GetAllSpecialSouvenirSaves()
+        {
+            return _specialSouvenirs.Values.OfType<ISpecialSouvenirSave>().ToList();
         }
 
         /// <summary>
@@ -195,7 +217,22 @@ namespace Souvenir
                     {
                         bookData.UnLockSpecialSouvenirID.Insert(0, "Sou_key");
                         DataManager.Instance.SetBookDataChanged(true);
-                        _ = DataManager.Instance.SaveBookAsync();
+                    }
+                }
+
+                // 自動加入所有預設持有的紀念品
+                foreach (var kvp in _specialSouvenirs)
+                {
+                    if (kvp.Value is DefaultOwnedSouvenirBase && !_ownedSouvenirIds.Contains(kvp.Key))
+                    {
+                        _ownedSouvenirIds.Add(kvp.Key);
+                        if (bookData.UnLockSpecialSouvenirID == null)
+                            bookData.UnLockSpecialSouvenirID = new List<string>();
+                        if (!bookData.UnLockSpecialSouvenirID.Contains(kvp.Key))
+                        {
+                            bookData.UnLockSpecialSouvenirID.Add(kvp.Key);
+                            DataManager.Instance.SetBookDataChanged(true);
+                        }
                     }
                 }
             }
@@ -217,20 +254,54 @@ namespace Souvenir
             }
         }
 
+        /// <summary>
+        /// 對所有特殊紀念品（無論是否持有）執行指定動作。
+        /// 用於進度計數廣播，讓未收集的紀念品也能累積條件進度。
+        /// </summary>
+        private void ForEachAllSpecialSouvenirs<T>(Action<T> action) where T : class
+        {
+            foreach (var souvenir in _specialSouvenirs.Values)
+            {
+                if (souvenir is T target)
+                {
+                    action(target);
+                }
+            }
+        }
+
         #endregion
 
         #region 商店後端 API (Shop Backend API)
 
         /// <summary>
-        /// 獲得的總成就點數 (以完成成就數量計算，每個完成的成就 1 點)
+        /// 獲得的總成就點數 (以完成成就的等級計算)
         /// </summary>
         public int GetTotalAchievementPoints()
         {
             if (AchievementManager.Instance != null && AchievementManager.Instance.IsInitialized)
             {
-                return AchievementManager.Instance.GetCompletedAchievements().Count;
+                int totalPoints = 0;
+                foreach (var ach in AchievementManager.Instance.GetCompletedAchievements())
+                {
+                    totalPoints += GetPointsForLevel(ach.Level);
+                }
+                return totalPoints;
             }
             return 0;
+        }
+
+        /// <summary>
+        /// 依據成就等級獲取對應的成就點數
+        /// </summary>
+        private int GetPointsForLevel(AchievementLevel level)
+        {
+            switch (level)
+            {
+                case AchievementLevel.Bronze: return 100;
+                case AchievementLevel.Silver: return 200; // 暫定
+                case AchievementLevel.Gold: return 300;   // 暫定
+                default: return 100;
+            }
         }
 
         /// <summary>
@@ -319,13 +390,24 @@ namespace Souvenir
         #region 觸發與廣播機制
 
         /// <summary>
-        /// 註冊所有紀念品事件 (通常在每局遊戲開始時呼叫)
-        /// 這邊可以依照持有狀態，僅註冊已持有的紀念品
+        /// 註冊所有紀念品事件 (通常在每局遊戲開始時呼叫)。
+        /// 已持有的紀念品呼叫 Register() 以套用功能效果；
+        /// 尚未收集但需要跨局追蹤進度的特殊紀念品也會呼叫 Register() 以恢復計數。
         /// </summary>
         public void RegisterAll()
         {
+            // 1. 已持有的特殊紀念品：觸發效果型事件訂閱
             ForEachOwnedSouvenir<SpecialSouvenirBase>(souvenir => souvenir.Register());
-            Debug.Log("[SouvenirManager] 已註冊所持有的紀念品事件");
+
+            // 2. 尚未收集的特殊紀念品：呼叫 Register() 以從存檔恢復進度計數
+            foreach (var souvenir in _specialSouvenirs.Values)
+            {
+                if (!_ownedSouvenirIds.Contains(souvenir.SouvenirID))
+                {
+                    souvenir.Register();
+                }
+            }
+            Debug.Log("[SouvenirManager] 已註冊所持有的紀念品事件，並初始化未收集紀念品的進度追蹤");
         }
 
         /// <summary>
@@ -397,6 +479,24 @@ namespace Souvenir
         }
 
         /// <summary>
+        /// 廣播妖怪交易完成事件（含種族資訊）。
+        /// 使用 ForEachAllSpecialSouvenirs 以便尚未解鎖的進度型紀念品也能累積計數。
+        /// </summary>
+        public void NotifyMonsterTradeCompletedWithRace(TradeSatisfaction satisfaction, string race)
+        {
+            ForEachAllSpecialSouvenirs<IMonsterTradeWithRaceListener>(listener => listener.OnTradeCompletedWithRace(satisfaction, race));
+        }
+
+        /// <summary>
+        /// 廣播妖怪交易失敗事件。
+        /// 使用 ForEachAllSpecialSouvenirs 以便尚未解鎖的進度型紀念品也能累積計數。
+        /// </summary>
+        public void NotifyMonsterTradeFailed(string race)
+        {
+            ForEachAllSpecialSouvenirs<IMonsterTradeFailedListener>(listener => listener.OnTradeFailed(race));
+        }
+
+        /// <summary>
         /// 廣播每日效果，讓實作 IDailyEffect 的紀念品在換日時執行
         /// </summary>
         public void ApplyAllDailyEffects()
@@ -420,6 +520,19 @@ namespace Souvenir
                 }
             });
             return isFree;
+        }
+
+        /// <summary>
+        /// 查詢玩家目前擁有的紀念品提供的額外背包總容量
+        /// </summary>
+        public int GetExtraBagCapacity()
+        {
+            int extraCapacity = 0;
+            ForEachOwnedSouvenir<IBagCapacityProvider>(provider => 
+            {
+                extraCapacity += provider.GetExtraCapacity();
+            });
+            return extraCapacity;
         }
 
         #endregion

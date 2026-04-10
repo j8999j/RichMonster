@@ -7,7 +7,7 @@ namespace Souvenir
     /// </summary>
     public class SatisfiedTradeRewardSouvenir : AchievementSouvenirBase, IMonsterTradeListener
     {
-        public override string SouvenirID => "SouAch_SatisfiedTradeReward";
+        public override string SouvenirID => "SouAch_ExquisitePaper";
 
         /// <summary> 滿意時的額外獎勵金幣 </summary>
         private const int SatisfiedBonus = 50;

@@ -9,7 +9,7 @@ namespace Souvenir
     /// </summary>
     public class GroceryDiscountSouvenir : AchievementSouvenirBase, IShopDiscountProvider, IShopVisualModifier
     {
-        public override string SouvenirID => "SouAch_GroceryDiscount";
+        public override string SouvenirID => "SouAch_GroceryCoupon";
 
         // ── 邏輯層：修改售價 ──────────────────────────────────────
         public void ApplyShopDiscount(string shopId, List<ShelfSlot> items)

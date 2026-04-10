@@ -250,7 +250,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 381}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 800, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7676823831222822651
@@ -346,8 +346,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -64.99997, y: -24.200012}
-  m_SizeDelta: {x: 410.4542, y: 50}
+  m_AnchoredPosition: {x: -123.79, y: -24.200012}
+  m_SizeDelta: {x: 292.87, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8134185771624284969
 CanvasRenderer:
@@ -440,7 +440,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 119.213196, w: -9.631714}
+  m_margin: {x: 0, y: 0, z: 0.31677246, w: 1.3487549}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -480,8 +480,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 227.87292, y: 29}
-  m_SizeDelta: {x: 410.4542, y: 50}
+  m_AnchoredPosition: {x: 204.63306, y: 2.4}
+  m_SizeDelta: {x: 363.9761, y: 103.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3339712273865796486
 CanvasRenderer:
@@ -574,7 +574,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 10.177856, y: 0, z: 36.768066, w: -55.126526}
+  m_margin: {x: 0.6696167, y: 0, z: -0.28918457, w: -1.1600952}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -690,7 +690,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 326, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2618403759983264103
 CanvasRenderer:

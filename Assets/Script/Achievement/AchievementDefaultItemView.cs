@@ -29,9 +29,9 @@ public class AchievementDefaultItemView : MonoBehaviour, IAchievementDisplayView
     [SerializeField] private Image LevelImage;
     [SerializeField] private List<Sprite> LevelImageList;
 
-    private AchievementBase _achievement;
+    private IAchievementDisplayData _achievement;
 
-    public void Bind(AchievementBase achievement)
+    public void Bind(IAchievementDisplayData achievement)
     {
         _achievement = achievement;
     }
@@ -41,7 +41,23 @@ public class AchievementDefaultItemView : MonoBehaviour, IAchievementDisplayView
     {
         if (_achievement == null) return;
         completedMark.SetActive(_achievement.IsCompleted);
-        LevelImage.sprite = LevelImageList[(int)_achievement.Level];
+
+        var iconId = _achievement.IconId;
+        if (!string.IsNullOrEmpty(iconId))
+        {
+            bool grayscale = _achievement.IsIconGrayscale;
+            SpriteLoader.LoadSpriteAsync(iconId, sprite =>
+            {
+                if (LevelImage == null) return;
+                LevelImage.sprite = sprite;
+                LevelImage.color = grayscale ? Color.black : Color.white;
+            });
+        }
+        else
+        {
+            LevelImage.sprite = LevelImageList[(int)_achievement.Level];
+            LevelImage.color = Color.white;
+        }
     }
 
     public void Unbind() => _achievement = null;

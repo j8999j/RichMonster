@@ -40,6 +40,7 @@ public class DataManager : Singleton<DataManager>
     private PlayerData _currentPlayerData;
     private GameSaveBook _bookData;
     private Dictionary<string, IAchievementSave> _achievementSaveDict = new Dictionary<string, IAchievementSave>();
+    private Dictionary<string, ISpecialSouvenirSave> _specialSouvenirSaveDict = new Dictionary<string, ISpecialSouvenirSave>();
     #endregion
 
     #region State Flags (狀態旗標)
@@ -125,6 +126,7 @@ public class DataManager : Singleton<DataManager>
 
         // 將成就存檔 List 轉為 Dictionary 使用
         _achievementSaveDict = SaveManager.Instance.GetAchievementDict();
+        _specialSouvenirSaveDict = SaveManager.Instance.GetSpecialSouvenirDict();
 
         // 初始化成就系統
         AchievementManager.Instance.Initialize(_achievementDict);
@@ -622,6 +624,27 @@ public class DataManager : Singleton<DataManager>
     {
         await SaveManager.Instance.SaveAchievementDataAsync(_achievementSaveDict);
         OnBookDataChanged = false;
+    }
+
+    /// <summary>
+    /// 取得特殊紀念品進度存檔資料 (從字典中查詢)
+    /// </summary>
+    public ISpecialSouvenirSave GetSpecialSouvenirSaveData(string souvenirId)
+    {
+        _specialSouvenirSaveDict.TryGetValue(souvenirId, out var save);
+        return save;
+    }
+
+    /// <summary>
+    /// 更新單筆特殊紀念品進度存檔資料 (新增或覆蓋)
+    /// </summary>
+    public void UpdateSpecialSouvenirSaveData(ISpecialSouvenirSave saveData)
+    {
+        if (saveData == null || string.IsNullOrEmpty(saveData.SouvenirID)) return;
+
+        _specialSouvenirSaveDict[saveData.SouvenirID] = saveData;
+        OnBookDataChanged = true;
+        SaveManager.Instance.SaveSpecialSouvenirData(_specialSouvenirSaveDict);
     }
     #endregion
 
