@@ -14,7 +14,7 @@ namespace Souvenir
     /// <summary>
     /// 雜貨店每購買 10 項商品隨機獲得一項贈品
     /// </summary>
-    public class GroceryBuyTenGetOneSouvenir : AchievementSouvenirBase, IShopPurchaseListener, ISouvenirInteractive
+    public class GroceryBuyTenGetOneSouvenir : AchievementSouvenir, IShopPurchaseListener, ISouvenirInteractive
     {
         public override string SouvenirID => "SouAch_GroceryCards";
 
@@ -76,6 +76,8 @@ namespace Souvenir
             Debug.Log($"[Souvenir] 雜貨店贈品進度：目前已累積 {currentPoints} / 10 次購買");
             // TODO: 若未來有統一的系統提示 UI，可以在此呼叫通知玩家的 API
         }
+
+        public bool CanShowInteractionButton() => true;
 
         #endregion
     }

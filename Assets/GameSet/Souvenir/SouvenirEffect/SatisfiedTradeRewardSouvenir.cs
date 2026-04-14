@@ -5,7 +5,7 @@ namespace Souvenir
     /// <summary>
     /// 與妖怪交易達到「滿意」或「非常滿意」時，額外獲得一筆妖怪金幣獎勵
     /// </summary>
-    public class SatisfiedTradeRewardSouvenir : AchievementSouvenirBase, IMonsterTradeListener
+    public class SatisfiedTradeRewardSouvenir : AchievementSouvenir, IMonsterTradeListener
     {
         public override string SouvenirID => "SouAch_ExquisitePaper";
 

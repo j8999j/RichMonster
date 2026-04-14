@@ -11,7 +11,8 @@ using GameSystem;
 [RequireComponent(typeof(HumanOrderView))]
 public class HumanOrderMode : MonoBehaviour
 {
-    // 大型訂單數量範圍
+    // 訂單數量設定
+    private const int MaxTotalOrderCount = 11; // 每日訂單總數上限（大+小）
     private const int MinLargeOrderCount = 1;
     private const int MaxLargeOrderCount = 2;
 
@@ -125,6 +126,15 @@ public class HumanOrderMode : MonoBehaviour
 
         // 3. 抽取小型訂單
         _todaySmallOrders = _smallOrderGenerator.GenerateOrdersForDay(dayNumber);
+
+        // 4. 限制總訂單數量，移除多餘的小訂單
+        int totalCount = _todayLargeOrders.Count + _todaySmallOrders.Count;
+        if (totalCount > MaxTotalOrderCount)
+        {
+            int allowedSmallCount = MaxTotalOrderCount - _todayLargeOrders.Count;
+            if (allowedSmallCount < 0) allowedSmallCount = 0;
+            _todaySmallOrders = _todaySmallOrders.Take(allowedSmallCount).ToList();
+        }
 
         Debug.Log($"[HumanOrderMode] Day {dayNumber} 生成完成: " +
                   $"事件={_todayEvents.Count}, 大型訂單={_todayLargeOrders.Count}, 小型訂單={_todaySmallOrders.Count}");

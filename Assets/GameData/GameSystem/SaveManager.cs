@@ -80,7 +80,7 @@ namespace GameSystem
                 IsSaving = false;
             }
         }
-        
+
 
         public SaveFileData Load(int slot = 0)
         {
@@ -458,6 +458,172 @@ namespace GameSystem
         {
             if (dict == null) return new List<Souvenir.ISpecialSouvenirSave>();
             return dict.Values.ToList();
+        }
+        #endregion
+
+        #region 存檔管理 API (清除/刪除/開啟)
+        /// <summary>
+        /// 清空圖鑑存檔資料 (重置為預設空資料並寫入檔案)
+        /// </summary>
+        /// <param name="reloadMainMenu">是否在清空後重新加載 MainMenu 場景</param>
+        public void ClearBookData(bool reloadMainMenu = true)
+        {
+            string filePath = GetBookFilePath();
+            try
+            {
+                var emptyBook = new GameSaveBook
+                {
+                    ItemBookData = new ItemBookData { ItemBooks = new List<ItemBookDatabase>() },
+                    MonsterBookData = new MonsterBookData
+                    {
+                        UnlockMonsterInformationID = new List<string>(),
+                        NewMonsterInformationID = new List<string>(),
+                        NewMonsterStoryID = new List<string>()
+                    },
+                    AchievementData = new List<IAchievementSave>(),
+                    SpecialSouvenirProgressData = new List<Souvenir.ISpecialSouvenirSave>(),
+                    UnLockSpecialSouvenirID = new List<string> { "Sou_key" }
+                };
+
+                _cachedBookData = emptyBook;
+                _achievementDict = new Dictionary<string, IAchievementSave>();
+                _specialSouvenirDict = new Dictionary<string, Souvenir.ISpecialSouvenirSave>();
+
+                // 將含有 Sou_key 的空圖鑑寫入檔案，確保重新載入後 Sou_key 不遺失
+                SaveBookData(emptyBook);
+                Debug.Log($"[SaveManager] 圖鑑存檔已重置: {filePath}");
+
+                // 同步清除 DataManager 中的圖鑑快取，並立刻重建相關管理器
+                if (DataManager.Instance != null)
+                {
+                    DataManager.Instance.ClearBookDataCache();
+                    DataManager.Instance.InitializeProgressManagers();
+                }
+                else
+                {
+                    if (AchievementManager.Instance != null)
+                    {
+                        AchievementManager.Instance.Reset();
+                    }
+
+                    if (Souvenir.SouvenirManager.Instance != null)
+                    {
+                        Souvenir.SouvenirManager.Instance.Reset();
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[SaveManager] 清空圖鑑存檔失敗: {ex.Message}");
+                return;
+            }
+
+            // 重新加載 MainMenu 場景，確保所有運行中系統使用空資料重新初始化
+            if (reloadMainMenu && SceneTransitionManager.Instance != null)
+            {
+                SceneTransitionManager.Instance.GoToMainMenu();
+            }
+        }
+
+        /// <summary>
+        /// 刪除指定位置的存檔
+        /// </summary>
+        /// <param name="slot">存檔位置</param>
+        /// <returns>是否刪除成功</returns>
+        public bool DeleteSaveSlot(int slot)
+        {
+            string filePath = GetFilePath(slot);
+
+            if (!File.Exists(filePath))
+            {
+                Debug.LogWarning($"[SaveManager] 指定的存檔不存在: {filePath}");
+                return false;
+            }
+
+            try
+            {
+                File.Delete(filePath);
+                Debug.Log($"[SaveManager] 已刪除存檔: {filePath}");
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[SaveManager] 刪除存檔失敗 (slot={slot}): {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 清空所有存檔 (包含所有 slot 與圖鑑)
+        /// </summary>
+        public void ClearAllSaves()
+        {
+            string directory = Application.persistentDataPath;
+            int deletedCount = 0;
+
+            try
+            {
+                if (Directory.Exists(directory))
+                {
+                    // 刪除所有 slot 存檔 (符合 save_slot_*.json 命名)
+                    string slotSearchPattern = string.Format(SaveFilePattern, "*");
+                    foreach (var file in Directory.GetFiles(directory, slotSearchPattern))
+                    {
+                        try
+                        {
+                            File.Delete(file);
+                            deletedCount++;
+                        }
+                        catch (System.Exception ex)
+                        {
+                            Debug.LogError($"[SaveManager] 刪除 {file} 失敗: {ex.Message}");
+                        }
+                    }
+                }
+
+                // 清空圖鑑存檔
+                ClearBookData();
+
+                // 清除最後讀取的快取
+                _lastLoaded = null;
+
+                Debug.Log($"[SaveManager] 已清空所有存檔，共刪除 {deletedCount} 個 slot 檔案");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[SaveManager] 清空所有存檔失敗: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 開啟存檔位置 (在系統檔案總管中開啟存檔資料夾)
+        /// </summary>
+        public void OpenSaveFolder()
+        {
+            string directory = Application.persistentDataPath;
+
+            try
+            {
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+                // Windows 使用 explorer 並轉換為反斜線
+                string winPath = directory.Replace('/', '\\');
+                System.Diagnostics.Process.Start("explorer.exe", winPath);
+#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+                System.Diagnostics.Process.Start("open", directory);
+#else
+                Application.OpenURL("file://" + directory);
+#endif
+                Debug.Log($"[SaveManager] 開啟存檔資料夾: {directory}");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[SaveManager] 開啟存檔資料夾失敗: {ex.Message}");
+            }
         }
         #endregion
     }

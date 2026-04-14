@@ -9,46 +9,63 @@ using TMPro;
 
 public class HumanOrderView : MonoBehaviour, IGuideInteractable
 {
+    [Header("面板")]
     public GameObject Panel;
     public GameObject Prompt;
     public GameObject CheckSwitchToAfterNoonPanel;
     public string ID => GuideIDs.Interactable.GuideOrderShop;
-    //可提交背包
+
+    [Header("背包UI")]
     public OrderBagSlot BagSlotPrefab;//背包欄位預製物件
-    public OrderSlot OrderSlotPrefab;//訂單選擇預製物件
-    public OrderSelectSlot OrderSelectSlotPrefab;//訂單提交物件預製物件
-    public Transform OrderSlotContainer;//訂單選擇容器
-    public Transform BagSlotContainer; // 生成 Slot 的父物件
+    public Transform BagSlotContainer;//生成 Slot 的父物件
     public Transform TagSlotContainer;//標籤容器
+    public Transform OrderObjContainer;//訂單物件容器
+
+    [Header("背包物品詳情")]
     public Image DetailIcon;//背包物品圖片
     public Image WorldIcon;
     public Image TypeIcon;
+    public TextMeshProUGUI DetailNameText;//背包物品名稱
+    public TextMeshProUGUI DetailDescText;//背包物品描述
+    public TextMeshProUGUI DetailPriceText;//背包物品購買成本
+
+    [Header("訂單選擇")]
+    public OrderSlot OrderSlotPrefab;//訂單選擇預製物件
+    public OrderSelectSlot OrderSelectSlotPrefab;//訂單提交物件預製物件
+    public Transform OrderSlotContainer;//訂單選擇容器
+    public TextMeshProUGUI OrderSelectCountText;//目前選擇數量
+
+    [Header("訂單詳情")]
+    public GameObject OrderFinishImage;
+    public Transform OrderTagContainer;//訂單標籤容器
+    public GameObject TagsPrefab;//標籤預製物件
+    public Image OrderImage;//訂單圖片
+    public Image OrderTypeIcon;//訂單需求類型圖示
+    public TextMeshProUGUI OrderNameText;//訂單名稱
+    public TextMeshProUGUI OrderDescText;//訂單描述
+    public TextMeshProUGUI OrderRewardText;//訂單獎勵
+
+    [Header("共用圖片資源")]
     public Sprite PropSprite;//道具
     public Sprite FoodSprite;//食物
     public Sprite EquipmentSprite;//裝備
     public Sprite MonsterTagSprite;//妖界
     public Sprite emptySprite;
-    public TextMeshProUGUI DetailNameText;//背包物品名稱
-    public TextMeshProUGUI DetailDescText;//背包物品描述
-    public TextMeshProUGUI DetailPriceText;//背包物品購買成本
-    public TextMeshProUGUI OrderSelectCountText;//目前選擇數量
-    private List<BagSlot> _activeSlots = new List<BagSlot>();//背包列表
-    private List<OrderSlot> _orderSlots = new List<OrderSlot>();//訂單選擇列表
-    //交易組件
-    public GameObject OrderFinishImage;
-    public Transform OrderTagContainer;//訂單標籤容器
-    public TextMeshProUGUI OrderNameText;//訂單名稱
-    public TextMeshProUGUI OrderDescText;//訂單描述
-    public TextMeshProUGUI OrderRewardText;//訂單獎勵
+
+    [Header("按鈕")]
     public Button ExitButton;
     public Button Confirmbutton;
     public Button OpenAfterNoonPanelButton;
     public Button ConfirmAfterNoonButton;
-    //不符合類型物品
-    public Transform OrderObjContainer;//訂單物件容器
-    [SerializeField]private Transform GuideTransform;
+
+    [Header("其他")]
+    [SerializeField] private Transform GuideTransform;
+    [SerializeField] private GridLayoutGroup gridLayoutGroup;
+
+    private List<BagSlot> _activeSlots = new List<BagSlot>();//背包列表
+    private List<OrderSlot> _orderSlots = new List<OrderSlot>();//訂單選擇列表
     private List<BagSlot> _unmatchedSlots = new List<BagSlot>();//不符合類型物品列表
-    //當前選擇訂單
+
     public event Action<OrderBagSlot> AddItemToOrder;
     public event Action<OrderBagSlot> OnOrderCancelSelected;
     public event Action<HumanLargeOrder> OnSelectedLargeOrder;
@@ -59,7 +76,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     public event Action<string> OnInteracted;
     public void SetMapGuide()
     {
-        NoticeGetItemEvents.InvokeSetMapGuide(ID,GuideTransform);
+        NoticeGetItemEvents.InvokeSetMapGuide(ID, GuideTransform);
     }
     public void OnEnable()
     {
@@ -92,7 +109,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     {
         OnInteracted?.Invoke(ID);
         Panel.SetActive(!Panel.activeSelf);
-        if(Panel.activeSelf)
+        if (Panel.activeSelf)
         {
             ClearBagDetail();
             ClearOrderView();
@@ -107,7 +124,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         {
             slot.gameObject.SetActive(false);
         }
-        
+
         // 1. 確保 UI 數量足夠
         AdjustSlotCount(items.Count);
         // 2. 把資料填進去
@@ -131,7 +148,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         {
             slot.gameObject.SetActive(false);
         }
-        
+
         // 1. 確保 UI 數量足夠
         AdjustUnmatchedSlotCount(items.Count);
         // 2. 把資料填進去並設為灰階
@@ -178,7 +195,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         DetailDescText.text = slot._currentDefinition.Description;
         DetailPriceText.text = slot._currentData.CostPrice.ToString();
         DetailIcon.sprite = slot._targetImage.sprite;
-        SpriteLoader.AdjustImageScale(DetailIcon, 150);
+        SpriteLoader.AdjustImageScale(DetailIcon, 120);
         switch (slot._currentDefinition.Type)
         {
             case ItemType.Equipment:
@@ -195,6 +212,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
                 break;
         }
         WorldIcon.sprite = MonsterTagSprite;
+        ShowBagItemTags(slot._currentDefinition.Tags);
         if (slot is OrderBagSlot orderBagSlot)
         {
             AddItemToOrder?.Invoke(orderBagSlot);
@@ -221,17 +239,17 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     {
         // 根據稀有度排序大訂單（降序：SuperRare > Rare > Common）
         var sortedLargeOrders = largeOrders.OrderByDescending(o => o.OrderRank).ToList();
-        
+
         int totalCount = sortedLargeOrders.Count + smallOrders.Count;
         AdjustOrderSlotCount(totalCount);
-        
+
         int slotIndex = 0;
         // 先顯示大訂單
         for (int i = 0; i < sortedLargeOrders.Count; i++)
         {
             _orderSlots[slotIndex].Setup(sortedLargeOrders[i], InvokeSelectedOrder);
             _orderSlots[slotIndex].gameObject.SetActive(true);
-            SpriteLoader.AdjustImageScale(_orderSlots[slotIndex]._targetImage, 180);
+            SpriteLoader.AdjustImageScale(_orderSlots[slotIndex]._targetImage, 120);
             slotIndex++;
         }
         // 再顯示小訂單
@@ -258,6 +276,13 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         WorldIcon.sprite = emptySprite;
         TypeIcon.sprite = emptySprite;
         DetailIcon.sprite = emptySprite;
+        if (TagSlotContainer != null)
+        {
+            foreach (Transform child in TagSlotContainer)
+            {
+                Destroy(child.gameObject);
+            }
+        }
         foreach (var slot in OrderObjContainer.GetComponentsInChildren<OrderSelectSlot>())
         {
             Destroy(slot.gameObject);
@@ -270,6 +295,15 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         OrderRewardText.text = "";
         OrderSelectCountText.text = "";
         OrderFinishImage.SetActive(false);
+        if (OrderImage != null) OrderImage.sprite = emptySprite;
+        if (OrderTypeIcon != null) OrderTypeIcon.sprite = emptySprite;
+        if (OrderTagContainer != null)
+        {
+            foreach (Transform child in OrderTagContainer)
+            {
+                Destroy(child.gameObject);
+            }
+        }
     }
     public void UpdateTradePrice(int price)
     {
@@ -279,11 +313,141 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     {
         OrderNameText.text = order.OrderName;
         OrderDescText.text = order.OrderDescription;
+        LoadOrderImage(order.OrderId);
+        SetOrderTypeIcon(order.OrderType);
+        ShowOrderTags(order.OrderNeedTags);
     }
     public void UpdateOrderView(HumanSmallOrder order)
     {
         OrderNameText.text = order.OrderName;
         OrderDescText.text = order.OrderDescription;
+        LoadOrderImage(order.OrderId);
+        SetOrderTypeIcon(order.OrderType);
+        ShowOrderTags(order.OrderNeedTags);
+    }
+    private void LoadOrderImage(string orderId)
+    {
+        if (OrderImage == null) return;
+        OrderImage.sprite = emptySprite;
+        SpriteLoader.LoadSpriteAsync(orderId, sprite =>
+        {
+            if (sprite != null)
+            {
+                OrderImage.sprite = sprite;
+                SpriteLoader.AdjustImageScale(OrderImage, 150);
+            }
+        });
+    }
+    private void SetOrderTypeIcon(ItemType orderType)
+    {
+        if (OrderTypeIcon == null) return;
+        switch (orderType)
+        {
+            case ItemType.Equipment:
+                OrderTypeIcon.sprite = EquipmentSprite;
+                break;
+            case ItemType.Food:
+                OrderTypeIcon.sprite = FoodSprite;
+                break;
+            case ItemType.Prop:
+                OrderTypeIcon.sprite = PropSprite;
+                break;
+            default:
+                OrderTypeIcon.sprite = PropSprite;
+                break;
+        }
+    }
+    private void ShowBagItemTags(List<string> tags)
+    {
+        if (TagSlotContainer == null || TagsPrefab == null || tags == null) return;
+        // 清除舊標籤
+        foreach (Transform child in TagSlotContainer)
+        {
+            Destroy(child.gameObject);
+        }
+        for (int i = 0; i < tags.Count; i++)
+        {
+            string tagId = tags[i];
+            string tagName = DataManager.Instance.GetTagNameByTag(tagId);
+            if (tagName != "")
+            {
+                GameObject newSlot = Instantiate(TagsPrefab, TagSlotContainer);
+                TextMeshProUGUI textComp = newSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                textComp.text = tagName;
+
+                GameObject imgObj = new GameObject("TagImage");
+                imgObj.transform.SetParent(newSlot.transform, false);
+                Image tagImage = imgObj.AddComponent<Image>();
+                imgObj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                imgObj.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
+
+                imgObj.SetActive(false);
+                textComp.gameObject.SetActive(true);
+
+                Image capturedImage = tagImage;
+                TextMeshProUGUI capturedText = textComp;
+                GameObject capturedImgObj = imgObj;
+
+                SpriteLoader.LoadSpriteAsync(tagId, sprite =>
+                {
+                    if (capturedImgObj == null) return;
+                    if (sprite != null)
+                    {
+                        capturedImage.sprite = sprite;
+                        SpriteLoader.AdjustImageScale(capturedImage, 120);
+                        capturedImgObj.SetActive(true);
+                        capturedText.gameObject.SetActive(false);
+                    }
+                });
+            }
+        }
+    }
+    private void ShowOrderTags(List<string> tags)
+    {
+        if (OrderTagContainer == null || TagsPrefab == null || tags == null) return;
+        // 清除舊標籤
+        foreach (Transform child in OrderTagContainer)
+        {
+            Destroy(child.gameObject);
+        }
+        for (int i = 0; i < tags.Count; i++)
+        {
+            string tagId = tags[i];
+            string tagName = DataManager.Instance.GetTagNameByTag(tagId);
+            if (tagName != "")
+            {
+                GameObject newSlot = Instantiate(TagsPrefab, OrderTagContainer);
+                TextMeshProUGUI textComp = newSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                textComp.text = tagName;
+
+                // 建立Tag圖片物件
+                GameObject imgObj = new GameObject("TagImage");
+                imgObj.transform.SetParent(newSlot.transform, false);
+                Image tagImage = imgObj.AddComponent<Image>();
+                imgObj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                imgObj.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
+
+                // 預設隱藏圖片，顯示文字
+                imgObj.SetActive(false);
+                textComp.gameObject.SetActive(true);
+
+                Image capturedImage = tagImage;
+                TextMeshProUGUI capturedText = textComp;
+                GameObject capturedImgObj = imgObj;
+
+                SpriteLoader.LoadSpriteAsync(tagId, sprite =>
+                {
+                    if (capturedImgObj == null) return;
+                    if (sprite != null)
+                    {
+                        capturedImage.sprite = sprite;
+                        SpriteLoader.AdjustImageScale(capturedImage, 120);
+                        capturedImgObj.SetActive(true);
+                        capturedText.gameObject.SetActive(false);
+                    }
+                });
+            }
+        }
     }
     public void UpdateOrderSelectCount(int count, int maxCount)
     {
@@ -314,7 +478,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         OnOrderCancelSelected?.Invoke(slot);
         slot.SetOnSelected(false);
         slot.RemoveOrderSelect();
-        
+
     }
     private void ExitOrderPanel()
     {

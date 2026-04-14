@@ -90,8 +90,14 @@ namespace GameSystem
 
             Debug.Log($"[AddressableSceneLoader] Loading scene: {sceneAddress} (Mode: {loadMode})");
 
-            // Release previous handle if exists
-            ReleaseCurrentHandle();
+            // 記住舊 handle，Single 模式下不能在載入前 Release（會嘗試卸載最後一個場景）
+            var previousHandle = _currentHandle;
+
+            // Additive 模式下先釋放舊場景；Single 模式由 Unity 自動卸載
+            if (loadMode == LoadSceneMode.Additive)
+            {
+                ReleaseCurrentHandle();
+            }
 
             // Start loading
             var handle = Addressables.LoadSceneAsync(sceneAddress, loadMode);
@@ -112,6 +118,12 @@ namespace GameSystem
             // Check result
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
+                // Single 模式下，新場景已載入，舊場景已被 Unity 自動卸載，現在可以安全釋放舊 handle
+                if (loadMode == LoadSceneMode.Single && previousHandle.IsValid())
+                {
+                    Addressables.Release(previousHandle);
+                }
+
                 Debug.Log($"[AddressableSceneLoader] Successfully loaded scene: {sceneAddress}");
                 OnSceneLoaded?.Invoke(sceneAddress);
                 onComplete?.Invoke(true);

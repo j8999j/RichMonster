@@ -12,12 +12,12 @@ namespace Souvenir
     public class SouvenirManager : Singleton<SouvenirManager>, ISpecialSouvenirProvider
     {
         // 存放所有成就紀念品實例
-        private Dictionary<string, AchievementSouvenirBase> _achievementSouvenirs
-            = new Dictionary<string, AchievementSouvenirBase>();
+        private Dictionary<string, AchievementSouvenir> _achievementSouvenirs
+            = new Dictionary<string, AchievementSouvenir>();
 
         // 存放所有特殊紀念品實例
-        private Dictionary<string, SpecialSouvenirBase> _specialSouvenirs
-            = new Dictionary<string, SpecialSouvenirBase>();
+        private Dictionary<string, SpecialSouvenir> _specialSouvenirs
+            = new Dictionary<string, SpecialSouvenir>();
 
         // 當前持有的紀念品 IDs
         private HashSet<string> _ownedSouvenirIds = new HashSet<string>();
@@ -36,15 +36,15 @@ namespace Souvenir
                 return;
             }
 
-            // 1. 處理 AchievementSouvenirBase
-            var achSouvenirTypes = FindAllSouvenirTypes<AchievementSouvenirBase>();
+            // 1. 處理 AchievementSouvenir
+            var achSouvenirTypes = FindAllSouvenirTypes<AchievementSouvenir>();
             Debug.Log($"[SouvenirManager] 找到 {achSouvenirTypes.Count} 個成就紀念品腳本類別");
 
             foreach (var type in achSouvenirTypes)
             {
                 try
                 {
-                    var instance = Activator.CreateInstance(type) as AchievementSouvenirBase;
+                    var instance = Activator.CreateInstance(type) as AchievementSouvenir;
                     if (instance != null && !string.IsNullOrEmpty(instance.SouvenirID))
                     {
                         if (_achievementSouvenirs.ContainsKey(instance.SouvenirID))
@@ -70,8 +70,8 @@ namespace Souvenir
                 }
             }
 
-            // 2. 處理 SpecialSouvenirBase
-            var splSouvenirTypes = FindAllSouvenirTypes<SpecialSouvenirBase>();
+            // 2. 處理 SpecialSouvenir
+            var splSouvenirTypes = FindAllSouvenirTypes<SpecialSouvenir>();
             Debug.Log($"[SouvenirManager] 找到 {splSouvenirTypes.Count} 個特殊紀念品腳本類別");
 
             foreach (var type in splSouvenirTypes)
@@ -79,7 +79,7 @@ namespace Souvenir
                 try
                 {
                     // 注意: 衍生類別需要提供無參數建構子
-                    var instance = Activator.CreateInstance(type) as SpecialSouvenirBase;
+                    var instance = Activator.CreateInstance(type) as SpecialSouvenir;
                     if (instance != null && !string.IsNullOrEmpty(instance.SouvenirID))
                     {
                         if (_specialSouvenirs.ContainsKey(instance.SouvenirID))
@@ -134,7 +134,7 @@ namespace Souvenir
         /// <summary>
         /// 取得指定的成就紀念品
         /// </summary>
-        public AchievementSouvenirBase GetAchievementSouvenir(string souvenirId)
+        public AchievementSouvenir GetAchievementSouvenir(string souvenirId)
         {
             _achievementSouvenirs.TryGetValue(souvenirId, out var souvenir);
             return souvenir;
@@ -143,7 +143,7 @@ namespace Souvenir
         /// <summary>
         /// 取得所有的成就紀念品
         /// </summary>
-        public List<AchievementSouvenirBase> GetAllAchievementSouvenirs()
+        public List<AchievementSouvenir> GetAllAchievementSouvenirs()
         {
             return _achievementSouvenirs.Values.ToList();
         }
@@ -156,7 +156,7 @@ namespace Souvenir
         /// <summary>
         /// 取得指定的特殊紀念品
         /// </summary>
-        public SpecialSouvenirBase GetSpecialSouvenir(string souvenirId)
+        public SpecialSouvenir GetSpecialSouvenir(string souvenirId)
         {
             _specialSouvenirs.TryGetValue(souvenirId, out var souvenir);
             return souvenir;
@@ -165,7 +165,7 @@ namespace Souvenir
         /// <summary>
         /// 取得所有的特殊紀念品
         /// </summary>
-        public List<SpecialSouvenirBase> GetAllSpecialSouvenirs()
+        public List<SpecialSouvenir> GetAllSpecialSouvenirs()
         {
             return _specialSouvenirs.Values.ToList();
         }
@@ -378,7 +378,7 @@ namespace Souvenir
         /// <summary>
         /// 取得可購買的紀念品目錄資訊
         /// </summary>
-        public List<(AchievementSouvenirBase Souvenir, bool IsOwned)> GetShopCatalog()
+        public List<(AchievementSouvenir Souvenir, bool IsOwned)> GetShopCatalog()
         {
             return _achievementSouvenirs.Values
                 .Select(s => (Souvenir: s, IsOwned: IsOwned(s.SouvenirID)))
@@ -397,7 +397,7 @@ namespace Souvenir
         public void RegisterAll()
         {
             // 1. 已持有的特殊紀念品：觸發效果型事件訂閱
-            ForEachOwnedSouvenir<SpecialSouvenirBase>(souvenir => souvenir.Register());
+            ForEachOwnedSouvenir<SpecialSouvenir>(souvenir => souvenir.Register());
 
             // 2. 尚未收集的特殊紀念品：呼叫 Register() 以從存檔恢復進度計數
             foreach (var souvenir in _specialSouvenirs.Values)
@@ -537,14 +537,22 @@ namespace Souvenir
 
         #endregion
 
-        protected override void OnDestroy()
+        /// <summary>
+        /// 重置紀念品系統，清除所有資料並允許重新初始化
+        /// </summary>
+        public void Reset()
         {
             UnregisterAll();
             _achievementSouvenirs.Clear();
             _specialSouvenirs.Clear();
             _ownedSouvenirIds.Clear();
             _isInitialized = false;
+            Debug.Log("[SouvenirManager] 紀念品系統已重置");
+        }
 
+        protected override void OnDestroy()
+        {
+            Reset();
             base.OnDestroy();
         }
     }

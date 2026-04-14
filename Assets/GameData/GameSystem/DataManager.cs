@@ -128,11 +128,32 @@ public class DataManager : Singleton<DataManager>
         _achievementSaveDict = SaveManager.Instance.GetAchievementDict();
         _specialSouvenirSaveDict = SaveManager.Instance.GetSpecialSouvenirDict();
 
-        // 初始化成就系統
-        AchievementManager.Instance.Initialize(_achievementDict);
-        SouvenirManager.Instance.Initialize();
+        InitializeProgressManagers();
 
         _currentPlayerData = ClonePlayerData(_initialPlayerData);
+    }
+
+    public void InitializeProgressManagers()
+    {
+        if (AchievementManager.Instance != null)
+        {
+            if (AchievementManager.Instance.IsInitialized)
+            {
+                AchievementManager.Instance.Reset();
+            }
+
+            AchievementManager.Instance.Initialize(_achievementDict);
+        }
+
+        if (SouvenirManager.Instance != null)
+        {
+            if (SouvenirManager.Instance.IsInitialized)
+            {
+                SouvenirManager.Instance.Reset();
+            }
+
+            SouvenirManager.Instance.Initialize();
+        }
     }
 
     /// <summary>
@@ -311,6 +332,30 @@ public class DataManager : Singleton<DataManager>
     public GameSaveBook GetBookData()
     {
         return _bookData;
+    }
+
+    /// <summary>
+    /// 清空圖鑑資料快取 (由 SaveManager.ClearBookData 呼叫，重置為預設空資料)
+    /// </summary>
+    public void ClearBookDataCache()
+    {
+        _bookData = new GameSaveBook
+        {
+            ItemBookData = new ItemBookData { ItemBooks = new List<ItemBookDatabase>() },
+            MonsterBookData = new MonsterBookData
+            {
+                UnlockMonsterInformationID = new List<string>(),
+                NewMonsterInformationID = new List<string>(),
+                NewMonsterStoryID = new List<string>()
+            },
+            AchievementData = new List<IAchievementSave>(),
+            SpecialSouvenirProgressData = new List<ISpecialSouvenirSave>(),
+            UnLockSpecialSouvenirID = new List<string> { "Sou_key" }
+        };
+        _achievementSaveDict = new Dictionary<string, IAchievementSave>();
+        _specialSouvenirSaveDict = new Dictionary<string, ISpecialSouvenirSave>();
+        OnBookDataChanged = false;
+        Debug.Log("[DataManager] 圖鑑資料快取已清空");
     }
 
     /// <summary>

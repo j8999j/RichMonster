@@ -33,6 +33,16 @@ namespace Souvenir
                 UnityEngine.Debug.Log("[Sou_key] 鑰匙只能在黃昏（AfterNoon）階段使用。");
             }
         }
+
+        /// <summary>
+        /// 黃昏鑰匙僅在黃昏（AfterNoon）階段顯示互動按鈕
+        /// </summary>
+        public bool CanShowInteractionButton()
+        {
+            return DataManager.Instance != null
+                && DataManager.Instance.CurrentPlayerData != null
+                && DataManager.Instance.CurrentPlayerData.PlayingStatus == DayPhase.AfterNoon;
+        }
         #endregion
     }
 }

@@ -33,7 +33,7 @@ public class OrderSlot : MonoBehaviour
     private void SetOrderView()
     {
         // 設定訂單圖片
-        if(humanLargeOrder != null)
+        if (humanLargeOrder != null)
         {
             switch (humanLargeOrder.OrderRank)
             {
@@ -48,23 +48,23 @@ public class OrderSlot : MonoBehaviour
                     break;
             }
         }
-        else if(humanSmallOrder != null)
+        else if (humanSmallOrder != null)
         {
             _targetImage.sprite = _SmallOrderSprite;
         }
-        
+
         // 設定完成狀態（大訂單或小訂單，只檢查對應的那個）
         bool isFinished = false;
-        
-        if(humanLargeOrder != null)
+
+        if (humanLargeOrder != null)
         {
             isFinished = humanLargeOrder.IsFinish;
         }
-        else if(humanSmallOrder != null)
+        else if (humanSmallOrder != null)
         {
             isFinished = humanSmallOrder.IsFinish;
         }
-        
+
         FinishOrderObject.SetActive(isFinished);
         SetGrayscale(isFinished);
     }

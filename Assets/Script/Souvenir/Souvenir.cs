@@ -123,6 +123,11 @@ namespace Souvenir
         bool HasInteraction { get; }
         string InteractionButtonText { get; }
         void OnInteraction();
+        /// <summary>
+        /// 每次 SouvenirBagView 顯示時呼叫，判斷此次是否要顯示互動按鈕。
+        /// 預設回傳 true；具有時段限制等條件的紀念品（如黃昏鑰匙）需自行覆寫判斷邏輯。
+        /// </summary>
+        bool CanShowInteractionButton();
     }
 
     /// <summary>
@@ -137,12 +142,19 @@ namespace Souvenir
     #region SouvenirClass
 
     /// <summary>
-    /// 成就紀念品基類：有觸發效果
+    /// 所有紀念品的共同基類：承載任何紀念品都需要的最小契約（目前為 SouvenirID）。
+    /// 未來若發現兩側共用的生命週期或欄位，可再逐步上提至此處。
     /// </summary>
-    public abstract class AchievementSouvenirBase : ISouvenirBagView
+    public abstract class SouvenirBase : ISouvenirBagView
     {
         public abstract string SouvenirID { get; }
+    }
 
+    /// <summary>
+    /// 成就紀念品基類：有觸發效果
+    /// </summary>
+    public abstract class AchievementSouvenir : SouvenirBase
+    {
         /// <summary>
         /// 購買此紀念品所需的成就點數
         /// 預設從存檔資料 Achievements_Souvenir.json 獲取設定的點數
@@ -165,9 +177,8 @@ namespace Souvenir
     /// 特殊紀念品基底：遊戲中按特殊條件觸發收集，可能有額外效果
     /// 宣告實作 IAchievementWithProgress，透過 explicit 橋接讓子類別不必重複實作顯示合約
     /// </summary>
-    public abstract class SpecialSouvenirBase : ISouvenirBagView
+    public abstract class SpecialSouvenir : SouvenirBase
     {
-        public abstract string SouvenirID { get; }
         public bool IsCollected { get; private set; }
 
         // 供橋接使用的抽象顯示屬性（concrete class 已實作，無需修改）
@@ -200,7 +211,7 @@ namespace Souvenir
     /// 預設持有紀念品基底：玩家一開始就擁有，不顯示於成就頁面。
     /// 不實作 ISpecialSouvenirSave，因此 GetAllSpecialSouvenirSaves() 不會撈到。
     /// </summary>
-    public abstract class DefaultOwnedSouvenirBase : SpecialSouvenirBase
+    public abstract class DefaultOwnedSouvenirBase : SpecialSouvenir
     {
         public override bool IsCompleted { get => true; set { } }
         public override string DisplayName => SouvenirName;

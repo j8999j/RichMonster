@@ -1,7 +1,7 @@
 namespace Souvenir
 {
     using UnityEngine;
-    public class GrandfatherPiggyBank : AchievementSouvenirBase, IApplyStartEffect
+    public class GrandfatherPiggyBank : AchievementSouvenir, IApplyStartEffect
     {
         public override string SouvenirID => "SouAch_PiggyBank";
         

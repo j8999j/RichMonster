@@ -29,11 +29,15 @@ public class AchievementViewFactory : MonoBehaviour
     [SerializeField] private Souvenir.SouvenirManager _souvenirProvider;
 
     [Header("Category Buttons (依序: Item, Transaction, Record, Others, SpecialSouvenir)")]
+
     [SerializeField] private Button btnItem;
     [SerializeField] private Button btnTransaction;
     [SerializeField] private Button btnRecord;
     [SerializeField] private Button btnOthers;
     [SerializeField] private Button btnSpecialSouvenir;
+    [Header("UI")]
+    [SerializeField] private Button OpenViewButton;
+    [SerializeField] private GameObject AchievementPanel;
 
     // Binder 清單：順序即優先權，DefaultBinder 永遠放最後
     private static readonly List<IAchievementViewBinder> Binders = new()
@@ -52,6 +56,7 @@ public class AchievementViewFactory : MonoBehaviour
     private void Start()
     {
         // 綁定按鈕事件
+        OpenViewButton?.onClick.AddListener(() => OpenAndRefresh());
         btnItem?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Item));
         btnTransaction?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Transaction));
         btnRecord?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Record));
@@ -60,10 +65,15 @@ public class AchievementViewFactory : MonoBehaviour
         _souvenirProvider = Souvenir.SouvenirManager.Instance;
     }
 
-    private void OnEnable()
+
+    /// <summary>供按鈕呼叫：開啟成就面板，重新取得最新資料並生成顯示</summary>
+    public void OpenAndRefresh()
     {
-        // 開啟時預設選取第一個分類
-        SwitchCategory(AchievementCategory.Item);
+        _souvenirProvider = Souvenir.SouvenirManager.Instance;
+        if (AchievementPanel != null)
+            AchievementPanel.SetActive(true);
+        _currentCategory = AchievementCategory.Item;
+        SwitchCategory(_currentCategory);
     }
 
     /// <summary>切換分類頁籤，重新生成該分類的成就 View</summary>
@@ -75,21 +85,35 @@ public class AchievementViewFactory : MonoBehaviour
 
         if (category == AchievementCategory.SpecialSouvenir)
         {
-            ISpecialSouvenirProvider provider = _souvenirProvider;
-            var displayDataList = provider.GetAllSpecialSouvenirSaves()
-                .Cast<IAchievementDisplayData>()
-                .ToList();
-            BuildAll(displayDataList);
+            if (_souvenirProvider == null)
+            {
+                ClearAll();
+            }
+            else
+            {
+                ISpecialSouvenirProvider provider = _souvenirProvider;
+                var displayDataList = provider.GetAllSpecialSouvenirSaves()
+                    .Cast<IAchievementDisplayData>()
+                    .ToList();
+                BuildAll(displayDataList);
+            }
         }
         else
         {
-            var achievements = AchievementManager.Instance.GetAchievementsByCategory(category);
-            var displayDataList = new List<IAchievementDisplayData>();
-            foreach (var achievement in achievements)
+            if (AchievementManager.Instance == null)
             {
-                displayDataList.Add(achievement);
+                ClearAll();
             }
-            BuildAll(displayDataList);
+            else
+            {
+                var achievements = AchievementManager.Instance.GetAchievementsByCategory(category);
+                var displayDataList = new List<IAchievementDisplayData>();
+                foreach (var achievement in achievements)
+                {
+                    displayDataList.Add(achievement);
+                }
+                BuildAll(displayDataList);
+            }
         }
 
         // 切換分類後將捲動位置重置到最上方

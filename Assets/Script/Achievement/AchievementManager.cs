@@ -226,9 +226,11 @@ public class AchievementManager : Singleton<AchievementManager>
 
     #endregion
 
-    protected override void OnDestroy()
+    /// <summary>
+    /// 重置成就系統，清除所有資料並允許重新初始化
+    /// </summary>
+    public void Reset()
     {
-        // 清理所有成就的事件訂閱
         foreach (var achievement in _achievementsById.Values)
         {
             achievement.OnUnlocked -= OnAchievementUnlocked;
@@ -237,7 +239,12 @@ public class AchievementManager : Singleton<AchievementManager>
         _achievementsByCategory.Clear();
         _achievementsById.Clear();
         _isInitialized = false;
+        Debug.Log("[AchievementManager] 成就系統已重置");
+    }
 
+    protected override void OnDestroy()
+    {
+        Reset();
         base.OnDestroy();
     }
 }

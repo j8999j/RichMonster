@@ -5,7 +5,7 @@ namespace Souvenir
     /// <summary>
     /// 旅行背包：背包容量上限增加 5 格
     /// </summary>
-    public class TravelBagSouvenir : AchievementSouvenirBase, IBagCapacityProvider
+    public class TravelBagSouvenir : AchievementSouvenir, IBagCapacityProvider
     {
         public override string SouvenirID => "SouAch_TravelBag";
 

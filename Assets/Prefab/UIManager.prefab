@@ -717,7 +717,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 592, y: 302}
+  m_SizeDelta: {x: 888, y: 453}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2204574806895262416
 CanvasRenderer:
@@ -3210,8 +3210,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -120}
-  m_SizeDelta: {x: 194, y: 62}
+  m_AnchoredPosition: {x: 0, y: -179}
+  m_SizeDelta: {x: 291, y: 93}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8909093382809186643
 CanvasRenderer:
@@ -4588,8 +4588,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 56
+  m_fontSizeBase: 56
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -5459,7 +5459,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -7.5034}
-  m_SizeDelta: {x: 560, y: 150}
+  m_SizeDelta: {x: 750.1504, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7687564320231036724
 MonoBehaviour:
@@ -5481,8 +5481,8 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 70, y: 70}
-  m_Spacing: {x: 0, y: 0}
+  m_CellSize: {x: 100, y: 100}
+  m_Spacing: {x: 5, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!1 &5166628596335791018
@@ -6863,8 +6863,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 101}
-  m_SizeDelta: {x: 489.8438, y: 50}
+  m_AnchoredPosition: {x: 0, y: 152}
+  m_SizeDelta: {x: 712.0193, y: 82.0254}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2569065717715617682
 CanvasRenderer:
@@ -6921,8 +6921,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 48
+  m_fontSizeBase: 48
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -10772,7 +10772,7 @@ MonoBehaviour:
   GoldSprite: {fileID: 313458290, guid: 74e31ef0019f40f40a303573bae5ed22, type: 3}
   TooltipPanel: {fileID: 1113637043656983551}
   TooltipText: {fileID: 6773097854546695511}
-  TooltipOffset: {x: 15, y: -15}
+  TooltipOffset: {x: 20, y: 20}
 --- !u!114 &1857667726399982768
 MonoBehaviour:
   m_ObjectHideFlags: 0

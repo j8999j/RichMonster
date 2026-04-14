@@ -45,6 +45,7 @@ namespace Souvenir
         {
             if (MainPanel != null) MainPanel.SetActive(true);
             _currentSelectedSlot = null;
+            ResetDetailDisplay();
 
             LoadBagItems();
 
@@ -66,6 +67,8 @@ namespace Souvenir
 
         public void CloseBag()
         {
+            _currentSelectedSlot = null;
+            ResetDetailDisplay();
             if (MainPanel != null) MainPanel.SetActive(false);
         }
 
@@ -110,9 +113,11 @@ namespace Souvenir
         {
             if (_bagItems == null || _bagItems.Count == 0)
             {
+                _currentSelectedSlot = null;
                 for (int i = 0; i < _spawnedSlots.Count; i++) _spawnedSlots[i].gameObject.SetActive(false);
                 if (PreviousPageButton != null) PreviousPageButton.interactable = false;
                 if (NextPageButton != null) NextPageButton.interactable = false;
+                ResetDetailDisplay();
                 return;
             }
 
@@ -147,6 +152,30 @@ namespace Souvenir
 
             if (PreviousPageButton != null) PreviousPageButton.interactable = _currentPage > 0;
             if (NextPageButton != null) NextPageButton.interactable = _currentPage < totalPages - 1;
+        }
+
+        private void ResetDetailDisplay()
+        {
+            if (DetailNameText != null) DetailNameText.text = string.Empty;
+            if (DetailDescriptionText != null) DetailDescriptionText.text = string.Empty;
+            if (DetailFunctionText != null) DetailFunctionText.text = string.Empty;
+
+            if (DetailIcon != null)
+            {
+                DetailIcon.sprite = null;
+                DetailIcon.color = Color.clear;
+            }
+
+            if (InteractButton != null)
+            {
+                InteractButton.onClick.RemoveAllListeners();
+                InteractButton.gameObject.SetActive(false);
+            }
+
+            if (InteractButtonText != null)
+            {
+                InteractButtonText.text = string.Empty;
+            }
         }
 
         private void AdjustSlotCount(int targetCount)
@@ -217,14 +246,16 @@ namespace Souvenir
                     interactiveSouvenir = SouvenirManager.Instance.GetAchievementSouvenir(data.SouvenirID) as ISouvenirInteractive;
                 }
 
-                if (interactiveSouvenir != null && interactiveSouvenir.HasInteraction)
+                if (interactiveSouvenir != null
+                    && interactiveSouvenir.HasInteraction
+                    && interactiveSouvenir.CanShowInteractionButton())
                 {
                     InteractButton.gameObject.SetActive(true);
                     if (InteractButtonText != null)
                     {
                         InteractButtonText.text = interactiveSouvenir.InteractionButtonText;
                     }
-                    
+
                     InteractButton.onClick.AddListener(() =>
                     {
                         interactiveSouvenir.OnInteraction();

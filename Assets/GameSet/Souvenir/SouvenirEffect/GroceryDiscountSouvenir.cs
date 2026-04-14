@@ -7,7 +7,7 @@ namespace Souvenir
     /// <summary>
     /// 雜貨店每日第一件物品獲得 8 折折扣
     /// </summary>
-    public class GroceryDiscountSouvenir : AchievementSouvenirBase, IShopDiscountProvider, IShopVisualModifier
+    public class GroceryDiscountSouvenir : AchievementSouvenir, IShopDiscountProvider, IShopVisualModifier
     {
         public override string SouvenirID => "SouAch_GroceryCoupon";
 

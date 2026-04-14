@@ -7,7 +7,7 @@ namespace Souvenir
     /// 條件：交易使幽靈客人滿意（Satisfied 或 VerySatisfied）累計達到 50 次
     /// 進度跨局儲存，使用 IAchievementSave 機制寫入 illustrated_book.json
     /// </summary>
-    public class Sou_GhostTribute : SpecialSouvenirBase, IMonsterTradeWithRaceListener, ISpecialSouvenirSave, ISouvenirInteractive
+    public class Sou_GhostTribute : SpecialSouvenir, IMonsterTradeWithRaceListener, ISpecialSouvenirSave, ISouvenirInteractive
     {
         public override string SouvenirID => "Sou_GhostTribute";
 
@@ -104,6 +104,8 @@ namespace Souvenir
             Debug.Log($"正在等待時機到來");
             // TODO: 若未來有統一的系統提示 UI，可以在此呼叫通知玩家的 API
         }
+
+        public bool CanShowInteractionButton() => true;
 
         #endregion
     }

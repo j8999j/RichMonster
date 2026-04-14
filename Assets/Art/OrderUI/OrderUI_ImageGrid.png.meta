@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 30b9834cbb64aee4db857b8d4d9e3ae8
+guid: bed58a96bb6d5a34f9d9cf0398a2ed1a
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,127 +110,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BuyUI_0
+      name: OrderUI_ImageGrid_0
       rect:
         serializedVersion: 2
-        x: 45
-        y: 427
-        width: 370
-        height: 140
+        x: 1
+        y: 6
+        width: 48
+        height: 36
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fd99962ae59a50d46ad3e9997748e2f4
-      internalID: -1694905548
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BuyUI_1
-      rect:
-        serializedVersion: 2
-        x: 520
-        y: 264
-        width: 225
-        height: 290
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4f2492da34232974f8daf87b42ef2a96
-      internalID: 323119936
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BuyUI_2
-      rect:
-        serializedVersion: 2
-        x: 733
-        y: 550
-        width: 5
-        height: 4
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: df5bfa9026fde444c80148374c7def8c
-      internalID: -566302189
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BuyUI_3
-      rect:
-        serializedVersion: 2
-        x: 46
-        y: 264
-        width: 369
-        height: 140
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ef451e177c231b644a25e83a63361291
-      internalID: -587703485
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BuyUI_4
-      rect:
-        serializedVersion: 2
-        x: 45
-        y: 153
-        width: 150
-        height: 75
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3b46385d98b95c74bb68b34504e5971a
-      internalID: -984261927
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Cost_Tag
-      rect:
-        serializedVersion: 2
-        x: 45
-        y: 55
-        width: 150
-        height: 75
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f5b44fb14a29f6a4bbaec8cd2444006e
-      internalID: -407841358
+      spriteID: 9909d7370f53fa649a9752968199d017
+      internalID: -231353568
       vertices: []
       indices: 
       edges: []
@@ -238,7 +133,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 671eed02ba0d8d344aa80aa2b560ec84
+    spriteID: 2a845994a05c9a94eaed27a4f2671fc6
     internalID: 0
     vertices: []
     indices: 
@@ -246,12 +141,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      BuyUI_0: -1694905548
-      BuyUI_1: 323119936
-      BuyUI_2: -566302189
-      BuyUI_3: -587703485
-      BuyUI_4: -984261927
-      Cost_Tag: -407841358
+      OrderUI_ImageGrid_0: -231353568
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

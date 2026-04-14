@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0ce2461d70de69f4d9512e2af1af24dc
+guid: 29428d225a9e85544abb451571d78217
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,190 +110,106 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pakegui_0
+      name: OrderUI_0
       rect:
         serializedVersion: 2
-        x: 56
-        y: 118
-        width: 98
-        height: 98
+        x: 41
+        y: 127
+        width: 117
+        height: 197
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6855cc2aba78a6f469f4896c6ef8ba56
-      internalID: 958939821
+      spriteID: b5c6708aa36342a49aafb374322ced74
+      internalID: -452946421
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pakegui_1
+      name: OrderUI_1
       rect:
         serializedVersion: 2
-        x: 178
-        y: 118
-        width: 98
-        height: 98
+        x: 169
+        y: 232
+        width: 50
+        height: 18
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f1db5d3933a1ff34b95eb8a15694699d
-      internalID: 1542245658
+      spriteID: 64a931ad0d86ac04689af10a16794ec9
+      internalID: -304716255
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pakegui_2
-      rect:
-        serializedVersion: 2
-        x: 308
-        y: 192
-        width: 98
-        height: 99
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9bd51a7f915f6294faf7bba1914ca399
-      internalID: -1882126178
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Bagui_3
-      rect:
-        serializedVersion: 2
-        x: 36
-        y: 20
-        width: 136
-        height: 86
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: cb983a847e6250b498136494af77eb42
-      internalID: -1906202668
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: arrow_up
+      name: OrderUI_2
       rect:
         serializedVersion: 2
         x: 173
-        y: 57
-        width: 9
-        height: 9
+        y: 196
+        width: 46
+        height: 25
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7ff65ea2e626bd0459e1a66ddf7e5477
-      internalID: 1606831449
+      spriteID: cd4db4e238a1a6f4daa29da46881fee4
+      internalID: 2019242992
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pakegui_5
-      rect:
-        serializedVersion: 2
-        x: 221
-        y: 63
-        width: 40
-        height: 14
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 889019b93d66f2444b90be7fba75150f
-      internalID: -812478364
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: pakegui_6
-      rect:
-        serializedVersion: 2
-        x: 292
-        y: 32
-        width: 219
-        height: 146
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a2b0fc61b81eab94aa9cada4a094a074
-      internalID: 981508921
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: arrow_down
+      name: OrderUI_3
       rect:
         serializedVersion: 2
         x: 173
-        y: 46
-        width: 9
-        height: 9
+        y: 170
+        width: 48
+        height: 21
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3cd0cf3361e99734db380ca292bc5cca
-      internalID: 789760681
+      spriteID: bb0e3cb26f4da6a418d314f6fd1fd4a9
+      internalID: -391623877
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pakegui_8
+      name: OrderUI_4
       rect:
         serializedVersion: 2
-        x: 221
-        y: 39
-        width: 40
-        height: 14
+        x: 175
+        y: 138
+        width: 198
+        height: 27
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4278342cafeec9445a35176d02a8a596
-      internalID: 488026871
+      spriteID: f18a75d602bfc37409a185b127fd7b60
+      internalID: 1331155497
       vertices: []
       indices: 
       edges: []
@@ -301,7 +217,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: ee4a097bf3352534bb8efcfded598143
+    spriteID: 23800bc930a48df40bcf3dbd83608f07
     internalID: 0
     vertices: []
     indices: 
@@ -309,15 +225,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Bagui_3: -1906202668
-      arrow_down: 789760681
-      arrow_up: 1606831449
-      pakegui_0: 958939821
-      pakegui_1: 1542245658
-      pakegui_2: -1882126178
-      pakegui_5: -812478364
-      pakegui_6: 981508921
-      pakegui_8: 488026871
+      OrderUI_0: -452946421
+      OrderUI_1: -304716255
+      OrderUI_2: 2019242992
+      OrderUI_3: -391623877
+      OrderUI_4: 1331155497
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
