@@ -28,6 +28,7 @@ public class NPCMissionView : MonoBehaviour
     private List<GameObject> _spawnedRewards = new List<GameObject>();
 
     [Header("Bag UI")]
+    public GameObject DetailPanel;
     public Transform BagContainer;             // 顯示背包的容器
     public NPCTradeSlot NPCTradeSlotPrefab;    // 背包道具的 Prefab
     public Sprite NullSprite;
@@ -59,6 +60,7 @@ public class NPCMissionView : MonoBehaviour
     {
         PanelIsVisible = !PanelIsVisible;
         MissionPanel.SetActive(PanelIsVisible);
+        DetailPanel.SetActive(false);
     }
     public void HidePanel()
     {
@@ -276,10 +278,11 @@ public class NPCMissionView : MonoBehaviour
                 RareLevelImage.sprite = sprite != null ? sprite : NullSprite;
             });
         }
-
+        DetailPanel.SetActive(true);
         ShowTags(slot._currentDefinition.Tags);
         if (DetailIcon != null) SpriteLoader.AdjustImageScale(DetailIcon, 100);
         RefreshSubmitButton(true);
+
     }
 
     private void ClearSelected()

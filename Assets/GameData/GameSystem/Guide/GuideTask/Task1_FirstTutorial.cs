@@ -2,6 +2,7 @@
 // Task1_FirstTutorial.cs - 任務一：起始教學
 // ============================================================
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Task1_FirstTutorial : GuideTask
 {
@@ -14,7 +15,7 @@ public class Task1_FirstTutorial : GuideTask
     //步驟六：與雜貨店互動後，強制提示"點擊休息一下"(開啟面板)
     //步驟七：強制提示"點擊確定"(切換到午後)
     public override string TaskName => "任務一：起始教學";
-    private bool IsPurchased;
+    public bool IsPurchased;
     // 步驟二執行時啟動，提早監聽「購買物品」
     private BackgroundListener earlyPurchaseListener = new BackgroundListener();
     protected override List<GuideStep> BuildSteps()
@@ -48,24 +49,40 @@ public class Task1_FirstTutorial : GuideTask
                 listener:           null,
                 skipCondition:      () => IsPurchased,
                 backgroundListener: earlyPurchaseListener),
-
             // 步驟五：提示再次與雜貨店互動（準備切換到午後）
             new ShowHintAndWaitStep(
-                "前往爺爺的雜貨店，休息一下",
+                "回到爺爺的雜貨店，休息一下",
                 new InteractWithObjectListener(GuideIDs.Interactable.GuideOrderShop)),
-
             // 步驟六：強制提示點擊「休息一下」（開啟面板）
             new ForceUIButtonStep(
-                GuideIDs.Panel.GuideRestPanel,
+                new Vector2(-322,-115), // TODO: 填入「休息一下」按鈕的螢幕座標
                 GuideIDs.Button.GuideRest,
-                "點擊「休息一下」"),
-
+                "點擊躺椅，休息一下"),
             // 步驟七：強制提示點擊「確定」（切換到午後）
             new ForceUIButtonStep(
-                GuideIDs.Panel.GuideConfirmRestPanel,
+                new Vector2(-171.8f,-122.8f), // TODO: 填入「確定」按鈕的螢幕座標
                 GuideIDs.Button.GuideConfirmAfternoon,
                 "點擊「確定」切換到午後"),
+            // 步驟八：強制提示點擊紀念品箱
+            new ForceUIButtonStep(
+                new Vector2(-880,-265), // TODO: 填入「紀念品箱」按鈕的螢幕座標
+                GuideIDs.Button.GuideSouvenirBox,
+                "打開紀念品箱使用鑰匙前往妖界"),
+            // 步驟九：強制提示使用鑰匙前往妖界
+            new ForceUIButtonStep(
+                new Vector2(-210,86), // TODO: 填入「使用鑰匙」按鈕的螢幕座標
+                GuideIDs.Button.GuideUseKey,
+                "點擊使用鑰匙前往妖界"),
         };
+    }
+    protected override void OnResume(int fromStep)
+    {
+        // 步驟 1 (index 1) 正常情況下會啟動背景監聽
+        // 若從步驟 2 之後恢復且尚未購買，需重新啟動背景監聽
+        if (fromStep >= 2 && !IsPurchased)
+        {
+            earlyPurchaseListener.StartEarly(new PurchaseItemListener());
+        }
     }
     private void Step_3_Reward()
     {
@@ -77,7 +94,7 @@ public class Task1_FirstTutorial : GuideTask
         List<NoticeItemEntry> noticeItems = new List<NoticeItemEntry>();
         foreach (var itemID in itemIDs)
         {
-            noticeItems.Add(NoticeItemEntry.ItemEntry(itemID,1));
+            noticeItems.Add(NoticeItemEntry.ItemEntry(itemID, 1));
         }
         NoticeGetItemEvents.InvokeShowNotice("爺爺的庫存", noticeItems);
     }

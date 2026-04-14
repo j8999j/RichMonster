@@ -2376,6 +2376,7 @@ GameObject:
   - component: {fileID: 333083582}
   - component: {fileID: 333083581}
   - component: {fileID: 333083580}
+  - component: {fileID: 333083583}
   m_Layer: 5
   m_Name: AchievementButton
   m_TagString: Untagged
@@ -2484,6 +2485,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 333083578}
   m_CullTransparentMesh: 1
+--- !u!114 &333083583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 333083578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b52f6cbcd3d73489617a1757d4319f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  action: 2
 --- !u!1 &349007030
 GameObject:
   m_ObjectHideFlags: 0
@@ -3517,6 +3531,7 @@ GameObject:
   - component: {fileID: 444878760}
   - component: {fileID: 444878759}
   - component: {fileID: 444878758}
+  - component: {fileID: 444878761}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -3586,19 +3601,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 444878759}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 360182374}
-        m_TargetAssemblyTypeName: Souvenir.SouvenirBagView, Assembly-CSharp
-        m_MethodName: CloseBag
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &444878759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3637,6 +3640,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 444878756}
   m_CullTransparentMesh: 1
+--- !u!114 &444878761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444878756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b52f6cbcd3d73489617a1757d4319f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  action: 3
 --- !u!1 &447063680
 GameObject:
   m_ObjectHideFlags: 0
@@ -10725,6 +10741,7 @@ GameObject:
   - component: {fileID: 1381125373}
   - component: {fileID: 1381125374}
   - component: {fileID: 1381125372}
+  - component: {fileID: 1381125375}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -10872,6 +10889,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   saveSlotView: {fileID: 1381125372}
+--- !u!114 &1381125375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381125367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8880ceaa8f671c24db66a7a74c48eaf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerView: {fileID: 0}
+  souvenirBagView: {fileID: 360182374}
+  achievementViewFactory: {fileID: 1079260455}
 --- !u!1 &1386569403
 GameObject:
   m_ObjectHideFlags: 0
@@ -11450,6 +11482,7 @@ GameObject:
   - component: {fileID: 1418559033}
   - component: {fileID: 1418559032}
   - component: {fileID: 1418559031}
+  - component: {fileID: 1418559034}
   m_Layer: 5
   m_Name: SouvenirBagButton
   m_TagString: Untagged
@@ -11519,19 +11552,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1418559032}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 360182374}
-        m_TargetAssemblyTypeName: Souvenir.SouvenirBagView, Assembly-CSharp
-        m_MethodName: OpenBag
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1418559032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11570,6 +11591,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1418559029}
   m_CullTransparentMesh: 1
+--- !u!114 &1418559034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1418559029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b52f6cbcd3d73489617a1757d4319f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  action: 1
 --- !u!1 &1430463912
 GameObject:
   m_ObjectHideFlags: 0
@@ -15019,6 +15053,7 @@ GameObject:
   - component: {fileID: 1919806567}
   - component: {fileID: 1919806566}
   - component: {fileID: 1919806565}
+  - component: {fileID: 1919806568}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -15088,19 +15123,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1919806566}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1207104801}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1919806566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15139,6 +15162,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1919806563}
   m_CullTransparentMesh: 1
+--- !u!114 &1919806568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1919806563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b52f6cbcd3d73489617a1757d4319f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  action: 3
 --- !u!1 &1965167382
 GameObject:
   m_ObjectHideFlags: 0

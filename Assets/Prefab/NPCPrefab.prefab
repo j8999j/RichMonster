@@ -80,6 +80,7 @@ MonoBehaviour:
   RewardsContainer: {fileID: 2584922630180695629}
   RewardPrefab: {fileID: 6981785771916653649, guid: 4e61cb44f1516f54faa3935940df6b24, type: 3}
   SubmitButton: {fileID: 6907488845967354046}
+  DetailPanel: {fileID: 8253255769015600511}
   BagContainer: {fileID: 7124320996525783664}
   NPCTradeSlotPrefab: {fileID: 4397519384301183401, guid: e8ddaaf545252994180fdf3e795f10e6, type: 3}
   NullSprite: {fileID: -1680765899, guid: 1de99ac5ab9aeac4f8e05a2c68b2f56e, type: 3}
@@ -3350,12 +3351,12 @@ GameObject:
   - component: {fileID: 3762933830203194916}
   - component: {fileID: 2657112705438603885}
   m_Layer: 0
-  m_Name: Detail
+  m_Name: DetailPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7493611028482875364
 RectTransform:
   m_ObjectHideFlags: 0

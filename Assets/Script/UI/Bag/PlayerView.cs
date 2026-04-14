@@ -32,22 +32,22 @@ public class PlayerView : MonoBehaviour
     public Button MonsterItemButton;//妖界物品按鈕
     public Button AllItemButton;//所有物品按鈕
     public int TargetLongEdgeSize;//顯示最大邊長限制
-    
+
     // 分頁設定
     private const int ItemsPerPage = 15;  // 每頁顯示數量
     private const int PageScrollAmount = 5; // 每次翻頁移動數量 (15-10=5 個重疊)
     private int _currentStartIndex = 0;   // 當前起始索引
     private IReadOnlyList<Item> _currentItems; // 當前物品列表參照
     private List<Item> _filteredItems = new List<Item>(); // 篩選後的物品列表
-    
+
     // 篩選設定
     private enum ItemFilter { All, Human, Monster }
     private ItemFilter _currentFilter = ItemFilter.All;
-    
+
     private List<BagSlot> _activeSlots = new List<BagSlot>();//背包列表
     //玩家UI相關                                  
     public GameObject PlayerState;//狀態根物件
-    
+
     private void Awake()
     {
         // 綁定分頁按鈕事件
@@ -55,7 +55,7 @@ public class PlayerView : MonoBehaviour
             NextPageButton.onClick.AddListener(OnNextPage);
         if (PrePageButton != null)
             PrePageButton.onClick.AddListener(OnPreviousPage);
-        
+
         // 綁定篩選按鈕事件
         if (AllItemButton != null)
             AllItemButton.onClick.AddListener(() => SetFilter(ItemFilter.All));
@@ -64,7 +64,7 @@ public class PlayerView : MonoBehaviour
         if (MonsterItemButton != null)
             MonsterItemButton.onClick.AddListener(() => SetFilter(ItemFilter.Monster));
     }
-    
+
     /// <summary>
     /// 設定篩選並更新顯示
     /// </summary>
@@ -77,7 +77,7 @@ public class PlayerView : MonoBehaviour
         ClearSelected();
         UpdateFilterButtonStates();
     }
-    
+
     /// <summary>
     /// 套用篩選條件
     /// </summary>
@@ -93,7 +93,7 @@ public class PlayerView : MonoBehaviour
         {
             var definition = DataManager.Instance.GetItemById(item.ItemId);
             if (definition == null) continue;
-            
+
             switch (_currentFilter)
             {
                 case ItemFilter.All:
@@ -110,7 +110,7 @@ public class PlayerView : MonoBehaviour
             }
         }
     }
-    
+
     /// <summary>
     /// 更新篩選按鈕狀態（選中的變灰色不可點擊）
     /// </summary>
@@ -123,21 +123,23 @@ public class PlayerView : MonoBehaviour
         if (MonsterItemButton != null)
             MonsterItemButton.interactable = _currentFilter != ItemFilter.Monster;
     }
-    
-    public void OpenBags()
+
+    // 現有按鈕綁定的入口 → 改為透過事件
+    public void OpenBags() => PlayerInfoUIEvents.InvokeOpenBag();
+
+    // 供 PlayerInfoUI 控制器呼叫（不含移動控制）
+    public void OpenBagView()
     {
         ClearSelected();
         PlayerBag.SetActive(true);
-        _currentStartIndex = 0; // 重置到第一頁
-        _currentFilter = ItemFilter.All; // 預設顯示全部
+        _currentStartIndex = 0;
+        _currentFilter = ItemFilter.All;
         _currentItems = DataManager.Instance.CurrentPlayerData.InventoryItems;
         ApplyFilter();
         ShowBagItems();
         UpdateFilterButtonStates();
-        GameManager.Instance.SetPlayerMove(false);
-        GameManager.Instance.SetPlayerInteract(false);
     }
-    
+
     // 顯示當前頁面的物品
     private void ShowBagItems()
     {
@@ -151,12 +153,12 @@ public class PlayerView : MonoBehaviour
             UpdatePageButtons();
             return;
         }
-        
+
         // 計算當前頁面要顯示的物品範圍
         int startIndex = _currentStartIndex;
         int endIndex = Mathf.Min(startIndex + ItemsPerPage, _filteredItems.Count);
         int displayCount = endIndex - startIndex;
-        
+
         // 1. 確保 UI 數量足夠
         AdjustSlotCount(ItemsPerPage);
 
@@ -173,11 +175,11 @@ public class PlayerView : MonoBehaviour
         {
             _activeSlots[i].gameObject.SetActive(false);
         }
-        
+
         // 4. 更新分頁按鈕狀態
         UpdatePageButtons();
     }
-    
+
     // 接收來自外部的資料列表 (相容舊介面)
     public void ShowBagItems(IReadOnlyList<Item> items)
     {
@@ -186,19 +188,19 @@ public class PlayerView : MonoBehaviour
         ApplyFilter();
         ShowBagItems();
     }
-    
+
     /// <summary>
     /// 下一頁
     /// </summary>
     private void OnNextPage()
     {
         if (_filteredItems == null || _filteredItems.Count == 0) return;
-        
+
         int newStartIndex = _currentStartIndex + PageScrollAmount;
         int maxStartIndex = Mathf.Max(0, _filteredItems.Count - 1);
-        
+
         Debug.Log($"OnNextPage: current={_currentStartIndex}, new={newStartIndex}, max={maxStartIndex}, count={_filteredItems.Count}");
-        
+
         // 只要新起始位置不超過最後一個物品即可
         if (newStartIndex < _filteredItems.Count)
         {
@@ -206,18 +208,18 @@ public class PlayerView : MonoBehaviour
             ShowBagItems();
         }
     }
-    
+
     /// <summary>
     /// 上一頁
     /// </summary>
     private void OnPreviousPage()
     {
         if (_filteredItems == null || _filteredItems.Count == 0) return;
-        
+
         int newStartIndex = _currentStartIndex - PageScrollAmount;
-        
+
         Debug.Log($"OnPreviousPage: current={_currentStartIndex}, new={newStartIndex}");
-        
+
         // 允許回到 0 或更前面（會被限制在 0）
         if (_currentStartIndex > 0)
         {
@@ -225,7 +227,7 @@ public class PlayerView : MonoBehaviour
             ShowBagItems();
         }
     }
-    
+
     /// <summary>
     /// 更新分頁按鈕的啟用狀態
     /// </summary>
@@ -237,18 +239,18 @@ public class PlayerView : MonoBehaviour
             if (NextPageButton != null) NextPageButton.interactable = false;
             return;
         }
-        
+
         int maxStartIndex = Mathf.Max(0, _filteredItems.Count - ItemsPerPage);
-        
+
         // 上一頁按鈕：當起始索引 > 0 時可用
         if (PrePageButton != null)
             PrePageButton.interactable = _currentStartIndex > 0;
-        
+
         // 下一頁按鈕：當還有更多物品時可用
         if (NextPageButton != null)
             NextPageButton.interactable = _currentStartIndex < maxStartIndex;
     }
-    
+
     private void AdjustSlotCount(int targetCount)
     {
         while (_activeSlots.Count < targetCount)
@@ -259,15 +261,15 @@ public class PlayerView : MonoBehaviour
     }
     private void ShowTags(List<string> tags)
     {
-        for(int i = 0; i < tags.Count; i++)
+        for (int i = 0; i < tags.Count; i++)
         {
             string tagId = tags[i];
             string tagName = DataManager.Instance.GetTagNameByTag(tagId);
 
-            if(tagName != "")
+            if (tagName != "")
             {
                 GameObject newSlot = Instantiate(TagsPrefab, TagSlotContainer);
-                
+
                 TextMeshProUGUI textComp = newSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
                 textComp.text = tagName;
 
@@ -319,26 +321,26 @@ public class PlayerView : MonoBehaviour
         DetailDescText.text = slot._currentDefinition.Description;
         DetailPriceText.text = slot._currentData.CostPrice.ToString();
         DetailIcon.sprite = slot._targetImage.sprite;
-        switch(slot._currentDefinition.World)
+        switch (slot._currentDefinition.World)
         {
             case ItemWorld.Human:
-            WorldIcon.sprite = HumanTagSprite;
-            break;
+                WorldIcon.sprite = HumanTagSprite;
+                break;
             case ItemWorld.Monster:
-            WorldIcon.sprite = MonsterTagSprite;
-            break;
+                WorldIcon.sprite = MonsterTagSprite;
+                break;
         }
-        switch(slot._currentDefinition.Type)
+        switch (slot._currentDefinition.Type)
         {
             case ItemType.Food:
-            TypeIcon.sprite = FoodSprite;
-            break;
+                TypeIcon.sprite = FoodSprite;
+                break;
             case ItemType.Equipment:
-            TypeIcon.sprite = EquipmentSprite;
-            break;
+                TypeIcon.sprite = EquipmentSprite;
+                break;
             case ItemType.Prop:
-            TypeIcon.sprite = PropSprite;
-            break;
+                TypeIcon.sprite = PropSprite;
+                break;
         }
         // 載入對應稀有度ID的圖片
         string rarityId = slot._currentDefinition.Rarity.ToString();
@@ -367,17 +369,17 @@ public class PlayerView : MonoBehaviour
         WorldIcon.sprite = nullSprite;
         TypeIcon.sprite = nullSprite;
         RareLevelImage.sprite = nullSprite;
-        foreach(Transform child in TagSlotContainer)
+        foreach (Transform child in TagSlotContainer)
         {
             Destroy(child.gameObject);
         }
     }
-    public void CloseBags()
+    public void CloseBags() => PlayerInfoUIEvents.InvokeCloseAll();
+
+    public void CloseBagView()
     {
         PlayerBag.SetActive(false);
         ClearSelected();
-        GameManager.Instance.SetPlayerMove(true);
-        GameManager.Instance.SetPlayerInteract(true);
     }
 
 }

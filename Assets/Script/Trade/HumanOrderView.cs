@@ -60,8 +60,8 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
 
     [Header("其他")]
     [SerializeField] private Transform GuideTransform;
-    [SerializeField] private GridLayoutGroup gridLayoutGroup;
-
+    [SerializeField] private GridLayoutGroup LayoutGroupItem;
+    [SerializeField] private GridLayoutGroup LayoutGroupGrid;
     private List<BagSlot> _activeSlots = new List<BagSlot>();//背包列表
     private List<OrderSlot> _orderSlots = new List<OrderSlot>();//訂單選擇列表
     private List<BagSlot> _unmatchedSlots = new List<BagSlot>();//不符合類型物品列表
@@ -268,6 +268,13 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     }
     #endregion
     #region UpdateView
+    void ClearOnSelectGrid()
+    {
+        foreach (Transform child in LayoutGroupGrid.gameObject.transform)
+        {
+            child.gameObject.SetActive(false);
+        }
+    }
     public void ClearBagDetail()
     {
         DetailNameText.text = "";
@@ -290,6 +297,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     }
     public void ClearOrderView()
     {
+        ClearOnSelectGrid();
         OrderNameText.text = "";
         OrderDescText.text = "";
         OrderRewardText.text = "";
@@ -311,6 +319,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     }
     public void UpdateOrderView(HumanLargeOrder order)
     {
+        UpdataOnSelectGridPos(true);
         OrderNameText.text = order.OrderName;
         OrderDescText.text = order.OrderDescription;
         LoadOrderImage(order.OrderId);
@@ -319,11 +328,37 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     }
     public void UpdateOrderView(HumanSmallOrder order)
     {
+        UpdataOnSelectGridPos(false);
         OrderNameText.text = order.OrderName;
         OrderDescText.text = order.OrderDescription;
         LoadOrderImage(order.OrderId);
         SetOrderTypeIcon(order.OrderType);
         ShowOrderTags(order.OrderNeedTags);
+    }
+    //根據目前訂單類型顯示與調整放置UI的方法
+    public void UpdataOnSelectGridPos(bool IsBigOrder)
+    {
+        if (IsBigOrder)
+        {
+            LayoutGroupGrid.childAlignment = TextAnchor.UpperLeft;
+            LayoutGroupItem.childAlignment = TextAnchor.UpperLeft;
+            foreach (Transform child in LayoutGroupGrid.gameObject.transform)
+            {
+                child.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            LayoutGroupGrid.childAlignment = TextAnchor.UpperCenter;
+            LayoutGroupItem.childAlignment = TextAnchor.UpperCenter;
+            foreach (Transform child in LayoutGroupGrid.gameObject.transform)
+            {
+                child.gameObject.SetActive(false);
+            }
+            LayoutGroupGrid.gameObject.transform.GetChild(0).gameObject.SetActive(true);
+
+        }
+
     }
     private void LoadOrderImage(string orderId)
     {

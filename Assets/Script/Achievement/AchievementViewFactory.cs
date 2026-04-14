@@ -56,7 +56,7 @@ public class AchievementViewFactory : MonoBehaviour
     private void Start()
     {
         // 綁定按鈕事件
-        OpenViewButton?.onClick.AddListener(() => OpenAndRefresh());
+        OpenViewButton?.onClick.AddListener(() => PlayerInfoUIEvents.InvokeOpenAchievement());
         btnItem?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Item));
         btnTransaction?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Transaction));
         btnRecord?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Record));
@@ -191,6 +191,13 @@ public class AchievementViewFactory : MonoBehaviour
             Destroy(((MonoBehaviour)view).gameObject);
         }
         _entries.Clear();
+    }
+
+    /// <summary>關閉成就面板</summary>
+    public void ClosePanel()
+    {
+        if (AchievementPanel != null)
+            AchievementPanel.SetActive(false);
     }
 
     /// <summary>取得目前選取的分類</summary>

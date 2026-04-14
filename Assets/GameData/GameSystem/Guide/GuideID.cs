@@ -9,19 +9,32 @@ public static class GuideIDs
         public const string GuideOrderShop = "GuideOrderShop";
         public const string GuideGroceryStore = "GuideGroceryStore";
     }
-    // 面板
-    public static class Panel
-    {
-        public const string GuideRestPanel = "GuideRestPanel";
-        public const string GuideConfirmRestPanel = "GuideConfirmRestPanel";
-    }
-
     // 按鈕
     public static class Button
     {
         public const string GuideRest = "GuideRest";
         public const string GuideConfirmAfternoon = "GuideConfirmAfternoon";
+        public const string GuideSouvenirBox = "GuideSouvenirBox";
+        public const string GuideUseKey = "GuideUseKey";
     }
+
+    // 按鈕 enum（Inspector 下拉用）
+    public enum ButtonType
+    {
+        GuideRest,
+        GuideConfirmAfternoon,
+        GuideSouvenirBox,
+        GuideUseKey
+    }
+
+    public static string ToId(ButtonType type) => type switch
+    {
+        ButtonType.GuideRest => Button.GuideRest,
+        ButtonType.GuideConfirmAfternoon => Button.GuideConfirmAfternoon,
+        ButtonType.GuideSouvenirBox => Button.GuideSouvenirBox,
+        ButtonType.GuideUseKey => Button.GuideUseKey,
+        _ => type.ToString()
+    };
 
     // 對話
     public static class Dialogue

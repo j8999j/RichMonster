@@ -41,6 +41,10 @@ namespace Souvenir
             if (NextPageButton != null) NextPageButton.onClick.AddListener(OnNextPage);
         }
 
+        // 供 Unity 按鈕綁定，透過事件系統開啟（確保互斥）
+        public void RequestOpenBag() => PlayerInfoUIEvents.InvokeOpenSouvenirBag();
+        public void RequestCloseBag() => PlayerInfoUIEvents.InvokeCloseAll();
+
         public void OpenBag()
         {
             if (MainPanel != null) MainPanel.SetActive(true);

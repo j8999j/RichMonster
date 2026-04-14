@@ -26,3 +26,12 @@ public class SpicalItem
     public string ItemID;
     public bool Purchased;
 }
+public class TutorialSaveData : ISaveData
+{
+    public string UniqueID => "TutorialSaveData";
+    public int LastUpdatedDay { get; set; }
+    public int CurrentTaskIndex;
+    public int CurrentStepIndex;
+    public bool IsComplete;
+    public bool IsPurchased;
+}

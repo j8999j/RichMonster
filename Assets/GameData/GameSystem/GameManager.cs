@@ -137,10 +137,12 @@ namespace GameSystem
         }
         public void SetPlayerMove(bool CanMove)
         {
+            if (PlayerController == null) return;
             PlayerController.SetCanMove(CanMove);
         }
         public void SetPlayerInteract(bool CanInteract)
         {
+            if (PlayerController == null) return;
             PlayerController.SetCanInteract(CanInteract);
         }
 

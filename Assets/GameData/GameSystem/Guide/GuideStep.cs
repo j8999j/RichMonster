@@ -66,10 +66,10 @@ public class ShowHintAndWaitStep : GuideStep
     public override void Execute(System.Action onComplete)
     {
         onExecuteCallback?.Invoke(); // 啟動背景監聽（若有）
-        GameFlowUI.SetGameFlowTextEvent?.Invoke(hintMessage, true);
+        GuideFlowUI.SetGuideFlowTextEvent?.Invoke(hintMessage, true);
         listener.StartListen(() =>
         {
-            GameFlowUI.SetGameFlowTextEvent?.Invoke("", false);
+            GuideFlowUI.SetGuideFlowTextEvent?.Invoke("", false);
             listener.StopListen();
             onComplete?.Invoke();
         });
@@ -77,7 +77,7 @@ public class ShowHintAndWaitStep : GuideStep
 
     public override void Dispose()
     {
-        GameFlowUI.SetGameFlowTextEvent?.Invoke("", false);
+        GuideFlowUI.SetGuideFlowTextEvent?.Invoke("", false);
         listener?.StopListen();
     }
 }
@@ -124,7 +124,7 @@ public class SkippableListenStep : GuideStep
     public override void Execute(System.Action onComplete)
     {
         // 優先消費背景監聽結果
-        GameFlowUI.SetGameFlowTextEvent?.Invoke(hintMessage, true);
+        GuideFlowUI.SetGuideFlowTextEvent?.Invoke(hintMessage, true);
         if (backgroundListener != null)
         {
             if (CanSkip()) { onComplete?.Invoke(); return; }
@@ -135,7 +135,7 @@ public class SkippableListenStep : GuideStep
         if (CanSkip()) { onComplete?.Invoke(); return; }
         listener.StartListen(() =>
         {
-            GameFlowUI.SetGameFlowTextEvent?.Invoke("", false);
+            GuideFlowUI.SetGuideFlowTextEvent?.Invoke("", false);
             listener.StopListen();
             onComplete?.Invoke();
         });
@@ -143,36 +143,38 @@ public class SkippableListenStep : GuideStep
 
     public override void Dispose()
     {
-        GameFlowUI.SetGameFlowTextEvent?.Invoke("", false);
+        GuideFlowUI.SetGuideFlowTextEvent?.Invoke("", false);
         listener?.StopListen();
         backgroundListener?.Dispose();
     }
 }
 
 // ─────────────────────────────────────────────────────
-/// <summary>強制開啟 UI 面板並等待指定按鈕點擊</summary>
+/// <summary>強制開啟 UI 面板並等待指定按鈕點擊，同時在指定螢幕座標顯示引導圖片</summary>
 public class ForceUIButtonStep : GuideStep
 {
-    private readonly string panelId;
+    private readonly Vector2 guidePosition;
     private readonly string buttonId;
     private readonly string hintMessage;
     private ButtonClickListener listener;
 
-    public ForceUIButtonStep(string panelId, string buttonId, string hintMessage)
+    public ForceUIButtonStep(Vector2 guidePosition, string buttonId, string hintMessage)
     {
-        this.panelId      = panelId;
-        this.buttonId     = buttonId;
-        this.hintMessage  = hintMessage;
+        this.guidePosition = guidePosition;
+        this.buttonId      = buttonId;
+        this.hintMessage   = hintMessage;
     }
 
     public override void Execute(System.Action onComplete)
     {
-        GameFlowUI.SetGameFlowTextEvent?.Invoke(hintMessage, true);
+        GuideFlowUI.SetGuideFlowTextEvent?.Invoke(hintMessage, true);
+        GuideFlowUI.SetGuideImageEvent?.Invoke(guidePosition, true);
 
         listener = new ButtonClickListener(buttonId);
         listener.StartListen(() =>
         {
-            GameFlowUI.SetGameFlowTextEvent?.Invoke("", false);
+            GuideFlowUI.SetGuideImageEvent?.Invoke(Vector2.zero, false);
+            GuideFlowUI.SetGuideFlowTextEvent?.Invoke("", false);
             listener.StopListen();
             onComplete?.Invoke();
         });
@@ -181,7 +183,8 @@ public class ForceUIButtonStep : GuideStep
     public override void Dispose()
     {
         listener?.StopListen();
-        GameFlowUI.SetGameFlowTextEvent?.Invoke("", false);
+        GuideFlowUI.SetGuideImageEvent?.Invoke(Vector2.zero, false);
+        GuideFlowUI.SetGuideFlowTextEvent?.Invoke("", false);
     }
 }
 // ============================================================

@@ -10,19 +10,27 @@ public abstract class GuideTask
     private List<GuideStep> steps;
     private int currentStepIndex = 0;
     private Action onTaskComplete;
+    private Action onStepCompleted;
+    public int CurrentStepIndex => currentStepIndex;
     public bool IsCompleteTask { get; private set; } = false;
     /// <summary>子類在此建構並回傳步驟序列</summary>
     protected abstract List<GuideStep> BuildSteps();
 
-    public void Start(Action onComplete)
+    public void Start(Action onComplete, int startFromStep = 0, Action onStepComplete = null)
     {
         onTaskComplete = onComplete;
-        currentStepIndex = 0;
+        onStepCompleted = onStepComplete;
         steps = BuildSteps();
         for (int i = 0; i < steps.Count; i++)
             steps[i].StepIndex = i;
+        currentStepIndex = startFromStep;
+        if (startFromStep > 0)
+            OnResume(startFromStep);
         ExecuteCurrentStep();
     }
+
+    /// <summary>子類可覆寫，在從中途恢復時執行特定初始化</summary>
+    protected virtual void OnResume(int fromStep) { }
 
     private void ExecuteCurrentStep()
     {
@@ -41,6 +49,7 @@ public abstract class GuideTask
     {
         steps[currentStepIndex].Dispose();
         currentStepIndex++;
+        onStepCompleted?.Invoke();
         ExecuteCurrentStep();
     }
 
