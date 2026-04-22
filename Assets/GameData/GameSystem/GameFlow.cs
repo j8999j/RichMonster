@@ -33,17 +33,8 @@ public class GameFlow
         DataManager.Instance.ClearOrderProgress();
         DataManager.Instance.ModifyCurrentDayPhase(newPhase);
         GameFlowEvents.InvokeDayPhaseChanged(newPhase);
-        if (newPhase == DayPhase.Night)
+        if (newPhase == DayPhase.HumanDay)
         {
-            DataManager.Instance.SetIsTrade(false);
-        }
-        else if(newPhase == DayPhase.AfterNoon)
-        {
-            DataManager.Instance.SetIsTrade(true);
-        }
-        else if(newPhase == DayPhase.HumanDay)
-        {
-            DataManager.Instance.SetIsTrade(false);
             GameFlowEvents.InvokeDayChanged(CurrentDay);
             AchievementEvents.DayEndGold(_currentPlayerData.Gold);
         }
@@ -51,19 +42,22 @@ public class GameFlow
     }
     public void StartTutorial()
     {
-        if(_currentPlayerData.DaysPlayed == 0)
+        var tutorialData = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>("TutorialSaveData");
+        if (!tutorialData.IsComplete && _currentPlayerData.DaysPlayed <= 1)
         {
             _tutorialFlow.Start();
         }
     }
     public async Task SaveGameAsync()
     {
-        if (DataManager.Instance.OnPlayerDataChanged)
-        {
-            await SaveManager.Instance.SaveGameAsync(_currentPlayerData as PlayerData, _saveSlot);
-            await DataManager.Instance.SaveAchievementAsync();
-            DataManager.Instance.SetPlayerDataChanged(false);
-        }
+        if (!DataManager.Instance.OnPlayerDataChanged) return;
+
+        // 先清旗標再 await，寫檔期間若再有變更會重新把旗標標 dirty，
+        // 下一次呼叫就會把那筆變更補寫進磁碟，避免被誤判為「已存」。
+        DataManager.Instance.SetPlayerDataChanged(false);
+
+        await SaveManager.Instance.SaveGameAsync(_currentPlayerData as PlayerData, _saveSlot);
+        await DataManager.Instance.SaveAchievementAsync();
     }
 }
 

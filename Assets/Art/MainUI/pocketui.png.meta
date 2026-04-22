@@ -118,7 +118,7 @@ TextureImporter:
         width: 72
         height: 25
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -131,7 +131,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pocketui_1
+      name: MonsterTag
       rect:
         serializedVersion: 2
         x: 108
@@ -139,7 +139,7 @@ TextureImporter:
         width: 72
         height: 25
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -152,7 +152,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pocketui_2
+      name: HumanTag
       rect:
         serializedVersion: 2
         x: 23
@@ -160,7 +160,7 @@ TextureImporter:
         width: 72
         height: 25
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -183,9 +183,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      HumanTag: -2124447385
+      MonsterTag: -925365888
       pocketui_0: -451875897
-      pocketui_1: -925365888
-      pocketui_2: -2124447385
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

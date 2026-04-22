@@ -116,7 +116,7 @@ namespace Souvenir
         private List<Type> FindAllSouvenirTypes<T>()
         {
             var baseType = typeof(T);
-            
+
             return AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(assembly =>
                 {
@@ -183,21 +183,39 @@ namespace Souvenir
         }
 
         /// <summary>
-        /// 在每局遊戲開始時呼叫，從存檔載入已持有的紀念品清單
+        /// 判斷指定成就紀念品是否已在圖鑑存檔（Book）中解鎖（玩家歷史購買紀錄）。
+        /// 商店 UI 顯示與購買前檢查使用此方法，語意為「已用點數兌換過」。
+        /// </summary>
+        public bool IsPurchased(string souvenirId)
+        {
+            var bookData = DataManager.Instance.GetBookData();
+            return bookData?.UnLockAchievementSouvenirID != null
+                && bookData.UnLockAchievementSouvenirID.Contains(souvenirId);
+        }
+
+        /// <summary>
+        /// 在每局遊戲開始時呼叫，從存檔載入已持有的紀念品清單。
+        /// 成就紀念品：讀取 PlayerData.HoldAchievementSouvenirID（本局存檔建立當下的靜態快照）。
+        /// 特殊紀念品：讀取 BookData.UnLockSpecialSouvenirID（跨局 Book 存檔）。
         /// </summary>
         public void SnapshotOwnedSouvenirs()
         {
             _ownedSouvenirIds.Clear();
             var bookData = DataManager.Instance.GetBookData();
+            var playerData = DataManager.Instance.CurrentPlayerData;
+
+            // 成就紀念品：以本局快照 HoldAchievementSouvenirID 為準
+            if (playerData?.HoldAchievementSouvenirID != null)
+            {
+                foreach (var id in playerData.HoldAchievementSouvenirID)
+                {
+                    _ownedSouvenirIds.Add(id);
+                }
+            }
+
             if (bookData != null)
             {
-                if (bookData.UnLockAchievementSouvenirID != null)
-                {
-                    foreach (var id in bookData.UnLockAchievementSouvenirID)
-                    {
-                        _ownedSouvenirIds.Add(id);
-                    }
-                }
+                // 特殊紀念品：維持讀 Book 存檔
                 if (bookData.UnLockSpecialSouvenirID != null)
                 {
                     foreach (var id in bookData.UnLockSpecialSouvenirID)
@@ -236,7 +254,19 @@ namespace Souvenir
                     }
                 }
             }
-            Debug.Log($"[SouvenirManager] 已從圖鑑存檔載入快照，目前持有 {_ownedSouvenirIds.Count} 個紀念品");
+            Debug.Log($"[SouvenirManager] 已載入快照，目前持有 {_ownedSouvenirIds.Count} 個紀念品");
+        }
+
+        /// <summary>
+        /// 重新以當前 PlayerData + BookData 快照並重訂閱事件。
+        /// 在載入存檔 / 開新局後、進入場景前呼叫，確保成就紀念品效果符合本局 HoldAchievementSouvenirID。
+        /// </summary>
+        public void ResnapshotForCurrentGame()
+        {
+            if (!_isInitialized) return;
+            UnregisterAll();
+            SnapshotOwnedSouvenirs();
+            RegisterAll();
         }
 
         private void ForEachOwnedSouvenir<T>(Action<T> action) where T : class
@@ -333,7 +363,8 @@ namespace Souvenir
         /// </summary>
         public bool TryPurchaseSouvenir(string souvenirId)
         {
-            if (IsOwned(souvenirId))
+            // 以 Book 存檔為準檢查重複購買（商店在單局外開啟，_ownedSouvenirIds 無法反映購買歷史）
+            if (IsPurchased(souvenirId))
             {
                 Debug.LogWarning($"[SouvenirShop] 購買失敗：已經擁有紀念品 {souvenirId}");
                 return false;
@@ -344,8 +375,7 @@ namespace Souvenir
                 int remainingPoints = GetRemainingPoints();
                 if (remainingPoints >= ach.Cost)
                 {
-                    // 購買成功
-                    _ownedSouvenirIds.Add(souvenirId);
+                    // 僅寫入 Book 存檔；_ownedSouvenirIds 由下一次開新局時的 ResnapshotForCurrentGame 接手
                     var bookData = DataManager.Instance.GetBookData();
                     if (bookData != null)
                     {
@@ -359,7 +389,7 @@ namespace Souvenir
                         }
                     }
 
-                    Debug.Log($"[SouvenirShop] 購買紀念品 {souvenirId} 成功！花費 {ach.Cost} 點，剩餘 {GetRemainingPoints()} 點");
+                    Debug.Log($"[SouvenirShop] 購買 {souvenirId} 成功（花費 {ach.Cost} 點），下次開新局時會被納入 HoldAchievementSouvenirID");
                     return true;
                 }
                 else
@@ -371,7 +401,7 @@ namespace Souvenir
             {
                 Debug.LogWarning($"[SouvenirShop] 購買失敗：找不到對應的成就紀念品 {souvenirId} (特殊紀念品無法透過商店購買)");
             }
-            
+
             return false;
         }
 
@@ -451,11 +481,11 @@ namespace Souvenir
         /// <summary>
         /// 建立商店視覺資訊列表，讓實作 IShopVisualModifier 的紀念品填入折扣標籤等視覺資料
         /// </summary>
-        public System.Collections.Generic.List<ShelfSlotVisualInfo> BuildShopVisualInfos(
+        public List<ShelfSlotVisualInfo> BuildShopVisualInfos(
             string shopId,
-            System.Collections.Generic.List<Shop.ShelfSlot> items)
+            List<Shop.ShelfSlot> items)
         {
-            var visualInfos = new System.Collections.Generic.List<ShelfSlotVisualInfo>();
+            var visualInfos = new List<ShelfSlotVisualInfo>();
             if (items == null) return visualInfos;
             foreach (var slot in items)
             {
@@ -463,10 +493,10 @@ namespace Souvenir
                 visualInfos.Add(info);
                 slot.VisualInfo = info;
             }
-            
+
             // 讓所有符合條件且玩家已持有的紀念品填入視覺資訊
             ForEachOwnedSouvenir<IShopVisualModifier>(vm => vm.ModifyVisual(shopId, visualInfos));
-            
+
             return visualInfos;
         }
 
@@ -512,7 +542,7 @@ namespace Souvenir
         {
             bool isFree = false;
             // IFreeScratchCardProvider 查詢
-            ForEachOwnedSouvenir<IFreeScratchCardProvider>(provider => 
+            ForEachOwnedSouvenir<IFreeScratchCardProvider>(provider =>
             {
                 if (provider.IsScratchCardFree())
                 {
@@ -528,7 +558,7 @@ namespace Souvenir
         public int GetExtraBagCapacity()
         {
             int extraCapacity = 0;
-            ForEachOwnedSouvenir<IBagCapacityProvider>(provider => 
+            ForEachOwnedSouvenir<IBagCapacityProvider>(provider =>
             {
                 extraCapacity += provider.GetExtraCapacity();
             });

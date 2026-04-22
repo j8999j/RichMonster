@@ -1,0 +1,217 @@
+using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine.UI;
+using TMPro;
+using Shop;
+using System;
+
+/// <summary>
+/// 妖界食堂 YokaiEat 使用的 ShopView：結構參考 ShopUIView，
+/// 詳情面板下方有統一的購買按鈕，玩家須先點選商品再按購買。
+/// </summary>
+public class YokaiEatView : ShopViewBase
+{
+    [Header("Root UI")]
+    public GameObject PanelRoot;
+    public Transform SlotContainer;
+    public YokaiEatSlot SlotPrefab;
+    public int TargetLongEdgeSize = 100;
+
+    [Header("Detail Panel")]
+    public GameObject DetailRoot;
+    public Image DetailIcon;
+    public Image WorldIcon;
+    public Image TypeIcon;
+    public Image RarityIcon;
+    public Sprite PropSprite;
+    public Sprite FoodSprite;
+    public Sprite EquipmentSprite;
+    public Sprite MonsterTagSprite;
+    public Sprite HumanTagSprite;
+    public Sprite DetailIconSprite_Empty;
+    public TextMeshProUGUI DetailNameText;
+    public TextMeshProUGUI DetailDescText;
+    public TextMeshProUGUI DetailPriceText;
+    public Button CloseButton;
+    public GameObject TagsPrefab;
+    public Transform ItemTagCotainer;
+
+    [Header("Buy Button (Detail Panel)")]
+    public Button BuyButton;
+
+    void Awake()
+    {
+        if (BuyButton != null) BuyButton.onClick.AddListener(OnBuyButtonClicked);
+        if (CloseButton != null) CloseButton.onClick.AddListener(OnCloseButtonClicked);
+    }
+
+    public override bool IsVisible => PanelRoot.activeSelf;
+
+    public override void SetVisible()
+    {
+        PanelisVisible = !PanelisVisible;
+        ClearDetailPanel();
+        PanelRoot.SetActive(PanelisVisible);
+        DetailRoot.SetActive(false);
+        CloseButton.gameObject.SetActive(PanelisVisible);
+    }
+
+    public override void ShowItems(List<ShelfSlot> items, Action<ShelfSlot> onBuyRequest)
+    {
+        _onBuyRequestCallback = onBuyRequest;
+        AdjustSlotCount(items.Count);
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            _activeSlots[i].Setup(items[i], OnSlotSelected);
+            _activeSlots[i].gameObject.SetActive(true);
+        }
+
+        for (int i = items.Count; i < _activeSlots.Count; i++)
+        {
+            _activeSlots[i].gameObject.SetActive(false);
+        }
+    }
+
+    public override void RefreshAll()
+    {
+        foreach (var slot in _activeSlots)
+        {
+            if (slot.gameObject.activeSelf) slot.RefreshView();
+        }
+        UpdateButtonState();
+    }
+
+    private void AdjustSlotCount(int targetCount)
+    {
+        while (_activeSlots.Count < targetCount)
+        {
+            YokaiEatSlot newSlot = Instantiate(SlotPrefab, SlotContainer);
+            _activeSlots.Add(newSlot);
+        }
+    }
+
+    private void OnSlotSelected(ShopSlotBase selectedSlot)
+    {
+        _currentSelectedData = selectedSlot._currentData;
+        UpdateDetailPanel(selectedSlot);
+    }
+
+    private void UpdateDetailPanel(ShopSlotBase slotUI)
+    {
+        foreach (Transform child in ItemTagCotainer)
+        {
+            Destroy(child.gameObject);
+        }
+        if (DetailRoot != null) DetailRoot.SetActive(true);
+        var data = slotUI._currentData;
+        var ItemData = data.Item;
+
+        if (DetailNameText != null) DetailNameText.text = ItemData.Name;
+        if (DetailDescText != null) DetailDescText.text = ItemData.Description;
+        if (DetailPriceText != null) DetailPriceText.text = $"${data.Price}";
+        if (WorldIcon != null) WorldIcon.sprite = ItemData.World == ItemWorld.Human ? HumanTagSprite : MonsterTagSprite;
+        if (TypeIcon != null) TypeIcon.sprite = ItemData.Type == ItemType.Prop ? PropSprite : ItemData.Type == ItemType.Food ? FoodSprite : EquipmentSprite;
+        if (DetailIcon != null) DetailIcon.sprite = slotUI._targetImage.sprite;
+        SpriteLoader.AdjustImageScale(DetailIcon, TargetLongEdgeSize);
+        UpdateButtonState();
+        string rarityId = ItemData.Rarity.ToString();
+        SpriteLoader.LoadSpriteAsync(rarityId, sprite =>
+        {
+            if (RarityIcon == null) return;
+            RarityIcon.sprite = sprite != null ? sprite : DetailIconSprite_Empty;
+        });
+        ShowTags(ItemData.Tags);
+    }
+
+    private void UpdateButtonState()
+    {
+        if (_currentSelectedData == null) return;
+        if (BuyButton == null) return;
+
+        BuyButton.gameObject.SetActive(!_currentSelectedData.Purchased);
+    }
+
+    private void ShowTags(List<string> tags)
+    {
+        if (tags == null || TagsPrefab == null || ItemTagCotainer == null) return;
+
+        for (int i = 0; i < tags.Count; i++)
+        {
+            string tagId = tags[i];
+            string tagName = DataManager.Instance.GetTagNameByTag(tagId);
+
+            if (tagName != "")
+            {
+                GameObject newSlot = Instantiate(TagsPrefab, ItemTagCotainer);
+
+                TextMeshProUGUI textComp = newSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+                textComp.text = tagName;
+
+                GameObject imgObj = new GameObject("TagImage");
+                imgObj.transform.SetParent(newSlot.transform, false);
+                Image tagImage = imgObj.AddComponent<Image>();
+                imgObj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                imgObj.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 65);
+
+                imgObj.SetActive(false);
+                textComp.gameObject.SetActive(true);
+
+                Image capturedImage = tagImage;
+                TextMeshProUGUI capturedText = textComp;
+                GameObject capturedImgObj = imgObj;
+
+                SpriteLoader.LoadSpriteAsync(tagId, sprite =>
+                {
+                    if (capturedImgObj == null) return;
+                    if (sprite != null)
+                    {
+                        capturedImage.sprite = sprite;
+                        capturedImage.SetNativeSize();
+                        RectTransform rt = capturedImage.GetComponent<RectTransform>();
+                        float ratio = 125f / rt.sizeDelta.x;
+                        rt.sizeDelta = new Vector2(125f, rt.sizeDelta.y * ratio);
+                        capturedImgObj.SetActive(true);
+                        capturedText.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        capturedImgObj.SetActive(false);
+                        capturedText.gameObject.SetActive(true);
+                    }
+                });
+            }
+        }
+    }
+
+    private void ClearDetailPanel()
+    {
+        foreach (Transform child in ItemTagCotainer)
+        {
+            Destroy(child.gameObject);
+        }
+        if (BuyButton != null) BuyButton.gameObject.SetActive(false);
+        DetailNameText.text = "";
+        DetailDescText.text = "";
+        DetailPriceText.text = "";
+        WorldIcon.sprite = DetailIconSprite_Empty;
+        TypeIcon.sprite = DetailIconSprite_Empty;
+        DetailIcon.sprite = DetailIconSprite_Empty;
+        RarityIcon.sprite = DetailIconSprite_Empty;
+        _currentSelectedData = null;
+    }
+
+    private void OnBuyButtonClicked()
+    {
+        if (_currentSelectedData != null)
+        {
+            _onBuyRequestCallback?.Invoke(_currentSelectedData);
+        }
+    }
+
+    private void OnCloseButtonClicked()
+    {
+        SetVisible();
+        InvokeCloseShopUI();
+    }
+}

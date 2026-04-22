@@ -131,13 +131,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GhostflameSearedPorkChop
+      name: GhostflameSearedPorkChop_1
       rect:
         serializedVersion: 2
-        x: 208
-        y: 277
-        width: 65
-        height: 70
+        x: 213
+        y: 282
+        width: 60
+        height: 65
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -248,7 +248,7 @@ TextureImporter:
     nameFileIdTable:
       BullDemonKingBracers: -402002626
       DownJacket: -1839319788
-      GhostflameSearedPorkChop: -940357673
+      GhostflameSearedPorkChop_1: -940357673
       HellfireRamen: 313940296
       SoupForgetfulness: 598723603
       TenguFeatherFan: 781927508

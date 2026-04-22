@@ -27,6 +27,11 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
     }
     public void Interact()
     {
+        if (GameManager.Instance.IsPlayerMoveLocked(ID))
+        {
+            return;
+        }
+
         LoadGame();
         if (ShopView != null)
         {
@@ -35,7 +40,17 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
             {
                 ShopView.IsPlayView();
             }
+            GameManager.Instance.LockPlayerMove(ID);
         }
+    }
+
+    public void ClosePanel()
+    {
+        if (ShopView != null)
+        {
+            ShopView.Close();
+        }
+        GameManager.Instance.UnlockPlayerMove(ID);
     }
 
     private void Awake()
@@ -46,6 +61,7 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
             ShopView.OnLeaveClicked    += ExitGame;
             ShopView.OnFail            += HandleFail;
             ShopView.OnItemDroppedToStart += HandleItemDropped;
+            ShopView.OnCloseClicked    += ClosePanel;
         }
     }
     private void OnDestroy()
@@ -56,6 +72,7 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
             ShopView.OnLeaveClicked    -= ExitGame;
             ShopView.OnFail            -= HandleFail;
             ShopView.OnItemDroppedToStart -= HandleItemDropped;
+            ShopView.OnCloseClicked    -= ClosePanel;
         }
     }
     private void LoadGame()
@@ -107,6 +124,7 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
 
         if (ShopView != null) ShopView.ClearRewards();
         SaveGame();
+        GameManager.Instance.UnlockPlayerMove(ID);
     }
 
     /// <summary>
@@ -309,6 +327,7 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
             ShopView.Close();
         }
         SaveGame();
+        GameManager.Instance.UnlockPlayerMove(ID);
     }
     public void ShowPrompt()
     {

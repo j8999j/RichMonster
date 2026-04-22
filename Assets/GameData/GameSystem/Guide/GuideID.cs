@@ -16,6 +16,9 @@ public static class GuideIDs
         public const string GuideConfirmAfternoon = "GuideConfirmAfternoon";
         public const string GuideSouvenirBox = "GuideSouvenirBox";
         public const string GuideUseKey = "GuideUseKey";
+        public const string GuideBook = "GuideBook";           // 主圖鑑
+        public const string GuideShopBook = "GuideShopBook"; // 商店內圖鑑
+        public const string GuideStartReception = "GuideStartReception"; // 開始接待
     }
 
     // 按鈕 enum（Inspector 下拉用）
@@ -24,7 +27,10 @@ public static class GuideIDs
         GuideRest,
         GuideConfirmAfternoon,
         GuideSouvenirBox,
-        GuideUseKey
+        GuideUseKey,
+        GuideBook,
+        GuideShopBook,
+        GuideStartReception
     }
 
     public static string ToId(ButtonType type) => type switch
@@ -33,6 +39,9 @@ public static class GuideIDs
         ButtonType.GuideConfirmAfternoon => Button.GuideConfirmAfternoon,
         ButtonType.GuideSouvenirBox => Button.GuideSouvenirBox,
         ButtonType.GuideUseKey => Button.GuideUseKey,
+        ButtonType.GuideBook => Button.GuideBook,
+        ButtonType.GuideShopBook => Button.GuideShopBook,
+        ButtonType.GuideStartReception => Button.GuideStartReception,
         _ => type.ToString()
     };
 

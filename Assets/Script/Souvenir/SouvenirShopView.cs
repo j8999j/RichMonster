@@ -119,8 +119,8 @@ public class SouvenirShopView : MonoBehaviour
         for (int i = 0; i < displayCount; i++)
         {
             var data = _catalogItems[startIndex + i];
-            bool isOwned = SouvenirManager.Instance.IsOwned(data.SouvenirID);
-            
+            bool isOwned = SouvenirManager.Instance.IsPurchased(data.SouvenirID);
+
             _spawnedSlots[i].Setup(data, isOwned, OnSlotClicked);
             _spawnedSlots[i].gameObject.SetActive(true);
         }
@@ -200,7 +200,7 @@ public class SouvenirShopView : MonoBehaviour
         
         var data = _currentSelectedSlot.CurrentData;
 
-        bool isOwned = SouvenirManager.Instance.IsOwned(data.SouvenirID);
+        bool isOwned = SouvenirManager.Instance.IsPurchased(data.SouvenirID);
         int myPoints = SouvenirManager.Instance.GetRemainingPoints();
         bool canAfford = myPoints >= data.PointsFee;
 

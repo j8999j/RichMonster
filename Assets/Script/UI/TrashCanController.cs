@@ -11,9 +11,7 @@ public class TrashCanController : MonoBehaviour, IInteractable, IMapGuideTarget
     public GameObject Prompt;
     public string ID => "TrashCan";
     [Header("設定")]
-    [Tooltip("是否只顯示人類世界的物品 (依需求調整)")]
     public bool OnlyHumanWorld = true;
-
     private Item _pendingDiscardItem;
     private TradeSlot _pendingDiscardSlot;
     public void SetMapGuide()
@@ -53,13 +51,20 @@ public class TrashCanController : MonoBehaviour, IInteractable, IMapGuideTarget
     /// </summary>
     public void Interact()
     {
-        OpenTrashCan();
-        GameManager.Instance.SetPlayerMove(!GameManager.Instance.GetPlayerMove());
+        if (GameManager.Instance.IsPlayerMoveLocked("TrashCan"))
+        {
+            ClosePanel();
+        }
+        else
+        {
+            OpenTrashCan();
+            GameManager.Instance.LockPlayerMove("TrashCan");
+        }
     }
     public void ClosePanel()
     {
         View.CloseUI();
-        GameManager.Instance.SetPlayerMove(true);
+        GameManager.Instance.UnlockPlayerMove("TrashCan");
     }
 
     public void ShowPrompt()
@@ -82,15 +87,12 @@ public class TrashCanController : MonoBehaviour, IInteractable, IMapGuideTarget
         if (items == null) return;
 
         // 根據設定過濾物品
-        List<Item> displayItems = items.ToList();
-        if (OnlyHumanWorld)
+        ItemWorld targetWorld = OnlyHumanWorld ? ItemWorld.Human : ItemWorld.Monster;
+        List<Item> displayItems = items.Where(item =>
         {
-            displayItems = items.Where(item =>
-            {
-                var definition = DataManager.Instance.GetItemById(item.ItemId);
-                return definition != null && definition.World == ItemWorld.Human;
-            }).ToList();
-        }
+            var definition = DataManager.Instance.GetItemById(item.ItemId);
+            return definition != null && definition.World == targetWorld;
+        }).ToList();
 
         View.ShowBagItems(displayItems);
     }

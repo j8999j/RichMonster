@@ -10,6 +10,7 @@ public class GuideButton : MonoBehaviour, IGuideButton
 {
     [SerializeField] private GuideIDs.ButtonType buttonType;
     public string ButtonId => GuideIDs.ToId(buttonType);
+    public GameObject ButtonObject => gameObject;
     public event Action<string> OnClicked;
     void OnEnable()
     {

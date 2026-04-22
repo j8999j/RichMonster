@@ -709,7 +709,7 @@ public class DataManager : Singleton<DataManager>
     #endregion
 
     #region Player Save/Load (玩家存檔/讀取)
-    
+
     /// <summary>
     /// 非同步儲存目前玩家資料至指定槽位
     /// </summary>
@@ -860,7 +860,6 @@ public class DataManager : Singleton<DataManager>
         if (_currentPlayerData == null) return;
         _currentPlayerData.IsTrade = value;
         OnPlayerDataChanged = true;
-        AdjustUpdateView();
     }
 
     /// <summary>
@@ -1037,23 +1036,23 @@ public class DataManager : Singleton<DataManager>
     /// </summary>
     private void AdjustUpdateView()
     {
-        if(_currentPlayerData.PlayingStatus == DayPhase.HumanDay && _currentPlayerData.IsTrade == true)
+        if (_currentPlayerData.PlayingStatus == DayPhase.HumanDay && _currentPlayerData.IsTrade == true)
         {
             PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed, _currentPlayerData.Gold, _currentPlayerData.PlayingStatus);
         }
-        else if(_currentPlayerData.PlayingStatus == DayPhase.HumanDay && _currentPlayerData.IsTrade == false)
+        else if (_currentPlayerData.PlayingStatus == DayPhase.HumanDay && _currentPlayerData.IsTrade == false)
         {
             PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed, _currentPlayerData.Gold, _currentPlayerData.PlayingStatus);
         }
-        else if(_currentPlayerData.PlayingStatus == DayPhase.AfterNoon)
+        else if (_currentPlayerData.PlayingStatus == DayPhase.AfterNoon)
         {
             PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed, _currentPlayerData.Gold, _currentPlayerData.PlayingStatus);
         }
-        else if(_currentPlayerData.PlayingStatus == DayPhase.Night && _currentPlayerData.IsTrade == true)
+        else if (_currentPlayerData.PlayingStatus == DayPhase.Night && _currentPlayerData.IsTrade == true)
         {
             PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed - 1, _currentPlayerData.MonsterGold, _currentPlayerData.PlayingStatus);
         }
-        else if(_currentPlayerData.PlayingStatus == DayPhase.Night && _currentPlayerData.IsTrade == false)
+        else if (_currentPlayerData.PlayingStatus == DayPhase.Night && _currentPlayerData.IsTrade == false)
         {
             PlayerMainViewUpdate?.Invoke(_currentPlayerData.DaysPlayed - 1, _currentPlayerData.MonsterGold, _currentPlayerData.PlayingStatus);
         }

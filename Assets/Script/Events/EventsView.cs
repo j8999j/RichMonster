@@ -12,6 +12,7 @@ public class EventsView : MonoBehaviour
     public GameObject NewsPanel;
     public GameObject MoreDetailPanel;
     public Image EventsImage;
+    public Sprite NullSprite;
     public TextMeshProUGUI DetailTitleText; // 顯示詳細資訊的標題
     public TextMeshProUGUI DetailContentText; // 顯示詳細資訊的內容
 
@@ -205,6 +206,21 @@ public class EventsView : MonoBehaviour
                     }
                 }
 
+                // 載入對應事件 ID 的圖片
+                if (AllNewsImage != null && i < AllNewsImage.Count && AllNewsImage[i] != null)
+                {
+                    Image targetImage = AllNewsImage[i];
+                    float targetSize = (i == 0) ? 600f : 250f;
+                    SpriteLoader.LoadSpriteAsync(currentEvent.Id, sprite =>
+                    {
+                        if (targetImage != null)
+                        {
+                            targetImage.sprite = sprite != null ? sprite : NullSprite;
+                            SpriteLoader.AdjustImageScale(targetImage, targetSize);
+                        }
+                    });
+                }
+
                 btn.onClick.AddListener(() =>
                 {
                     OnGameEventClicked(currentEvent);
@@ -220,6 +236,10 @@ public class EventsView : MonoBehaviour
                 if (AllNewsDetail != null && i < AllNewsDetail.Count)
                 {
                     AllNewsDetail[i].text = "";
+                }
+                if (AllNewsImage != null && i < AllNewsImage.Count && AllNewsImage[i] != null)
+                {
+                    AllNewsImage[i].sprite = NullSprite;
                 }
                 btn.gameObject.SetActive(false);
             }
@@ -253,6 +273,18 @@ public class EventsView : MonoBehaviour
 
             if (DetailTitleText != null) DetailTitleText.text = gameEvent.Name;
             if (DetailContentText != null) DetailContentText.text = gameEvent.EventDescription;
+
+            if (EventsImage != null)
+            {
+                SpriteLoader.LoadSpriteAsync(gameEvent.Id, sprite =>
+                {
+                    if (EventsImage != null)
+                    {
+                        EventsImage.sprite = sprite != null ? sprite : NullSprite;
+                        SpriteLoader.AdjustImageScale(EventsImage, 566f);
+                    }
+                });
+            }
         }
     }
     public void CloseMoreDetailPanel()

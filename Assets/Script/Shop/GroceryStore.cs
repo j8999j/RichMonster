@@ -30,6 +30,12 @@ namespace Shop
         };
         protected override void OnInteract()
         {
+            if (GameManager.Instance.IsPlayerMoveLocked("GroceryStore"))
+            {
+                _shopUIView.SetVisible();
+                GameManager.Instance.UnlockPlayerMove("GroceryStore");
+                return;
+            }
             var CurrentDay = GameManager.Instance.gameFlow.CurrentDay;
             var items = SyncPurchaseState(GenerateTodayShopItems(CurrentDay));
             items = ApplyPriceFactor(items);
@@ -43,12 +49,12 @@ namespace Shop
 
             }
             _shopUIView.SetVisible();
-            GameManager.Instance.SetPlayerMove(!GameManager.Instance.GetPlayerMove());
+            GameManager.Instance.LockPlayerMove("GroceryStore");
         }
         private async void EndInteract()
         {
             await GameManager.Instance.gameFlow.SaveGameAsync();
-            GameManager.Instance.SetPlayerMove(true);
+            GameManager.Instance.UnlockPlayerMove("GroceryStore");
         }
         private void OnPlayerTryToBuyItem(ShelfSlot slotData)
         {

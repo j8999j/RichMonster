@@ -19,29 +19,49 @@ namespace Souvenir
         #region ISouvenirInteractive 實作
 
         public bool HasInteraction => true;
-        public string InteractionButtonText => "使用";
+        public string InteractionButtonText =>
+            IsReturnHomeState() ? "回家休息" : "使用";
 
         public void OnInteraction()
         {
-            if (DataManager.Instance.CurrentPlayerData.PlayingStatus == DayPhase.AfterNoon)
+            var player = DataManager.Instance.CurrentPlayerData;
+            if (player.PlayingStatus == DayPhase.AfterNoon)
             {
+                PlayerInfoUIEvents.InvokeCloseAll(); // 關閉隨身包以解除玩家鎖定
                 GameManager.Instance.gameFlow.NextDay();
                 GameManager.Instance.GoToMonsterScene();
+                DataManager.Instance.SetIsTrade(false);
+            }
+            else if (IsReturnHomeState())
+            {
+                PlayerInfoUIEvents.InvokeCloseAll();
+                GameManager.Instance.gameFlow.SwitchGameStageAndSave(DayPhase.HumanDay);
+                GameManager.Instance.GoToHumanScene();
             }
             else
             {
-                UnityEngine.Debug.Log("[Sou_key] 鑰匙只能在黃昏（AfterNoon）階段使用。");
+                UnityEngine.Debug.Log("[Sou_key] 目前階段無法使用鑰匙（黃昏可前往妖界；夜晚完成交易後可回家休息）。");
             }
         }
 
         /// <summary>
-        /// 黃昏鑰匙僅在黃昏（AfterNoon）階段顯示互動按鈕
+        /// 黃昏階段可前往妖界；夜晚且已完成交易後可回家休息。
         /// </summary>
         public bool CanShowInteractionButton()
         {
-            return DataManager.Instance != null
-                && DataManager.Instance.CurrentPlayerData != null
-                && DataManager.Instance.CurrentPlayerData.PlayingStatus == DayPhase.AfterNoon;
+            if (DataManager.Instance == null || DataManager.Instance.CurrentPlayerData == null)
+                return false;
+            var player = DataManager.Instance.CurrentPlayerData;
+            return player.PlayingStatus == DayPhase.AfterNoon || IsReturnHomeState();
+        }
+
+        /// <summary>夜晚且已完成交易（IsTrade==true）。</summary>
+        private static bool IsReturnHomeState()
+        {
+            var player = DataManager.Instance?.CurrentPlayerData;
+            return player != null
+                && player.PlayingStatus == DayPhase.Night
+                && player.IsTrade;
         }
         #endregion
     }

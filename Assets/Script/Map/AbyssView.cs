@@ -20,10 +20,12 @@ public class AbyssView : MonoBehaviour
     [SerializeField] private Button ContinueButton;
     [SerializeField] private Button MoveRightButton;
     [SerializeField] private Button MoveLeftButton;
+    [SerializeField] private Button CloseButton;
 
     public event Action OnContinueClicked;
     public event Action OnLeaveClicked;
     public event Action OnFail;
+    public event Action OnCloseClicked;
 
     [Header("點位設定（由上到下各4個，Index 0~3）")]
     [SerializeField] private RectTransform[] LeftPoints;   // L0~L3
@@ -97,6 +99,18 @@ public class AbyssView : MonoBehaviour
         _playerRect    = PlayerObj.GetComponent<RectTransform>();
         _originalScale = PlayerObj.transform.localScale;
 
+        if (CloseButton != null)
+        {
+            CloseButton.onClick.AddListener(() => 
+            {
+                OnCloseClicked?.Invoke();
+                if (OnCloseClicked == null)
+                {
+                    Close();
+                }
+            });
+        }
+
         ContinueButton .onClick.AddListener(() => 
         {
             OnContinueClicked?.Invoke();
@@ -165,8 +179,19 @@ public class AbyssView : MonoBehaviour
     {
         if (DataManager.Instance == null || BagContainer == null || TradeSlotPrefab == null) return;
 
-        var items = DataManager.Instance.CurrentPlayerData?.InventoryItems;
-        if (items == null) return;
+        var allItems = DataManager.Instance.CurrentPlayerData?.InventoryItems;
+        if (allItems == null) return;
+
+        // 篩選僅限人界物品
+        var items = new System.Collections.Generic.List<Item>();
+        foreach (var item in allItems)
+        {
+            var def = DataManager.Instance.GetItemById(item.ItemId);
+            if (def != null && def.World == ItemWorld.Human)
+            {
+                items.Add(item);
+            }
+        }
 
         // 生成或重複使用 UI
         while (_activeSlots.Count < items.Count)

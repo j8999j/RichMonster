@@ -17,6 +17,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
 
     [Header("背包UI")]
     public OrderBagSlot BagSlotPrefab;//背包欄位預製物件
+    public ScrollRect BagscrollRect;
     public Transform BagSlotContainer;//生成 Slot 的父物件
     public Transform TagSlotContainer;//標籤容器
     public Transform OrderObjContainer;//訂單物件容器
@@ -57,6 +58,11 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     public Button Confirmbutton;
     public Button OpenAfterNoonPanelButton;
     public Button ConfirmAfterNoonButton;
+
+    [Header("二次確認面板")]
+    [SerializeField] private TextMeshProUGUI confirmAfterNoonText;
+    [SerializeField] private string defaultConfirmMessage = "確定要休息嗎？";
+    private bool _alreadyRested = false;
 
     [Header("其他")]
     [SerializeField] private Transform GuideTransform;
@@ -109,11 +115,17 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     {
         OnInteracted?.Invoke(ID);
         Panel.SetActive(!Panel.activeSelf);
+
         if (Panel.activeSelf)
         {
+            GameManager.Instance.LockPlayerMove("HumanOrderView");
             ClearBagDetail();
             ClearOrderView();
             OnOpenOrderPanel?.Invoke();
+        }
+        else
+        {
+            GameManager.Instance.UnlockPlayerMove("HumanOrderView");
         }
     }
     #region InventoryUIView
@@ -226,11 +238,13 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     {
         OnSelectedLargeOrder?.Invoke(order);
         UpdateOrderView(order);
+        BagscrollRect.verticalNormalizedPosition = 1f;
     }
     private void InvokeSelectedOrder(HumanSmallOrder order)
     {
         OnSelectedSmallOrder?.Invoke(order);
         UpdateOrderView(order);
+        BagscrollRect.verticalNormalizedPosition = 1f;
     }
     /// <summary>
     /// 顯示所有訂單（大訂單根據稀有度排序，小訂單在後面）
@@ -303,6 +317,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         OrderRewardText.text = "";
         OrderSelectCountText.text = "";
         OrderFinishImage.SetActive(false);
+        Confirmbutton.gameObject.SetActive(false);
         if (OrderImage != null) OrderImage.sprite = emptySprite;
         if (OrderTypeIcon != null) OrderTypeIcon.sprite = emptySprite;
         if (OrderTagContainer != null)
@@ -325,6 +340,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         LoadOrderImage(order.OrderId);
         SetOrderTypeIcon(order.OrderType);
         ShowOrderTags(order.OrderNeedTags);
+
     }
     public void UpdateOrderView(HumanSmallOrder order)
     {
@@ -517,18 +533,35 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     }
     private void ExitOrderPanel()
     {
+        GameManager.Instance.UnlockPlayerMove("HumanOrderView");
         ClearBagDetail();
         ClearOrderView();
         Panel.SetActive(false);
     }
     private void OpenAfterNoonPanel()
     {
+        // 檢查是否已經切換過下午階段
+        _alreadyRested = DataManager.Instance.CurrentPlayerData.PlayingStatus == DayPhase.AfterNoon;
+
+        if (confirmAfterNoonText != null)
+        {
+            confirmAfterNoonText.text = _alreadyRested ? "今日已經休息過了" : defaultConfirmMessage;
+        }
+
         CheckSwitchToAfterNoonPanel.SetActive(true);
     }
     private void ConfirmSwitchToAfterNoon()
     {
-        Panel.SetActive(false);
         CheckSwitchToAfterNoonPanel.SetActive(false);
+
+        // 已經休息過則僅關閉面板，不觸發切換
+        if (_alreadyRested)
+        {
+            return;
+        }
+
+        GameManager.Instance.UnlockPlayerMove("HumanOrderView");
+        Panel.SetActive(false);
         SwitchToAfterNoonClick?.Invoke();
     }
     #endregion

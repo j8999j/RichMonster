@@ -12,8 +12,7 @@ public class MonsterTradeView : MonoBehaviour
     // UI 元件參照
     // ==========================================
 
-    [Header("UI根物件")]
-    public GameObject TradeUI;
+
 
     [Header("背包組件")]
     [SerializeField, Tooltip("交易背包根物件")]
@@ -55,13 +54,17 @@ public class MonsterTradeView : MonoBehaviour
 
     [Tooltip("背包物品購買成本")]
     public TextMeshProUGUI DetailPriceText;
-
+    [Header("交易前頁面")]
+    public GameObject BeforeTradeUI;
+    public Button ExitTradePanelButton;
     [Header("交易組件")]
     [SerializeField, Tooltip("交易中面版")]
-    private GameObject TradeModeUI;
+    private GameObject TradeingModeUI;
 
     [SerializeField, Tooltip("切換階段開始交易")]
     private Button OnOpenShopButton;
+    [SerializeField, Tooltip("今日已交易時顯示的按鈕圖片")]
+    private Sprite OnOpenShopButtonSprite_Traded;
     [SerializeField] private Sprite NoneSprite;
 
     [SerializeField, Tooltip("客人圖片")]
@@ -134,10 +137,38 @@ public class MonsterTradeView : MonoBehaviour
     // ==========================================
     // Unity 生命週期
     // ==========================================
-
-    void Start()
+    void OnEnable()
     {
-        OnOpenShopButton.onClick.AddListener(InvokeOnOpenButton);
+        ExitTradePanelButton.onClick.AddListener(ExitShopUI);
+        RefreshOpenShopButton();
+    }
+
+    void OnDisable()
+    {
+        ExitTradePanelButton.onClick.RemoveListener(ExitShopUI);
+        if (OnOpenShopButton != null)
+            OnOpenShopButton.onClick.RemoveListener(InvokeOnOpenButton);
+    }
+
+    private void RefreshOpenShopButton()
+    {
+        if (OnOpenShopButton == null) return;
+
+        OnOpenShopButton.onClick.RemoveListener(InvokeOnOpenButton);
+
+        bool alreadyTraded = DataManager.Instance != null
+            && DataManager.Instance.CurrentPlayerData != null
+            && DataManager.Instance.CurrentPlayerData.IsTrade;
+
+        if (alreadyTraded)
+        {
+            if (OnOpenShopButton.image != null && OnOpenShopButtonSprite_Traded != null)
+                OnOpenShopButton.image.sprite = OnOpenShopButtonSprite_Traded;
+        }
+        else
+        {
+            OnOpenShopButton.onClick.AddListener(InvokeOnOpenButton);
+        }
     }
 
     // ==========================================
@@ -147,9 +178,9 @@ public class MonsterTradeView : MonoBehaviour
     /// <summary>
     /// 開啟商店主介面
     /// </summary>
-    public void OpenShopUI()
+    public void OpenShopUI(bool TradeState, int CustomCount)
     {
-        TradeUI.SetActive(true);
+        BeforeTradeUI.SetActive(true);
     }
 
     /// <summary>
@@ -157,7 +188,11 @@ public class MonsterTradeView : MonoBehaviour
     /// </summary>
     public void ExitShopUI()
     {
-        TradeUI.SetActive(false);
+        BeforeTradeUI.SetActive(false);
+        TradeingModeUI.SetActive(false);
+        // 還原玩家移動與互動
+        GameSystem.GameManager.Instance.UnlockPlayerMove("MonsterTrade");
+        GameSystem.GameManager.Instance.UnlockPlayerInteract("MonsterTrade");
     }
 
     #region InventoryUIView
@@ -443,7 +478,7 @@ public class MonsterTradeView : MonoBehaviour
         ClearImage();
         ShowBagItems(bagItemsList);
 
-        TradeModeUI.SetActive(true);
+        TradeingModeUI.SetActive(true);
         TradeBag.SetActive(true);
     }
 
@@ -633,7 +668,11 @@ public class MonsterTradeView : MonoBehaviour
     /// </summary>
     public void EndTradeMode()
     {
-        TradeUI.SetActive(false);
+        BeforeTradeUI.SetActive(false);
+        TradeingModeUI.SetActive(false);
+        // 還原玩家移動與互動
+        GameSystem.GameManager.Instance.UnlockPlayerMove("MonsterTrade");
+        GameSystem.GameManager.Instance.UnlockPlayerInteract("MonsterTrade");
     }
 
     /// <summary>

@@ -24,6 +24,12 @@ namespace Shop
         };
         protected override void OnInteract()
         {
+            if (GameManager.Instance.IsPlayerMoveLocked("YokaiStore"))
+            {
+                _shopUIView.SetVisible();
+                GameManager.Instance.UnlockPlayerMove("YokaiStore");
+                return;
+            }
             var CurrentDay = GameManager.Instance.gameFlow.CurrentDay;
             var items = SyncPurchaseState(GenerateTodayShopItems(CurrentDay));
             items = ApplyPriceFactor(items);
@@ -34,12 +40,12 @@ namespace Shop
                 _shopUIView.ShowItems(items, OnPlayerTryToBuyItem);
             }
             _shopUIView.SetVisible();
-            GameManager.Instance.SetPlayerMove(!GameManager.Instance.GetPlayerMove());
+            GameManager.Instance.LockPlayerMove("YokaiStore");
         }
         private async void EndInteract()
         {
             await GameManager.Instance.gameFlow.SaveGameAsync();
-            GameManager.Instance.SetPlayerMove(true);
+            GameManager.Instance.UnlockPlayerMove("YokaiStore");
         }
         private void OnPlayerTryToBuyItem(ShelfSlot slotData)
         {

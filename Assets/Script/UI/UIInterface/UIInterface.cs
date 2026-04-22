@@ -11,5 +11,6 @@ public interface IGuideInteractable : IInteractable, IMapGuideTarget
 public interface IGuideButton
 {
     string ButtonId { get; }
+    UnityEngine.GameObject ButtonObject { get; }
     event System.Action<string> OnClicked;
 }

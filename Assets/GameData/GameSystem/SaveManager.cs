@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -37,9 +38,14 @@ namespace GameSystem
         };
 
         /// <summary>
-        /// 是否正在存檔中，用於防止連點導致的檔案寫入衝突
+        /// 序列化 Slot 寫檔，避免併發呼叫造成資料遺失
         /// </summary>
-        public bool IsSaving { get; private set; }
+        private readonly SemaphoreSlim _saveLock = new SemaphoreSlim(1, 1);
+
+        /// <summary>
+        /// 是否正在存檔中（從 semaphore 推導，供 UI 觀察用）
+        /// </summary>
+        public bool IsSaving => _saveLock.CurrentCount == 0;
 
         /// <summary>
         /// 是否正在儲存圖鑑中，獨立於一般存檔
@@ -50,23 +56,15 @@ namespace GameSystem
 
         public async Task SaveGameAsync(PlayerData playerData, int slot = 0)
         {
-            // 如果正在存檔中，跳過本次請求
-            if (IsSaving)
-            {
-                Debug.LogWarning("[SaveManager] 正在存檔中，跳過本次存檔請求");
-                return;
-            }
-
-            IsSaving = true;
-            string filePath = GetFilePath(slot);
-
-            var payload = new SaveFileData
-            {
-                Player = ClonePlayer(playerData)
-            };
-
+            await _saveLock.WaitAsync();
             try
             {
+                string filePath = GetFilePath(slot);
+                var payload = new SaveFileData
+                {
+                    Player = ClonePlayer(playerData)
+                };
+
                 string json = JsonConvert.SerializeObject(payload, Formatting.Indented, _jsonSettings);
                 await File.WriteAllTextAsync(filePath, json);
                 Debug.Log($"[SaveManager] 存檔完成: {filePath}");
@@ -77,7 +75,7 @@ namespace GameSystem
             }
             finally
             {
-                IsSaving = false;
+                _saveLock.Release();
             }
         }
 
@@ -519,6 +517,167 @@ namespace GameSystem
             }
 
             // 重新加載 MainMenu 場景，確保所有運行中系統使用空資料重新初始化
+            if (reloadMainMenu && SceneTransitionManager.Instance != null)
+            {
+                SceneTransitionManager.Instance.GoToMainMenu();
+            }
+        }
+
+        /// <summary>
+        /// 解鎖全部圖鑑資料 (物品圖鑑與妖怪圖鑑情報)
+        /// </summary>
+        /// <param name="reloadMainMenu">是否在解鎖後重新加載 MainMenu 場景</param>
+        public void UnlockAllBookData(bool reloadMainMenu = true)
+        {
+            if (DataManager.Instance == null)
+            {
+                Debug.LogError("[SaveManager] DataManager 尚未初始化，無法解鎖全部圖鑑");
+                return;
+            }
+
+            var bookData = DataManager.Instance.GetBookData();
+            if (bookData == null)
+            {
+                Debug.LogError("[SaveManager] 圖鑑資料為空，無法解鎖全部圖鑑");
+                return;
+            }
+
+            try
+            {
+                bookData.ItemBookData ??= new ItemBookData { ItemBooks = new List<ItemBookDatabase>() };
+                bookData.ItemBookData.ItemBooks ??= new List<ItemBookDatabase>();
+                bookData.MonsterBookData ??= new MonsterBookData
+                {
+                    UnlockMonsterInformationID = new List<string>(),
+                    NewMonsterInformationID = new List<string>(),
+                    NewMonsterStoryID = new List<string>()
+                };
+                bookData.MonsterBookData.UnlockMonsterInformationID ??= new List<string>();
+
+                // 解鎖所有物品圖鑑
+                foreach (var itemId in DataManager.Instance.ItemDict.Keys)
+                {
+                    var existing = bookData.ItemBookData.ItemBooks.Find(x => x.ItemID == itemId);
+                    if (existing != null)
+                    {
+                        existing.IsBooked = true;
+                    }
+                    else
+                    {
+                        bookData.ItemBookData.ItemBooks.Add(new ItemBookDatabase
+                        {
+                            ItemID = itemId,
+                            IsBooked = true
+                        });
+                    }
+                }
+
+                // 解鎖所有妖怪情報 (一次解鎖不觸發紅點提示)
+                foreach (var informationId in DataManager.Instance.MonsterInfoDict.Keys)
+                {
+                    if (!bookData.MonsterBookData.UnlockMonsterInformationID.Contains(informationId))
+                    {
+                        bookData.MonsterBookData.UnlockMonsterInformationID.Add(informationId);
+                    }
+                }
+
+                SaveBookData(bookData);
+                DataManager.Instance.SetBookDataChanged(true);
+                Debug.Log($"[SaveManager] 已解鎖全部圖鑑: 物品 {bookData.ItemBookData.ItemBooks.Count} 筆，妖怪情報 {bookData.MonsterBookData.UnlockMonsterInformationID.Count} 筆");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[SaveManager] 解鎖全部圖鑑失敗: {ex.Message}");
+                return;
+            }
+
+            if (reloadMainMenu && SceneTransitionManager.Instance != null)
+            {
+                SceneTransitionManager.Instance.GoToMainMenu();
+            }
+        }
+
+        /// <summary>
+        /// 解鎖全部成就與特殊紀念品 (成就標記為完成、特殊紀念品標記為已收集並加入持有清單)
+        /// </summary>
+        /// <param name="reloadMainMenu">是否在解鎖後重新加載 MainMenu 場景</param>
+        public void UnlockAllAchievementsAndSpecialSouvenirs(bool reloadMainMenu = true)
+        {
+            if (DataManager.Instance == null)
+            {
+                Debug.LogError("[SaveManager] DataManager 尚未初始化，無法解鎖全部成就與特殊紀念品");
+                return;
+            }
+
+            var bookData = DataManager.Instance.GetBookData();
+            if (bookData == null)
+            {
+                Debug.LogError("[SaveManager] 圖鑑資料為空，無法解鎖全部成就與特殊紀念品");
+                return;
+            }
+
+            try
+            {
+                bookData.AchievementData ??= new List<IAchievementSave>();
+                bookData.SpecialSouvenirProgressData ??= new List<Souvenir.ISpecialSouvenirSave>();
+                bookData.UnLockSpecialSouvenirID ??= new List<string>();
+
+                // 1. 解鎖所有成就 (一次解鎖不觸發 OnUnlocked，避免彈窗轟炸)
+                int achievementCount = 0;
+                if (AchievementManager.Instance != null && AchievementManager.Instance.IsInitialized)
+                {
+                    string finishDay = DataManager.Instance.CurrentPlayerData?.DaysPlayed.ToString() ?? "0";
+                    foreach (var ach in AchievementManager.Instance.GetIncompleteAchievements())
+                    {
+                        ach.IsCompleted = true;
+                        if (string.IsNullOrEmpty(ach.FinishDay))
+                        {
+                            ach.FinishDay = finishDay;
+                        }
+                        _achievementDict[ach.AchievementID] = ach;
+                        achievementCount++;
+                    }
+                    bookData.AchievementData = DictToList(_achievementDict);
+                }
+                else
+                {
+                    Debug.LogWarning("[SaveManager] AchievementManager 尚未初始化，略過成就解鎖");
+                }
+
+                // 2. 解鎖所有特殊紀念品 (標記 IsCompleted 並加入 UnLockSpecialSouvenirID)
+                int souvenirCount = 0;
+                if (Souvenir.SouvenirManager.Instance != null && Souvenir.SouvenirManager.Instance.IsInitialized)
+                {
+                    foreach (var spl in Souvenir.SouvenirManager.Instance.GetAllSpecialSouvenirs())
+                    {
+                        spl.IsCompleted = true;
+                        if (!bookData.UnLockSpecialSouvenirID.Contains(spl.SouvenirID))
+                        {
+                            bookData.UnLockSpecialSouvenirID.Add(spl.SouvenirID);
+                        }
+                        if (spl is Souvenir.ISpecialSouvenirSave save)
+                        {
+                            _specialSouvenirDict[save.SouvenirID] = save;
+                        }
+                        souvenirCount++;
+                    }
+                    bookData.SpecialSouvenirProgressData = DictToListSpecialSouvenir(_specialSouvenirDict);
+                }
+                else
+                {
+                    Debug.LogWarning("[SaveManager] SouvenirManager 尚未初始化，略過特殊紀念品解鎖");
+                }
+
+                SaveBookData(bookData);
+                DataManager.Instance.SetBookDataChanged(true);
+                Debug.Log($"[SaveManager] 已解鎖全部成就與特殊紀念品: 成就 {achievementCount} 筆，特殊紀念品 {souvenirCount} 筆");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[SaveManager] 解鎖全部成就與特殊紀念品失敗: {ex.Message}");
+                return;
+            }
+
             if (reloadMainMenu && SceneTransitionManager.Instance != null)
             {
                 SceneTransitionManager.Instance.GoToMainMenu();

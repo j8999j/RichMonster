@@ -147,6 +147,19 @@ public class GameBookView : MonoBehaviour
     /// <summary>
     /// 開啟圖鑑面板
     /// </summary>
+    public void OpenBook()
+    {
+        if (BookPanel == null) return;
+        BookPanel.SetActive(true);
+        SwitchToMonsterBook();
+    }
+
+    public void CloseBook()
+    {
+        if (BookPanel != null)
+            BookPanel.SetActive(false);
+    }
+
     public void ShowBook(bool isItemBook)
     {
         BookPanel.SetActive(true);

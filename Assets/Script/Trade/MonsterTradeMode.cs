@@ -27,7 +27,7 @@ public class MonsterTradeMode : MonoBehaviour
             new Dictionary<string, ItemTags>(DataManager.Instance.ItemTagsDict),
             new Dictionary<string, ItemDefinition>(DataManager.Instance.ItemDict)
         );
-
+        GenerateGuestList();
     }
     void OnEnable()
     {
@@ -45,7 +45,17 @@ public class MonsterTradeMode : MonoBehaviour
     public void GenerateGuestList()
     {
         _TodayMonsterGuestList = _generator.GenerateGuestsForDay(1);
-        LogAllGuestDetails();
+        //LogAllGuestDetails();
+    }
+
+    public void InteractShopUI()
+    {
+        tradeView.OpenShopUI(false, _TodayMonsterGuestList.Count);
+    }
+
+    public void ExitShopUI()
+    {
+        tradeView.ExitShopUI();
     }
 
     /// <summary>
@@ -53,6 +63,7 @@ public class MonsterTradeMode : MonoBehaviour
     /// </summary>
     public void StartTradeMode()
     {
+        DataManager.Instance.SetIsTrade(true);
         GenerateGuestList();
         LoadHistory();
 
@@ -89,7 +100,7 @@ public class MonsterTradeMode : MonoBehaviour
                 $"職業: {customer.ProfessionName} ({customer.Type}) | " +
                 $"種族: {customer.Race} | " +
                 $"預算乘數: {customer.BudgetMultiplier:F2}");
-            
+
             string categoryStr = request.IsType2Category ? "種類2(實體配對)" : "種類1(隨機屬性)";
             string preferStr = request.TriggeredPreference ? "【有觸發】" : "無";
 
@@ -129,7 +140,27 @@ public class MonsterTradeMode : MonoBehaviour
 
         var request = guest.monsterRequest;
         var customer = guest.monsterCustomer;
-        // 對話模板列表
+        // 物品類型對應的多種中文描述（隨機選取以增加對話多樣性）
+        var typeNameMap = new Dictionary<ItemType, List<string>>
+        {
+            { ItemType.Food, new List<string> { "食物", "吃的", "糧食", "能吃的東西", "填肚子的" } },
+            { ItemType.Equipment, new List<string> { "裝備","能穿戴的", "器具" } },
+            { ItemType.Prop, new List<string> { "道具", "物品", "東西", "好東西"} }
+        };
+
+        var fallbackNames = new List<string> { "東西", "物品", "商品", "好貨" };
+
+        string typeName;
+        if (typeNameMap.TryGetValue(request.itemType, out var names))
+        {
+            typeName = names[GameRng.Range(0, names.Count)];
+        }
+        else
+        {
+            typeName = fallbackNames[GameRng.Range(0, fallbackNames.Count)];
+        }
+
+        // 對話模板列表（每句都包含 {type} 以明確描述需求類型）
         var dialogTemplates = new List<string>
         {
             "我想要{type}...",
@@ -137,26 +168,28 @@ public class MonsterTradeMode : MonoBehaviour
             "給我來點{type}吧！",
             "我在找{type}...",
             "你這有{type}嗎？",
-            "聽說這裡有{type}？"
+            "聽說這裡有{type}？",
+            "今天想帶點{type}回去。",
+            "我就缺{type}了！",
+            "能給我看看{type}嗎？",
+            "有沒有好一點的{type}？",
+            "我特地來買{type}的！",
+            "幫我挑個{type}吧。"
         };
 
-        // 帶標籤的對話模板
+        // 帶標籤的對話模板（每句都包含 {type} 以明確描述需求類型）
         var tagDialogTemplates = new List<string>
         {
             "我想要{tag}的{type}...",
             "有沒有{tag}一點的{type}？",
             "給我{tag}的{type}！",
-            "我在找{tag}的東西...",
-            "有{tag}的商品嗎？"
-        };
-
-        // 物品類型對應的中文名稱
-        string typeName = request.itemType switch
-        {
-            ItemType.Equipment => "裝備",
-            ItemType.Food => "食物",
-            ItemType.Prop => "道具",
-            _ => "東西"
+            "我在找{tag}的{type}...",
+            "有{tag}的{type}嗎？",
+            "聽說你這有{tag}的{type}？",
+            "幫我找{tag}的{type}吧！",
+            "今天就想來點{tag}的{type}。",
+            "能不能給我{tag}的{type}？",
+            "我特地來找{tag}的{type}的！"
         };
         string dialog;
         // 如果有請求標籤，必定使用帶標籤的對話以給予玩家完整提示
@@ -222,25 +255,32 @@ public class MonsterTradeMode : MonoBehaviour
             ClearTradeProgress();
             tradeView.EndTradeMode();
             Debug.Log("商品不足本日結束");
-            //商品不足本日結束
-            //本日結束存檔
+            return;
         }
         if (monsterTradeProgress.CustomerIndex >= _TodayMonsterGuestList.Count)
         {
             ClearTradeProgress();
             tradeView.EndTradeMode();
-            //本日結束存檔
+            return;
         }
         else//下一位
         {
             currentmonsterGuest = _TodayMonsterGuestList[monsterTradeProgress.CustomerIndex];
             tradeView.UpdateTradeInfo(_TodayMonsterGuestList[monsterTradeProgress.CustomerIndex], PlayerInventory, monsterTradeProgress.CustomerIndex, _TodayMonsterGuestList.Count, DataManager.Instance.CurrentPlayerData.MonsterGold);
             UpdateGuestDialog();
+            SaveTradeProgress();
         }
     }
+    private async void SaveTradeProgress()
+    {
+        DataManager.Instance.SetPlayerData("MonsterTradeHistory", monsterTradeProgress);
+        await GameManager.Instance.gameFlow.SaveGameAsync();
+    }
+
     void ClearTradeProgress()
     {
         monsterTradeProgress.CustomerIndex = 0;
+        SaveTradeProgress();
     }
     #endregion
     #region TradePrice
@@ -248,9 +288,9 @@ public class MonsterTradeMode : MonoBehaviour
     {
         var price = CaculatePrice(item);
         AchievementEvents.TradeItem(currentmonsterGuest.monsterCustomer.Profession, item.ItemId);
-        
+
         TradeSatisfaction satisfaction = CalculateSatisfaction(item);
-        
+
         // 呼叫 View 表達視覺 (先留空)
         tradeView.ShowSatisfactionVisual(satisfaction);
 
@@ -285,7 +325,7 @@ public class MonsterTradeMode : MonoBehaviour
         }
     }
     /// <summary>
-    /// 顧客離開 - 耐心耗盡時觸發
+    /// 顧客離開
     /// </summary>
     private void GuestLeave()
     {

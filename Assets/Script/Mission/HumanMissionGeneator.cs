@@ -23,6 +23,12 @@ public class HumanMissionGeneator : MonoBehaviour
     {
         CurrentDailyMissions.Clear();
 
+        // Day 0 為教學日，不生成人界 NPC
+        if (DataManager.Instance.CurrentPlayerData.DaysPlayed <= 0)
+        {
+            return;
+        }
+
         // 1. 取得所有人類任務 (合併含有與不含有情報獎勵的任務)
         var allHumanMissions = new List<NpcMission>();
         if (DataManager.Instance.HumanInfoMissions != null)

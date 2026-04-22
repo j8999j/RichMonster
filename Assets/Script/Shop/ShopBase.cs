@@ -19,7 +19,7 @@ namespace Shop
     {
 
         [SerializeField] protected GameObject interactPrompt;
-        [SerializeField] protected ShopUIView _shopUIView;
+        [SerializeField] protected ShopViewBase _shopUIView;
         protected string ShopID;
         protected string ShopName;
         public string ID => ShopID;
@@ -43,7 +43,7 @@ namespace Shop
         void Start()
         {
             GetShopData();
-            _shopUIView = GetComponent<ShopUIView>();
+            _shopUIView = GetComponent<ShopViewBase>();
         }
         public void ShowPrompt()
         {

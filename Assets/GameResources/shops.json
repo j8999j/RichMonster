@@ -21,8 +21,23 @@
       "ShelfCount": 10
     },
     {
+      "Id": "YokaiStoreEat",
+      "ShopName": "妖怪小吃鋪",
+      "ShelfCount": 6
+    },
+    {
       "Id": "MonsterMerchant_HaiMonk",
       "ShopName": "妖怪商人_海和尚",
+      "ShelfCount": 6
+    },
+    {
+      "Id": "VendingMachine",
+      "ShopName": "飲料機",
+      "ShelfCount": 6
+    },
+    {
+      "Id": "HumanStoreEat",
+      "ShopName": "小吃鋪",
       "ShelfCount": 6
     }
   ]

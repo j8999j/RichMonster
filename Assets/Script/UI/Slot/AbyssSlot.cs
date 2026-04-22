@@ -7,6 +7,8 @@ using GameSystem;
 public class AbyssSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private Image _targetImage;
+    [Tooltip("圖片長邊目標尺寸 (設為 0 則不調整)")]
+    public float TargetLongEdgeSize = 80f;
     
     private AbyssRewardType _rewardType;
     private int _goldAmount;
@@ -32,9 +34,7 @@ public class AbyssSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         if (_targetImage != null && goldSprite != null)
         {
             _targetImage.sprite = goldSprite;
-            _targetImage.SetNativeSize();
-            
-            // 可選：縮放稍微變小一點，類似 BagSlot TargetLongEdgeSize 的做法
+            SpriteLoader.AdjustImageScale(_targetImage, TargetLongEdgeSize);
         }
     }
 
@@ -52,7 +52,7 @@ public class AbyssSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
                 if (this != null && _targetImage != null && sprite != null)
                 {
                     _targetImage.sprite = sprite;
-                    _targetImage.SetNativeSize();
+                    SpriteLoader.AdjustImageScale(_targetImage, TargetLongEdgeSize);
                 }
             });
         }

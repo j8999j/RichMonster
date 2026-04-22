@@ -33,13 +33,13 @@ public class HumanOrderMode : MonoBehaviour
     public IReadOnlyList<HumanLargeOrder> TodayLargeOrders => _todayLargeOrders;
     public IReadOnlyList<HumanSmallOrder> TodaySmallOrders => _todaySmallOrders;
     public IReadOnlyList<GameEventDefinition> TodayEvents => _todayEvents;
-
     private void Awake()
     {
         InitializeGenerators();
         GenerateTodayOrders(GameManager.Instance.gameFlow.CurrentDay);
         _humanOrderView = GetComponent<HumanOrderView>();
     }
+
     private void OnEnable()
     {
         _humanOrderView.OnSelectedLargeOrder += OnSelectedOrder;
@@ -84,6 +84,16 @@ public class HumanOrderMode : MonoBehaviour
     }
     private void LoadOrdersHistory()
     {
+        // 先重置所有訂單狀態，避免共用物件上殘留前一天的完成標記
+        foreach (var order in _todayLargeOrders)
+        {
+            order.IsFinish = false;
+        }
+        foreach (var order in _todaySmallOrders)
+        {
+            order.IsFinish = false;
+        }
+
         var orderHistory = DataManager.Instance.GetPlayerSaveData<OrderHistoryData>("OrderHistory");
         if (orderHistory == null || orderHistory.OrderHistory.Count == 0) return;
         // 建立已完成訂單 ID 的快速查詢集合
@@ -113,6 +123,15 @@ public class HumanOrderMode : MonoBehaviour
     /// <param name="dayNumber">遊戲天數</param>
     public void GenerateTodayOrders(int dayNumber)
     {
+        // Day 0 為教學日，不生成訂單
+        if (dayNumber <= 0)
+        {
+            _todayEvents.Clear();
+            _todayLargeOrders.Clear();
+            _todaySmallOrders.Clear();
+            return;
+        }
+
         if (_eventsGenerator == null || _smallOrderGenerator == null)
         {
             InitializeGenerators();
@@ -315,7 +334,6 @@ public class HumanOrderMode : MonoBehaviour
     {
         LoadOrdersHistory();
         var (largeOrders, smallOrders) = GetTodayOrders();
-        OnCheckOrder();
         _humanOrderView.ShowAllOrderSlots(largeOrders, smallOrders);
     }
     #endregion
@@ -323,11 +341,6 @@ public class HumanOrderMode : MonoBehaviour
     private void SwitchToAfternoon()
     {
         GameManager.Instance.gameFlow.SwitchGameStageAndSave(DayPhase.AfterNoon);
-    }
-    //本日是否確認過訂單
-    private void OnCheckOrder()
-    {
-        DataManager.Instance.SetIsTrade(true);
     }
     private void OnSelectedOrder(HumanLargeOrder order)
     {
@@ -415,7 +428,7 @@ public class HumanOrderMode : MonoBehaviour
             int TradePrice = LargeOrderTrade(SelectedOrderItems, SelectedLargeOrder);
             DataManager.Instance.ModifyGold(TradePrice);
             List<string> itemIds = SelectedOrderItems.Select(item => item.ItemId).ToList();
-            AchievementEvents.CompleteOrder(SelectedLargeOrder.OrderId,itemIds,TradePrice);
+            AchievementEvents.CompleteOrder(SelectedLargeOrder.OrderId, itemIds, TradePrice);
             foreach (var item in SelectedOrderItems)
             {
                 DataManager.Instance.RemoveItem(item);
@@ -435,7 +448,7 @@ public class HumanOrderMode : MonoBehaviour
             int TradePrice = SmallOrderTrade(SelectedOrderItems[0], SelectedSmallOrder);
             DataManager.Instance.ModifyGold(TradePrice);
             List<string> itemIds = SelectedOrderItems.Select(item => item.ItemId).ToList();
-            AchievementEvents.CompleteOrder(SelectedSmallOrder.OrderId,itemIds,TradePrice);
+            AchievementEvents.CompleteOrder(SelectedSmallOrder.OrderId, itemIds, TradePrice);
             DataManager.Instance.RemoveItem(SelectedOrderItems[0]);
             // 刷新訂單列表顯示
             ShowTodayOrder();

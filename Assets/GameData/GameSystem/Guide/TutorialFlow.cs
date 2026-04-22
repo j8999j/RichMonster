@@ -28,7 +28,7 @@ public class TutorialFlow
         }
     }
 
-    private void SaveProgress()
+    private async void SaveProgress()
     {
         var data = new TutorialSaveData
         {
@@ -45,21 +45,31 @@ public class TutorialFlow
             data.IsPurchased = task1.IsPurchased;
         }
         DataManager.Instance.SetPlayerData(SAVE_KEY, data);
+        try
+        {
+            await GameSystem.GameManager.Instance.gameFlow.SaveGameAsync();
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[TutorialFlow] 教學進度存檔失敗: {ex}");
+        }
     }
 
-    /// <summary>
-    /// 新增任務只需在此加入一行，任何其他程式碼不需修改
-    /// </summary>
     private void RegisterTasks()
     {
         taskQueue.Add(new Task1_FirstTutorial());
+        taskQueue.Add(new Task2_SecondTutorial());
     }
 
     private void ExecuteNextTask()
     {
         if (currentTaskIndex >= taskQueue.Count)
         {
-            SaveProgress();
+            var savedData = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>(SAVE_KEY);
+            if (!savedData.IsComplete)
+            {
+                SaveProgress();
+            }
             Debug.Log("[GameFlowGuide] 所有引導任務完成");
             return;
         }
@@ -75,6 +85,7 @@ public class TutorialFlow
     private void OnTaskComplete()
     {
         currentTaskIndex++;
+        SaveProgress();
         ExecuteNextTask();
     }
 

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
+using GameSystem;
 
 /// <summary>
 /// 通知取得物品的類型
@@ -73,6 +75,9 @@ public class NoticeGetItem : MonoBehaviour
     [Header("通知設定")]
     [SerializeField] private GameObject NoticePanel;
     [SerializeField] private TextMeshProUGUI NoticeText;
+    [SerializeField] private Button ConfirmButton;
+    private const string LockSource = "NoticeGetItem";
+    private bool _moveLocked;
     [Header("Slot 設定")]
     [SerializeField] private NoticeSlot SlotPrefab;
     [SerializeField] private Transform SlotContainer;
@@ -91,6 +96,12 @@ public class NoticeGetItem : MonoBehaviour
     {
         NoticeGetItemEvents.OnShowNotice += Show;
         NoticeGetItemEvents.OnClearNotice += Clear;
+        if (ConfirmButton != null) ConfirmButton.onClick.AddListener(OnConfirmClicked);
+    }
+
+    private void OnDisable()
+    {
+        if (ConfirmButton != null) ConfirmButton.onClick.RemoveListener(OnConfirmClicked);
     }
 
     private void OnDestroy()
@@ -123,6 +134,12 @@ public class NoticeGetItem : MonoBehaviour
         // 顯示獎勵來源說明
         if (NoticePanel != null) NoticePanel.SetActive(true);
         if (NoticeText != null) NoticeText.text = source;
+
+        if (!_moveLocked && GameManager.Instance != null)
+        {
+            GameManager.Instance.LockPlayerMove(LockSource);
+            _moveLocked = true;
+        }
 
         // 合併相同類型+相同識別的項目
         var merged = MergeEntries(items);
@@ -212,6 +229,17 @@ public class NoticeGetItem : MonoBehaviour
         }
         _activeSlots.Clear();
         HideTooltip();
+    }
+
+    private void OnConfirmClicked()
+    {
+        if (NoticePanel != null) NoticePanel.SetActive(false);
+        Clear();
+        if (_moveLocked && GameManager.Instance != null)
+        {
+            GameManager.Instance.UnlockPlayerMove(LockSource);
+            _moveLocked = false;
+        }
     }
 
     // ── Tooltip ──────────────────────────────────────

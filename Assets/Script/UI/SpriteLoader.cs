@@ -3,35 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.U2D;
 
 /// <summary>
-/// Sprite 載入工具類，用於從 Addressables Atlas 載入圖片
+/// Sprite 載入工具類，從 Addressables 載入 SpriteAtlas 後以 GetSprite(name) 取得子圖。
+/// 找不到名稱時改載 LossImage，避免 Addressables sub-object 路徑拋出例外。
 /// </summary>
 public class SpriteLoader
 {
     private const string ATLAS_ADDRESS = "ItemsAtlas";
+    private const string FALLBACK_ID = "LossImage";
 
-    // 快取已載入的 Sprite Handle
-    private static readonly Dictionary<string, AsyncOperationHandle<Sprite>> _cachedHandles 
-        = new Dictionary<string, AsyncOperationHandle<Sprite>>();
+    private static AsyncOperationHandle<SpriteAtlas> _atlasHandle;
+    private static bool _atlasRequested;
+    private static readonly List<Action<SpriteAtlas>> _atlasWaitList = new();
+    private static readonly Dictionary<string, Sprite> _spriteCache = new();
 
     /// <summary>
     /// 同步式取得 Sprite (如果已快取則直接返回，否則返回 null)
     /// </summary>
     public static Sprite GetCachedSprite(string itemId)
     {
-        string path = $"{ATLAS_ADDRESS}[{itemId}]";
-        if (_cachedHandles.TryGetValue(path, out var handle) && handle.IsValid() && handle.IsDone)
-        {
-            return handle.Result;
-        }
-        return null;
+        if (string.IsNullOrEmpty(itemId)) return null;
+        return _spriteCache.TryGetValue(itemId, out var sprite) ? sprite : null;
     }
 
     /// <summary>
     /// 非同步載入 Sprite，完成後透過 callback 回傳
     /// </summary>
-    /// <param name="itemId">物品 ID</param>
+    /// <param name="itemId">物品 ID (atlas 內的 sprite 名稱)</param>
     /// <param name="onComplete">載入完成回調 (成功時回傳 Sprite，失敗時回傳 null)</param>
     public static void LoadSpriteAsync(string itemId, Action<Sprite> onComplete)
     {
@@ -41,72 +41,89 @@ public class SpriteLoader
             return;
         }
 
-        string path = $"{ATLAS_ADDRESS}[{itemId}]";
-
-        // 檢查快取
-        if (_cachedHandles.TryGetValue(path, out var existingHandle) && existingHandle.IsValid())
+        if (_spriteCache.TryGetValue(itemId, out var cached))
         {
-            if (existingHandle.IsDone)
-            {
-                onComplete?.Invoke(existingHandle.Status == AsyncOperationStatus.Succeeded 
-                    ? existingHandle.Result 
-                    : null);
-            }
-            else
-            {
-                existingHandle.Completed += h => 
-                    onComplete?.Invoke(h.Status == AsyncOperationStatus.Succeeded ? h.Result : null);
-            }
+            onComplete?.Invoke(cached);
             return;
         }
 
-        // 開始載入
-        var handle = Addressables.LoadAssetAsync<Sprite>(path);
-        _cachedHandles[path] = handle;
-
-        handle.Completed += h =>
+        GetAtlas(atlas =>
         {
-            if (h.Status == AsyncOperationStatus.Succeeded)
+            if (atlas == null)
             {
-                onComplete?.Invoke(h.Result);
-            }
-            else
-            {
-                Debug.LogWarning($"[SpriteLoader] 載入失敗: {path}");
+                Debug.LogError($"[SpriteLoader] ItemsAtlas 載入失敗，無法取得 {itemId}");
                 onComplete?.Invoke(null);
+                return;
             }
+
+            var sprite = atlas.GetSprite(itemId);
+            if (sprite != null)
+            {
+                _spriteCache[itemId] = sprite;
+                onComplete?.Invoke(sprite);
+                return;
+            }
+
+            if (itemId == FALLBACK_ID)
+            {
+                Debug.LogWarning($"[SpriteLoader] fallback 圖 {FALLBACK_ID} 也不存在於 atlas");
+                onComplete?.Invoke(null);
+                return;
+            }
+
+            Debug.LogWarning($"[SpriteLoader] 找不到 {itemId}，改用 {FALLBACK_ID}");
+            LoadSpriteAsync(FALLBACK_ID, onComplete);
+        });
+    }
+
+    private static void GetAtlas(Action<SpriteAtlas> onReady)
+    {
+        if (_atlasHandle.IsValid() && _atlasHandle.IsDone)
+        {
+            onReady?.Invoke(_atlasHandle.Status == AsyncOperationStatus.Succeeded ? _atlasHandle.Result : null);
+            return;
+        }
+
+        if (_atlasRequested)
+        {
+            _atlasWaitList.Add(onReady);
+            return;
+        }
+
+        _atlasRequested = true;
+        _atlasWaitList.Add(onReady);
+        _atlasHandle = Addressables.LoadAssetAsync<SpriteAtlas>(ATLAS_ADDRESS);
+        _atlasHandle.Completed += h =>
+        {
+            var result = h.Status == AsyncOperationStatus.Succeeded ? h.Result : null;
+            var waiters = _atlasWaitList.ToArray();
+            _atlasWaitList.Clear();
+            foreach (var cb in waiters) cb?.Invoke(result);
         };
     }
 
     /// <summary>
-    /// 釋放指定 ID 的快取
+    /// 釋放指定 ID 的 Sprite 快取 (atlas 本體不釋放)
     /// </summary>
     public static void Release(string itemId)
     {
-        string path = $"{ATLAS_ADDRESS}[{itemId}]";
-        if (_cachedHandles.TryGetValue(path, out var handle))
-        {
-            if (handle.IsValid())
-            {
-                Addressables.Release(handle);
-            }
-            _cachedHandles.Remove(path);
-        }
+        if (string.IsNullOrEmpty(itemId)) return;
+        _spriteCache.Remove(itemId);
     }
 
     /// <summary>
-    /// 釋放所有快取
+    /// 釋放所有快取 (包含 atlas handle)
     /// </summary>
     public static void ReleaseAll()
     {
-        foreach (var kvp in _cachedHandles)
+        _spriteCache.Clear();
+        _atlasWaitList.Clear();
+        if (_atlasHandle.IsValid())
         {
-            if (kvp.Value.IsValid())
-            {
-                Addressables.Release(kvp.Value);
-            }
+            Addressables.Release(_atlasHandle);
         }
-        _cachedHandles.Clear();
+        _atlasHandle = default;
+        _atlasRequested = false;
     }
 
     /// <summary>
@@ -115,20 +132,16 @@ public class SpriteLoader
     public static void AdjustImageScale(UnityEngine.UI.Image targetImage, float targetLongEdgeSize)
     {
         if (targetImage == null || targetLongEdgeSize <= 0) return;
-        
+
         targetImage.SetNativeSize();
         RectTransform rt = targetImage.rectTransform;
         float width = rt.sizeDelta.x;
         float height = rt.sizeDelta.y;
-        
-        // 取得長邊
+
         float longEdge = Mathf.Max(width, height);
         if (longEdge <= 0) return;
-        
-        // 計算縮放倍數
+
         float scale = targetLongEdgeSize / longEdge;
-        
-        // 調整尺寸
         rt.sizeDelta = new Vector2(width * scale, height * scale);
     }
 }

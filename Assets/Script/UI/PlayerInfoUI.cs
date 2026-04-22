@@ -5,8 +5,10 @@ public class PlayerInfoUI : MonoBehaviour
     [SerializeField] private PlayerView playerView;
     [SerializeField] private Souvenir.SouvenirBagView souvenirBagView;
     [SerializeField] private AchievementViewFactory achievementViewFactory;
+    [SerializeField] private GameBookView gameBookView;
+    [SerializeField] private EventsView eventsView;
 
-    private enum Page { None, Bag, SouvenirBag, Achievement }
+    private enum Page { None, Bag, SouvenirBag, Achievement, Book, News }
     private Page _activePage = Page.None;
 
     private void OnEnable()
@@ -14,6 +16,8 @@ public class PlayerInfoUI : MonoBehaviour
         PlayerInfoUIEvents.OnOpenBag += HandleOpenBag;
         PlayerInfoUIEvents.OnOpenSouvenirBag += HandleOpenSouvenirBag;
         PlayerInfoUIEvents.OnOpenAchievement += HandleOpenAchievement;
+        PlayerInfoUIEvents.OnOpenBook += HandleOpenBook;
+        PlayerInfoUIEvents.OnOpenNews += HandleOpenNews;
         PlayerInfoUIEvents.OnCloseAll += HandleCloseAll;
     }
 
@@ -22,6 +26,8 @@ public class PlayerInfoUI : MonoBehaviour
         PlayerInfoUIEvents.OnOpenBag -= HandleOpenBag;
         PlayerInfoUIEvents.OnOpenSouvenirBag -= HandleOpenSouvenirBag;
         PlayerInfoUIEvents.OnOpenAchievement -= HandleOpenAchievement;
+        PlayerInfoUIEvents.OnOpenBook -= HandleOpenBook;
+        PlayerInfoUIEvents.OnOpenNews -= HandleOpenNews;
         PlayerInfoUIEvents.OnCloseAll -= HandleCloseAll;
     }
 
@@ -52,6 +58,24 @@ public class PlayerInfoUI : MonoBehaviour
         SetPlayerFrozen(true);
     }
 
+    private void HandleOpenBook()
+    {
+        if (gameBookView == null || _activePage == Page.Book) return;
+        CloseCurrentPage();
+        gameBookView.OpenBook();
+        _activePage = Page.Book;
+        SetPlayerFrozen(true);
+    }
+
+    private void HandleOpenNews()
+    {
+        if (eventsView == null || _activePage == Page.News) return;
+        CloseCurrentPage();
+        eventsView.OpenNewsPanel();
+        _activePage = Page.News;
+        SetPlayerFrozen(true);
+    }
+
     private void HandleCloseAll()
     {
         if (_activePage == Page.None) return;
@@ -66,13 +90,23 @@ public class PlayerInfoUI : MonoBehaviour
             case Page.Bag:         if (playerView != null) playerView.CloseBagView(); break;
             case Page.SouvenirBag: if (souvenirBagView != null) souvenirBagView.CloseBag(); break;
             case Page.Achievement: if (achievementViewFactory != null) achievementViewFactory.ClosePanel(); break;
+            case Page.Book:        if (gameBookView != null) gameBookView.CloseBook(); break;
+            case Page.News:        if (eventsView != null) eventsView.CloseNewsPanel(); break;
         }
         _activePage = Page.None;
     }
 
     private void SetPlayerFrozen(bool frozen)
     {
-        GameManager.Instance.SetPlayerMove(!frozen);
-        GameManager.Instance.SetPlayerInteract(!frozen);
+        if (frozen)
+        {
+            GameManager.Instance.LockPlayerMove("PlayerInfoUI");
+            GameManager.Instance.LockPlayerInteract("PlayerInfoUI");
+        }
+        else
+        {
+            GameManager.Instance.UnlockPlayerMove("PlayerInfoUI");
+            GameManager.Instance.UnlockPlayerInteract("PlayerInfoUI");
+        }
     }
 }

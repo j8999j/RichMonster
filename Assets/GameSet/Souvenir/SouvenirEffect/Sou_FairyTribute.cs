@@ -100,7 +100,7 @@ namespace Souvenir
 
         public void OnInteraction()
         {
-            Debug.Log($"正在等待時機到來");
+            SystemInfoEvent.Show($"正在等候時機到來");
         }
 
         public bool CanShowInteractionButton() => true;

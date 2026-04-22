@@ -61,8 +61,7 @@ namespace GameSystem
         {
             SetPlayer();
             SetPlayerPosition(new Vector3(0, -2, 0));
-            SetPlayerMove(true);
-            SetPlayerInteract(true);
+            ClearAllLocks();
             SetCameraFollowPlayer();
             if (sceneName == SceneTransitionManager.SCENE_MONSTER)
             {
@@ -111,12 +110,15 @@ namespace GameSystem
                 Debug.LogError("[GameManager] 無法取得玩家資料");
                 return;
             }
+            // 以本局 PlayerData.HoldAchievementSouvenirID 為準重新快照成就紀念品所有權
+            Souvenir.SouvenirManager.Instance.ResnapshotForCurrentGame();
             gameFlow = new GameFlow(playerData, slot);
             sceneTransitionManager.GoToSceneByPhase(playerData.PlayingStatus, () =>
             {
                 // 場景載入完成後才執行
                 DataManager.Instance.ModifyCurrentDay(playerData.DaysPlayed);
                 GameFlowEvents.InvokeDayPhaseChanged(playerData.PlayingStatus);
+                Souvenir.SouvenirManager.Instance.ApplyAllStartEffects();
                 gameFlow.StartTutorial();
                 // 玩家初始化已由 OnSceneLoadComplete 事件處理
             });
@@ -131,19 +133,62 @@ namespace GameSystem
         {
             Player.transform.position = position;
         }
+        private readonly HashSet<string> _moveLockSources = new HashSet<string>();
+        private readonly HashSet<string> _interactLockSources = new HashSet<string>();
+
         public bool GetPlayerMove()
         {
-            return PlayerController._CanMove;
+            return _moveLockSources.Count == 0;
         }
-        public void SetPlayerMove(bool CanMove)
+
+        public bool IsPlayerMoveLocked(string source)
+        {
+            return _moveLockSources.Contains(source);
+        }
+
+        public void LockPlayerMove(string source)
         {
             if (PlayerController == null) return;
-            PlayerController.SetCanMove(CanMove);
+            _moveLockSources.Add(source);
+            PlayerController.SetCanMove(false);
         }
-        public void SetPlayerInteract(bool CanInteract)
+
+        public void UnlockPlayerMove(string source)
         {
             if (PlayerController == null) return;
-            PlayerController.SetCanInteract(CanInteract);
+            _moveLockSources.Remove(source);
+            if (_moveLockSources.Count == 0)
+            {
+                PlayerController.SetCanMove(true);
+            }
+        }
+
+        public void LockPlayerInteract(string source)
+        {
+            if (PlayerController == null) return;
+            _interactLockSources.Add(source);
+            PlayerController.SetCanInteract(false);
+        }
+
+        public void UnlockPlayerInteract(string source)
+        {
+            if (PlayerController == null) return;
+            _interactLockSources.Remove(source);
+            if (_interactLockSources.Count == 0)
+            {
+                PlayerController.SetCanInteract(true);
+            }
+        }
+
+        public void ClearAllLocks()
+        {
+            _moveLockSources.Clear();
+            _interactLockSources.Clear();
+            if (PlayerController != null)
+            {
+                PlayerController.SetCanMove(true);
+                PlayerController.SetCanInteract(true);
+            }
         }
 
         /// <summary>

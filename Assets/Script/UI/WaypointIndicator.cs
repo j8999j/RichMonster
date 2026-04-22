@@ -14,7 +14,6 @@ public class WaypointIndicator : MonoBehaviour
     public Sprite offScreenSprite;    // 目標在畫面外時的圖標
 
     private Camera mainCam;
-    private Canvas canvas;
     Dictionary<string, Transform> mapGuide = new Dictionary<string, Transform>();
 
     private void OnEnable()
@@ -29,27 +28,29 @@ public class WaypointIndicator : MonoBehaviour
         NoticeGetItemEvents.OnStartMapGuide -= StartMapGuide;
         NoticeGetItemEvents.OnClearMapGuide -= ClearMapGuide;
     }
-    void SetMapGuide(string id,Transform pos)
+    void SetMapGuide(string id, Transform pos)
     {
         mapGuide[id] = pos;
     }
     void StartMapGuide(string id)
     {
+        if (!mapGuide.TryGetValue(id, out var t))
+        {
+            Debug.LogWarning($"[WaypointIndicator] 找不到已註冊的地圖點位: {id}");
+            return;
+        }
+        target = t;
         iconImage.gameObject.SetActive(true);
-        target = mapGuide[id];
     }
     void ClearMapGuide()
     {
-        mapGuide.Clear();
         target = null;
         iconImage.gameObject.SetActive(false);
     }
     void Start()
     {
         mainCam = Camera.main;
-        canvas = GetComponentInParent<Canvas>();
     }
-
     void Update()
     {
         if (target == null) return;
@@ -69,7 +70,7 @@ public class WaypointIndicator : MonoBehaviour
             // 目標在畫面外：將圖標限制在螢幕邊緣
             iconImage.sprite = offScreenSprite;
             iconRect.position = ClampToScreenEdge(screenPos);
-            
+
             // 確保圖標不旋轉
             iconRect.rotation = Quaternion.identity;
         }

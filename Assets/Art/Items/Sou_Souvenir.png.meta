@@ -214,6 +214,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: LossImage
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 223
+        width: 4
+        height: 4
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 630c7643d069a234b87e42c0e9cb5412
+      internalID: 1876235506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -225,6 +246,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      LossImage: 1876235506
       Sou_BeastTribute: -548852308
       Sou_DivineTribute: 693054930
       Sou_FairyTribute: 1727237115

@@ -29,7 +29,7 @@ public class PlayerData : IReadOnlyPlayerData
     public int CustomerIndex;
     /// <summary> 當前的遊戲執行階段（如人界白日、妖界夜晚） </summary>
     public DayPhase PlayingStatus;
-    /// <summary> 當前是否處於交易流程中 </summary>
+    /// <summary> 今日是否與妖怪交易過</summary>
     public bool IsTrade;
     /// <summary> 玩家持有的人界金錢 </summary>
     public int Gold;

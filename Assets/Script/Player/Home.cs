@@ -1,22 +1,36 @@
 using UnityEngine;
 using Player;
+using GameSystem;
 using System;
 using System.Collections;
-public class Home : MonoBehaviour, IInteractable, IMapGuideTarget
+public class Home : MonoBehaviour, IGuideInteractable
 {
     [SerializeField] private GameObject interactPrompt;
     [SerializeField] private GameObject TradeCamera;
-
-    private MonsterTradeView monsterTradeView;
+    [SerializeField] private Transform GuideTransform;
+    private MonsterTradeMode monsterTradeMode;
     private bool CanInteract;
-    public string ID => "Home";
+    public string ID => GuideIDs.Interactable.GuideGroceryStore;
+    public event Action<string> OnInteracted;
     public void SetMapGuide()
     {
-        NoticeGetItemEvents.InvokeSetMapGuide(ID, transform);
+        NoticeGetItemEvents.InvokeSetMapGuide(ID, GuideTransform);
+    }
+    void Awake()
+    {
+        SetMapGuide();
+    }
+    void OnEnable()
+    {
+        GuideLookupRegistry.Instance.RegisterInteractable(this);
+    }
+    void OnDisable()
+    {
+        GuideLookupRegistry.Instance.UnregisterInteractable(this);
     }
     void Start()
     {
-        monsterTradeView = GetComponent<MonsterTradeView>();
+        monsterTradeMode = GetComponent<MonsterTradeMode>();
         CanInteract = true;
     }
     public void ShowPrompt()
@@ -40,22 +54,18 @@ public class Home : MonoBehaviour, IInteractable, IMapGuideTarget
     {
         if (!CanInteract)
             return;
-        if (TradeCamera.activeSelf)
-        {
-            TradeCamera.SetActive(false);
-            monsterTradeView.ExitShopUI();
-            return;
-        }
+        OnInteracted?.Invoke(ID);
+        // 鎖定玩家移動與互動，防止透過再次點擊互動關閉頁面
+        GameManager.Instance.LockPlayerMove("MonsterTrade");
+        GameManager.Instance.LockPlayerInteract("MonsterTrade");
         StartCoroutine(InteractCoroutine());
     }
     private IEnumerator InteractCoroutine()
     {
         CanInteract = false;
-        //TradeCamera.SetActive(!TradeCamera.activeSelf);
-        yield return new WaitForSeconds(0.8f);
-        monsterTradeView.OpenShopUI();
+        yield return new WaitForSeconds(0.01f);
+        monsterTradeMode.InteractShopUI();
         CanInteract = true;
-
     }
 }
 

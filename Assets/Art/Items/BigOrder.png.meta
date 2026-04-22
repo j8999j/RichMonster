@@ -173,7 +173,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: LibraryDusting_02
+      name: LibraryDusting_03
       rect:
         serializedVersion: 2
         x: 455
@@ -362,7 +362,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BigOrder_18
+      name: LibraryDusting_02
       rect:
         serializedVersion: 2
         x: 398
@@ -860,7 +860,6 @@ TextureImporter:
       BigOrder_13: 533745311
       BigOrder_14: -1651429853
       BigOrder_15: -1027078769
-      BigOrder_18: -43174522
       BigOrder_19: 1620624484
       BigOrder_2: -383879711
       BigOrder_20: -586693903
@@ -898,7 +897,8 @@ TextureImporter:
       InkDisaster_01: -1345343027
       InkDisaster_02: 123217007
       LibraryDusting_01: -355855075
-      LibraryDusting_02: -1933719721
+      LibraryDusting_02: -43174522
+      LibraryDusting_03: -1933719721
       Raiju_01: -1940862542
       Raiju_02: -1819190830
       Raiju_03: -1563463133

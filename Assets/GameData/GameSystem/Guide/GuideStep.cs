@@ -246,3 +246,69 @@ public class WithMapGuideStep : GuideStepDecorator
     protected override void OnDispose()
         => NoticeGetItemEvents.InvokeClearMapGuide();          // 異常中斷也確保清除
 }
+// ============================================================
+// WaitForSceneStep - 等待指定場景載入完成
+// ============================================================
+/// <summary>
+/// 等待指定場景載入完成後才繼續，若已在目標場景則直接完成
+/// </summary>
+public class WaitForSceneStep : GuideStep
+{
+    private readonly string targetScene;
+    private System.Action _onComplete;
+
+    public WaitForSceneStep(string targetScene)
+        => this.targetScene = targetScene;
+
+    public override void Execute(System.Action onComplete)
+    {
+        if (SceneTransitionManager.Instance.CurrentScene == targetScene)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+        _onComplete = onComplete;
+        SceneTransitionManager.Instance.OnSceneLoadComplete += OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(string sceneName)
+    {
+        if (sceneName != targetScene) return;
+        SceneTransitionManager.Instance.OnSceneLoadComplete -= OnSceneLoaded;
+        _onComplete?.Invoke();
+    }
+
+    public override void Dispose()
+    {
+        SceneTransitionManager.Instance.OnSceneLoadComplete -= OnSceneLoaded;
+    }
+}
+
+// ============================================================
+// WithPlayerLockedStep - 鎖定玩家移動與互動裝飾器
+// ============================================================
+/// <summary>
+/// 包裝任意步驟，執行期間鎖定玩家移動與互動，完成或中斷後自動解鎖
+/// </summary>
+public class WithPlayerLockedStep : GuideStepDecorator
+{
+    public WithPlayerLockedStep(GuideStep inner) : base(inner) { }
+
+    protected override void OnBeforeExecute()
+    {
+        GameManager.Instance.LockPlayerMove("Guide");
+        GameManager.Instance.LockPlayerInteract("Guide");
+    }
+
+    protected override void OnAfterComplete()
+    {
+        GameManager.Instance.UnlockPlayerMove("Guide");
+        GameManager.Instance.UnlockPlayerInteract("Guide");
+    }
+
+    protected override void OnDispose()
+    {
+        GameManager.Instance.UnlockPlayerMove("Guide");
+        GameManager.Instance.UnlockPlayerInteract("Guide");
+    }
+}

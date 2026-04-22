@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Souvenir
 {
@@ -29,11 +30,16 @@ namespace Souvenir
         public float TargetLongEdgeSize = 150f;
 
         [Header("Settings")]
-        public bool ShowInteractionButton = true;
+        /// <summary>
+        /// true：局內模式 — 只顯示本局快照內已生效的紀念品（HoldAchievementSouvenirID），且顯示互動按鈕。
+        /// false：主選單模式 — 顯示 Book 存檔內所有已解鎖的紀念品（跨局全部歷史），且隱藏互動按鈕。
+        /// </summary>
+        public bool ShowCurrentRunOnly = false;
 
         private List<SouvenirBagSlot> _spawnedSlots = new List<SouvenirBagSlot>();
         private List<SouvenirBagItemData> _bagItems = new List<SouvenirBagItemData>();
         private SouvenirBagSlot _currentSelectedSlot;
+        private UnityEngine.Events.UnityAction _currentInteractListener;
 
         private void Awake()
         {
@@ -57,18 +63,6 @@ namespace Souvenir
             RefreshPage();
         }
 
-        /// <summary>
-        /// 設定能否顯示互動按鈕
-        /// </summary>
-        public void SetInteractionButtonVisible(bool visible)
-        {
-            ShowInteractionButton = visible;
-            if (MainPanel != null && MainPanel.activeSelf && _currentSelectedSlot != null)
-            {
-                OnSlotClicked(_currentSelectedSlot);
-            }
-        }
-
         public void CloseBag()
         {
             _currentSelectedSlot = null;
@@ -83,21 +77,36 @@ namespace Souvenir
             var bookData = DataManager.Instance.GetBookData();
             if (bookData == null) return;
 
-            var unlockAchList = bookData.UnLockAchievementSouvenirID ?? new List<string>();
-            var unlockSplList = bookData.UnLockSpecialSouvenirID ?? new List<string>();
+            IReadOnlyList<string> achList;
+            IReadOnlyList<string> splList;
+
+            if (ShowCurrentRunOnly)
+            {
+                // 本局快照：成就紀念品由 PlayerData.HoldAchievementSouvenirID 決定；
+                //            特殊紀念品仍以 Book 為準（特殊紀念品本來就跨局持有）
+                var playerData = DataManager.Instance.CurrentPlayerData;
+                achList = playerData?.HoldAchievementSouvenirID ?? (IReadOnlyList<string>)new List<string>();
+                splList = bookData.UnLockSpecialSouvenirID ?? (IReadOnlyList<string>)new List<string>();
+            }
+            else
+            {
+                // 全部：直接讀 Book 存檔
+                achList = bookData.UnLockAchievementSouvenirID ?? (IReadOnlyList<string>)new List<string>();
+                splList = bookData.UnLockSpecialSouvenirID ?? (IReadOnlyList<string>)new List<string>();
+            }
 
             HashSet<string> addedIds = new HashSet<string>();
 
             // 1. 強制首位: Sou_key
             string keyId = "Sou_key";
-            if (unlockAchList.Contains(keyId) || unlockSplList.Contains(keyId) || SouvenirManager.Instance.IsOwned(keyId))
+            if (achList.Contains(keyId) || splList.Contains(keyId) || SouvenirManager.Instance.IsOwned(keyId))
             {
                 _bagItems.Add(new SouvenirBagItemData { SouvenirID = keyId, IsSpecial = true });
                 addedIds.Add(keyId);
             }
 
             // 2. 特殊紀念品前置
-            foreach (var id in unlockSplList)
+            foreach (var id in splList)
             {
                 if (addedIds.Contains(id)) continue;
                 _bagItems.Add(new SouvenirBagItemData { SouvenirID = id, IsSpecial = true });
@@ -105,7 +114,7 @@ namespace Souvenir
             }
 
             // 3. 成就紀念品後置
-            foreach (var id in unlockAchList)
+            foreach (var id in achList)
             {
                 if (addedIds.Contains(id)) continue;
                 _bagItems.Add(new SouvenirBagItemData { SouvenirID = id, IsSpecial = false });
@@ -139,7 +148,7 @@ namespace Souvenir
             for (int i = 0; i < displayCount; i++)
             {
                 var data = _bagItems[startIndex + i];
-                
+
                 _spawnedSlots[i].Setup(data, OnSlotClicked);
                 _spawnedSlots[i].gameObject.SetActive(true);
             }
@@ -172,7 +181,11 @@ namespace Souvenir
 
             if (InteractButton != null)
             {
-                InteractButton.onClick.RemoveAllListeners();
+                if (_currentInteractListener != null)
+                {
+                    InteractButton.onClick.RemoveListener(_currentInteractListener);
+                    _currentInteractListener = null;
+                }
                 InteractButton.gameObject.SetActive(false);
             }
 
@@ -235,9 +248,14 @@ namespace Souvenir
             if (InteractButton != null)
             {
                 InteractButton.gameObject.SetActive(false); // 預設隱藏
-                InteractButton.onClick.RemoveAllListeners();
+                // 只移除本 View 之前註冊的監聽器，保留 GuideButton 等其他元件的監聽器
+                if (_currentInteractListener != null)
+                {
+                    InteractButton.onClick.RemoveListener(_currentInteractListener);
+                    _currentInteractListener = null;
+                }
 
-                if (!ShowInteractionButton) return;
+                if (!ShowCurrentRunOnly) return;
 
                 // 從 Manager 取得這項紀念品的實例來確認是否實作介面
                 ISouvenirInteractive interactiveSouvenir = null;
@@ -260,10 +278,11 @@ namespace Souvenir
                         InteractButtonText.text = interactiveSouvenir.InteractionButtonText;
                     }
 
-                    InteractButton.onClick.AddListener(() =>
+                    _currentInteractListener = () =>
                     {
                         interactiveSouvenir.OnInteraction();
-                    });
+                    };
+                    InteractButton.onClick.AddListener(_currentInteractListener);
                 }
             }
         }
