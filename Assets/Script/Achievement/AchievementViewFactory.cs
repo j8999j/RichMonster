@@ -5,6 +5,7 @@
 // ============================================================
 using System.Collections.Generic;
 using System.Linq;
+using GameSystem;
 using UnityEngine;
 using UnityEngine.UI;
 /// <summary>
@@ -39,6 +40,11 @@ public class AchievementViewFactory : MonoBehaviour
     [SerializeField] private Button OpenViewButton;
     [SerializeField] private GameObject AchievementPanel;
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip openSound;
+    [SerializeField] private AudioClip switchCategorySound;
+    [SerializeField] private AudioClip closeSound;
+
     // Binder 清單：順序即優先權，DefaultBinder 永遠放最後
     private static readonly List<IAchievementViewBinder> Binders = new()
     {
@@ -56,12 +62,12 @@ public class AchievementViewFactory : MonoBehaviour
     private void Start()
     {
         // 綁定按鈕事件
-        OpenViewButton?.onClick.AddListener(() => PlayerInfoUIEvents.InvokeOpenAchievement());
-        btnItem?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Item));
-        btnTransaction?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Transaction));
-        btnRecord?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Record));
-        btnOthers?.onClick.AddListener(() => SwitchCategory(AchievementCategory.Others));
-        btnSpecialSouvenir?.onClick.AddListener(() => SwitchCategory(AchievementCategory.SpecialSouvenir));
+        OpenViewButton?.onClick.AddListener(OnOpenViewButtonClicked);
+        btnItem?.onClick.AddListener(OnItemButtonClicked);
+        btnTransaction?.onClick.AddListener(OnTransactionButtonClicked);
+        btnRecord?.onClick.AddListener(OnRecordButtonClicked);
+        btnOthers?.onClick.AddListener(OnOthersButtonClicked);
+        btnSpecialSouvenir?.onClick.AddListener(OnSpecialSouvenirButtonClicked);
         _souvenirProvider = Souvenir.SouvenirManager.Instance;
     }
 
@@ -72,6 +78,7 @@ public class AchievementViewFactory : MonoBehaviour
         _souvenirProvider = Souvenir.SouvenirManager.Instance;
         if (AchievementPanel != null)
             AchievementPanel.SetActive(true);
+        PlaySound(openSound);
         _currentCategory = AchievementCategory.Item;
         SwitchCategory(_currentCategory);
     }
@@ -79,7 +86,10 @@ public class AchievementViewFactory : MonoBehaviour
     /// <summary>切換分類頁籤，重新生成該分類的成就 View</summary>
     public void SwitchCategory(AchievementCategory category)
     {
+        bool isChangingCategory = category != _currentCategory;
         _currentCategory = category;
+        if (isChangingCategory)
+            PlaySound(switchCategorySound);
 
         UpdateButtonVisuals();
 
@@ -197,7 +207,12 @@ public class AchievementViewFactory : MonoBehaviour
     public void ClosePanel()
     {
         if (AchievementPanel != null)
+        {
+            bool wasActive = AchievementPanel.activeSelf;
             AchievementPanel.SetActive(false);
+            if (wasActive)
+                PlaySound(closeSound);
+        }
     }
 
     /// <summary>取得目前選取的分類</summary>
@@ -226,12 +241,51 @@ public class AchievementViewFactory : MonoBehaviour
         }
     }
 
+    private void OnOpenViewButtonClicked()
+    {
+        PlayerInfoUIEvents.InvokeOpenAchievement();
+    }
+
+    private void OnItemButtonClicked()
+    {
+        SwitchCategory(AchievementCategory.Item);
+    }
+
+    private void OnTransactionButtonClicked()
+    {
+        SwitchCategory(AchievementCategory.Transaction);
+    }
+
+    private void OnRecordButtonClicked()
+    {
+        SwitchCategory(AchievementCategory.Record);
+    }
+
+    private void OnOthersButtonClicked()
+    {
+        SwitchCategory(AchievementCategory.Others);
+    }
+
+    private void OnSpecialSouvenirButtonClicked()
+    {
+        SwitchCategory(AchievementCategory.SpecialSouvenir);
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip == null || AudioManager.Instance == null)
+            return;
+
+        AudioManager.Instance.PlaySfx(clip);
+    }
+
     private void OnDestroy()
     {
-        btnItem?.onClick.RemoveAllListeners();
-        btnTransaction?.onClick.RemoveAllListeners();
-        btnRecord?.onClick.RemoveAllListeners();
-        btnOthers?.onClick.RemoveAllListeners();
-        btnSpecialSouvenir?.onClick.RemoveAllListeners();
+        OpenViewButton?.onClick.RemoveListener(OnOpenViewButtonClicked);
+        btnItem?.onClick.RemoveListener(OnItemButtonClicked);
+        btnTransaction?.onClick.RemoveListener(OnTransactionButtonClicked);
+        btnRecord?.onClick.RemoveListener(OnRecordButtonClicked);
+        btnOthers?.onClick.RemoveListener(OnOthersButtonClicked);
+        btnSpecialSouvenir?.onClick.RemoveListener(OnSpecialSouvenirButtonClicked);
     }
 }

@@ -61,7 +61,7 @@ public class SaveSlotPresenter : MonoBehaviour
     {
         // 空存檔已不顯示，所以這裡只處理載入存檔
         Debug.Log($"[SaveSlotPresenter] 載入存檔 {slotIndex}");
-        DataManager.Instance.LoadPlayerFromSave(slotIndex);
+        DataManager.Instance.LoadCurrentPlayerFromSlot(slotIndex);
         GameManager.Instance.InitializeGame(slotIndex);
     }
 

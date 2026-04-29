@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using Shop;
 using System;
+using GameSystem;
 
 /// <summary>
 /// 雜貨店 / 妖界商店使用的 ShopView：詳情面板下方有統一的購買按鈕，
@@ -42,6 +43,14 @@ public class ShopUIView : ShopViewBase
     public Sprite BuyButtonSprite_CanBuy;
     public Sprite BuyButtonSprite_Buyed;
 
+    [Header("SFX")]
+    [SerializeField] private AudioClip buySuccessSfx;
+    [SerializeField] private AudioClip buyFailedSfx;
+    [SerializeField] private AudioClip itemClickSfx;
+    [SerializeField] private AudioClip openPanelSfx;
+    [SerializeField] private AudioClip closePanelSfx;
+    [SerializeField, Range(0f, 1f)] private float sfxVolumeScale = 1f;
+
     void Awake()
     {
         if (BuyButton != null) BuyButton.onClick.AddListener(OnBuyButtonClicked);
@@ -53,6 +62,7 @@ public class ShopUIView : ShopViewBase
     public override void SetVisible()
     {
         PanelisVisible = !PanelisVisible;
+        PlaySfx(PanelisVisible ? openPanelSfx : closePanelSfx);
         ClearDetailPanel();
         PanelRoot.SetActive(PanelisVisible);
         ShopShelfUI.SetActive(PanelisVisible);
@@ -97,6 +107,7 @@ public class ShopUIView : ShopViewBase
 
     private void OnSlotSelected(ShopSlotBase selectedSlot)
     {
+        PlaySfx(itemClickSfx);
         if (BuyButton != null) BuyButton.gameObject.SetActive(true);
         _currentSelectedData = selectedSlot._currentData;
         UpdateDetailPanel(selectedSlot);
@@ -214,9 +225,13 @@ public class ShopUIView : ShopViewBase
 
     private void OnBuyButtonClicked()
     {
-        if (_currentSelectedData != null)
+        if (_currentSelectedData != null && !_currentSelectedData.Purchased)
         {
             _onBuyRequestCallback?.Invoke(_currentSelectedData);
+        }
+        else
+        {
+            PlayBuyFailedSfx();
         }
     }
 
@@ -224,5 +239,23 @@ public class ShopUIView : ShopViewBase
     {
         SetVisible();
         InvokeCloseShopUI();
+    }
+
+    public override void PlayBuySuccessSfx()
+    {
+        PlaySfx(buySuccessSfx);
+    }
+
+    public override void PlayBuyFailedSfx()
+    {
+        PlaySfx(buyFailedSfx);
+    }
+
+    private void PlaySfx(AudioClip clip)
+    {
+        if (clip == null || AudioManager.Instance == null)
+            return;
+
+        AudioManager.Instance.PlaySfx(clip, sfxVolumeScale);
     }
 }

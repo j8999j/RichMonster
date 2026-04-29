@@ -7083,6 +7083,10 @@ MonoBehaviour:
   DetailDescText: {fileID: 1673091014}
   DetailPriceText: {fileID: 16574962}
   QualityText: {fileID: 1875724658}
+  openSound: {fileID: 8300000, guid: ed278f29bbec4e24e99d9182f8e4aba6, type: 3}
+  switchPageSound: {fileID: 8300000, guid: 7459b0e150cbf054d928e13c41069b01, type: 3}
+  selectItemSound: {fileID: 8300000, guid: bf12d451e4d76134ab7f0b13b7afaece, type: 3}
+  closeSound: {fileID: 8300000, guid: 3abb40a91eb50294584f15eae1fa5fe5, type: 3}
   PlayerState: {fileID: 0}
 --- !u!1 &1853437681
 GameObject:

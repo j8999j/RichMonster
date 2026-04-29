@@ -720,9 +720,9 @@ public class DataManager : Singleton<DataManager>
     }
 
     /// <summary>
-    /// 從指定的槽位讀取玩家存檔
+    /// 從指定的槽位讀取玩家存檔，覆蓋 _currentPlayerData。與 SaveCurrentPlayerAsync(slot) 對稱。
     /// </summary>
-    public void LoadPlayerFromSave(int slot = 0)
+    public void LoadCurrentPlayerFromSlot(int slot = 0)
     {
         var save = SaveManager.Instance.Load(slot);
         _currentPlayerData = ClonePlayerData(save?.Player ?? _initialPlayerData ?? new PlayerData());
@@ -1059,9 +1059,9 @@ public class DataManager : Singleton<DataManager>
     }
 
     /// <summary>
-    /// 對當前玩家狀態進行主畫面資料更新
+    /// 對當前玩家狀態進行主畫面資料更新（觸發 PlayerMainViewUpdate 事件刷新 HUD）
     /// </summary>
-    public void ShowPlayerMainData()
+    public void RefreshPlayerMainView()
     {
         AdjustUpdateView();
     }
@@ -1146,7 +1146,7 @@ public class DataManager : Singleton<DataManager>
     /// <summary>
     /// 讀取妖怪交易紀錄，如果不存在則回傳新的紀錄
     /// </summary>
-    public MonsterTradeProgress LoadMonsterTradeHistory()
+    public MonsterTradeProgress GetMonsterTradeHistory()
     {
         if (_currentPlayerData.GameSaveFile.GameData.ContainsKey("MonsterTradeHistory"))
         {

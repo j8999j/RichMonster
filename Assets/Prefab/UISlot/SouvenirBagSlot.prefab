@@ -52,7 +52,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InteractButton: {fileID: 2019177325927571928}
   SouvenirIcon: {fileID: 3504676480489872987}
-  SpecialMarker: {fileID: 5534205518515969212}
   TargetLongEdgeSize: 100
   DefaultSprite: {fileID: 0}
 --- !u!1 &3720004171387957134
@@ -192,7 +191,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2044629911944166558
 RectTransform:
   m_ObjectHideFlags: 0

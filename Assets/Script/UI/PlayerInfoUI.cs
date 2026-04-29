@@ -100,13 +100,13 @@ public class PlayerInfoUI : MonoBehaviour
     {
         if (frozen)
         {
-            GameManager.Instance.LockPlayerMove("PlayerInfoUI");
-            GameManager.Instance.LockPlayerInteract("PlayerInfoUI");
+            GameManager.Instance.LockPlayerMove(PlayerLockSources.PlayerInfoUI);
+            GameManager.Instance.LockPlayerInteract(PlayerLockSources.PlayerInfoUI);
         }
         else
         {
-            GameManager.Instance.UnlockPlayerMove("PlayerInfoUI");
-            GameManager.Instance.UnlockPlayerInteract("PlayerInfoUI");
+            GameManager.Instance.UnlockPlayerMove(PlayerLockSources.PlayerInfoUI);
+            GameManager.Instance.UnlockPlayerInteract(PlayerLockSources.PlayerInfoUI);
         }
     }
 }

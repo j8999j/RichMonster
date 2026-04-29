@@ -3,8 +3,6 @@
 // ============================================================
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 using Talksystem;
 using GameSystem;
 /// <summary>所有引導步驟的抽象基底</summary>
@@ -19,30 +17,43 @@ public abstract class GuideStep
 public class ForceDialogueStep : GuideStep
 {
     private readonly string dialogueId;
-    private DialogueEndListener listener;
+    private bool _disposed;
 
     public ForceDialogueStep(string dialogueId) => this.dialogueId = dialogueId;
 
     public override void Execute(System.Action onComplete)
     {
-        listener = new DialogueEndListener();
-        listener.StartListen(() => { listener.StopListen(); onComplete?.Invoke(); });
-        Addressables.LoadAssetAsync<TextAsset>(dialogueId).Completed += handle =>
-        {
-            if (handle.Status == AsyncOperationStatus.Succeeded && handle.Result != null)
-            {
-                GameManager.Instance.talkSystem.StartDialogue(handle.Result);
-            }
-            else
-            {
-                Debug.LogError($"[ForceDialogueStep] Addressables 找不到對應名稱的 TextAsset: {dialogueId}");
-                listener.StopListen();
-                onComplete?.Invoke(); // 如果找不到，直接結束步驟避免卡死
-            }
-        };
+        _disposed = false;
+        ExecuteAsync(onComplete);
     }
 
-    public override void Dispose() => listener?.StopListen();
+    private async void ExecuteAsync(System.Action onComplete)
+    {
+        string dialogueText = await GameDataLoader.LoadDialogueTextAsync(dialogueId);
+        if (_disposed)
+        {
+            return;
+        }
+
+        TalkSystem talkSystem = GameManager.Instance.talkSystem;
+        if (talkSystem != null && !string.IsNullOrEmpty(dialogueText))
+        {
+            bool completed = await talkSystem.PlayDialogueAsync(dialogueText);
+            if (!_disposed && completed)
+            {
+                onComplete?.Invoke();
+            }
+            return;
+        }
+
+        Debug.LogError($"[ForceDialogueStep] 找不到對話文本: {dialogueId}");
+        onComplete?.Invoke(); // 如果找不到，直接結束步驟避免卡死
+    }
+
+    public override void Dispose()
+    {
+        _disposed = true;
+    }
 }
 
 // ─────────────────────────────────────────────────────
@@ -296,19 +307,19 @@ public class WithPlayerLockedStep : GuideStepDecorator
 
     protected override void OnBeforeExecute()
     {
-        GameManager.Instance.LockPlayerMove("Guide");
-        GameManager.Instance.LockPlayerInteract("Guide");
+        GameManager.Instance.LockPlayerMove(PlayerLockSources.Guide);
+        GameManager.Instance.LockPlayerInteract(PlayerLockSources.Guide);
     }
 
     protected override void OnAfterComplete()
     {
-        GameManager.Instance.UnlockPlayerMove("Guide");
-        GameManager.Instance.UnlockPlayerInteract("Guide");
+        GameManager.Instance.UnlockPlayerMove(PlayerLockSources.Guide);
+        GameManager.Instance.UnlockPlayerInteract(PlayerLockSources.Guide);
     }
 
     protected override void OnDispose()
     {
-        GameManager.Instance.UnlockPlayerMove("Guide");
-        GameManager.Instance.UnlockPlayerInteract("Guide");
+        GameManager.Instance.UnlockPlayerMove(PlayerLockSources.Guide);
+        GameManager.Instance.UnlockPlayerInteract(PlayerLockSources.Guide);
     }
 }

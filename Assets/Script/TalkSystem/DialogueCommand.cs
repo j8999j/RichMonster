@@ -23,6 +23,7 @@ namespace Talksystem
             "w", "l", "r", "lr", "c",
             "wait", "speed",
             "fadein", "fadeout",
+            "storypanel", "storyopen", "storyimage", "storyclose",
             "color", "/color",
             "size", "/size",
             "b", "/b",

@@ -98,9 +98,10 @@ namespace Souvenir
         public bool HasInteraction => true;
         public string InteractionButtonText => "共鳴";
 
-        public void OnInteraction()
+        public bool OnInteraction()
         {
             SystemInfoEvent.Show($"正在等候時機到來");
+            return true;
         }
 
         public bool CanShowInteractionButton() => true;

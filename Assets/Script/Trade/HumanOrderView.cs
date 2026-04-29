@@ -118,14 +118,14 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
 
         if (Panel.activeSelf)
         {
-            GameManager.Instance.LockPlayerMove("HumanOrderView");
+            GameManager.Instance.LockPlayerMove(PlayerLockSources.HumanOrderView);
             ClearBagDetail();
             ClearOrderView();
             OnOpenOrderPanel?.Invoke();
         }
         else
         {
-            GameManager.Instance.UnlockPlayerMove("HumanOrderView");
+            GameManager.Instance.UnlockPlayerMove(PlayerLockSources.HumanOrderView);
         }
     }
     #region InventoryUIView
@@ -533,7 +533,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     }
     private void ExitOrderPanel()
     {
-        GameManager.Instance.UnlockPlayerMove("HumanOrderView");
+        GameManager.Instance.UnlockPlayerMove(PlayerLockSources.HumanOrderView);
         ClearBagDetail();
         ClearOrderView();
         Panel.SetActive(false);
@@ -560,7 +560,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
             return;
         }
 
-        GameManager.Instance.UnlockPlayerMove("HumanOrderView");
+        GameManager.Instance.UnlockPlayerMove(PlayerLockSources.HumanOrderView);
         Panel.SetActive(false);
         SwitchToAfterNoonClick?.Invoke();
     }

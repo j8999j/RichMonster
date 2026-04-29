@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using GameSystem;
 
 namespace Talksystem
 {
@@ -36,6 +38,7 @@ namespace Talksystem
     {
         [Header("UI 顯示")]
         [SerializeField] private DialogueView dialogueView;
+        [SerializeField] private StoryPlaybackPanel storyPlaybackPanel;
 
         [Header("打字機設定")]
         [Tooltip("每個字的顯示間隔 (秒)")]
@@ -48,6 +51,10 @@ namespace Talksystem
         [SerializeField] private KeyCode skipKey = KeyCode.Return;
         [Tooltip("是否啟用按鍵輸入 (設為 false 時需手動呼叫 Next())")]
         [SerializeField] private bool enableKeyInput = true;
+
+        [Header("玩家鎖定")]
+        [Tooltip("開始對話時自動鎖定玩家移動與互動，結束或中斷時自動解除")]
+        [SerializeField] private bool autoLockPlayer = true;
         // === 事件 ===
         /// <summary>對話結束時觸發</summary>
         public event Action OnDialogueEnd;
@@ -67,6 +74,9 @@ namespace Talksystem
         private bool _isPaused;
         private Coroutine _typewriterCoroutine;
         private string _currentDisplayText;
+        private TaskCompletionSource<bool> _currentDialogueTaskSource;
+        private bool _ownsAutoMoveLock;
+        private bool _ownsAutoInteractLock;
 
         // 等待按鍵後的行為
         private bool _waitClearAfter;
@@ -80,6 +90,9 @@ namespace Talksystem
 
         /// <summary>是否正在逐字顯示中</summary>
         public bool IsTyping => _isTyping;
+
+        /// <summary>目前使用的 DialogueView。</summary>
+        public DialogueView CurrentDialogueView => dialogueView;
 
         /// <summary>指令註冊中心</summary>
         public DialogueCommandRegistry CommandRegistry => _commandRegistry;
@@ -124,7 +137,7 @@ namespace Talksystem
                 Debug.LogError("[TalkSystem] TextAsset 為 null，無法開始對話");
                 return;
             }
-            StartDialogueInternal(DialogueParser.Parse(textAsset));
+            StartDialogueInternal(DialogueParser.Parse(textAsset), null);
         }
 
         /// <summary>
@@ -137,7 +150,7 @@ namespace Talksystem
                 Debug.LogError("[TalkSystem] 文本為空，無法開始對話");
                 return;
             }
-            StartDialogueInternal(DialogueParser.Parse(rawText));
+            StartDialogueInternal(DialogueParser.Parse(rawText), null);
         }
 
         /// <summary>
@@ -145,7 +158,49 @@ namespace Talksystem
         /// </summary>
         public void StartDialogue(List<string> lines)
         {
-            StartDialogueInternal(DialogueParser.Parse(lines));
+            StartDialogueInternal(DialogueParser.Parse(lines), null);
+        }
+
+        /// <summary>
+        /// 開始對話並等待自然結束。若被中斷或停止，回傳 false。
+        /// </summary>
+        public Task<bool> PlayDialogueAsync(string rawText)
+        {
+            if (string.IsNullOrEmpty(rawText))
+            {
+                Debug.LogError("[TalkSystem] 文本為空，無法開始對話");
+                return Task.FromResult(false);
+            }
+
+            var taskSource = new TaskCompletionSource<bool>();
+            StartDialogueInternal(DialogueParser.Parse(rawText), taskSource);
+            return taskSource.Task;
+        }
+
+        /// <summary>
+        /// 從 TextAsset 開始對話並等待自然結束。若被中斷或停止，回傳 false。
+        /// </summary>
+        public Task<bool> PlayDialogueAsync(TextAsset textAsset)
+        {
+            if (textAsset == null)
+            {
+                Debug.LogError("[TalkSystem] TextAsset 為 null，無法開始對話");
+                return Task.FromResult(false);
+            }
+
+            var taskSource = new TaskCompletionSource<bool>();
+            StartDialogueInternal(DialogueParser.Parse(textAsset), taskSource);
+            return taskSource.Task;
+        }
+
+        /// <summary>
+        /// 從字串列表開始對話並等待自然結束。若被中斷或停止，回傳 false。
+        /// </summary>
+        public Task<bool> PlayDialogueAsync(List<string> lines)
+        {
+            var taskSource = new TaskCompletionSource<bool>();
+            StartDialogueInternal(DialogueParser.Parse(lines), taskSource);
+            return taskSource.Task;
         }
 
         /// <summary>
@@ -212,6 +267,7 @@ namespace Talksystem
             _isWaitingForInput = false;
             _currentDisplayText = "";
             _nodes = null;
+            CompleteCurrentDialogue(false, false);
         }
 
         /// <summary>
@@ -238,20 +294,27 @@ namespace Talksystem
             dialogueView = view;
         }
 
+        private void OnDisable()
+        {
+            StopDialogue();
+        }
+
         // ===========================
         //  內部實作
         // ===========================
 
-        private void StartDialogueInternal(List<DialogueNode> nodes)
+        private void StartDialogueInternal(List<DialogueNode> nodes, TaskCompletionSource<bool> taskSource)
         {
             if (nodes == null || nodes.Count == 0)
             {
                 Debug.LogWarning("[TalkSystem] 解析後無對話節點");
+                taskSource?.TrySetResult(false);
                 return;
             }
 
             // 停止之前的對話
             StopDialogue();
+            _currentDialogueTaskSource = taskSource;
 
             _nodes = nodes;
             _currentNodeIndex = 0;
@@ -261,6 +324,7 @@ namespace Talksystem
             _isTyping = false;
             _isWaitingForInput = false;
             _isPaused = false;
+            AcquireAutoPlayerLocks();
 
             // 初始化 UI
             if (dialogueView != null)
@@ -319,6 +383,68 @@ namespace Talksystem
 
             // 所有節點處理完畢 → 對話結束
             EndDialogue();
+        }
+
+        private void AcquireAutoPlayerLocks()
+        {
+            _ownsAutoMoveLock = false;
+            _ownsAutoInteractLock = false;
+
+            if (!autoLockPlayer)
+            {
+                return;
+            }
+
+            GameManager manager = GameManager.Instance;
+            if (manager == null)
+            {
+                return;
+            }
+
+            manager.LockPlayerMove(PlayerLockSources.TalkSystem);
+            manager.LockPlayerInteract(PlayerLockSources.TalkSystem);
+            _ownsAutoMoveLock = true;
+            _ownsAutoInteractLock = true;
+        }
+
+        private void ReleaseAutoPlayerLocks()
+        {
+            if (!_ownsAutoMoveLock && !_ownsAutoInteractLock)
+            {
+                return;
+            }
+
+            GameManager manager = GameManager.Instance;
+            if (manager != null)
+            {
+                if (_ownsAutoMoveLock)
+                {
+                    manager.UnlockPlayerMove(PlayerLockSources.TalkSystem);
+                }
+
+                if (_ownsAutoInteractLock)
+                {
+                    manager.UnlockPlayerInteract(PlayerLockSources.TalkSystem);
+                }
+            }
+
+            _ownsAutoMoveLock = false;
+            _ownsAutoInteractLock = false;
+        }
+
+        private void CompleteCurrentDialogue(bool completed, bool raiseEndEvent)
+        {
+            TaskCompletionSource<bool> taskSource = _currentDialogueTaskSource;
+            _currentDialogueTaskSource = null;
+
+            ReleaseAutoPlayerLocks();
+
+            if (raiseEndEvent)
+            {
+                OnDialogueEnd?.Invoke();
+            }
+
+            taskSource?.TrySetResult(completed);
         }
 
         /// <summary>
@@ -387,6 +513,21 @@ namespace Talksystem
                     return true;
                 }
 
+                case "storypanel":
+                    return ProcessStoryPanelCommand(node.Parameters);
+
+                case "storyopen":
+                    return StartStoryPanelShow(GetOptionalFloat(node.Parameters, 0, -1f));
+
+                case "storyimage":
+                    if (node.Parameters.Count > 0)
+                        return StartStoryImageLoad(node.Parameters[0]);
+                    Debug.LogWarning("[TalkSystem] [storyimage] 缺少圖片 Addressables ID");
+                    return false;
+
+                case "storyclose":
+                    return StartStoryPanelHide(GetOptionalFloat(node.Parameters, 0, -1f));
+
                 default:
                     // 嘗試執行自訂指令
                     if (_commandRegistry.ExecuteCommand(keyword, node.Parameters))
@@ -404,6 +545,135 @@ namespace Talksystem
         /// <summary>
         /// 進入等待按鍵狀態
         /// </summary>
+        private bool ProcessStoryPanelCommand(List<string> parameters)
+        {
+            if (parameters == null || parameters.Count == 0)
+            {
+                Debug.LogWarning("[TalkSystem] [storypanel] 缺少 action，請使用 show、image 或 close");
+                return false;
+            }
+
+            string action = parameters[0].ToLowerInvariant();
+            switch (action)
+            {
+                case "show":
+                case "open":
+                    return StartStoryPanelShow(GetOptionalFloat(parameters, 1, -1f));
+
+                case "image":
+                case "load":
+                    if (parameters.Count > 1)
+                        return StartStoryImageLoad(parameters[1]);
+                    Debug.LogWarning("[TalkSystem] [storypanel,image] 缺少圖片 Addressables ID");
+                    return false;
+
+                case "close":
+                case "hide":
+                    return StartStoryPanelHide(GetOptionalFloat(parameters, 1, -1f));
+
+                default:
+                    Debug.LogWarning($"[TalkSystem] 未知的 storypanel action: {parameters[0]}");
+                    return false;
+            }
+        }
+
+        private bool StartStoryPanelShow(float duration)
+        {
+            StoryPlaybackPanel panel = ResolveStoryPlaybackPanel();
+            if (panel == null)
+            {
+                Debug.LogWarning("[TalkSystem] 找不到 StoryPlaybackPanel，無法顯示故事面板");
+                return false;
+            }
+
+            _typewriterCoroutine = StartCoroutine(StoryPanelTaskCoroutine(panel.ShowAsync(duration), "顯示故事面板"));
+            return true;
+        }
+
+        private bool StartStoryImageLoad(string imageId)
+        {
+            if (string.IsNullOrWhiteSpace(imageId))
+            {
+                Debug.LogWarning("[TalkSystem] 故事圖片 Addressables ID 為空");
+                return false;
+            }
+
+            _typewriterCoroutine = StartCoroutine(StoryImageLoadCoroutine(imageId));
+            return true;
+        }
+
+        private IEnumerator StoryImageLoadCoroutine(string imageId)
+        {
+            StoryPlaybackPanel panel = ResolveStoryPlaybackPanel();
+            if (panel == null)
+            {
+                Debug.LogWarning("[TalkSystem] 找不到 StoryPlaybackPanel，無法載入故事圖片");
+                _typewriterCoroutine = null;
+                ProcessNodes();
+                yield break;
+            }
+
+            Task loadTask = panel.LoadImageAsync(imageId);
+            while (!loadTask.IsCompleted)
+            {
+                yield return null;
+            }
+
+            if (loadTask.IsFaulted)
+            {
+                Debug.LogError($"[TalkSystem] 載入故事圖片失敗: {imageId}, Error: {loadTask.Exception}");
+            }
+
+            _typewriterCoroutine = null;
+            ProcessNodes();
+        }
+
+        private bool StartStoryPanelHide(float duration)
+        {
+            StoryPlaybackPanel panel = ResolveStoryPlaybackPanel();
+            if (panel == null)
+            {
+                Debug.LogWarning("[TalkSystem] 找不到 StoryPlaybackPanel，無法關閉故事面板");
+                return false;
+            }
+
+            _typewriterCoroutine = StartCoroutine(StoryPanelTaskCoroutine(panel.HideAsync(duration), "關閉故事面板"));
+            return true;
+        }
+
+        private IEnumerator StoryPanelTaskCoroutine(Task panelTask, string actionName)
+        {
+            while (!panelTask.IsCompleted)
+            {
+                yield return null;
+            }
+
+            if (panelTask.IsFaulted)
+            {
+                Debug.LogError($"[TalkSystem] {actionName}失敗: {panelTask.Exception}");
+            }
+
+            _typewriterCoroutine = null;
+            ProcessNodes();
+        }
+
+        private float GetOptionalFloat(List<string> parameters, int index, float fallback)
+        {
+            if (parameters == null || parameters.Count <= index)
+                return fallback;
+
+            return float.TryParse(parameters[index], out float value) ? value : fallback;
+        }
+
+        private StoryPlaybackPanel ResolveStoryPlaybackPanel()
+        {
+            if (storyPlaybackPanel != null)
+                return storyPlaybackPanel;
+
+            storyPlaybackPanel = FindObjectOfType<StoryPlaybackPanel>(true);
+            return storyPlaybackPanel;
+        }
+
         private void WaitForInput(bool clearAfter, bool newLineAfter)
         {
             _waitClearAfter = clearAfter;
@@ -548,7 +818,7 @@ namespace Talksystem
             _isDialogueActive = false;
             _isTyping = false;
             _isWaitingForInput = false;
-            OnDialogueEnd?.Invoke();
+            CompleteCurrentDialogue(true, true);
         }
     }
 }

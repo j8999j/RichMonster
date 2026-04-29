@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections.Generic;
 using System;
 using Souvenir;
+using GameSystem;
 public class SouvenirShopView : MonoBehaviour
 {
     [Header("Panels")]
@@ -35,6 +36,13 @@ public class SouvenirShopView : MonoBehaviour
     public Sprite OwnedSprite;
     public float TargetLongEdgeSize = 150f;
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip openSound;
+    [SerializeField] private AudioClip switchPageSound;
+    [SerializeField] private AudioClip selectItemSound;
+    [SerializeField] private AudioClip closeSound;
+    [SerializeField] private AudioClip exchangeSuccessSound;
+
     private List<SouvenirSlot> _spawnedSlots = new List<SouvenirSlot>();
     private List<AchievementSouvenirData> _catalogItems = new List<AchievementSouvenirData>();
     private SouvenirSlot _currentSelectedSlot;
@@ -53,6 +61,7 @@ public class SouvenirShopView : MonoBehaviour
     {
         if (MainPanel != null) MainPanel.SetActive(true);
         if (DetailPanel != null) DetailPanel.SetActive(false);
+        PlaySound(openSound);
         _currentSelectedSlot = null;
 
         LoadCatalog();
@@ -67,7 +76,13 @@ public class SouvenirShopView : MonoBehaviour
     /// </summary>
     public void CloseShop()
     {
-        if (MainPanel != null) MainPanel.SetActive(false);
+        if (MainPanel != null)
+        {
+            bool wasActive = MainPanel.activeSelf;
+            MainPanel.SetActive(false);
+            if (wasActive)
+                PlaySound(closeSound);
+        }
     }
 
     /// <summary>
@@ -134,7 +149,7 @@ public class SouvenirShopView : MonoBehaviour
         // 預設選中該頁第一項
         if (displayCount > 0)
         {
-            OnSlotClicked(_spawnedSlots[0]);
+            SelectSlot(_spawnedSlots[0], false);
         }
 
         // 更新翻頁按鈕狀態
@@ -162,11 +177,18 @@ public class SouvenirShopView : MonoBehaviour
 
     private void OnSlotClicked(SouvenirSlot slot)
     {
+        SelectSlot(slot, true);
+    }
+
+    private void SelectSlot(SouvenirSlot slot, bool playSound)
+    {
         _currentSelectedSlot = slot;
         if (DetailPanel != null) DetailPanel.SetActive(true);
 
         var data = slot.CurrentData;
         if (data == null) return;
+        if (playSound)
+            PlaySound(selectItemSound);
 
         // 更新詳細資訊文字
         if (DetailNameText != null) DetailNameText.text = data.SouvenirName;
@@ -227,6 +249,8 @@ public class SouvenirShopView : MonoBehaviour
         bool success = SouvenirManager.Instance.TryPurchaseSouvenir(data.SouvenirID);
         if (success)
         {
+            PlaySound(exchangeSuccessSound);
+
             // 購買後立刻存檔
             _ = DataManager.Instance.SaveBookAsync();
 
@@ -250,13 +274,27 @@ public class SouvenirShopView : MonoBehaviour
 
     private void OnPreviousPage()
     {
+        int previousPage = _currentPage;
         _currentPage--;
         RefreshPage();
+        if (_currentPage != previousPage)
+            PlaySound(switchPageSound);
     }
 
     private void OnNextPage()
     {
+        int previousPage = _currentPage;
         _currentPage++;
         RefreshPage();
+        if (_currentPage != previousPage)
+            PlaySound(switchPageSound);
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip == null || AudioManager.Instance == null)
+            return;
+
+        AudioManager.Instance.PlaySfx(clip);
     }
 }

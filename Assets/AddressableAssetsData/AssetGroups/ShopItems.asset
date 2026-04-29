@@ -17,11 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: a94bf07a37d53bb4aaceb98277d5504e
   m_SerializeEntries:
-  - m_GUID: 1252d45f6d6998d49b3e4d3d1ebaa888
-    m_Address: Assets/Art/Allitems.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b8c13ca95d44abb41bc0b18a699571e6
     m_Address: ItemsAtlas
     m_ReadOnly: 0

@@ -7,12 +7,15 @@ using Newtonsoft.Json;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 /// <summary>
 /// 遊戲資料載入器 - 負責從 Addressables 載入所有遊戲設定資料
 /// </summary>
 public class GameDataLoader
 {
+    public const string DIALOGUE_LABEL = "Dialogue";
+
     // Addressable Keys
     private const string KEY_ITEMS = "items";
     private const string KEY_SHOPS = "shops";
@@ -32,6 +35,10 @@ public class GameDataLoader
     private const string KEY_SPECIAL_SOUVENIRS = "Souvenirs_Special";
     // Book save file
     private const string BOOK_SAVE_FILE = "illustrated_book.json";
+    private static readonly Dictionary<string, string> _dialogueTextCache = new Dictionary<string, string>();
+    private static Task _dialoguePreloadTask;
+    private static readonly ReadOnlyDictionary<string, string> _readonlyDialogueTextCache =
+        new ReadOnlyDictionary<string, string>(_dialogueTextCache);
 
     /// <summary>
     /// 載入所有遊戲資料的結果
@@ -64,6 +71,7 @@ public class GameDataLoader
     {
         var result = new LoadResult();
 
+        await PreloadDialoguesByLabelAsync();
         result.ItemTagsDict = await LoadItemTagsAsync();
         result.ItemDict = await LoadItemsAsync();
         result.ShopDict = await LoadShopDataAsync();
@@ -83,6 +91,47 @@ public class GameDataLoader
         result.BookData = LoadBookData();
 
         return result;
+    }
+
+    /// <summary>
+    /// 取得已預載的對話快取。
+    /// </summary>
+    public static IReadOnlyDictionary<string, string> CachedDialogueTexts => _readonlyDialogueTextCache;
+
+    /// <summary>
+    /// 以 Addressables Label 預載所有對話，並以對話 ID 快取文本。
+    /// </summary>
+    public static async Task PreloadDialoguesByLabelAsync(string label = DIALOGUE_LABEL)
+    {
+        if (_dialogueTextCache.Count > 0)
+        {
+            return;
+        }
+
+        _dialoguePreloadTask ??= PreloadDialoguesByLabelInternalAsync(label);
+        await _dialoguePreloadTask;
+    }
+
+    /// <summary>
+    /// 從快取取得單筆對話。若快取尚未建立會先預載。
+    /// </summary>
+    public static async Task<string> LoadDialogueTextAsync(string dialogueId)
+    {
+        if (string.IsNullOrWhiteSpace(dialogueId))
+        {
+            Debug.LogError("[GameDataLoader] 對話 ID 為空");
+            return null;
+        }
+
+        await PreloadDialoguesByLabelAsync();
+
+        if (_dialogueTextCache.TryGetValue(dialogueId, out string dialogueText))
+        {
+            return dialogueText;
+        }
+
+        Debug.LogError($"[GameDataLoader] 找不到對話文本: {dialogueId}");
+        return null;
     }
 
     #region Book Data Loader (File System)
@@ -156,6 +205,52 @@ public class GameDataLoader
         bookData.UnLockSpecialSouvenirID ??= new List<string>();
     }
 
+    #endregion
+
+    #region Dialogue Loader
+    private static async Task PreloadDialoguesByLabelInternalAsync(string label)
+    {
+        AsyncOperationHandle<IList<TextAsset>> handle = default;
+        try
+        {
+            handle = Addressables.LoadAssetsAsync<TextAsset>(label, _ => { });
+            IList<TextAsset> textAssets = await handle.Task;
+
+            _dialogueTextCache.Clear();
+            if (handle.Status != AsyncOperationStatus.Succeeded || textAssets == null)
+            {
+                Debug.LogError($"[GameDataLoader] 無法以 Label 載入對話資源: {label}");
+                return;
+            }
+
+            foreach (TextAsset textAsset in textAssets)
+            {
+                if (textAsset == null)
+                {
+                    continue;
+                }
+
+                string dialogueId = textAsset.name;
+                if (_dialogueTextCache.ContainsKey(dialogueId))
+                {
+                    Debug.LogError($"[GameDataLoader] 對話 ID 重複，已跳過後續資源: {dialogueId}");
+                    continue;
+                }
+
+                _dialogueTextCache.Add(dialogueId, textAsset.text);
+            }
+
+            Debug.Log($"[GameDataLoader] 已預載 {_dialogueTextCache.Count} 筆對話資源，Label: {label}");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[GameDataLoader] 對話 Label 預載失敗: {label}, Error: {ex}");
+        }
+        finally
+        {
+            if (handle.IsValid()) Addressables.Release(handle);
+        }
+    }
     #endregion
 
     #region Individual Loaders

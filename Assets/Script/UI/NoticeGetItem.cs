@@ -76,7 +76,7 @@ public class NoticeGetItem : MonoBehaviour
     [SerializeField] private GameObject NoticePanel;
     [SerializeField] private TextMeshProUGUI NoticeText;
     [SerializeField] private Button ConfirmButton;
-    private const string LockSource = "NoticeGetItem";
+    private const string LockSource = PlayerLockSources.NoticeGetItem;
     private bool _moveLocked;
     [Header("Slot 設定")]
     [SerializeField] private NoticeSlot SlotPrefab;
@@ -88,6 +88,10 @@ public class NoticeGetItem : MonoBehaviour
     [SerializeField] private GameObject TooltipPanel;
     [SerializeField] private TextMeshProUGUI TooltipText;
     [SerializeField] private Vector2 TooltipOffset = new Vector2(15f, -15f);
+
+    [Header("SFX")]
+    [SerializeField] private AudioClip clickSfx;
+    [SerializeField, Range(0f, 1f)] private float sfxVolumeScale = 1f;
 
     private bool _isTooltipActive = false;
     private List<NoticeSlot> _activeSlots = new List<NoticeSlot>();
@@ -233,6 +237,7 @@ public class NoticeGetItem : MonoBehaviour
 
     private void OnConfirmClicked()
     {
+        PlaySfx(clickSfx);
         if (NoticePanel != null) NoticePanel.SetActive(false);
         Clear();
         if (_moveLocked && GameManager.Instance != null)
@@ -243,6 +248,14 @@ public class NoticeGetItem : MonoBehaviour
     }
 
     // ── Tooltip ──────────────────────────────────────
+    private void PlaySfx(AudioClip clip)
+    {
+        if (clip == null || AudioManager.Instance == null)
+            return;
+
+        AudioManager.Instance.PlaySfx(clip, sfxVolumeScale);
+    }
+
     public void ShowTooltip(string content)
     {
         if (TooltipPanel != null && TooltipText != null)

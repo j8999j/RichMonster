@@ -122,7 +122,7 @@ namespace Souvenir
     {
         bool HasInteraction { get; }
         string InteractionButtonText { get; }
-        void OnInteraction();
+        bool OnInteraction();
         /// <summary>
         /// 每次 SouvenirBagView 顯示時呼叫，判斷此次是否要顯示互動按鈕。
         /// 預設回傳 true；具有時段限制等條件的紀念品（如黃昏鑰匙）需自行覆寫判斷邏輯。

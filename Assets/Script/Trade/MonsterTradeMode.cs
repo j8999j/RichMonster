@@ -117,7 +117,7 @@ public class MonsterTradeMode : MonoBehaviour
     /// </summary>
     private void LoadHistory()
     {
-        monsterTradeProgress = DataManager.Instance.LoadMonsterTradeHistory();
+        monsterTradeProgress = DataManager.Instance.GetMonsterTradeHistory();
         if (monsterTradeProgress == null)
         {
             monsterTradeProgress = new MonsterTradeProgress
@@ -356,6 +356,7 @@ public class MonsterTradeMode : MonoBehaviour
 
         bool isTypeMatch = itemDefinition.Type == request.itemType;
         bool hasAllRequestTags = request.RequestTags == null || !request.RequestTags.Except(itemDefinition.Tags).Any();
+        bool hasAnyRequestTag = request.RequestTags != null && request.RequestTags.Any(t => itemDefinition.Tags.Contains(t));
         bool hasAnyPreferTag = customer.PreferredTags != null && customer.PreferredTags.Any(t => itemDefinition.Tags.Contains(t));
         bool hasAllPreferTags = customer.PreferredTags != null && customer.PreferredTags.Count > 0 && !customer.PreferredTags.Except(itemDefinition.Tags).Any();
 
@@ -371,8 +372,8 @@ public class MonsterTradeMode : MonoBehaviour
         }
 
         // 3. 滿意 (Satisfied)
-        // 條件 A: 符合需求類型且具有所有需求標籤
-        bool satisfiedA = isTypeMatch && hasAllRequestTags;
+        // 條件 A: 符合需求類型且具有任一需求標籤
+        bool satisfiedA = isTypeMatch && hasAnyRequestTag;
         // 條件 B: 需求類型符合且物品包含任意偏好標籤
         bool satisfiedB = isTypeMatch && hasAnyPreferTag;
 

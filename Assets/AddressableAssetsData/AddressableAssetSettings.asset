@@ -92,6 +92,7 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - Dialogue
     - NpcMission
   m_SchemaTemplates: []
   m_GroupTemplateObjects:

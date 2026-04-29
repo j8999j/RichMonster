@@ -31,10 +31,10 @@ namespace Shop
 
         protected override void OnInteract()
         {
-            if (GameManager.Instance.IsPlayerMoveLocked("VendingMachine"))
+            if (GameManager.Instance.IsPlayerMoveLocked(PlayerLockSources.VendingMachine))
             {
                 _shopUIView.SetVisible();
-                GameManager.Instance.UnlockPlayerMove("VendingMachine");
+                GameManager.Instance.UnlockPlayerMove(PlayerLockSources.VendingMachine);
                 return;
             }
             var CurrentDay = GameManager.Instance.gameFlow.CurrentDay;
@@ -47,13 +47,13 @@ namespace Shop
                 _shopUIView.ShowItems(items, OnPlayerTryToBuyItem);
             }
             _shopUIView.SetVisible();
-            GameManager.Instance.LockPlayerMove("VendingMachine");
+            GameManager.Instance.LockPlayerMove(PlayerLockSources.VendingMachine);
         }
 
         private async void EndInteract()
         {
             await GameManager.Instance.gameFlow.SaveGameAsync();
-            GameManager.Instance.UnlockPlayerMove("VendingMachine");
+            GameManager.Instance.UnlockPlayerMove(PlayerLockSources.VendingMachine);
         }
 
         private void OnPlayerTryToBuyItem(ShelfSlot slotData)
@@ -123,7 +123,11 @@ namespace Shop
         #region Trade
         public void tradeitem(ShelfSlot shelfSlot)
         {
-            if (shelfSlot.Purchased || shelfSlot.Item == null) return;
+            if (shelfSlot.Purchased || shelfSlot.Item == null)
+            {
+                _shopUIView.PlayBuyFailedSfx();
+                return;
+            }
             if (DataManager.Instance.TrySpendGold(shelfSlot.Price))
             {
                 DataManager.Instance.AddItem(shelfSlot.Item.Id, shelfSlot.Price);
@@ -131,7 +135,12 @@ namespace Shop
                 NewShopShelfData(shelfSlot);
                 SyncPurchaseState(TodayShopItemList);
                 _shopUIView.RefreshAll();
+                _shopUIView.PlayBuySuccessSfx();
                 Souvenir.SouvenirManager.Instance.NotifyItemPurchased(ShopID, shelfSlot.Item.Id, 1);
+            }
+            else
+            {
+                _shopUIView.PlayBuyFailedSfx();
             }
         }
 

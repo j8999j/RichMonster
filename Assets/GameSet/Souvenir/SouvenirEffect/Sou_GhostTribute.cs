@@ -99,10 +99,11 @@ namespace Souvenir
         public bool HasInteraction => true;
         public string InteractionButtonText => "共鳴";
 
-        public void OnInteraction()
+        public bool OnInteraction()
         {
             Debug.Log($"正在等待時機到來");
             // TODO: 若未來有統一的系統提示 UI，可以在此呼叫通知玩家的 API
+            return true;
         }
 
         public bool CanShowInteractionButton() => true;

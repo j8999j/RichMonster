@@ -15,7 +15,6 @@ public class SouvenirBagSlot : MonoBehaviour
     [Header("UI Components")]
     public Button InteractButton;
     public Image SouvenirIcon;
-    public GameObject SpecialMarker; // 標示是否為特殊紀念品
     
     [Header("Settings")]
     public float TargetLongEdgeSize = 100f;
@@ -46,11 +45,6 @@ public class SouvenirBagSlot : MonoBehaviour
     public void RefreshView()
     {
         if (CurrentData == null) return;
-
-        if (SpecialMarker != null)
-        {
-            SpecialMarker.SetActive(CurrentData.IsSpecial);
-        }
 
         LoadSprite(CurrentData.SouvenirID);
     }

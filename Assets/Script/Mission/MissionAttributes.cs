@@ -8,3 +8,6 @@ public class ItemTagSelectAttribute : PropertyAttribute { }
 
 // 用於標記 NPC ID (含妖怪) 的欄位
 public class NpcIDSelectAttribute : PropertyAttribute { }
+
+// 用於標記對話 ID 的欄位
+public class DialogueIdSelectAttribute : PropertyAttribute { }

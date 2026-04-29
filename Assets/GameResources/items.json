@@ -67,7 +67,8 @@
       "BasePrice": 500,
       "Description": "深海或深穴中自然生成的寶珠，散發著柔和光芒，珠面常年凝著水氣並帶有潮濕的氣息。",
       "ShopType": [
-        "YokaiStore"
+        "YokaiStore",
+        "MonsterMerchant_Ocean"
       ]
     },
     {
@@ -100,7 +101,7 @@
       "BasePrice": 50,
       "Description": "外皮金黃酥脆、內裡多汁的炸雞腿。光看就足以讓任何人的口水決堤。",
       "ShopType": [
-        "FoodStore"
+        "FoodShop"
       ]
     },
     {
@@ -117,7 +118,7 @@
       "BasePrice": 150,
       "Description": "火烤過的新鮮肉類大集合。今天值得吃點好的。",
       "ShopType": [
-        "FoodStore"
+        "FoodShop"
       ]
     },
     {
@@ -134,7 +135,7 @@
       "BasePrice": 30,
       "Description": "跟名稱一樣普通的沙拉。纖維素是當中含量第二高的成分，第一高的是「後悔沒點別的」。",
       "ShopType": [
-        "FoodStore"
+        "FoodShop"
       ]
     },
     {
@@ -283,7 +284,7 @@
       "BasePrice": 50,
       "Description": "高達58度酒精的獨特飲品，一口下肚全身發熱，兩口下肚開始懷疑人生，三口下肚就不需要懷疑了。",
       "ShopType": [
-        "FoodStore"
+        "FoodShop"
       ]
     },
     {
@@ -332,7 +333,7 @@
       "BasePrice": 600,
       "Description": "沉甸甸的一顆藥丸，服下後身體會變得像釘在地上。連十七級颶風都吹不動。",
       "ShopType": [
-        "YokaiStore"
+        "MonsterMerchant_Rare"
       ]
     },
     {
@@ -385,7 +386,7 @@
       "BasePrice": 3000,
       "Description": "黃金製成的容器，摩擦後會喚出居於當中的存在，能夠實現願望，而你又願意付出什麼樣的代價呢?",
       "ShopType": [
-        "YokaiStore"
+        "MonsterMerchant_Rare"
       ]
     },
     {
@@ -451,7 +452,7 @@
       "BasePrice": 50,
       "Description": "薄脆可口的零食，一吃就停不下來，雖然袋子裡三分之一是空氣。",
       "ShopType": [
-        "GroceryStore"
+        "FoodShop"
       ]
     },
     {
@@ -499,7 +500,7 @@
       "BasePrice": 300,
       "Description": "將深海魚肉封存在金屬罐中，打開就能聞到海洋的味道。在陸地上想念海，這一罐就夠。",
       "ShopType": [
-        "GroceryStore"
+        "FoodShop"
       ]
     },
     {
@@ -515,7 +516,7 @@
       "BasePrice": 80,
       "Description": "永不變質的金黃色糖漿，來自大自然的饋贈。",
       "ShopType": [
-        "GroceryStore"
+        "FoodShop"
       ]
     },
     {
@@ -558,7 +559,7 @@
         "Ocean",
         "Music"
       ],
-      "Type": 0,
+      "Type": 2,
       "World": 0,
       "Rarity": 0,
       "BasePrice": 600,
@@ -648,7 +649,7 @@
       "BasePrice": 130,
       "Description": "漆黑如墨、苦澀如膽的一小杯液體。",
       "ShopType": [
-        "GroceryStore"
+        "HumanShopEat"
       ]
     },
     {
@@ -666,7 +667,7 @@
       "BasePrice": 550,
       "Description": "來自熱帶的水果，橫切面呈現完美的五角形。造型像是掉下來的星星碎片。",
       "ShopType": [
-        "GroceryStore"
+        "FoodShop"
       ]
     },
     {
@@ -700,7 +701,7 @@
       "BasePrice": 440,
       "Description": "濃稠、深紅色的液體，帶有鐵鏽味，其實是罐頭味。視覺上跟鮮血有 90% 相似度。",
       "ShopType": [
-        "GroceryStore"
+        "VendingMachine"
       ]
     },
     {
@@ -732,7 +733,7 @@
       "BasePrice": 160,
       "Description": "形的金色餅塊，上面印著神祕的符號，切開後裡面常藏著另一個小月亮。",
       "ShopType": [
-        "GroceryStore"
+        "FoodShop"
       ]
     },
     {
@@ -748,7 +749,7 @@
       "BasePrice": 80,
       "Description": "散發著濃烈的、彷彿屍體放置三天的氣味，但表面炸得金黃酥脆。氣味是敵人，味道是朋友。",
       "ShopType": [
-        "GroceryStore"
+        "HumanShopEat"
       ]
     },
     {
@@ -781,7 +782,7 @@
       "BasePrice": 220,
       "Description": "外皮金黃酥脆，內餡是紅豆泥的魚形蛋糕。除了長得像魚，跟海鮮沒有任何關係。",
       "ShopType": [
-        "GroceryStore"
+        "HumanShopEat"
       ]
     },
     {
@@ -798,7 +799,7 @@
       "BasePrice": 35,
       "Description": "乾燥硬化後的長條麵包，硬度堪比警棍。本質是食物沒錯，但在物理層面上敲暈一頭牛完全沒問題。",
       "ShopType": [
-        "GroceryStore"
+        "HumanShopEat"
       ]
     },
     {
@@ -1049,7 +1050,7 @@
       "BasePrice": 220,
       "Description": "把牛肉曬乾、調味、切片裝袋。",
       "ShopType": [
-        "GroceryStore"
+        "FoodShop"
       ]
     },
     {
@@ -1066,7 +1067,7 @@
       "BasePrice": 690,
       "Description": "紅油浮面、花椒沉底的恐怖液體。下鍋煮什麼都變成紅色，吃完隔天腸胃會受到詛咒般疼痛",
       "ShopType": [
-        "GroceryStore"
+        "FoodShop"
       ]
     },
     {
@@ -1076,7 +1077,7 @@
         "Spicy",
         "Weapon"
       ],
-      "Type": 0,
+      "Type": 1,
       "World": 0,
       "Rarity": 0,
       "BasePrice": 990,
@@ -1099,7 +1100,7 @@
       "BasePrice": 2300,
       "Description": "經過長年風乾與鹽漬的肉塊，時間越久味道越深。",
       "ShopType": [
-        "GroceryStore"
+        "FoodShop"
       ]
     },
     {
@@ -1149,7 +1150,7 @@
       "BasePrice": 130,
       "Description": "鋪滿酸爽檸檬餡的塔皮甜點。一口咬下，甜味之後酸味會突襲味蕾。",
       "ShopType": [
-        "GroceryStore"
+        "HumanShopEat"
       ]
     },
     {
@@ -1192,7 +1193,7 @@
         "Wet",
         "Cold"
       ],
-      "Type": 0,
+      "Type": 1,
       "World": 0,
       "Rarity": 0,
       "BasePrice": 75,
@@ -1280,7 +1281,7 @@
       "BasePrice": 390,
       "Description": "泡在醋裡的小黃瓜。酸脆爽口，配什麼都解膩。",
       "ShopType": [
-        "GroceryStore"
+        "FoodShop"
       ]
     },
     {
@@ -1297,7 +1298,7 @@
       "BasePrice": 85,
       "Description": "深褐色的酸甜飲品。一口下肚酸味直竄天靈蓋，口腔裡的油膩感瞬間被帶走。",
       "ShopType": [
-        "GroceryStore"
+        "HumanShopEat"
       ]
     },
     {
@@ -1313,7 +1314,7 @@
       "BasePrice": 550,
       "Description": "經過炭火洗禮的厚切牛排。表面有漂亮的焦痕，內部仍保留柔嫩的粉紅色，牛排的頂點",
       "ShopType": [
-        "GroceryStore"
+        "HumanShopEat"
       ]
     },
     {
@@ -1364,7 +1365,7 @@
       "BasePrice": 800,
       "Description": "從賽壬身上剝落的藍綠色鱗片，永遠濕潤。放在耳邊能聽到迷幻的歌聲，助眠效果絕佳。",
       "ShopType": [
-        "YokaiStore"
+        "MonsterMerchant_Ocean"
       ]
     },
     {
@@ -1462,7 +1463,7 @@
         "Magic",
         "Glass"
       ],
-      "Type": 0,
+      "Type": 2,
       "World": 1,
       "Rarity": 1,
       "BasePrice": 1200,
@@ -1547,7 +1548,7 @@
         "Moon",
         "Glass"
       ],
-      "Type": 0,
+      "Type": 2,
       "World": 0,
       "Rarity": 1,
       "BasePrice": 3300,
@@ -1582,7 +1583,7 @@
         "Soul",
         "Glass"
       ],
-      "Type": 0,
+      "Type": 2,
       "World": 0,
       "Rarity": 1,
       "BasePrice": 1400,
@@ -1613,7 +1614,8 @@
       "Name": "芭蕉扇",
       "Tags": [
         "Wind",
-        "Magic"
+        "Magic",
+        "Weapon"
       ],
       "Type": 0,
       "World": 1,
@@ -1621,7 +1623,7 @@
       "BasePrice": 2200,
       "Description": "巨大的芭蕉葉扇子，輕輕一搧能掀起十里狂風，連老屋都能一掃而空。——某牛短記：「家中大小事不再用它，上次搧了一下屋頂就沒了。」",
       "ShopType": [
-        "YokaiStore"
+        "MonsterMerchant_Rare"
       ]
     },
     {
@@ -1690,7 +1692,7 @@
       "BasePrice": 90,
       "Description": "著名的街頭小吃，混合了糯米的凝固血塊。外裹花生粉與香菜，吃起來軟嫩香甜。",
       "ShopType": [
-        "GroceryStore"
+        "HumanShopEat"
       ]
     },
     {
@@ -1753,7 +1755,7 @@
         "Plant",
         "River"
       ],
-      "Type": 0,
+      "Type": 2,
       "World": 0,
       "Rarity": 0,
       "BasePrice": 25,
@@ -2184,10 +2186,12 @@
       ],
       "Type": 2,
       "World": 1,
-      "Rarity": 0,
+      "Rarity": 1,
       "BasePrice": 400,
       "Description": "觸感冰涼的特製瓷盒。內裝的粉末白得有些不自然，抹上後雖能讓膚色如玉石般潔淨，卻也帶著一絲抹不去的寒意。",
-      "ShopType": []
+      "ShopType": [
+        "MonsterMerchant_Rare"
+      ]
     },
     {
       "Id": "SilkSachet",
@@ -2203,7 +2207,9 @@
       "Rarity": 1,
       "BasePrice": 600,
       "Description": "以昂貴錦緞包裹毒草製成的精緻香囊。散發的香氣極其誘人，但若是嗅聞過久，意識便會漸漸陷入微微的眩暈。",
-      "ShopType": []
+      "ShopType": [
+        "MonsterMerchant_Rare"
+      ]
     },
     {
       "Id": "HuizhuMoonCrown",
@@ -2219,7 +2225,9 @@
       "Rarity": 4,
       "BasePrice": 60000,
       "Description": "採月下輝竹纖維編織的頭冠。佩戴後，周身會籠罩在一層柔和銀光中，整個人宛如被清冷月色親手勾勒過一圈。",
-      "ShopType": []
+      "ShopType": [
+        "MonsterMerchant_Rare"
+      ]
     },
     {
       "Id": "BloodMoonBottle",
@@ -2254,7 +2262,9 @@
       "Rarity": 2,
       "BasePrice": 4000,
       "Description": "編織入深海黑沙的厚重蓑衣。披上後周身常年縈繞著揮之不去的濕氣，讓穿戴者看起來像是剛從墨色浪頭中踏浪而歸。",
-      "ShopType": []
+      "ShopType": [
+        "MonsterMerchant_Ocean"
+      ]
     },
     {
       "Id": "SeafoodDefroster",
@@ -2361,6 +2371,216 @@
       "ShopType": [
         "FurnituresStore"
       ]
+    },
+    {
+      "Id": "SausageStickyRice",
+      "Name": "大腸包小腸",
+      "Tags": [
+        "Rice",
+        "Meat",
+        "Oil"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 70,
+      "Description": "夜市的代表食物，用烤香腸夾進剖開的糯米腸裡，再加各種佐料，一口下去層次豐富。",
+      "ShopType": [
+        "HumanShopEat"
+      ]
+    },
+    {
+      "Id": "BubbleTea",
+      "Name": "珍珠奶茶",
+      "Tags": [
+        "Drinkable",
+        "Dessert",
+        "Sweet"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 70,
+      "Description": "奶茶配上Q彈珍珠，甜香又有咀嚼感。",
+      "ShopType": [
+        "HumanShopEat"
+      ]
+    },
+    {
+      "Id": "PepperChicken",
+      "Name": "鹽酥雞",
+      "Tags": [
+        "Meat",
+        "Fried",
+        "Oil",
+        "Spicy",
+        "Vegetable"
+      ],
+      "Type": 1,
+      "World": 0,
+      "Rarity": 0,
+      "BasePrice": 100,
+      "Description": "炸雞塊搭配九層塔、蒜頭與胡椒鹽，香氣很重，越吃越停不下來。",
+      "ShopType": [
+        "HumanShopEat"
+      ]
+    },
+    {
+      "Id": "MoonPestle",
+      "Name": "月兔搗藥杵",
+      "Tags": [
+        "Potion",
+        "Heavy",
+        "Hard",
+        "Moon",
+        "Ceramic"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 360,
+      "Description": "玉兔用壞後淘汰的小藥杵，表面還殘留淡淡月光藥香。拿來搗藥效果很好。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "FakeJinguBang",
+      "Name": "仿製金箍棒",
+      "Tags": [
+        "Junk",
+        "Heavy",
+        "Hard",
+        "Weapon"
+      ],
+      "Type": 0,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 1600,
+      "Description": "仿造傳說中的金箍棒製作而成拿在手裡沉甸甸的",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "JinguBang",
+      "Name": "如意金箍棒",
+      "Tags": [
+        "Ocean",
+        "Heavy",
+        "Hard",
+        "Weapon",
+        "Magic"
+      ],
+      "Type": 0,
+      "World": 1,
+      "Rarity": 4,
+      "BasePrice": 9900,
+      "Description": "傳說中的金箍棒",
+      "ShopType": []
+    },
+    {
+      "Id": "Goldenheadband",
+      "Name": "金頭箍",
+      "Tags": [
+        "Cursed",
+        "Accessory",
+        "Hard",
+        "Magic",
+        "Gold"
+      ],
+      "Type": 0,
+      "World": 1,
+      "Rarity": 2,
+      "BasePrice": 900,
+      "Description": "帶上後無法取下，感覺頭緊緊的",
+      "ShopType": [
+        "MonsterMerchant_Rare"
+      ]
+    },
+    {
+      "Id": "KuroshioSeaSalt",
+      "Name": "黑潮海鹽",
+      "Tags": [
+        "Dark",
+        "Preserved",
+        "Ocean"
+      ],
+      "Type": 1,
+      "World": 1,
+      "Rarity": 1,
+      "BasePrice": 800,
+      "Description": "經過的黑潮中提煉出的鹽，顏色深得像夜晚的海。灑在料理上會有濃厚海味。",
+      "ShopType": [
+        "MonsterMerchant_Ocean"
+      ]
+    },
+    {
+      "Id": "CoralTree",
+      "Name": "珊瑚樹",
+      "Tags": [
+        "Beauty",
+        "Luxury",
+        "Gem",
+        "Ocean"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 3,
+      "BasePrice": 12000,
+      "Description": "由珍貴珊瑚與妖界最頂尖的工匠打造而成的精美飾品",
+      "ShopType": [
+        "MonsterMerchant_Ocean"
+      ]
+    },
+    {
+      "Id": "PearlDeepSea",
+      "Name": "淵海珍珠",
+      "Tags": [
+        "Wet",
+        "Light",
+        "Gem",
+        "Ocean"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 2,
+      "BasePrice": 1000,
+      "Description": "深海蚌殼裡取出的夜珠仍帶著潮氣，放在黑暗處會發出柔和藍光。看久了會有一種被海底凝視的感覺。",
+      "ShopType": [
+        "MonsterMerchant_Ocean"
+      ]
+    },
+    {
+      "Id": "DreamProjector",
+      "Name": "夢境投影儀",
+      "Tags": [
+        "Machine",
+        "Mystic",
+        "Memory",
+        "Glass"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 700,
+      "Description": "能把夢境片段投影在玻璃片上的器具。畫面通常很模糊",
+      "ShopType": []
+    },
+    {
+      "Id": "AutomaticTalismanPrinting",
+      "Name": "自動符籙印刷機",
+      "Tags": [
+        "Machine",
+        "Book",
+        "Magic"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 1352,
+      "Description": "會自動吐出符籙的妖怪機械，輸入咒文後就能印出一整疊。妖界辦公必備",
+      "ShopType": []
     }
   ]
 }

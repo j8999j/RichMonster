@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 
 public class PlayerDataUI : MonoBehaviour
 {
@@ -32,7 +31,7 @@ public class PlayerDataUI : MonoBehaviour
     }
     private void Start()
     {
-        DataManager.Instance.ShowPlayerMainData();
+        DataManager.Instance.RefreshPlayerMainView();
     }
     /// <summary>
     /// Updates the UI with current player data from DataManager.
@@ -45,18 +44,18 @@ public class PlayerDataUI : MonoBehaviour
     private void UpdatePlayingStatus(int newStatus, DayPhase newPhase)
     {
         statusIconImage.sprite = GetStatusSprite(newPhase);
-        daysPlayedText.text = "距離拍賣會剩下"+(21-newStatus).ToString()+"天";
+        daysPlayedText.text = "距離拍賣會剩下" + (21 - newStatus).ToString() + "天";
         if (newPhase == DayPhase.HumanDay)
         {
             HumanIcon.SetActive(true);
             MonsterIcon.SetActive(false);
         }
-        else if(newPhase == DayPhase.Night)
+        else if (newPhase == DayPhase.Night)
         {
             HumanIcon.SetActive(false);
             MonsterIcon.SetActive(true);
         }
-        else if(newPhase == DayPhase.AfterNoon)
+        else if (newPhase == DayPhase.AfterNoon)
         {
             HumanIcon.SetActive(true);
             MonsterIcon.SetActive(false);

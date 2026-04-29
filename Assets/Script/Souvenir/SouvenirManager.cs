@@ -340,7 +340,11 @@ namespace Souvenir
         public int GetSpentPoints()
         {
             int spent = 0;
-            foreach (var id in _ownedSouvenirIds)
+            var bookData = DataManager.Instance.GetBookData();
+            if (bookData?.UnLockAchievementSouvenirID == null)
+                return spent;
+
+            foreach (var id in bookData.UnLockAchievementSouvenirID)
             {
                 if (_achievementSouvenirs.TryGetValue(id, out var ach))
                 {

@@ -56,8 +56,8 @@ public class Home : MonoBehaviour, IGuideInteractable
             return;
         OnInteracted?.Invoke(ID);
         // 鎖定玩家移動與互動，防止透過再次點擊互動關閉頁面
-        GameManager.Instance.LockPlayerMove("MonsterTrade");
-        GameManager.Instance.LockPlayerInteract("MonsterTrade");
+        GameManager.Instance.LockPlayerMove(PlayerLockSources.MonsterTrade);
+        GameManager.Instance.LockPlayerInteract(PlayerLockSources.MonsterTrade);
         StartCoroutine(InteractCoroutine());
     }
     private IEnumerator InteractCoroutine()

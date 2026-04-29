@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
+using GameSystem;
 public class GameBookView : MonoBehaviour
 {
     private GameSaveBook SaveBook;
@@ -70,10 +71,20 @@ public class GameBookView : MonoBehaviour
     public Sprite nullSprite;
     public int TargetLongEdgeSize = 55;
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip openSound;
+    [SerializeField] private AudioClip switchBookSound;
+    [SerializeField] private AudioClip switchCategorySound;
+    [SerializeField] private AudioClip selectItemSound;
+    [SerializeField] private AudioClip selectMonsterInfoSound;
+    [SerializeField] private AudioClip closeSound;
+
     // 篩選設定
+    private enum BookKind { None, Item, Monster }
     private enum TypeFilter { All, Prop, Food, Equipment }
     private enum WorldFilter { All, Human, Monster }
     private enum RaceFilter { All, Ghoust, Orcs, Protoss, Fairy }
+    private BookKind _currentBookKind = BookKind.None;
     private TypeFilter _currentTypeFilter = TypeFilter.All;
     private WorldFilter _currentWorldFilter = WorldFilter.All;
     private RaceFilter _currentRaceFilter = RaceFilter.All;
@@ -151,22 +162,29 @@ public class GameBookView : MonoBehaviour
     {
         if (BookPanel == null) return;
         BookPanel.SetActive(true);
-        SwitchToMonsterBook();
+        PlaySound(openSound);
+        SwitchToMonsterBook(false);
     }
 
     public void CloseBook()
     {
         if (BookPanel != null)
+        {
+            bool wasActive = BookPanel.activeSelf;
             BookPanel.SetActive(false);
+            if (wasActive)
+                PlaySound(closeSound);
+        }
     }
 
     public void ShowBook(bool isItemBook)
     {
         BookPanel.SetActive(true);
+        PlaySound(openSound);
         if (isItemBook)
-            SwitchToMonsterBook();
+            SwitchToMonsterBook(false);
         else
-            SwitchToItemBook();
+            SwitchToItemBook(false);
     }
 
     /// <summary>
@@ -174,8 +192,16 @@ public class GameBookView : MonoBehaviour
     /// </summary>
     public void SwitchToItemBook()
     {
+        SwitchToItemBook(true);
+    }
+
+    private void SwitchToItemBook(bool playSwitchSound)
+    {
         ItemBook.SetActive(true);
         MonsterBook.SetActive(false);
+        if (playSwitchSound && _currentBookKind != BookKind.Item)
+            PlaySound(switchBookSound);
+        _currentBookKind = BookKind.Item;
         SetButtonAppearance(ItemBookButton, true);
         SetButtonAppearance(MonsterBookButton, false);
         OpenItemBook();
@@ -186,8 +212,16 @@ public class GameBookView : MonoBehaviour
     /// </summary>
     public void SwitchToMonsterBook()
     {
+        SwitchToMonsterBook(true);
+    }
+
+    private void SwitchToMonsterBook(bool playSwitchSound)
+    {
         ItemBook.SetActive(false);
         MonsterBook.SetActive(true);
+        if (playSwitchSound && _currentBookKind != BookKind.Monster)
+            PlaySound(switchBookSound);
+        _currentBookKind = BookKind.Monster;
         SetButtonAppearance(ItemBookButton, false);
         SetButtonAppearance(MonsterBookButton, true);
         OpenMonsterBook();
@@ -274,6 +308,7 @@ public class GameBookView : MonoBehaviour
         ClearItemBookSelected();
 
         if (slot.CurrentDefinition == null) return;
+        PlaySound(selectItemSound);
 
         if (isUnlocked)
         {
@@ -386,7 +421,10 @@ public class GameBookView : MonoBehaviour
     /// </summary>
     private void SetRaceFilter(RaceFilter filter)
     {
+        bool isChangingFilter = filter != _currentRaceFilter;
         _currentRaceFilter = filter;
+        if (isChangingFilter)
+            PlaySound(switchCategorySound);
         ClearMonsterBookSelected();
         ApplyMonsterFilter();
         ShowMonsterBookSlots();
@@ -501,6 +539,7 @@ public class GameBookView : MonoBehaviour
         ClearMonsterBookSelected();
         DescriptionButton.gameObject.SetActive(true);
         if (slot.CurrentDefinition == null) return;
+        PlaySound(selectItemSound);
 
         int unlockedInfoCount = 0;
 
@@ -591,6 +630,7 @@ public class GameBookView : MonoBehaviour
                         bool capturedIsNew = isNewInfo;
                         infoButton.onClick.AddListener(() =>
                         {
+                            PlaySound(selectMonsterInfoSound);
                             if (MonsterDescription != null)
                             {
                                 MonsterDescription.text = infoData.MonsterInformation;
@@ -730,6 +770,7 @@ public class GameBookView : MonoBehaviour
             Button capturedButton = storyButton;
             storyButton.onClick.AddListener(() =>
             {
+                PlaySound(selectMonsterInfoSound);
                 if (MonsterDescription != null)
                 {
                     MonsterDescription.text = storyData.MonsterStory;
@@ -795,7 +836,10 @@ public class GameBookView : MonoBehaviour
     /// </summary>
     private void SetTypeFilter(TypeFilter filter)
     {
+        bool isChangingFilter = filter != _currentTypeFilter;
         _currentTypeFilter = filter;
+        if (isChangingFilter)
+            PlaySound(switchCategorySound);
         ClearItemBookSelected();
         ApplyFilter();
         ShowItemBookSlots();
@@ -807,7 +851,10 @@ public class GameBookView : MonoBehaviour
     /// </summary>
     private void SetWorldFilter(WorldFilter filter)
     {
+        bool isChangingFilter = filter != _currentWorldFilter;
         _currentWorldFilter = filter;
+        if (isChangingFilter)
+            PlaySound(switchCategorySound);
         ClearItemBookSelected();
         ApplyFilter();
         ShowItemBookSlots();
@@ -915,6 +962,14 @@ public class GameBookView : MonoBehaviour
                 SetButtonAppearance(button, button == selectedButton);
             }
         }
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip == null || AudioManager.Instance == null)
+            return;
+
+        AudioManager.Instance.PlaySfx(clip);
     }
     #endregion
 

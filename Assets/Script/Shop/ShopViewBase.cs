@@ -32,6 +32,14 @@ public abstract class ShopViewBase : MonoBehaviour
     /// <summary> 刷新所有貨架格與詳情面板（購買後呼叫）。 </summary>
     public abstract void RefreshAll();
 
+    public virtual void PlayBuySuccessSfx()
+    {
+    }
+
+    public virtual void PlayBuyFailedSfx()
+    {
+    }
+
     /// <summary> 子類關閉 UI 時呼叫此方法，觸發外部監聽 (ShopBase.EndInteract)。 </summary>
     protected void InvokeCloseShopUI()
     {

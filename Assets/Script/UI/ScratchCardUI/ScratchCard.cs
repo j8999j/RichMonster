@@ -6,8 +6,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using GameSystem;
 
-public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
+public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler, IPointerUpHandler
 {
     [Header("刮除目標設定")]
     [Tooltip("指定要刮除的 RawImage 物件，若未指定則使用自身的 RawImage")]
@@ -37,6 +38,21 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     [Header("獎品圖片設定 (依照 ScratchCardPrizeType 順序特獎到銘謝)")]
     [SerializeField] private Sprite[] prizeSprites;
     [SerializeField] private Image[] prizeImages;
+
+    [Header("音效設定")]
+    [Tooltip("刮除中循環播放的音效")]
+    [SerializeField] private AudioClip scratchingSfx;
+    [Tooltip("獎勵結算（顯示得獎面板）時播放的音效")]
+    [SerializeField] private AudioClip rewardSettleSfx;
+    [Tooltip("購買刮刮卡成功時播放的音效")]
+    [SerializeField] private AudioClip buySfx;
+    [Tooltip("滑鼠懸停在卡片按鈕時播放的音效")]
+    [SerializeField] private AudioClip hoverSelectSfx;
+    [Tooltip("確定選中卡片時播放的音效")]
+    [SerializeField] private AudioClip confirmSelectSfx;
+    [SerializeField, Range(0f, 1f)] private float sfxVolume = 1f;
+
+    private AudioSource _scratchLoopSource;
 
     /// <summary>
     /// 依照獎品索引設定獎品圖片
@@ -71,6 +87,7 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     {
         CompletePrizePanel.SetActive(true);
         PrizePanel.SetActive(true);
+        PlaySfx(rewardSettleSfx);
         switch (prize)
         {
             case ScratchCardPrizeType.GrandPrize:
@@ -170,6 +187,7 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
             BuyScratchButton.gameObject.SetActive(false);
             BuyPanelRaycastImage.SetActive(false);
             CanClosePanel = false;
+            PlaySfx(buySfx);
         }
     }
     public void ConfirmRewardButton()
@@ -267,10 +285,38 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     public void OnPointerDown(PointerEventData e)
     {
         _lastUV = -Vector2.one; // 重置，避免跨越跳線
+        StartScratchLoop();
         Scratch(e);
     }
 
     public void OnDrag(PointerEventData e) => Scratch(e);
+
+    public void OnPointerUp(PointerEventData e)
+    {
+        StopScratchLoop();
+    }
+
+    // ── 音效 ──────────────────────────────────────────
+    void PlaySfx(AudioClip clip)
+    {
+        if (clip == null || AudioManager.Instance == null) return;
+        AudioManager.Instance.PlaySfx(clip, sfxVolume);
+    }
+
+    void StartScratchLoop()
+    {
+        if (_completed || scratchingSfx == null || AudioManager.Instance == null) return;
+        if (_scratchLoopSource != null && _scratchLoopSource.isPlaying) return;
+
+        _scratchLoopSource = AudioManager.Instance.PlayLoopingSfx(scratchingSfx, sfxVolume);
+    }
+
+    void StopScratchLoop()
+    {
+        if (_scratchLoopSource == null || AudioManager.Instance == null) return;
+        AudioManager.Instance.StopLoopingSfx(_scratchLoopSource);
+        _scratchLoopSource = null;
+    }
 
     void Scratch(PointerEventData e)
     {
@@ -357,6 +403,7 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     {
         if (_completed) return;
         _completed = true;
+        StopScratchLoop();
 
         // 遮罩全部清黑 → 封面完全消失
         Color32[] pixels = new Color32[_maskTex.width * _maskTex.height];
@@ -436,6 +483,7 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
         Vector3 target = origin + direction * hoverMoveDistance;
 
         StartHoverCoroutine(btn, target);
+        PlaySfx(hoverSelectSfx);
     }
 
     void OnButtonHoverExit(Button btn)
@@ -475,6 +523,8 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
     // ── 選定卡片：隱藏其他選項，平滑移動至中央並放大 ─────
     void SelectCard(Button selectedBtn)
     {
+        PlaySfx(confirmSelectSfx);
+
         // 隱藏其他選項
         foreach (var btn in ScratchCardSelect)
         {
@@ -526,6 +576,7 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler
 
     void OnDestroy()
     {
+        StopScratchLoop();
         if (_maskTex != null) Destroy(_maskTex);
         if (_mat != null) Destroy(_mat);
     }

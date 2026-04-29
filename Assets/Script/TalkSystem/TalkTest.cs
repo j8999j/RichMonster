@@ -5,10 +5,16 @@ using Talksystem;
 
 public class TalkTest : MonoBehaviour
 {
-    [SerializeField]private TalkSystem talkSystem;
-    [SerializeField]private TextAsset textAsset;
-    void Start()
+    [SerializeField] private TalkSystem talkSystem;
+    [DialogueIdSelect]
+    [SerializeField] private string dialogueId = "talk_sample";
+
+    private async void Start()
     {
-        talkSystem.StartDialogue(textAsset);
+        string dialogueText = await GameDataLoader.LoadDialogueTextAsync(dialogueId);
+        if (talkSystem != null && !string.IsNullOrEmpty(dialogueText))
+        {
+            talkSystem.StartDialogue(dialogueText);
+        }
     }
 }

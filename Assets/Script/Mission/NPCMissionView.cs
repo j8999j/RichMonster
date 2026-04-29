@@ -29,6 +29,7 @@ public class NPCMissionView : MonoBehaviour
 
     [Header("Bag UI")]
     public GameObject DetailPanel;
+    public ScrollRect BagscrollRect;
     public Transform BagContainer;             // 顯示背包的容器
     public NPCTradeSlot NPCTradeSlotPrefab;    // 背包道具的 Prefab
     public Sprite NullSprite;
@@ -61,6 +62,7 @@ public class NPCMissionView : MonoBehaviour
         PanelIsVisible = !PanelIsVisible;
         MissionPanel.SetActive(PanelIsVisible);
         DetailPanel.SetActive(false);
+        BagscrollRect.verticalNormalizedPosition = 1f;
     }
     public void HidePanel()
     {
@@ -164,7 +166,7 @@ public class NPCMissionView : MonoBehaviour
                             reqStr += $"任意裝備類型物品";
                             break;
                     }
-                    SpriteLoader.AdjustImageScale(RequirementImage, 100);
+                    SpriteLoader.AdjustImageScale(RequirementImage, 150);
                 }
                 break;
             case RequirementType.None:
@@ -327,7 +329,7 @@ public class NPCMissionView : MonoBehaviour
                 imgObj.transform.SetParent(newSlot.transform, false);
                 Image tagImage = imgObj.AddComponent<Image>();
                 imgObj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-                imgObj.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 100);
+                imgObj.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 65);
 
                 // 預設隱藏圖片，顯示文字
                 imgObj.SetActive(false);
@@ -345,10 +347,10 @@ public class NPCMissionView : MonoBehaviour
                     {
                         capturedImage.sprite = sprite;
                         capturedImage.SetNativeSize();
-                        // 等比例將寬設為175
+                        // 等比例將寬設為150
                         RectTransform rt = capturedImage.GetComponent<RectTransform>();
-                        float ratio = 175f / rt.sizeDelta.x;
-                        rt.sizeDelta = new Vector2(175f, rt.sizeDelta.y * ratio);
+                        float ratio = 150 / rt.sizeDelta.x;
+                        rt.sizeDelta = new Vector2(150f, rt.sizeDelta.y * ratio);
                         capturedImgObj.SetActive(true);
                         capturedText.gameObject.SetActive(false);
                     }

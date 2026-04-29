@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using Shop;
 using System;
+using GameSystem;
 
 /// <summary>
 /// 飲料自動販賣機的 ShopView：每個格子對應一個獨立的購買按鈕（含價格文字），
@@ -43,6 +44,14 @@ public class VendingMachineShopView : ShopViewBase
     public GameObject TagsPrefab;
     public Transform ItemTagCotainer;
 
+    [Header("SFX")]
+    [SerializeField] private AudioClip buySuccessSfx;
+    [SerializeField] private AudioClip buyFailedSfx;
+    [SerializeField] private AudioClip itemClickSfx;
+    [SerializeField] private AudioClip openPanelSfx;
+    [SerializeField] private AudioClip closePanelSfx;
+    [SerializeField, Range(0f, 1f)] private float sfxVolumeScale = 1f;
+
     void Awake()
     {
         if (CloseButton != null) CloseButton.onClick.AddListener(OnCloseButtonClicked);
@@ -53,6 +62,7 @@ public class VendingMachineShopView : ShopViewBase
     public override void SetVisible()
     {
         PanelisVisible = !PanelisVisible;
+        PlaySfx(PanelisVisible ? openPanelSfx : closePanelSfx);
         ClearDetailPanel();
         PanelRoot.SetActive(PanelisVisible);
         ShopShelfUI.SetActive(PanelisVisible);
@@ -105,7 +115,16 @@ public class VendingMachineShopView : ShopViewBase
     {
         btn.onClick.RemoveAllListeners();
         var captured = slot;
-        btn.onClick.AddListener(() => onBuyRequest?.Invoke(captured));
+        btn.onClick.AddListener(() =>
+        {
+            if (captured == null || captured.Purchased)
+            {
+                PlayBuyFailedSfx();
+                return;
+            }
+
+            onBuyRequest?.Invoke(captured);
+        });
         RefreshBuyButton(btn, slot);
     }
 
@@ -125,6 +144,7 @@ public class VendingMachineShopView : ShopViewBase
 
     private void OnSlotSelected(ShopSlotBase selectedSlot)
     {
+        PlaySfx(itemClickSfx);
         _currentSelectedData = selectedSlot._currentData;
         UpdateDetailPanel(selectedSlot);
     }
@@ -218,5 +238,23 @@ public class VendingMachineShopView : ShopViewBase
     {
         SetVisible();
         InvokeCloseShopUI();
+    }
+
+    public override void PlayBuySuccessSfx()
+    {
+        PlaySfx(buySuccessSfx);
+    }
+
+    public override void PlayBuyFailedSfx()
+    {
+        PlaySfx(buyFailedSfx);
+    }
+
+    private void PlaySfx(AudioClip clip)
+    {
+        if (clip == null || AudioManager.Instance == null)
+            return;
+
+        AudioManager.Instance.PlaySfx(clip, sfxVolumeScale);
     }
 }

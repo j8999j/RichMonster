@@ -17,10 +17,29 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 560bc4e515c988248a911d2f8bd2d667
   m_SerializeEntries:
+  - m_GUID: 0467e0d7f0e9cd74ea2b3aa1ee826290
+    m_Address: Wandering_Ocean_Dialogue
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Dialogue
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 834dd90365c68cc44bf2e8d7beaa6f36
     m_Address: Task1_FirstTutorial_Dialogue
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Dialogue
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 972a1a40863478e48aa09d39831b0994
+    m_Address: talk_Initialization
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Dialogue
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e3a5a20868c10a2478711c2b3005a4bd
+    m_Address: talk_sample
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Dialogue
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f6de18b731cd1f54f9b9a93a82ae481d, type: 2}

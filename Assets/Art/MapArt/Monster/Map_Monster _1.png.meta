@@ -134,10 +134,10 @@ TextureImporter:
       name: Map_Monster _1_1
       rect:
         serializedVersion: 2
-        x: 272
-        y: 917
-        width: 100
-        height: 86
+        x: 273
+        y: 920
+        width: 98
+        height: 82
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

@@ -22,7 +22,7 @@ namespace Souvenir
         public string InteractionButtonText =>
             IsReturnHomeState() ? "回家休息" : "使用";
 
-        public void OnInteraction()
+        public bool OnInteraction()
         {
             var player = DataManager.Instance.CurrentPlayerData;
             if (player.PlayingStatus == DayPhase.AfterNoon)
@@ -31,17 +31,20 @@ namespace Souvenir
                 GameManager.Instance.gameFlow.NextDay();
                 GameManager.Instance.GoToMonsterScene();
                 DataManager.Instance.SetIsTrade(false);
+                return true;
             }
             else if (IsReturnHomeState())
             {
                 PlayerInfoUIEvents.InvokeCloseAll();
                 GameManager.Instance.gameFlow.SwitchGameStageAndSave(DayPhase.HumanDay);
                 GameManager.Instance.GoToHumanScene();
+                return true;
             }
             else
             {
                 UnityEngine.Debug.Log("[Sou_key] 目前階段無法使用鑰匙（黃昏可前往妖界；夜晚完成交易後可回家休息）。");
             }
+            return false;
         }
 
         /// <summary>

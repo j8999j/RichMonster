@@ -155,16 +155,16 @@ public class ScratchCardShop : MonoBehaviour, IInteractable, IMapGuideTarget
         scratchCard.ShowCardPanel(isScratched);
         if (scratchCard.CanClosePanel)
         {
-            if (GameManager.Instance.IsPlayerMoveLocked("ScratchCardShop"))
-                GameManager.Instance.UnlockPlayerMove("ScratchCardShop");
+            if (GameManager.Instance.IsPlayerMoveLocked(PlayerLockSources.ScratchCardShop))
+                GameManager.Instance.UnlockPlayerMove(PlayerLockSources.ScratchCardShop);
             else
-                GameManager.Instance.LockPlayerMove("ScratchCardShop");
+                GameManager.Instance.LockPlayerMove(PlayerLockSources.ScratchCardShop);
         }
     }
     public void ExitPanel()
     {
         scratchCard.ShowCardPanel(isScratched);
-        GameManager.Instance.UnlockPlayerMove("ScratchCardShop");
+        GameManager.Instance.UnlockPlayerMove(PlayerLockSources.ScratchCardShop);
     }
 }
 

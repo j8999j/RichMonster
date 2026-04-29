@@ -51,20 +51,20 @@ public class TrashCanController : MonoBehaviour, IInteractable, IMapGuideTarget
     /// </summary>
     public void Interact()
     {
-        if (GameManager.Instance.IsPlayerMoveLocked("TrashCan"))
+        if (GameManager.Instance.IsPlayerMoveLocked(PlayerLockSources.TrashCan))
         {
             ClosePanel();
         }
         else
         {
             OpenTrashCan();
-            GameManager.Instance.LockPlayerMove("TrashCan");
+            GameManager.Instance.LockPlayerMove(PlayerLockSources.TrashCan);
         }
     }
     public void ClosePanel()
     {
         View.CloseUI();
-        GameManager.Instance.UnlockPlayerMove("TrashCan");
+        GameManager.Instance.UnlockPlayerMove(PlayerLockSources.TrashCan);
     }
 
     public void ShowPrompt()

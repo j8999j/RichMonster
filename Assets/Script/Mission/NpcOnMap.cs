@@ -162,7 +162,7 @@ public class NpcOnMap : MonoBehaviour, IInteractable, IMapGuideTarget
     }
     public void Interact()
     {
-        if (GameManager.Instance.IsPlayerMoveLocked("NpcOnMap"))
+        if (GameManager.Instance.IsPlayerMoveLocked(PlayerLockSources.NpcOnMap))
         {
             HidePanel();
         }
@@ -173,13 +173,13 @@ public class NpcOnMap : MonoBehaviour, IInteractable, IMapGuideTarget
                 missionView.Bind(NpcMission);
             }
             missionView.ShowPanel();
-            GameManager.Instance.LockPlayerMove("NpcOnMap");
+            GameManager.Instance.LockPlayerMove(PlayerLockSources.NpcOnMap);
         }
     }
     public void HidePanel()
     {
         missionView.HidePanel();
-        GameManager.Instance.UnlockPlayerMove("NpcOnMap");
+        GameManager.Instance.UnlockPlayerMove(PlayerLockSources.NpcOnMap);
     }
     public void ShowPrompt()
     {

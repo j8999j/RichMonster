@@ -8,12 +8,12 @@
     {
       "Id": "FurnituresStore",
       "ShopName": "商店街家具行",
-      "ShelfCount": 6
+      "ShelfCount": 4
     },
     {
-      "Id": "FoodStore",
+      "Id": "FoodShop",
       "ShopName": "商店街食品行",
-      "ShelfCount": 6
+      "ShelfCount": 8
     },
     {
       "Id": "YokaiStore",
@@ -26,19 +26,24 @@
       "ShelfCount": 6
     },
     {
-      "Id": "MonsterMerchant_HaiMonk",
-      "ShopName": "妖怪商人_海和尚",
-      "ShelfCount": 6
-    },
-    {
       "Id": "VendingMachine",
       "ShopName": "飲料機",
       "ShelfCount": 6
     },
     {
-      "Id": "HumanStoreEat",
+      "Id": "HumanShopEat",
       "ShopName": "小吃鋪",
       "ShelfCount": 6
+    },
+    {
+      "Id": "MonsterMerchant_Ocean",
+      "ShopName": "流浪妖怪商人_海",
+      "ShelfCount": 4
+    },
+    {
+      "Id": "MonsterMerchant_Rare",
+      "ShopName": "流浪妖怪商人_稀有",
+      "ShelfCount": 4
     }
   ]
 }

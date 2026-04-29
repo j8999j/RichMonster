@@ -191,8 +191,8 @@ public class MonsterTradeView : MonoBehaviour
         BeforeTradeUI.SetActive(false);
         TradeingModeUI.SetActive(false);
         // 還原玩家移動與互動
-        GameSystem.GameManager.Instance.UnlockPlayerMove("MonsterTrade");
-        GameSystem.GameManager.Instance.UnlockPlayerInteract("MonsterTrade");
+        GameSystem.GameManager.Instance.UnlockPlayerMove(GameSystem.PlayerLockSources.MonsterTrade);
+        GameSystem.GameManager.Instance.UnlockPlayerInteract(GameSystem.PlayerLockSources.MonsterTrade);
     }
 
     #region InventoryUIView
@@ -671,8 +671,8 @@ public class MonsterTradeView : MonoBehaviour
         BeforeTradeUI.SetActive(false);
         TradeingModeUI.SetActive(false);
         // 還原玩家移動與互動
-        GameSystem.GameManager.Instance.UnlockPlayerMove("MonsterTrade");
-        GameSystem.GameManager.Instance.UnlockPlayerInteract("MonsterTrade");
+        GameSystem.GameManager.Instance.UnlockPlayerMove(GameSystem.PlayerLockSources.MonsterTrade);
+        GameSystem.GameManager.Instance.UnlockPlayerInteract(GameSystem.PlayerLockSources.MonsterTrade);
     }
 
     /// <summary>

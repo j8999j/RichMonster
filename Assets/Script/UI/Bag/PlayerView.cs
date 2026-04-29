@@ -33,6 +33,13 @@ public class PlayerView : MonoBehaviour
     public Button AllItemButton;//所有物品按鈕
     public int TargetLongEdgeSize;//顯示最大邊長限制
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip openSound;
+    [SerializeField] private AudioClip switchPageSound;
+    [SerializeField] private AudioClip switchCategorySound;
+    [SerializeField] private AudioClip selectItemSound;
+    [SerializeField] private AudioClip closeSound;
+
     // 分頁設定
     private const int ItemsPerPage = 15;  // 每頁顯示數量
     private const int PageScrollAmount = 5; // 每次翻頁移動數量 (15-10=5 個重疊)
@@ -70,7 +77,11 @@ public class PlayerView : MonoBehaviour
     /// </summary>
     private void SetFilter(ItemFilter filter)
     {
+        if (_currentFilter == filter)
+            return;
+
         _currentFilter = filter;
+        PlaySound(switchCategorySound);
         _currentStartIndex = 0; // 重置到第一頁
         ApplyFilter();
         ShowBagItems();
@@ -132,6 +143,7 @@ public class PlayerView : MonoBehaviour
     {
         ClearSelected();
         PlayerBag.SetActive(true);
+        PlaySound(openSound);
         _currentStartIndex = 0;
         _currentFilter = ItemFilter.All;
         _currentItems = DataManager.Instance.CurrentPlayerData.InventoryItems;
@@ -206,6 +218,7 @@ public class PlayerView : MonoBehaviour
         {
             _currentStartIndex = Mathf.Min(newStartIndex, maxStartIndex);
             ShowBagItems();
+            PlaySound(switchPageSound);
         }
     }
 
@@ -225,6 +238,7 @@ public class PlayerView : MonoBehaviour
         {
             _currentStartIndex = Mathf.Max(0, newStartIndex);
             ShowBagItems();
+            PlaySound(switchPageSound);
         }
     }
 
@@ -316,6 +330,7 @@ public class PlayerView : MonoBehaviour
     private void OnBagSelected(BagSlot slot)
     {
         ClearSelected();
+        PlaySound(selectItemSound);
         //處理選中背包物品的邏輯
         DetailNameText.text = slot._currentDefinition.Name;
         DetailDescText.text = slot._currentDefinition.Description;
@@ -378,8 +393,19 @@ public class PlayerView : MonoBehaviour
 
     public void CloseBagView()
     {
-        PlayerBag.SetActive(false);
+        bool wasActive = PlayerBag != null && PlayerBag.activeSelf;
+        if (PlayerBag != null)
+            PlayerBag.SetActive(false);
         ClearSelected();
+        if (wasActive)
+            PlaySound(closeSound);
     }
 
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip == null || AudioManager.Instance == null)
+            return;
+
+        AudioManager.Instance.PlaySfx(clip);
+    }
 }

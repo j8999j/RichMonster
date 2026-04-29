@@ -978,7 +978,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactPrompt: {fileID: 3442974519921210285}
   _shopUIView: {fileID: 4013473170136066487}
-  ShopSet: {fileID: 11400000, guid: 40bba6b44aa69ac4b8224e0e51ebdde3, type: 2}
+  ShopID: GroceryStore
 --- !u!114 &4013473170136066487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1016,6 +1016,12 @@ MonoBehaviour:
   BuyButton: {fileID: 440169113677799689}
   BuyButtonSprite_CanBuy: {fileID: -1694905548, guid: 30b9834cbb64aee4db857b8d4d9e3ae8, type: 3}
   BuyButtonSprite_Buyed: {fileID: -587703485, guid: 30b9834cbb64aee4db857b8d4d9e3ae8, type: 3}
+  buySuccessSfx: {fileID: 8300000, guid: 4599ca1ce557ea44abb7d1cd4eb24d9b, type: 3}
+  buyFailedSfx: {fileID: 8300000, guid: 0f03579380c9ff54fb33f1d42d3928ee, type: 3}
+  itemClickSfx: {fileID: 8300000, guid: a9dadc59bca79bd45a0b7314c641147a, type: 3}
+  openPanelSfx: {fileID: 8300000, guid: ed278f29bbec4e24e99d9182f8e4aba6, type: 3}
+  closePanelSfx: {fileID: 8300000, guid: 3abb40a91eb50294584f15eae1fa5fe5, type: 3}
+  sfxVolumeScale: 1
 --- !u!65 &4290296373833104256
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1189,8 +1195,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1323,8 +1329,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48
-  m_fontSizeBase: 48
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

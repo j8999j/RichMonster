@@ -2440,6 +2440,12 @@ MonoBehaviour:
   - {fileID: 3116629811294598812}
   - {fileID: 2354957178538576452}
   - {fileID: 8026836963012913843}
+  scratchingSfx: {fileID: 8300000, guid: b475af075589805468064797a021feda, type: 3}
+  rewardSettleSfx: {fileID: 8300000, guid: 411668a0b0390c34e9b4b49675185a2e, type: 3}
+  buySfx: {fileID: 8300000, guid: 4599ca1ce557ea44abb7d1cd4eb24d9b, type: 3}
+  hoverSelectSfx: {fileID: 8300000, guid: 7459b0e150cbf054d928e13c41069b01, type: 3}
+  confirmSelectSfx: {fileID: 8300000, guid: a9dadc59bca79bd45a0b7314c641147a, type: 3}
+  sfxVolume: 1
   brushSize: 20
   revealThreshold: 0.7
   checkInterval: 0.3

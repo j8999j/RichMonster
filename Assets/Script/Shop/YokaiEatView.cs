@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using Shop;
 using System;
+using GameSystem;
 
 /// <summary>
 /// 妖界食堂 YokaiEat 使用的 ShopView：結構參考 ShopUIView，
@@ -39,6 +40,13 @@ public class YokaiEatView : ShopViewBase
     [Header("Buy Button (Detail Panel)")]
     public Button BuyButton;
 
+    [Header("SFX")]
+    [SerializeField] private AudioClip buySuccessSfx;
+    [SerializeField] private AudioClip itemClickSfx;
+    [SerializeField] private AudioClip openPanelSfx;
+    [SerializeField] private AudioClip closePanelSfx;
+    [SerializeField, Range(0f, 1f)] private float sfxVolumeScale = 1f;
+
     void Awake()
     {
         if (BuyButton != null) BuyButton.onClick.AddListener(OnBuyButtonClicked);
@@ -50,6 +58,7 @@ public class YokaiEatView : ShopViewBase
     public override void SetVisible()
     {
         PanelisVisible = !PanelisVisible;
+        PlaySfx(PanelisVisible ? openPanelSfx : closePanelSfx);
         ClearDetailPanel();
         PanelRoot.SetActive(PanelisVisible);
         DetailRoot.SetActive(false);
@@ -93,6 +102,7 @@ public class YokaiEatView : ShopViewBase
 
     private void OnSlotSelected(ShopSlotBase selectedSlot)
     {
+        PlaySfx(itemClickSfx);
         _currentSelectedData = selectedSlot._currentData;
         UpdateDetailPanel(selectedSlot);
     }
@@ -213,5 +223,18 @@ public class YokaiEatView : ShopViewBase
     {
         SetVisible();
         InvokeCloseShopUI();
+    }
+
+    public override void PlayBuySuccessSfx()
+    {
+        PlaySfx(buySuccessSfx);
+    }
+
+    private void PlaySfx(AudioClip clip)
+    {
+        if (clip == null || AudioManager.Instance == null)
+            return;
+
+        AudioManager.Instance.PlaySfx(clip, sfxVolumeScale);
     }
 }

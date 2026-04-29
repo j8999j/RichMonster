@@ -30,10 +30,10 @@ namespace Shop
         };
         protected override void OnInteract()
         {
-            if (GameManager.Instance.IsPlayerMoveLocked("GroceryStore"))
+            if (GameManager.Instance.IsPlayerMoveLocked(PlayerLockSources.GroceryStore))
             {
                 _shopUIView.SetVisible();
-                GameManager.Instance.UnlockPlayerMove("GroceryStore");
+                GameManager.Instance.UnlockPlayerMove(PlayerLockSources.GroceryStore);
                 return;
             }
             var CurrentDay = GameManager.Instance.gameFlow.CurrentDay;
@@ -49,12 +49,12 @@ namespace Shop
 
             }
             _shopUIView.SetVisible();
-            GameManager.Instance.LockPlayerMove("GroceryStore");
+            GameManager.Instance.LockPlayerMove(PlayerLockSources.GroceryStore);
         }
         private async void EndInteract()
         {
             await GameManager.Instance.gameFlow.SaveGameAsync();
-            GameManager.Instance.UnlockPlayerMove("GroceryStore");
+            GameManager.Instance.UnlockPlayerMove(PlayerLockSources.GroceryStore);
         }
         private void OnPlayerTryToBuyItem(ShelfSlot slotData)
         {
@@ -124,7 +124,11 @@ namespace Shop
         #region Trade
         public void tradeitem(ShelfSlot shelfSlot)
         {
-            if (shelfSlot.Purchased || shelfSlot.Item == null) return;
+            if (shelfSlot.Purchased || shelfSlot.Item == null)
+            {
+                _shopUIView.PlayBuyFailedSfx();
+                return;
+            }
             // 嘗試扣款
             if (DataManager.Instance.TrySpendGold(shelfSlot.Price))
             {
@@ -136,9 +140,14 @@ namespace Shop
                 SyncPurchaseState(TodayShopItemList);
                 // **關鍵：通知 View 刷新 (包含列表變灰 + 按鈕變灰)**
                 _shopUIView.RefreshAll();
+                _shopUIView.PlayBuySuccessSfx();
                 
                 // 通知紀念品系統 (觸發買十送一等效果)
                 Souvenir.SouvenirManager.Instance.NotifyItemPurchased(ShopID, shelfSlot.Item.Id, 1);
+            }
+            else
+            {
+                _shopUIView.PlayBuyFailedSfx();
             }
         }
         /// <summary>

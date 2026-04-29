@@ -63,7 +63,7 @@ namespace Souvenir
         public bool HasInteraction => true;
         public string InteractionButtonText => "查看";
 
-        public void OnInteraction()
+        public bool OnInteraction()
         {
             int currentPoints = 0;
             // 取出不被跨日自動重置的持久資料以確認目前的購買次數
@@ -75,6 +75,7 @@ namespace Souvenir
             
             Debug.Log($"[Souvenir] 雜貨店贈品進度：目前已累積 {currentPoints} / 10 次購買");
             // TODO: 若未來有統一的系統提示 UI，可以在此呼叫通知玩家的 API
+            return true;
         }
 
         public bool CanShowInteractionButton() => true;
