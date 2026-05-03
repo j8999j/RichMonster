@@ -1,6 +1,6 @@
 [storyopen,0.1]
-[fadein,0.2]
 [storyimage,Story_0_0]
+[fadein,0.2]
 小時候總喜歡去爺爺的雜貨店玩[w]
 [storyimage,Story_0_1]
 爺爺得雜貨店裡總是有很多沒看過的東西[w]

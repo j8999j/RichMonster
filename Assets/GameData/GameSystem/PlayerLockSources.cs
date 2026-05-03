@@ -16,6 +16,8 @@ namespace GameSystem
         public const string NpcOnMap        = "NpcOnMap";
         public const string AbyssShop       = "AbyssShop";
         public const string TalkSystem      = "TalkSystem";
+        public const string TelePoint       = "TelePoint";
+        public const string AuctionNpc      = "AuctionNpc";
 
         // 商店類
         public const string GroceryStore    = "GroceryStore";

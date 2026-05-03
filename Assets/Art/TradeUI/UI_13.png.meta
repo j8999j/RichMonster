@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: UI_13_0
+      name: SlotImage
       rect:
         serializedVersion: 2
         x: 9
@@ -118,7 +118,7 @@ TextureImporter:
         width: 63
         height: 65
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -141,7 +141,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      UI_13_0: 308477445
+      SlotImage: 308477445
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

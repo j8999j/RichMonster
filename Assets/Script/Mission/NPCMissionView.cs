@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Linq;
 using System;
+using GameSystem;
 
 public class NPCMissionView : MonoBehaviour
 {
@@ -26,6 +27,13 @@ public class NPCMissionView : MonoBehaviour
     public Button SubmitButton;
     private NpcMission _currentMission;
     private List<GameObject> _spawnedRewards = new List<GameObject>();
+
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip submitMissionSfx;
+    [SerializeField] private AudioClip clickItemSfx;
+    [SerializeField] private AudioClip openPanelSfx;
+    [SerializeField] private AudioClip closePanelSfx;
+    [SerializeField, Range(0f, 1f)] private float sfxVolumeScale = 1f;
 
     [Header("Bag UI")]
     public GameObject DetailPanel;
@@ -61,11 +69,17 @@ public class NPCMissionView : MonoBehaviour
     {
         PanelIsVisible = !PanelIsVisible;
         MissionPanel.SetActive(PanelIsVisible);
+        PlaySfx(PanelIsVisible ? openPanelSfx : closePanelSfx);
         DetailPanel.SetActive(false);
         BagscrollRect.verticalNormalizedPosition = 1f;
     }
     public void HidePanel()
     {
+        if (PanelIsVisible || (MissionPanel != null && MissionPanel.activeSelf))
+        {
+            PlaySfx(closePanelSfx);
+        }
+
         PanelIsVisible = false;
         MissionPanel.SetActive(false);
     }
@@ -230,6 +244,7 @@ public class NPCMissionView : MonoBehaviour
 
     private void OnBagSlotClicked(NPCTradeSlot slot)
     {
+        PlaySfx(clickItemSfx);
         ClearSelected();
         SubmitItem = slot._currentData;
         SpriteLoader.LoadSpriteAsync(slot._currentData.ItemId, sprite =>
@@ -386,12 +401,30 @@ public class NPCMissionView : MonoBehaviour
     public void SubmitMission()
     {
         if (_currentMission == null || _currentMission.IsFinish) return;
+        PlaySfx(submitMissionSfx);
         OnSubmitClick?.Invoke();
     }
 
     public void CloseView()
     {
+        PlaySfx(closePanelSfx);
+        PanelIsVisible = false;
+        if (MissionPanel != null)
+        {
+            MissionPanel.SetActive(false);
+        }
+
         gameObject.SetActive(false);
+    }
+
+    private void PlaySfx(AudioClip clip)
+    {
+        if (clip == null || AudioManager.Instance == null)
+        {
+            return;
+        }
+
+        AudioManager.Instance.PlaySfx(clip, sfxVolumeScale);
     }
 
 }

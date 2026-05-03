@@ -1,55 +1,166 @@
 using UnityEngine;
+using Cinemachine;
 using DG.Tweening;
 using Player;
 using UnityEngine.UI;
 using GameSystem;
+using UnityEngine.Serialization;
 
 public class TelePoint : MonoBehaviour, IInteractable, IMapGuideTarget
 {
     public Vector3 TelePosition;
     public GameObject interactPrompt;
-    [SerializeField] private CanvasGroup fadeCanvasGroup; // 整體淡入淡出
+    [SerializeField] private CanvasGroup fadeCanvasGroup;
     [SerializeField] private Image BlackImage;
-    [SerializeField] private float fadeDuration = 0.5f;
+    private float fadeDuration = 0.3f;
+    [Header("Camera Bounds")]
+    [FormerlySerializedAs("setCameraHorizontalBounds")]
+    [SerializeField] private bool lockCameraHorizontalBounds;
+    [SerializeField] private CinemachineVirtualCamera targetCamera;
+    [SerializeField] private float cameraLeftBoundary;
+    [SerializeField] private float cameraRightBoundary;
+    [SerializeField] private bool keepCameraViewInsideBounds = false;
+
+    private Sequence _teleportSequence;
+    private bool _isTeleporting;
+
     public string ID => "TelePoint";
+
+    private void OnDisable()
+    {
+        if (_teleportSequence != null && _teleportSequence.IsActive())
+        {
+            _teleportSequence.Kill();
+        }
+
+        ReleaseTeleportLock();
+    }
+
     public void SetMapGuide()
     {
-        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+        NoticeGetItemEvents.InvokeSetMapGuide(ID, transform);
     }
+
     public void Interact()
     {
-        //傳送前往妖界
         NextMap();
     }
+
     public void ShowPrompt()
     {
-        interactPrompt.SetActive(true);
+        if (interactPrompt != null)
+        {
+            interactPrompt.SetActive(true);
+        }
     }
+
     public void HidePrompt()
     {
-        interactPrompt.SetActive(false);
+        if (interactPrompt != null)
+        {
+            interactPrompt.SetActive(false);
+        }
     }
-    void NextMap()
+
+    private void NextMap()
     {
         LoadMapPos(fadeDuration);
     }
-    public void LoadMapPos(float fadeDuration)
-    {
-        Sequence enterSeq = DOTween.Sequence();
 
-        // A. 阻擋點擊
-        enterSeq.AppendCallback(() => fadeCanvasGroup.blocksRaycasts = true);
-        // B. 畫面變黑
-        enterSeq.Append(BlackImage.DOFade(1f, fadeDuration));
-        enterSeq.OnComplete(() =>
+    public void LoadMapPos(float duration)
+    {
+        if (_isTeleporting)
         {
-            GameManager.Instance.SwitchPlayerPos(TelePosition);
-            Sequence EndSeq = DOTween.Sequence();
-            EndSeq.AppendInterval(0.3f);
-            // A. 阻擋點擊
-            EndSeq.AppendCallback(() => fadeCanvasGroup.blocksRaycasts = false);
-            // B. 畫面變黑
-            EndSeq.Append(BlackImage.DOFade(0f, fadeDuration));
-        });
+            return;
+        }
+
+        GameManager manager = GameManager.Instance;
+        if (manager == null)
+        {
+            return;
+        }
+
+        _isTeleporting = true;
+        manager.LockPlayerMove(PlayerLockSources.TelePoint);
+        manager.LockPlayerInteract(PlayerLockSources.TelePoint);
+
+        if (fadeCanvasGroup != null)
+        {
+            fadeCanvasGroup.blocksRaycasts = true;
+        }
+
+        if (BlackImage == null)
+        {
+            MovePlayerAndApplyCameraBounds(manager);
+            ReleaseTeleportLock();
+            return;
+        }
+
+        BlackImage.DOKill();
+        _teleportSequence = DOTween.Sequence();
+        _teleportSequence.Append(BlackImage.DOFade(1f, duration));
+        _teleportSequence.AppendCallback(() => MovePlayerAndApplyCameraBounds(manager));
+        _teleportSequence.AppendInterval(0.3f);
+        _teleportSequence.Append(BlackImage.DOFade(0f, duration));
+        _teleportSequence.OnComplete(ReleaseTeleportLock);
+    }
+
+    private void MovePlayerAndApplyCameraBounds(GameManager manager)
+    {
+        manager.SwitchPlayerPos(TelePosition);
+        ApplyCameraBounds();
+    }
+
+    private void ApplyCameraBounds()
+    {
+        CinemachineVirtualCamera virtualCamera = targetCamera != null
+            ? targetCamera
+            : FindObjectOfType<CinemachineVirtualCamera>();
+
+        if (virtualCamera == null)
+        {
+            Debug.LogWarning($"[{nameof(TelePoint)}] 找不到 CinemachineVirtualCamera，無法設定攝影機邊界。");
+            return;
+        }
+
+        CameraHorizontalBounds bounds = virtualCamera.GetComponent<CameraHorizontalBounds>();
+        if (!lockCameraHorizontalBounds)
+        {
+            if (bounds != null)
+                bounds.ClearBounds();
+
+            virtualCamera.PreviousStateIsValid = false;
+            return;
+        }
+
+        if (bounds == null)
+        {
+            bounds = virtualCamera.gameObject.AddComponent<CameraHorizontalBounds>();
+        }
+
+        bounds.SetBounds(cameraLeftBoundary, cameraRightBoundary, keepCameraViewInsideBounds);
+        virtualCamera.PreviousStateIsValid = false;
+    }
+
+    private void ReleaseTeleportLock()
+    {
+        if (!_isTeleporting)
+        {
+            return;
+        }
+
+        if (fadeCanvasGroup != null)
+        {
+            fadeCanvasGroup.blocksRaycasts = false;
+        }
+
+        GameManager manager = GameManager.Instance;
+        if (manager != null)
+        {
+            manager.UnlockPlayerMove(PlayerLockSources.TelePoint);
+            manager.UnlockPlayerInteract(PlayerLockSources.TelePoint);
+        }
+
+        _isTeleporting = false;
     }
 }

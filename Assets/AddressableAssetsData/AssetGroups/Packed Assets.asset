@@ -23,8 +23,50 @@ MonoBehaviour:
     m_SerializedLabels:
     - Dialogue
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f28c7f89e164358ae86f247d42d4afe
+    m_Address: AuctionNpc_PaidSuccess_Dialogue
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Dialogue
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a821c83bf59440d9bf9868c37188b80
+    m_Address: AuctionNpc_AfterPaid_Dialogue
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Dialogue
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 61c47bda89b5cd344bf535bca6a77c67
+    m_Address: EndStory_Type1_Dialogue
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Dialogue
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 653decbcbe63bd64fad1bf7bd4b64b45
+    m_Address: EndStory_Type5_Dialogue
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Dialogue
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6bd6e9103ce1dc4498bbfaf17acef70b
+    m_Address: EndStory_Type4_Dialogue
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Dialogue
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c407527a7b81174f86ebb4ab4414231
+    m_Address: EndStory_Type2_Dialogue
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Dialogue
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 834dd90365c68cc44bf2e8d7beaa6f36
     m_Address: Task1_FirstTutorial_Dialogue
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Dialogue
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91c74fbf7b6d43b4be0edfc308a890c1
+    m_Address: AuctionNpc_BeforePaid_Dialogue
     m_ReadOnly: 0
     m_SerializedLabels:
     - Dialogue
@@ -35,8 +77,26 @@ MonoBehaviour:
     m_SerializedLabels:
     - Dialogue
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b562c43aee7d46f3891c1bdd8d27303a
+    m_Address: AuctionNpc_Decline_Dialogue
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Dialogue
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf85dcd6188c4d669e44f2cf64db2f1b
+    m_Address: AuctionNpc_NotEnoughGold_Dialogue
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Dialogue
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e3a5a20868c10a2478711c2b3005a4bd
     m_Address: talk_sample
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Dialogue
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9ae9309f0f42dc4aa99f53dd4bb5267
+    m_Address: EndStory_Type3_Dialogue
     m_ReadOnly: 0
     m_SerializedLabels:
     - Dialogue

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
+using TMPro;
 using GameSystem;
 
 namespace Talksystem
@@ -39,6 +41,7 @@ namespace Talksystem
         [Header("UI 顯示")]
         [SerializeField] private DialogueView dialogueView;
         [SerializeField] private StoryPlaybackPanel storyPlaybackPanel;
+        [SerializeField] private DialogueChoicePresenter dialogueChoicePresenter;
 
         [Header("打字機設定")]
         [Tooltip("每個字的顯示間隔 (秒)")]
@@ -49,6 +52,8 @@ namespace Talksystem
         [SerializeField] private KeyCode nextKey = KeyCode.Space;
         [Tooltip("按鍵跳過逐字顯示")]
         [SerializeField] private KeyCode skipKey = KeyCode.Return;
+        [Tooltip("跳過整段對話的按鈕。若未指定，會在對話框上自動建立一個。")]
+        [SerializeField] private Button skipDialogueButton;
         [Tooltip("是否啟用按鍵輸入 (設為 false 時需手動呼叫 Next())")]
         [SerializeField] private bool enableKeyInput = true;
 
@@ -94,6 +99,8 @@ namespace Talksystem
         /// <summary>目前使用的 DialogueView。</summary>
         public DialogueView CurrentDialogueView => dialogueView;
 
+        public DialogueChoicePresenter CurrentChoicePresenter => ResolveDialogueChoicePresenter();
+
         /// <summary>指令註冊中心</summary>
         public DialogueCommandRegistry CommandRegistry => _commandRegistry;
 
@@ -102,6 +109,14 @@ namespace Talksystem
             _commandRegistry = new DialogueCommandRegistry();
             _currentTypeSpeed = defaultTypeSpeed;
             _currentDisplayText = "";
+            dialogueView?.HidePanel();
+            ResolveDialogueChoicePresenter()?.HideChoices();
+            BindSkipDialogueButton();
+        }
+
+        private void OnDestroy()
+        {
+            UnbindSkipDialogueButton();
         }
 
         private void Update()
@@ -251,23 +266,40 @@ namespace Talksystem
             _commandRegistry.RegisterCommand(keyword, handler);
         }
 
+        public Task<int> ShowChoicesAsync(string prompt, IReadOnlyList<string> options)
+        {
+            DialogueChoicePresenter presenter = ResolveDialogueChoicePresenter();
+            if (presenter == null)
+            {
+                Debug.LogWarning("[TalkSystem] DialogueChoicePresenter not found.");
+                return Task.FromResult(-1);
+            }
+
+            return presenter.ShowChoicesAsync(prompt, options);
+        }
+
+        public void HideChoices()
+        {
+            ResolveDialogueChoicePresenter()?.HideChoices();
+        }
+
         /// <summary>
         /// 停止對話
         /// </summary>
         public void StopDialogue()
         {
-            if (_typewriterCoroutine != null)
-            {
-                StopCoroutine(_typewriterCoroutine);
-                _typewriterCoroutine = null;
-            }
+            FinishDialogue(false, false, true);
+        }
 
-            _isDialogueActive = false;
-            _isTyping = false;
-            _isWaitingForInput = false;
-            _currentDisplayText = "";
-            _nodes = null;
-            CompleteCurrentDialogue(false, false);
+        /// <summary>
+        /// 跳過整段對話，關閉對話框與故事面板，並以正常完成流程觸發對話結束事件。
+        /// </summary>
+        public void SkipDialogue()
+        {
+            if (!_isDialogueActive)
+                return;
+
+            FinishDialogue(true, true, true);
         }
 
         /// <summary>
@@ -292,6 +324,7 @@ namespace Talksystem
         public void SetDialogueView(DialogueView view)
         {
             dialogueView = view;
+            ResolveDialogueChoicePresenter();
         }
 
         private void OnDisable()
@@ -325,6 +358,8 @@ namespace Talksystem
             _isWaitingForInput = false;
             _isPaused = false;
             AcquireAutoPlayerLocks();
+            BindSkipDialogueButton();
+            SetSkipDialogueButtonVisible(true);
 
             // 初始化 UI
             if (dialogueView != null)
@@ -430,6 +465,120 @@ namespace Talksystem
 
             _ownsAutoMoveLock = false;
             _ownsAutoInteractLock = false;
+        }
+
+        private void FinishDialogue(bool completed, bool raiseEndEvent, bool closePanels)
+        {
+            if (_typewriterCoroutine != null)
+            {
+                StopCoroutine(_typewriterCoroutine);
+                _typewriterCoroutine = null;
+            }
+
+            _isDialogueActive = false;
+            _isTyping = false;
+            _isWaitingForInput = false;
+            _isPaused = false;
+            _waitClearAfter = false;
+            _appendNewLineAfterWait = false;
+            _currentDisplayText = "";
+            _nodes = null;
+
+            SetSkipDialogueButtonVisible(false);
+
+            if (closePanels)
+            {
+                CloseDialoguePanels();
+            }
+
+            CompleteCurrentDialogue(completed, raiseEndEvent);
+        }
+
+        private void CloseDialoguePanels()
+        {
+            HideChoices();
+            CloseTalkPanel();
+
+            StoryPlaybackPanel panel = ResolveStoryPlaybackPanel();
+            if (panel != null)
+            {
+                panel.CloseImmediate();
+            }
+        }
+
+        private void CloseTalkPanel()
+        {
+            if (dialogueView != null)
+            {
+                dialogueView.HideContinueIndicator();
+                dialogueView.ClearText();
+                dialogueView.ShowAllCharacters();
+                dialogueView.HidePanel();
+            }
+        }
+
+        private void BindSkipDialogueButton()
+        {
+            EnsureSkipDialogueButton();
+
+            if (skipDialogueButton == null)
+                return;
+
+            skipDialogueButton.onClick.RemoveListener(SkipDialogue);
+            skipDialogueButton.onClick.AddListener(SkipDialogue);
+            SetSkipDialogueButtonVisible(_isDialogueActive);
+        }
+
+        private void UnbindSkipDialogueButton()
+        {
+            if (skipDialogueButton != null)
+            {
+                skipDialogueButton.onClick.RemoveListener(SkipDialogue);
+            }
+        }
+
+        private void EnsureSkipDialogueButton()
+        {
+            if (skipDialogueButton != null || dialogueView == null)
+                return;
+
+            GameObject buttonObject = new GameObject("SkipDialogueButton", typeof(RectTransform), typeof(Image), typeof(Button));
+            buttonObject.transform.SetParent(dialogueView.transform, false);
+
+            RectTransform rectTransform = buttonObject.GetComponent<RectTransform>();
+            rectTransform.anchorMin = new Vector2(1f, 1f);
+            rectTransform.anchorMax = new Vector2(1f, 1f);
+            rectTransform.pivot = new Vector2(1f, 1f);
+            rectTransform.anchoredPosition = new Vector2(-24f, -24f);
+            rectTransform.sizeDelta = new Vector2(120f, 48f);
+
+            Image image = buttonObject.GetComponent<Image>();
+            image.color = new Color(0f, 0f, 0f, 0.55f);
+
+            GameObject textObject = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+            textObject.transform.SetParent(buttonObject.transform, false);
+
+            RectTransform textRect = textObject.GetComponent<RectTransform>();
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = Vector2.zero;
+            textRect.offsetMax = Vector2.zero;
+
+            TextMeshProUGUI label = textObject.GetComponent<TextMeshProUGUI>();
+            label.text = "跳過";
+            label.fontSize = 24f;
+            label.alignment = TextAlignmentOptions.Center;
+            label.color = Color.white;
+
+            skipDialogueButton = buttonObject.GetComponent<Button>();
+        }
+
+        private void SetSkipDialogueButtonVisible(bool visible)
+        {
+            if (skipDialogueButton != null)
+            {
+                skipDialogueButton.gameObject.SetActive(visible);
+            }
         }
 
         private void CompleteCurrentDialogue(bool completed, bool raiseEndEvent)
@@ -674,6 +823,30 @@ namespace Talksystem
             return storyPlaybackPanel;
         }
 
+        private DialogueChoicePresenter ResolveDialogueChoicePresenter()
+        {
+            if (dialogueChoicePresenter != null)
+            {
+                dialogueChoicePresenter.Configure(dialogueView);
+                return dialogueChoicePresenter;
+            }
+
+            if (dialogueView != null)
+            {
+                dialogueChoicePresenter = dialogueView.GetComponentInChildren<DialogueChoicePresenter>(true);
+                if (dialogueChoicePresenter == null)
+                    dialogueChoicePresenter = dialogueView.gameObject.AddComponent<DialogueChoicePresenter>();
+            }
+
+            if (dialogueChoicePresenter == null)
+                dialogueChoicePresenter = FindObjectOfType<DialogueChoicePresenter>(true);
+
+            if (dialogueChoicePresenter != null)
+                dialogueChoicePresenter.Configure(dialogueView);
+
+            return dialogueChoicePresenter;
+        }
+
         private void WaitForInput(bool clearAfter, bool newLineAfter)
         {
             _waitClearAfter = clearAfter;
@@ -700,10 +873,10 @@ namespace Talksystem
         {
             if (dialogueView != null)
             {
-                if (fadeIn)
-                    yield return StartCoroutine(dialogueView.FadeIn(duration));
-                else
-                    yield return StartCoroutine(dialogueView.FadeOut(duration));
+                IEnumerator fadeRoutine = fadeIn
+                    ? dialogueView.FadeIn(duration)
+                    : dialogueView.FadeOut(duration);
+                yield return fadeRoutine;
             }
             _typewriterCoroutine = null;
             ProcessNodes();
@@ -730,7 +903,7 @@ namespace Talksystem
             _currentDisplayText += text;
             UpdateDisplayText();
 
-            // 立即隱藏新增的字元，避免在協程啟動前闃現全部文字
+            // 立即隱藏新增的字元，避免在協程啟動前顯示全部文字
             dialogueView?.SetMaxVisibleCharacters(previousVisibleCount);
 
             if (_typewriterCoroutine != null)
@@ -815,10 +988,8 @@ namespace Talksystem
         /// </summary>
         private void EndDialogue()
         {
-            _isDialogueActive = false;
-            _isTyping = false;
-            _isWaitingForInput = false;
-            CompleteCurrentDialogue(true, true);
+            CloseTalkPanel();
+            FinishDialogue(true, true, false);
         }
     }
 }

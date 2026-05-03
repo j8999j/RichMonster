@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 namespace Talksystem
 {
@@ -24,10 +25,18 @@ namespace Talksystem
         [Header("對話面板")]
         [SerializeField] private CanvasGroup dialoguePanel;
 
+        [Header("Choice Buttons")]
+        [SerializeField] private RectTransform ButtonGroupContain;
+        [SerializeField] private Button optionButtonPrefab;
+
         /// <summary>
         /// 取得 TMP_Text 的引用 (供 TalkSystem 直接控制 maxVisibleCharacters)
         /// </summary>
         public TMP_Text DialogueTextComponent => dialogueText;
+
+        public RectTransform ChoiceButtonGroupContain => ResolveButtonGroupContain();
+
+        public Button ChoiceButtonPrefab => optionButtonPrefab;
 
         /// <summary>
         /// 設定顯示文字
@@ -144,13 +153,15 @@ namespace Talksystem
         /// </summary>
         public void ShowPanel()
         {
+            gameObject.SetActive(true);
+
             if (dialoguePanel != null)
             {
+                dialoguePanel.gameObject.SetActive(true);
                 dialoguePanel.alpha = 1f;
                 dialoguePanel.interactable = true;
                 dialoguePanel.blocksRaycasts = true;
             }
-            gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -163,7 +174,76 @@ namespace Talksystem
                 dialoguePanel.alpha = 0f;
                 dialoguePanel.interactable = false;
                 dialoguePanel.blocksRaycasts = false;
+                dialoguePanel.gameObject.SetActive(false);
             }
+        }
+
+        public void SetChoiceButtonGroupVisible(bool visible)
+        {
+            RectTransform container = ResolveButtonGroupContain();
+            if (container != null)
+                container.gameObject.SetActive(visible);
+        }
+
+        private RectTransform ResolveButtonGroupContain()
+        {
+            if (ButtonGroupContain != null)
+                return ButtonGroupContain;
+
+            Transform found = FindChildRecursive(transform, "ButtonGroupContain");
+            if (found == null)
+                found = FindChildRecursive(transform, "ButtonGroup");
+
+            ButtonGroupContain = found as RectTransform;
+            if (ButtonGroupContain == null)
+                ButtonGroupContain = CreateDefaultButtonGroupContain();
+
+            return ButtonGroupContain;
+        }
+
+        private RectTransform CreateDefaultButtonGroupContain()
+        {
+            GameObject containerObject = new GameObject("ButtonGroupContain", typeof(RectTransform), typeof(CanvasGroup), typeof(VerticalLayoutGroup), typeof(ContentSizeFitter));
+            containerObject.transform.SetParent(transform, false);
+
+            RectTransform rect = containerObject.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.5f, 0f);
+            rect.anchorMax = new Vector2(0.5f, 0f);
+            rect.pivot = new Vector2(0.5f, 0f);
+            rect.anchoredPosition = new Vector2(0f, 28f);
+            rect.sizeDelta = new Vector2(420f, 0f);
+
+            VerticalLayoutGroup layout = containerObject.GetComponent<VerticalLayoutGroup>();
+            layout.spacing = 8f;
+            layout.childAlignment = TextAnchor.LowerCenter;
+            layout.childControlWidth = true;
+            layout.childControlHeight = true;
+            layout.childForceExpandWidth = true;
+            layout.childForceExpandHeight = false;
+
+            ContentSizeFitter fitter = containerObject.GetComponent<ContentSizeFitter>();
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            return rect;
+        }
+
+        private static Transform FindChildRecursive(Transform root, string childName)
+        {
+            if (root == null)
+                return null;
+
+            for (int i = 0; i < root.childCount; i++)
+            {
+                Transform child = root.GetChild(i);
+                if (child.name == childName)
+                    return child;
+
+                Transform found = FindChildRecursive(child, childName);
+                if (found != null)
+                    return found;
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -181,6 +261,7 @@ namespace Talksystem
                 yield break;
             }
 
+            dialoguePanel.gameObject.SetActive(true);
             dialoguePanel.interactable = false;
             dialoguePanel.blocksRaycasts = true;
 
@@ -226,6 +307,7 @@ namespace Talksystem
 
             dialoguePanel.alpha = 0f;
             dialoguePanel.blocksRaycasts = false;
+            dialoguePanel.gameObject.SetActive(false);
             onComplete?.Invoke();
         }
     }

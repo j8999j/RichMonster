@@ -187,5 +187,20 @@ namespace Player
             _IsNight = isNight;
             _animator.SetBool(IsNightKey, _IsNight);
         }
+
+        public void TeleportTo(Vector3 position)
+        {
+            _moveInput = 0f;
+            _rigidbody.velocity = Vector3.zero;
+            _rigidbody.angularVelocity = Vector3.zero;
+            _rigidbody.position = position;
+            transform.position = position;
+            Physics.SyncTransforms();
+
+            if (_animator != null)
+            {
+                _animator.SetBool(IsWalkingKey, false);
+            }
+        }
     }
 }

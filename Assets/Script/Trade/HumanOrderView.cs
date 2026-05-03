@@ -59,6 +59,16 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     public Button OpenAfterNoonPanelButton;
     public Button ConfirmAfterNoonButton;
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip openPanelSfx;
+    [SerializeField] private AudioClip closePanelSfx;
+    [SerializeField] private AudioClip submitOrderSfx;
+    [SerializeField] private AudioClip cancelSelectedItemSfx;
+    [SerializeField] private AudioClip submitItemSfx;
+    [SerializeField] private AudioClip clickItemSfx;
+    [SerializeField] private AudioClip selectOrderSfx;
+    [SerializeField, Range(0f, 1f)] private float sfxVolumeScale = 1f;
+
     [Header("二次確認面板")]
     [SerializeField] private TextMeshProUGUI confirmAfterNoonText;
     [SerializeField] private string defaultConfirmMessage = "確定要休息嗎？";
@@ -118,6 +128,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
 
         if (Panel.activeSelf)
         {
+            PlaySfx(openPanelSfx);
             GameManager.Instance.LockPlayerMove(PlayerLockSources.HumanOrderView);
             ClearBagDetail();
             ClearOrderView();
@@ -125,6 +136,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         }
         else
         {
+            PlaySfx(closePanelSfx);
             GameManager.Instance.UnlockPlayerMove(PlayerLockSources.HumanOrderView);
         }
     }
@@ -202,6 +214,8 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     #region ClickEvent
     private void OnBagSelected(BagSlot slot)
     {
+        PlaySfx(clickItemSfx);
+
         //處理選中背包物品的邏輯
         DetailNameText.text = slot._currentDefinition.Name;
         DetailDescText.text = slot._currentDefinition.Description;
@@ -232,16 +246,19 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     }
     private void OnConfirmOrderClick()
     {
+        PlaySfx(submitOrderSfx);
         OnConfirmOrder?.Invoke();
     }
     private void InvokeSelectedOrder(HumanLargeOrder order)
     {
+        PlaySfx(selectOrderSfx);
         OnSelectedLargeOrder?.Invoke(order);
         UpdateOrderView(order);
         BagscrollRect.verticalNormalizedPosition = 1f;
     }
     private void InvokeSelectedOrder(HumanSmallOrder order)
     {
+        PlaySfx(selectOrderSfx);
         OnSelectedSmallOrder?.Invoke(order);
         UpdateOrderView(order);
         BagscrollRect.verticalNormalizedPosition = 1f;
@@ -519,6 +536,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     }
     public void NewSelectItem(OrderBagSlot slot)
     {
+        PlaySfx(submitItemSfx);
         slot.SetGrayscale(true);
         OrderSelectSlot newSlot = Instantiate(OrderSelectSlotPrefab, OrderObjContainer);
         newSlot.Setup(slot, CancelSelected);
@@ -526,6 +544,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     }
     private void CancelSelected(OrderBagSlot slot)
     {
+        PlaySfx(cancelSelectedItemSfx);
         OnOrderCancelSelected?.Invoke(slot);
         slot.SetOnSelected(false);
         slot.RemoveOrderSelect();
@@ -533,6 +552,7 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     }
     private void ExitOrderPanel()
     {
+        PlaySfx(closePanelSfx);
         GameManager.Instance.UnlockPlayerMove(PlayerLockSources.HumanOrderView);
         ClearBagDetail();
         ClearOrderView();
@@ -561,8 +581,19 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         }
 
         GameManager.Instance.UnlockPlayerMove(PlayerLockSources.HumanOrderView);
+        PlaySfx(closePanelSfx);
         Panel.SetActive(false);
         SwitchToAfterNoonClick?.Invoke();
+    }
+
+    private void PlaySfx(AudioClip clip)
+    {
+        if (clip == null || AudioManager.Instance == null)
+        {
+            return;
+        }
+
+        AudioManager.Instance.PlaySfx(clip, sfxVolumeScale);
     }
     #endregion
 }

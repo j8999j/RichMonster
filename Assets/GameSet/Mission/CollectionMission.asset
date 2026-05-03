@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a3822a5c27a0c645995279342961851, type: 3}
+  m_Name: CollectionMission
+  m_EditorClassIdentifier: 
+  categories:
+  - Race: 0
+    DisplayName: "\u5E7D\u9748"
+    Items:
+    - ItemID: DreamProjector
+      Points: 1
+  - Race: 1
+    DisplayName: "\u7378\u65CF"
+    Items:
+    - ItemID: JinguBang
+      Points: 1
+  - Race: 2
+    DisplayName: "\u795E\u65CF"
+    Items:
+    - ItemID: TianyiCottonCandy
+      Points: 1
+  - Race: 3
+    DisplayName: "\u5996\u7CBE"
+    Items:
+    - ItemID: HuizhuMoonCrown
+      Points: 1

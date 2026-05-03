@@ -7,8 +7,9 @@ public class PlayerInfoUI : MonoBehaviour
     [SerializeField] private AchievementViewFactory achievementViewFactory;
     [SerializeField] private GameBookView gameBookView;
     [SerializeField] private EventsView eventsView;
+    [SerializeField] private ContractView contractView;
 
-    private enum Page { None, Bag, SouvenirBag, Achievement, Book, News }
+    private enum Page { None, Bag, SouvenirBag, Achievement, Book, News, Contract }
     private Page _activePage = Page.None;
 
     private void OnEnable()
@@ -18,6 +19,7 @@ public class PlayerInfoUI : MonoBehaviour
         PlayerInfoUIEvents.OnOpenAchievement += HandleOpenAchievement;
         PlayerInfoUIEvents.OnOpenBook += HandleOpenBook;
         PlayerInfoUIEvents.OnOpenNews += HandleOpenNews;
+        PlayerInfoUIEvents.OnOpenContract += HandleOpenContract;
         PlayerInfoUIEvents.OnCloseAll += HandleCloseAll;
     }
 
@@ -28,6 +30,7 @@ public class PlayerInfoUI : MonoBehaviour
         PlayerInfoUIEvents.OnOpenAchievement -= HandleOpenAchievement;
         PlayerInfoUIEvents.OnOpenBook -= HandleOpenBook;
         PlayerInfoUIEvents.OnOpenNews -= HandleOpenNews;
+        PlayerInfoUIEvents.OnOpenContract -= HandleOpenContract;
         PlayerInfoUIEvents.OnCloseAll -= HandleCloseAll;
     }
 
@@ -76,6 +79,15 @@ public class PlayerInfoUI : MonoBehaviour
         SetPlayerFrozen(true);
     }
 
+    private void HandleOpenContract()
+    {
+        if (contractView == null || _activePage == Page.Contract) return;
+        CloseCurrentPage();
+        contractView.OpenContractPanel();
+        _activePage = Page.Contract;
+        SetPlayerFrozen(true);
+    }
+
     private void HandleCloseAll()
     {
         if (_activePage == Page.None) return;
@@ -92,6 +104,7 @@ public class PlayerInfoUI : MonoBehaviour
             case Page.Achievement: if (achievementViewFactory != null) achievementViewFactory.ClosePanel(); break;
             case Page.Book:        if (gameBookView != null) gameBookView.CloseBook(); break;
             case Page.News:        if (eventsView != null) eventsView.CloseNewsPanel(); break;
+            case Page.Contract:    if (contractView != null) contractView.CloseContractPanel(); break;
         }
         _activePage = Page.None;
     }

@@ -56,6 +56,19 @@ public class StoryPlaybackPanel : MonoBehaviour
         _ = HideAsync(defaultFadeOutDuration);
     }
 
+    public void CloseImmediate()
+    {
+        _playVersion++;
+
+        if (_fadeCoroutine != null)
+        {
+            StopCoroutine(_fadeCoroutine);
+            _fadeCoroutine = null;
+        }
+
+        ClosePanel();
+    }
+
     public Task ShowAsync(float duration)
     {
         return FadePanelAsync(true, duration < 0f ? defaultFadeInDuration : duration);

@@ -30,11 +30,23 @@ public class GameFlow
     }
     public async void SwitchGameStageAndSave(DayPhase newPhase)
     {
-        DataManager.Instance.ClearOrderProgress();
+        if (newPhase != DayPhase.AfterNoon)
+        {
+            DataManager.Instance.ClearOrderProgress();
+        }
+
         DataManager.Instance.ModifyCurrentDayPhase(newPhase);
         GameFlowEvents.InvokeDayPhaseChanged(newPhase);
         if (newPhase == DayPhase.HumanDay)
         {
+            EndingType endingType = EndingConditionDetector.Evaluate(DataManager.Instance.CurrentPlayerData);
+            if (endingType != EndingType.None)
+            {
+                DataManager.Instance.SetEndingReached(endingType);
+                await SaveGameAsync();
+                return;
+            }
+
             GameFlowEvents.InvokeDayChanged(CurrentDay);
             AchievementEvents.DayEndGold(_currentPlayerData.Gold);
         }
@@ -60,6 +72,4 @@ public class GameFlow
         await DataManager.Instance.SaveAchievementAsync();
     }
 }
-
-
 

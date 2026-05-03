@@ -80,6 +80,11 @@ MonoBehaviour:
   RewardsContainer: {fileID: 2584922630180695629}
   RewardPrefab: {fileID: 6981785771916653649, guid: 4e61cb44f1516f54faa3935940df6b24, type: 3}
   SubmitButton: {fileID: 6907488845967354046}
+  submitMissionSfx: {fileID: 8300000, guid: 4599ca1ce557ea44abb7d1cd4eb24d9b, type: 3}
+  clickItemSfx: {fileID: 8300000, guid: a9dadc59bca79bd45a0b7314c641147a, type: 3}
+  openPanelSfx: {fileID: 8300000, guid: ed278f29bbec4e24e99d9182f8e4aba6, type: 3}
+  closePanelSfx: {fileID: 8300000, guid: 3abb40a91eb50294584f15eae1fa5fe5, type: 3}
+  sfxVolumeScale: 1
   DetailPanel: {fileID: 6483634027711719049}
   BagscrollRect: {fileID: 8574318445119434343}
   BagContainer: {fileID: 7124320996525783664}

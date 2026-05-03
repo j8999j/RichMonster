@@ -11,7 +11,8 @@ public class PlayerInfoUIButton : MonoBehaviour
         OpenAchievement = 2,
         CloseAll = 3,
         OpenBook = 4,
-        OpenNews = 5
+        OpenNews = 5,
+        OpenContract = 6
     }
 
     [SerializeField] private UIAction action;
@@ -30,6 +31,7 @@ public class PlayerInfoUIButton : MonoBehaviour
             case UIAction.OpenAchievement: PlayerInfoUIEvents.InvokeOpenAchievement(); break;
             case UIAction.OpenBook: PlayerInfoUIEvents.InvokeOpenBook(); break;
             case UIAction.OpenNews: PlayerInfoUIEvents.InvokeOpenNews(); break;
+            case UIAction.OpenContract: PlayerInfoUIEvents.InvokeOpenContract(); break;
             case UIAction.CloseAll: PlayerInfoUIEvents.InvokeCloseAll(); break;
         }
     }

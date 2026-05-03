@@ -1,0 +1,9 @@
+[storyopen,0.1]
+[storyimage,Story_0_0]
+[fadein,0.2]
+壞結局2[w]
+這是一個壞結局[w]
+對話結束後回到主畫面[w]
+[storyclose,0.2]
+[fadeout,0.2]
+

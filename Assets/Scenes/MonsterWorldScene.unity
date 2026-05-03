@@ -16586,6 +16586,13 @@ MonoBehaviour:
   MoveRightButton: {fileID: 1732515386}
   MoveLeftButton: {fileID: 1882411990}
   CloseButton: {fileID: 1219128634}
+  dropItemSfx: {fileID: 8300000, guid: 16de0d8f76937b641be4d0f6aab1df92, type: 3}
+  openTreasureSfx: {fileID: 8300000, guid: c15999081935da04ab3c96e2e26733da, type: 3}
+  nextStepSfx: {fileID: 8300000, guid: 84e35b64d8eec3841bcc993f497da1c4, type: 3}
+  exploreFailedSfx: {fileID: 8300000, guid: bf946fb57f982e140b94edf796a4f408, type: 3}
+  continueExploreSfx: {fileID: 8300000, guid: a9dadc59bca79bd45a0b7314c641147a, type: 3}
+  leaveWithRewardSfx: {fileID: 8300000, guid: a9dadc59bca79bd45a0b7314c641147a, type: 3}
+  sfxVolumeScale: 1
   LeftPoints:
   - {fileID: 1577773450}
   - {fileID: 1528648728}
@@ -19840,7 +19847,7 @@ SpriteRenderer:
   m_Size: {x: 2.1, y: 2.93}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1862428811

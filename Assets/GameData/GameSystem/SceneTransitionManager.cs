@@ -18,6 +18,7 @@ namespace GameSystem
         public const string SCENE_HUMAN = "HumanScene";
         public const string SCENE_MONSTER = "MonsterWorldScene";
         public const string SCENE_TRADE = "TradeScene";
+        public const string SCENE_END_STORY = "EndStoryScene";
 
         // 場景轉換事件
         public event Action<string> OnSceneLoadStart;
@@ -38,6 +39,7 @@ namespace GameSystem
             base.Awake();
             _sceneLoader = AddressableSceneLoader.Instance;
             _dataManager = DataManager.Instance;
+            SetFadeInputBlock(false);
         }
 
         /// <summary>
@@ -55,7 +57,7 @@ namespace GameSystem
             Sequence enterSeq = DOTween.Sequence();
 
             // A. 阻擋點擊
-            enterSeq.AppendCallback(() => fadeCanvasGroup.blocksRaycasts = true);
+            enterSeq.AppendCallback(() => SetFadeInputBlock(true));
             // B. 畫面變黑
             enterSeq.Append(BlackImage.DOFade(1f, fadeDuration));
             enterSeq.OnComplete(() =>
@@ -69,14 +71,22 @@ namespace GameSystem
                     onComplete?.Invoke();
                     Sequence EndSeq = DOTween.Sequence();
                     EndSeq.AppendInterval(0.3f);
-                    // A. 阻擋點擊
-                    EndSeq.AppendCallback(() => fadeCanvasGroup.blocksRaycasts = false);
-                    // B. 畫面變黑
+                    // 畫面淡出期間維持阻擋點擊，完成後才解除。
                     EndSeq.Append(BlackImage.DOFade(0f, fadeDuration));
+                    EndSeq.OnComplete(() => SetFadeInputBlock(false));
                     Debug.Log($"場景載入成功: {sceneName}");
                 });
             });
         }
+
+        private void SetFadeInputBlock(bool block)
+        {
+            if (BlackImage != null)
+            {
+                BlackImage.raycastTarget = block;
+            }
+        }
+
         /// <summary>
         /// 返回主選單
         /// </summary>
@@ -86,12 +96,24 @@ namespace GameSystem
             LoadScene(SCENE_MAIN_MENU, onComplete);
         }
 
+        public void GoToEndStoryScene(Action onComplete = null)
+        {
+            LoadScene(SCENE_END_STORY, onComplete);
+        }
+
         /// <summary>
         /// 進入人類場景（白天）
         /// </summary>
         /// <param name="onComplete">場景載入完成後更新UI顯示</param>
         public void GoToHumanScene(Action onComplete = null)
         {
+            if (_dataManager?.CurrentPlayerData != null
+                && _dataManager.CurrentPlayerData.HasReachedEnding)
+            {
+                GoToEndStoryScene(onComplete);
+                return;
+            }
+
             _dataManager.ModifyCurrentDayPhase(_dataManager.CurrentPlayerData.PlayingStatus);
             LoadScene(SCENE_HUMAN, onComplete);
         }

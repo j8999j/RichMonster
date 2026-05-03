@@ -862,6 +862,51 @@ public class DataManager : Singleton<DataManager>
         OnPlayerDataChanged = true;
     }
 
+    public void SetEndingReached(EndingType endingType)
+    {
+        if (_currentPlayerData == null) return;
+
+        _currentPlayerData.HasReachedEnding = endingType != EndingType.None;
+        _currentPlayerData.ReachedEndingType = endingType;
+        OnPlayerDataChanged = true;
+    }
+
+    public bool TryPayGuaranteeDeposit()
+    {
+        if (_currentPlayerData == null)
+            return false;
+
+        if (_currentPlayerData.HasPaidGuaranteeDeposit)
+            return true;
+
+        if (_currentPlayerData.Gold < EndingConditionDetector.GuaranteeDepositAmount)
+            return false;
+
+        _currentPlayerData.Gold -= EndingConditionDetector.GuaranteeDepositAmount;
+        _currentPlayerData.HasPaidGuaranteeDeposit = true;
+        OnPlayerDataChanged = true;
+        AdjustUpdateView();
+        return true;
+    }
+
+    public bool TryPayAuctionEntryFee()
+    {
+        if (_currentPlayerData == null)
+            return false;
+
+        if (_currentPlayerData.HasPaidAuctionEntryFee)
+            return true;
+
+        if (_currentPlayerData.Gold < EndingConditionDetector.AuctionEntryFeeAmount)
+            return false;
+
+        _currentPlayerData.Gold -= EndingConditionDetector.AuctionEntryFeeAmount;
+        _currentPlayerData.HasPaidAuctionEntryFee = true;
+        OnPlayerDataChanged = true;
+        AdjustUpdateView();
+        return true;
+    }
+
     /// <summary>
     /// 加入物品到玩家背包
     /// </summary>

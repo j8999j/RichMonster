@@ -49,7 +49,8 @@ namespace GameSystem
         private void OnSceneLoadComplete(string sceneName)
         {
             // MainMenu 不需要初始化玩家
-            if (sceneName == SceneTransitionManager.SCENE_MAIN_MENU)
+            if (sceneName == SceneTransitionManager.SCENE_MAIN_MENU
+                || sceneName == SceneTransitionManager.SCENE_END_STORY)
                 return;
             InitializePlayerInScene(sceneName);
         }
@@ -93,6 +94,10 @@ namespace GameSystem
             }
 
             // 使用新種子的玩家資料創建新遊戲
+            newPlayerData.HasReachedEnding = false;
+            newPlayerData.ReachedEndingType = EndingType.None;
+            newPlayerData.HasPaidGuaranteeDeposit = false;
+            newPlayerData.HasPaidAuctionEntryFee = false;
             dataManager.SetCurrentPlayer(newPlayerData);
             await dataManager.SaveCurrentPlayerAsync(slot);
             Debug.Log($"[GameManager] 開始新遊戲，存檔欄位: {slot}, 種子: {newPlayerData.MasterSeed}");
@@ -110,6 +115,12 @@ namespace GameSystem
                 Debug.LogError("[GameManager] 無法取得玩家資料");
                 return;
             }
+            if (playerData.HasReachedEnding)
+            {
+                sceneTransitionManager.GoToEndStoryScene();
+                return;
+            }
+
             // 以本局 PlayerData.HoldAchievementSouvenirID 為準重新快照成就紀念品所有權
             Souvenir.SouvenirManager.Instance.ResnapshotForCurrentGame();
             gameFlow = new GameFlow(playerData, slot);
@@ -123,6 +134,7 @@ namespace GameSystem
                 // 玩家初始化已由 OnSceneLoadComplete 事件處理
             });
         }
+
         #region ControllerPlayer
         public void SetPlayer()
         {
@@ -131,7 +143,16 @@ namespace GameSystem
         }
         public void SetPlayerPosition(Vector3 position)
         {
-            Player.transform.position = position;
+            if (PlayerController != null)
+            {
+                PlayerController.TeleportTo(position);
+                return;
+            }
+
+            if (Player != null)
+            {
+                Player.transform.position = position;
+            }
         }
         private readonly HashSet<string> _moveLockSources = new HashSet<string>();
         private readonly HashSet<string> _interactLockSources = new HashSet<string>();
@@ -217,7 +238,7 @@ namespace GameSystem
         /// </summary>
         public void SwitchPlayerPos(Vector3 position)
         {
-            Player.transform.position = position;
+            SetPlayerPosition(position);
         }
         #endregion
         #region 場景轉換捷徑方法（透過 SceneTransitionManager）

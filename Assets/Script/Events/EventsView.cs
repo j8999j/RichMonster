@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -8,16 +9,19 @@ using GameSystem;
 
 public class EventsView : MonoBehaviour
 {
+    private const string MonsterSceneAlias = "MonsterScene";
+    private const float AutoOpenDelaySeconds = 1f;
+
     [Header("UI Components")]
     public GameObject NewsPanel;
     public GameObject MoreDetailPanel;
     public Image EventsImage;
     public Sprite NullSprite;
-    public TextMeshProUGUI DetailTitleText; // 顯示詳細資訊的標題
-    public TextMeshProUGUI DetailContentText; // 顯示詳細資訊的內容
+    public TextMeshProUGUI DetailTitleText; // 詳細面板標題文字
+    public TextMeshProUGUI DetailContentText; // 詳細面板內容文字
 
     [Header("Buttons")]
-    // 順序：0=Main, 1=Btn1, 2=Btn2...
+    // 索引 0 通常為主新聞，其餘為列表按鈕。
     public List<Button> AllNewsButtons;
     public List<TextMeshProUGUI> AllNewsTitle;
     public List<TextMeshProUGUI> AllNewsDetail;
@@ -25,12 +29,23 @@ public class EventsView : MonoBehaviour
     public Button OpenNewsPanelButton; // 開啟新聞面板按鈕
     public Button ExitNewsButton;
     public Button MoreDetailExitButton;
+
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip openPanelSfx;
+    [SerializeField] private AudioClip closePanelSfx;
+    [SerializeField] private AudioClip openDetailSfx;
+    [SerializeField] private AudioClip closeDetailSfx;
+    [SerializeField, Range(0f, 1f)] private float sfxVolumeScale = 1f;
+
     [Header("Data")]
     public List<MonsterEvent> TodayMonsterEvents;
 
-    // 事件生成器
+    // 事件生成資料。
     private EventsGenerator _eventsGenerator;
     private List<GameEventDefinition> _todayEvents = new List<GameEventDefinition>();
+    private SceneTransitionManager _boundSceneTransitionManager;
+    private Coroutine _autoOpenRoutine;
+    private string _autoOpenSceneName;
 
     public IReadOnlyList<GameEventDefinition> TodayEvents => _todayEvents;
 
@@ -40,9 +55,22 @@ public class EventsView : MonoBehaviour
         GenerateTodayEvents(GameManager.Instance.gameFlow.CurrentDay);
     }
 
+    private void OnEnable()
+    {
+        BindSceneTransitionManager();
+    }
+
+    private void OnDisable()
+    {
+        UnbindSceneTransitionManager();
+        StopAutoOpenRoutine();
+    }
+
     private void Start()
     {
-        // 綁定開啟/關閉面板按鈕
+        BindSceneTransitionManager();
+
+        // 綁定開啟、關閉與詳細面板按鈕。
         if (OpenNewsPanelButton != null)
             OpenNewsPanelButton.onClick.AddListener(OpenNewsPanel);
         if (ExitNewsButton != null)
@@ -50,38 +78,150 @@ public class EventsView : MonoBehaviour
         if (MoreDetailExitButton != null)
             MoreDetailExitButton.onClick.AddListener(CloseMoreDetailPanel);
 
-        // 初始化時隱藏面板
+        // 初始化面板狀態。
         if (NewsPanel != null)
             NewsPanel.SetActive(false);
         if (MoreDetailPanel != null)
             MoreDetailPanel.SetActive(false);
+
+        if (_boundSceneTransitionManager != null
+            && IsMonsterScene(_boundSceneTransitionManager.CurrentScene))
+        {
+            ScheduleAutoOpenNews(_boundSceneTransitionManager.CurrentScene);
+        }
+    }
+
+    private void BindSceneTransitionManager()
+    {
+        SceneTransitionManager sceneTransitionManager = SceneTransitionManager.Instance;
+        if (sceneTransitionManager == null || _boundSceneTransitionManager == sceneTransitionManager)
+            return;
+
+        UnbindSceneTransitionManager();
+        _boundSceneTransitionManager = sceneTransitionManager;
+        _boundSceneTransitionManager.OnSceneLoadStart += OnSceneLoadStart;
+        _boundSceneTransitionManager.OnSceneLoadComplete += OnSceneLoadComplete;
+    }
+
+    private void UnbindSceneTransitionManager()
+    {
+        if (_boundSceneTransitionManager == null)
+            return;
+
+        _boundSceneTransitionManager.OnSceneLoadStart -= OnSceneLoadStart;
+        _boundSceneTransitionManager.OnSceneLoadComplete -= OnSceneLoadComplete;
+        _boundSceneTransitionManager = null;
+    }
+
+    private void OnSceneLoadStart(string sceneName)
+    {
+        if (IsMonsterScene(sceneName))
+        {
+            return;
+        }
+
+        StopAutoOpenRoutine();
+    }
+
+    private void OnSceneLoadComplete(string sceneName)
+    {
+        if (IsMonsterScene(sceneName))
+        {
+            ScheduleAutoOpenNews(sceneName);
+            return;
+        }
+
+        StopAutoOpenRoutine();
+        if ((NewsPanel != null && NewsPanel.activeSelf)
+            || (MoreDetailPanel != null && MoreDetailPanel.activeSelf))
+        {
+            PlayerInfoUIEvents.InvokeCloseAll();
+        }
+        else
+        {
+            CloseNewsPanel(false);
+        }
+    }
+
+    private void ScheduleAutoOpenNews(string sceneName)
+    {
+        StopAutoOpenRoutine();
+        _autoOpenSceneName = sceneName;
+        _autoOpenRoutine = StartCoroutine(AutoOpenNewsRoutine());
+    }
+
+    private IEnumerator AutoOpenNewsRoutine()
+    {
+        yield return new WaitForSeconds(AutoOpenDelaySeconds);
+        _autoOpenRoutine = null;
+        string targetScene = _autoOpenSceneName;
+        _autoOpenSceneName = null;
+
+        if (_boundSceneTransitionManager == null
+            || !IsMonsterScene(targetScene)
+            || _boundSceneTransitionManager.CurrentScene != targetScene)
+        {
+            yield break;
+        }
+
+        PlayerInfoUIEvents.InvokeOpenNews();
+    }
+
+    private void StopAutoOpenRoutine()
+    {
+        if (_autoOpenRoutine == null)
+            return;
+
+        StopCoroutine(_autoOpenRoutine);
+        _autoOpenRoutine = null;
+        _autoOpenSceneName = null;
+    }
+
+    private bool IsMonsterScene(string sceneName)
+    {
+        return sceneName == SceneTransitionManager.SCENE_MONSTER || sceneName == MonsterSceneAlias;
     }
 
     /// <summary>
-    /// 開啟新聞面板並更新內容
+    /// 開啟新聞面板並載入今天事件。
     /// </summary>
     public void OpenNewsPanel()
     {
         if (NewsPanel != null)
         {
+            bool wasActive = NewsPanel.activeSelf;
             NewsPanel.SetActive(true);
             SetButtonEventsFromGameEvents();
+            if (!wasActive)
+            {
+                PlaySfx(openPanelSfx);
+            }
         }
     }
 
     /// <summary>
-    /// 關閉新聞面板
+    /// 關閉新聞面板。
     /// </summary>
     public void CloseNewsPanel()
     {
+        CloseNewsPanel(true);
+    }
+
+    private void CloseNewsPanel(bool playSound)
+    {
+        bool wasNewsPanelActive = NewsPanel != null && NewsPanel.activeSelf;
         if (NewsPanel != null)
             NewsPanel.SetActive(false);
         if (MoreDetailPanel != null)
             MoreDetailPanel.SetActive(false);
+        if (playSound && wasNewsPanelActive)
+        {
+            PlaySfx(closePanelSfx);
+        }
     }
 
     /// <summary>
-    /// 初始化事件生成器
+    /// 初始化事件生成器。
     /// </summary>
     public void InitializeGenerator()
     {
@@ -98,7 +238,7 @@ public class EventsView : MonoBehaviour
     }
 
     /// <summary>
-    /// 生成當日事件
+    /// 生成指定天數的事件。
     /// </summary>
     /// <param name="dayNumber">遊戲天數</param>
     public void GenerateTodayEvents(int dayNumber)
@@ -110,7 +250,7 @@ public class EventsView : MonoBehaviour
 
         if (_eventsGenerator == null)
         {
-            Debug.LogWarning("[EventsView] 事件生成器未初始化");
+            Debug.LogWarning("[EventsView] 事件生成器尚未初始化");
             return;
         }
 
@@ -120,7 +260,7 @@ public class EventsView : MonoBehaviour
     }
 
     /// <summary>
-    /// 取得今日事件列表
+    /// 取得今天生成的事件。
     /// </summary>
     public List<GameEventDefinition> GetTodayEvents()
     {
@@ -128,27 +268,27 @@ public class EventsView : MonoBehaviour
     }
 
     /// <summary>
-    /// 核心邏輯：將資料綁定到按鈕
+    /// 使用舊版 MonsterEvent 資料設定新聞按鈕。
     /// </summary>
     public void SetButtonEvents()
     {
-        // 1. 防呆：確保資料跟按鈕都有東西
+        // 1. 沒有舊版 MonsterEvent 資料或按鈕時直接返回。
         if (TodayMonsterEvents == null || AllNewsButtons == null) return;
 
-        // 2. 迴圈遍歷所有按鈕
+        // 2. 依序綁定新聞按鈕。
         for (int i = 0; i < AllNewsButtons.Count; i++)
         {
             Button btn = AllNewsButtons[i];
 
-            // 3. 重要習慣：先移除舊的監聽，避免重複綁定導致點一次跑兩次
+            // 3. 先清除舊監聽，避免重複觸發。
             btn.onClick.RemoveAllListeners();
 
-            // 4. 檢查資料是否足夠 (例如按鈕有5個，但事件只有3個)
+            // 4. 有對應事件時顯示按鈕並綁定點擊。
             if (i < TodayMonsterEvents.Count)
             {
                 btn.gameObject.SetActive(true);
                 MonsterEvent currentEvent = TodayMonsterEvents[i];
-                // 5. 綁定點擊事件
+                // 5. 點擊後開啟事件詳細面板。
                 btn.onClick.AddListener(() =>
                 {
                     OnNewsClicked(currentEvent);
@@ -156,21 +296,21 @@ public class EventsView : MonoBehaviour
             }
             else
             {
-                // 沒資料：隱藏多餘的按鈕
+                // 沒有對應事件的按鈕隱藏。
                 btn.gameObject.SetActive(false);
             }
         }
     }
 
     /// <summary>
-    /// 使用 GameEventDefinition 設定按鈕事件
-    /// 根據稀有度排序（最高排頭條），相同稀有度保持原抽取順序
+    /// 使用 GameEventDefinition 設定新聞按鈕。
+    /// 特殊事件依稀有度排序；同稀有度時保留原始生成順序。
     /// </summary>
     public void SetButtonEventsFromGameEvents()
     {
         if (_todayEvents == null || AllNewsButtons == null) return;
 
-        // 根據稀有度降序排序，使用穩定排序保持相同稀有度的原始順序
+        // 特殊事件放前面，並保留同稀有度事件的原始順序。
         var sortedEvents = _todayEvents
             .Select((eventDef, index) => new { Event = eventDef, OriginalIndex = index })
             .OrderByDescending(x => x.Event.eventRareity)
@@ -188,7 +328,7 @@ public class EventsView : MonoBehaviour
                 btn.gameObject.SetActive(true);
                 GameEventDefinition currentEvent = sortedEvents[i];
 
-                // 更新按鈕上的文字
+                // 更新按鈕顯示文字。
                 if (AllNewsTitle != null && i < AllNewsTitle.Count)
                 {
                     AllNewsTitle[i].text = currentEvent.Name;
@@ -206,7 +346,7 @@ public class EventsView : MonoBehaviour
                     }
                 }
 
-                // 載入對應事件 ID 的圖片
+                // 依事件 ID 載入對應圖片。
                 if (AllNewsImage != null && i < AllNewsImage.Count && AllNewsImage[i] != null)
                 {
                     Image targetImage = AllNewsImage[i];
@@ -228,7 +368,7 @@ public class EventsView : MonoBehaviour
             }
             else
             {
-                // 多餘的按鈕清空並隱藏
+                // 沒有資料的位置清空顯示並隱藏按鈕。
                 if (AllNewsTitle != null && i < AllNewsTitle.Count)
                 {
                     AllNewsTitle[i].text = "";
@@ -247,26 +387,30 @@ public class EventsView : MonoBehaviour
     }
 
     /// <summary>
-    /// 當 MonsterEvent 按鈕被點擊時觸發
+    /// 點擊舊版 MonsterEvent 時顯示詳細內容。
     /// </summary>
     private void OnNewsClicked(MonsterEvent monsterEvent)
     {
-        // 1. 顯示詳細面板
+        PlaySfx(openDetailSfx);
+
+        // 顯示舊版 MonsterEvent 詳細面板。
         if (MoreDetailPanel != null)
         {
             MoreDetailPanel.SetActive(true);
 
-            // 更新詳細面板的 UI
+            // 更新詳細面板 UI。
             if (DetailTitleText != null) DetailTitleText.text = monsterEvent.EventName;
             if (DetailContentText != null) DetailContentText.text = monsterEvent.EventDescription;
         }
     }
 
     /// <summary>
-    /// 當 GameEventDefinition 按鈕被點擊時觸發
+    /// 點擊 GameEventDefinition 時顯示詳細內容。
     /// </summary>
     private void OnGameEventClicked(GameEventDefinition gameEvent)
     {
+        PlaySfx(openDetailSfx);
+
         if (MoreDetailPanel != null)
         {
             MoreDetailPanel.SetActive(true);
@@ -289,7 +433,20 @@ public class EventsView : MonoBehaviour
     }
     public void CloseMoreDetailPanel()
     {
+        bool wasDetailPanelActive = MoreDetailPanel != null && MoreDetailPanel.activeSelf;
         if (MoreDetailPanel != null)
             MoreDetailPanel.SetActive(false);
+        if (wasDetailPanelActive)
+        {
+            PlaySfx(closeDetailSfx);
+        }
+    }
+
+    private void PlaySfx(AudioClip clip)
+    {
+        if (clip == null || AudioManager.Instance == null)
+            return;
+
+        AudioManager.Instance.PlaySfx(clip, sfxVolumeScale);
     }
 }

@@ -22,6 +22,15 @@ public class AbyssView : MonoBehaviour
     [SerializeField] private Button MoveLeftButton;
     [SerializeField] private Button CloseButton;
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip dropItemSfx;
+    [SerializeField] private AudioClip openTreasureSfx;
+    [SerializeField] private AudioClip nextStepSfx;
+    [SerializeField] private AudioClip exploreFailedSfx;
+    [SerializeField] private AudioClip continueExploreSfx;
+    [SerializeField] private AudioClip leaveWithRewardSfx;
+    [SerializeField, Range(0f, 1f)] private float sfxVolumeScale = 1f;
+
     public event Action OnContinueClicked;
     public event Action OnLeaveClicked;
     public event Action OnFail;
@@ -113,6 +122,7 @@ public class AbyssView : MonoBehaviour
 
         ContinueButton .onClick.AddListener(() => 
         {
+            PlaySfx(continueExploreSfx);
             OnContinueClicked?.Invoke();
             
             // 測試用：如果沒有外部綁定，直接播放進入下一層的視覺表現
@@ -126,6 +136,7 @@ public class AbyssView : MonoBehaviour
 
         LeaveButton    .onClick.AddListener(() => 
         {
+            PlaySfx(leaveWithRewardSfx);
             OnLeaveClicked?.Invoke();
             
             if (OnLeaveClicked == null)
@@ -221,6 +232,8 @@ public class AbyssView : MonoBehaviour
 
         if (DropZone != null && RectTransformUtility.RectangleContainsScreenPoint(DropZone, eventData.position, eventData.pressEventCamera))
         {
+            PlaySfx(dropItemSfx);
+
             // 開始播放吸入動畫
             if (CenterItemImage != null && slot._targetImage != null)
             {
@@ -413,6 +426,8 @@ public class AbyssView : MonoBehaviour
         int nextIndex = _currentIndex + 1;
         if (nextIndex >= RightPoints.Length) return;
 
+        PlaySfx(nextStepSfx);
+
         // 跳躍時面向右；落地後面向左（等待往左跳）
         SetFacing(facingRight: true);
 
@@ -432,6 +447,8 @@ public class AbyssView : MonoBehaviour
 
         int nextIndex = _currentIndex + 1;
         if (nextIndex >= LeftPoints.Length) return;
+
+        PlaySfx(nextStepSfx);
 
         // 跳躍時面向左；落地後面向右（等待往右跳）
         SetFacing(facingRight: false);
@@ -480,6 +497,8 @@ public class AbyssView : MonoBehaviour
 
         if (triggerEatHole)
         {
+            PlaySfx(exploreFailedSfx);
+
             _isMoving = true; // 鎖死按鈕
             EatHole.SetActive(true);
             
@@ -532,6 +551,7 @@ public class AbyssView : MonoBehaviour
                 DOVirtual.DelayedCall(1.0f, () =>
                 {
                     // 在寶箱動畫結束後，才將暫存的獎勵真正顯示到格子上
+                    PlaySfx(openTreasureSfx);
                     ShowPendingRewards();
 
                     // 顯示 Continue 與 Leave，隱藏 Move 按鈕
@@ -635,5 +655,15 @@ public class AbyssView : MonoBehaviour
         int next = _currentIndex + 1;
         MoveRightButton.interactable = next < RightPoints.Length;
         MoveLeftButton .interactable = next < LeftPoints.Length;
+    }
+
+    private void PlaySfx(AudioClip clip)
+    {
+        if (clip == null || GameSystem.AudioManager.Instance == null)
+        {
+            return;
+        }
+
+        GameSystem.AudioManager.Instance.PlaySfx(clip, sfxVolumeScale);
     }
 }

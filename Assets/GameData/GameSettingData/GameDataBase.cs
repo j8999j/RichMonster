@@ -35,6 +35,10 @@ public class PlayerData : IReadOnlyPlayerData
     public int Gold;
     /// <summary> 玩家持有的妖界金錢 </summary>
     public int MonsterGold;
+    public bool HasReachedEnding;
+    public EndingType ReachedEndingType;
+    public bool HasPaidGuaranteeDeposit;
+    public bool HasPaidAuctionEntryFee;
     
     /// <summary> 玩家的倉庫/背包資料 </summary>
     public Inventory Inventory = new();
@@ -53,7 +57,11 @@ public class PlayerData : IReadOnlyPlayerData
     int IReadOnlyPlayerData.DaysPlayed => DaysPlayed;
     int IReadOnlyPlayerData.CustomerIndex => CustomerIndex;
     bool IReadOnlyPlayerData.IsTrade => IsTrade;
+    bool IReadOnlyPlayerData.HasReachedEnding => HasReachedEnding;
+    bool IReadOnlyPlayerData.HasPaidGuaranteeDeposit => HasPaidGuaranteeDeposit;
+    bool IReadOnlyPlayerData.HasPaidAuctionEntryFee => HasPaidAuctionEntryFee;
     DayPhase IReadOnlyPlayerData.PlayingStatus => PlayingStatus;
+    EndingType IReadOnlyPlayerData.ReachedEndingType => ReachedEndingType;
     IReadOnlyList<Item> IReadOnlyPlayerData.InventoryItems => Inventory?.Items ?? new List<Item>();
     IReadOnlyList<string> IReadOnlyPlayerData.HoldAchievementSouvenirID => HoldAchievementSouvenirID ?? new List<string>();
 }
@@ -71,6 +79,10 @@ public interface IReadOnlyPlayerData
     int CustomerIndex { get; }
     DayPhase PlayingStatus { get; }
     bool IsTrade { get; }
+    bool HasReachedEnding { get; }
+    bool HasPaidGuaranteeDeposit { get; }
+    bool HasPaidAuctionEntryFee { get; }
+    EndingType ReachedEndingType { get; }
     IReadOnlyList<Item> InventoryItems { get; }
     IReadOnlyList<string> HoldAchievementSouvenirID { get; }
 }

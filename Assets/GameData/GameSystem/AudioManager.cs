@@ -35,6 +35,7 @@ namespace GameSystem
         [SerializeField] private AudioSource musicSourceA;
         [SerializeField] private AudioSource musicSourceB;
         [SerializeField] private int sfxPoolSize = 8;
+        [SerializeField] private int maxSfxPoolSize = 24;
 
         [Header("Music Playlist")]
         [SerializeField] private AudioClip[] musicClips = new AudioClip[3];
@@ -62,6 +63,7 @@ namespace GameSystem
         [SerializeField] private bool saveVolumeSettings = true;
 
         private readonly List<AudioSource> _sfxSources = new List<AudioSource>();
+        private readonly HashSet<AudioSource> _loopingSfxSources = new HashSet<AudioSource>();
         private AudioSource _activeMusicSource;
         private AudioSource _inactiveMusicSource;
         private Coroutine _musicFadeCoroutine;
@@ -142,6 +144,9 @@ namespace GameSystem
                     new SceneMusicSetting(SceneTransitionManager.SCENE_MONSTER, 2)
                 };
             }
+
+            sfxPoolSize = Mathf.Max(1, sfxPoolSize);
+            maxSfxPoolSize = Mathf.Max(sfxPoolSize, maxSfxPoolSize);
         }
 
         public void ConfigureMixer(AudioMixer mixer, AudioMixerGroup musicGroup, AudioMixerGroup sfxGroup)
@@ -257,6 +262,9 @@ namespace GameSystem
             EnsureAudioSources();
 
             AudioSource source = GetAvailableSfxSource();
+            if (source == null)
+                return;
+
             source.pitch = Mathf.Clamp(pitch, 0.1f, 3f);
             source.PlayOneShot(clip, Mathf.Clamp01(volumeScale));
         }
@@ -274,11 +282,15 @@ namespace GameSystem
             EnsureAudioSources();
 
             AudioSource source = GetAvailableSfxSource();
+            if (source == null)
+                return null;
+
             source.clip = clip;
             source.loop = true;
             source.pitch = Mathf.Clamp(pitch, 0.1f, 3f);
             source.volume = GetSfxSourceVolume() * Mathf.Clamp01(volumeScale);
             source.Play();
+            _loopingSfxSources.Add(source);
             return source;
         }
 
@@ -292,6 +304,7 @@ namespace GameSystem
             source.clip = null;
             source.pitch = 1f;
             source.volume = GetSfxSourceVolume();
+            _loopingSfxSources.Remove(source);
         }
 
         private void BindSceneTransitionManager()
@@ -512,6 +525,9 @@ namespace GameSystem
 
         private void EnsureAudioSources()
         {
+            _sfxSources.RemoveAll(source => source == null);
+            _loopingSfxSources.RemoveWhere(source => source == null);
+
             musicSourceA = EnsureChildAudioSource(musicSourceA, "Music Source A", musicMixerGroup, true);
             musicSourceB = EnsureChildAudioSource(musicSourceB, "Music Source B", musicMixerGroup, true);
 
@@ -523,7 +539,7 @@ namespace GameSystem
 
             while (_sfxSources.Count < Mathf.Max(1, sfxPoolSize))
             {
-                AudioSource source = EnsureChildAudioSource(null, $"SFX Source {_sfxSources.Count + 1}", sfxMixerGroup, false);
+                AudioSource source = CreateSfxSource();
                 _sfxSources.Add(source);
             }
 
@@ -553,6 +569,11 @@ namespace GameSystem
             return source;
         }
 
+        private AudioSource CreateSfxSource()
+        {
+            return EnsureChildAudioSource(null, $"SFX Source {_sfxSources.Count + 1}", sfxMixerGroup, false);
+        }
+
         private void AssignMixerGroups()
         {
             if (musicSourceA != null)
@@ -570,9 +591,12 @@ namespace GameSystem
 
         private AudioSource GetAvailableSfxSource()
         {
+            _sfxSources.RemoveAll(source => source == null);
+            _loopingSfxSources.RemoveWhere(source => source == null);
+
             foreach (AudioSource source in _sfxSources)
             {
-                if (!source.isPlaying)
+                if (!_loopingSfxSources.Contains(source) && !source.isPlaying)
                 {
                     source.pitch = 1f;
                     source.loop = false;
@@ -582,7 +606,29 @@ namespace GameSystem
                 }
             }
 
-            AudioSource fallback = _sfxSources[0];
+            int maxPoolSize = Mathf.Max(Mathf.Max(1, sfxPoolSize), maxSfxPoolSize);
+            if (_sfxSources.Count < maxPoolSize)
+            {
+                AudioSource source = CreateSfxSource();
+                _sfxSources.Add(source);
+                source.volume = GetSfxSourceVolume();
+                AssignMixerGroups();
+                return source;
+            }
+
+            AudioSource fallback = null;
+            foreach (AudioSource source in _sfxSources)
+            {
+                if (!_loopingSfxSources.Contains(source))
+                {
+                    fallback = source;
+                    break;
+                }
+            }
+
+            if (fallback == null)
+                return null;
+
             fallback.Stop();
             fallback.pitch = 1f;
             fallback.loop = false;

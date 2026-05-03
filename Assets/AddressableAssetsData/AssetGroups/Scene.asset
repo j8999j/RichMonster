@@ -32,6 +32,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54498623e53da294f965950aa5072513
+    m_Address: EndStoryScene
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d621b95703a92d049bff409298266c86
     m_Address: MonsterWorldScene
     m_ReadOnly: 0
