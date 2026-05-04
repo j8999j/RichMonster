@@ -1,9 +1,8 @@
 [storyopen,0.1]
-[storyimage,Story_0_0]
+[storyimage,GoodEnd_1_0]
 [fadein,0.2]
 好結局5[w]
-這是一個好結局[w]
-對話結束後回到主畫面[w]
+成功歸還寶物並取得妖王的信物[w]
 [storyclose,0.2]
 [fadeout,0.2]
 

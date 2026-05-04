@@ -75,7 +75,7 @@ public enum CollectionMissionRace
 public class CollectionMissionCategory
 {
     public CollectionMissionRace Race;
-    public string DisplayName;
+    public string Title;
     public List<CollectionMissionItemEntry> Items = new List<CollectionMissionItemEntry>();
 
     public CollectionMissionCategory()
@@ -85,15 +85,15 @@ public class CollectionMissionCategory
     public CollectionMissionCategory(CollectionMissionRace race)
     {
         Race = race;
-        DisplayName = CollectionMissionRaceUtility.GetRaceName(race);
+        Title = CollectionMissionRaceUtility.GetRaceName(race);
     }
 
     public string RaceName => CollectionMissionRaceUtility.GetRaceName(Race);
 
     public void Normalize()
     {
-        if (string.IsNullOrWhiteSpace(DisplayName))
-            DisplayName = RaceName;
+        if (string.IsNullOrWhiteSpace(Title))
+            Title = RaceName;
 
         if (Items == null)
             Items = new List<CollectionMissionItemEntry>();
@@ -112,6 +112,8 @@ public class CollectionMissionItemEntry
     [ItemIDSelect]
     public string ItemID;
     public int Points = 1;
+    [TextArea]
+    public string Description;
 }
 
 public static class CollectionMissionRaceUtility

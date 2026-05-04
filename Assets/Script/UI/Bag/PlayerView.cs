@@ -32,6 +32,9 @@ public class PlayerView : MonoBehaviour
     public Button MonsterItemButton;//妖界物品按鈕
     public Button AllItemButton;//所有物品按鈕
     public int TargetLongEdgeSize;//顯示最大邊長限制
+    public TextMeshProUGUI BagCapacityText;//背包目前數量 / 上限
+    public TextMeshProUGUI GoldText;//目前金幣
+    public TextMeshProUGUI MonsterGoldText;//目前妖怪幣
 
     [Header("Sound Effects")]
     [SerializeField] private AudioClip openSound;
@@ -155,6 +158,8 @@ public class PlayerView : MonoBehaviour
     // 顯示當前頁面的物品
     private void ShowBagItems()
     {
+        UpdateBagStatusTexts();
+
         if (_filteredItems == null || _filteredItems.Count == 0)
         {
             // 隱藏所有 Slot
@@ -199,6 +204,29 @@ public class PlayerView : MonoBehaviour
         _currentStartIndex = 0;
         ApplyFilter();
         ShowBagItems();
+    }
+
+    private void UpdateBagStatusTexts()
+    {
+        if (DataManager.Instance == null)
+            return;
+
+        if (BagCapacityText != null)
+        {
+            int currentCount = DataManager.Instance.GetInventoryItemCount();
+            int capacity = DataManager.Instance.GetInventoryCapacity();
+            BagCapacityText.text = $"背包容量:{currentCount}/{capacity}";
+        }
+
+        var playerData = DataManager.Instance.CurrentPlayerData;
+        if (playerData == null)
+            return;
+
+        if (GoldText != null)
+            GoldText.text = playerData.Gold.ToString();
+
+        if (MonsterGoldText != null)
+            MonsterGoldText.text = playerData.MonsterGold.ToString();
     }
 
     /// <summary>

@@ -17,6 +17,8 @@ namespace GameSystem
         public const string AbyssShop       = "AbyssShop";
         public const string TalkSystem      = "TalkSystem";
         public const string TelePoint       = "TelePoint";
+        public const string TelePointAuctionGuide = "TelePointAuctionGuide";
+        public const string Auction         = "Auction";
         public const string AuctionNpc      = "AuctionNpc";
         public const string MonsterGoldExchange = "MonsterGoldExchange";
 

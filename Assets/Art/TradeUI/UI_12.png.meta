@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -113,10 +113,10 @@ TextureImporter:
       name: UI_12_0
       rect:
         serializedVersion: 2
-        x: 24
-        y: 233
-        width: 113
-        height: 92
+        x: 65
+        y: 15
+        width: 525
+        height: 224
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,50 +124,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f6fded8fb40776a4d9509589d15ec9a2
-      internalID: -1236151732
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_12_1
-      rect:
-        serializedVersion: 2
-        x: 23
-        y: 130
-        width: 115
-        height: 88
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: cc494e7986a2e074aa3edabc8ba060d2
-      internalID: 1186478094
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_12_2
-      rect:
-        serializedVersion: 2
-        x: 23
-        y: 24
-        width: 115
-        height: 94
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 02ccdbe9d14c11840a8846700faea9ba
-      internalID: 1467621909
+      spriteID: 74bb468f7200fbf4b8ee209af597f7bf
+      internalID: 1044430852
       vertices: []
       indices: 
       edges: []
@@ -175,7 +133,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 7e0c41771309d3f43b67c5c7ad2a7ef7
+    spriteID: 4712f0dac6e81f04082f2bec966ba450
     internalID: 0
     vertices: []
     indices: 
@@ -183,9 +141,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      UI_12_0: -1236151732
-      UI_12_1: 1186478094
-      UI_12_2: 1467621909
+      UI_12_0: 1044430852
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

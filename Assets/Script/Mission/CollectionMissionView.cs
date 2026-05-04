@@ -87,6 +87,19 @@ public class CollectionMissionView : MonoBehaviour
     [SerializeField]
     private Sprite claimedRewardSprite;
 
+    [Header("NPC Sprites")]
+    [SerializeField]
+    private Sprite ghostNpcSprite;
+
+    [SerializeField]
+    private Sprite beastNpcSprite;
+
+    [SerializeField]
+    private Sprite divineNpcSprite;
+
+    [SerializeField]
+    private Sprite fairyNpcSprite;
+
     [SerializeField]
     private Transform slotContainer;
 
@@ -112,6 +125,18 @@ public class CollectionMissionView : MonoBehaviour
     private CollectionMissionRequirementSlot selectedSlot;
     private string selectedImageItemId;
     private bool rewardPanelOpen;
+
+    public Sprite GetNpcSprite(CollectionMissionRace race)
+    {
+        return race switch
+        {
+            CollectionMissionRace.Ghost => ghostNpcSprite,
+            CollectionMissionRace.Beast => beastNpcSprite,
+            CollectionMissionRace.Divine => divineNpcSprite,
+            CollectionMissionRace.Fairy => fairyNpcSprite,
+            _ => null
+        };
+    }
 
     private void Awake()
     {
@@ -175,7 +200,7 @@ public class CollectionMissionView : MonoBehaviour
         var category = mission != null ? mission.GetCategory(currentRace) : null;
 
         if (titleText != null)
-            titleText.text = category != null ? category.DisplayName : CollectionMissionRaceUtility.GetRaceName(currentRace);
+            titleText.text = category != null ? GetCategoryTitle(category) : CollectionMissionRaceUtility.GetRaceName(currentRace);
 
         if (descriptionText != null)
             descriptionText.text = string.Empty;
@@ -262,7 +287,7 @@ public class CollectionMissionView : MonoBehaviour
         }
 
         if (descriptionText != null)
-            descriptionText.text = entry != null ? $"\u53EF\u7372\u5F97\u9EDE\u6578\uFF1A{entry.Points}" : string.Empty;
+            descriptionText.text = entry != null ? entry.Description : string.Empty;
 
         if (selectedPointText != null)
             selectedPointText.text = entry != null ? $"X{entry.Points}" : string.Empty;
@@ -275,6 +300,17 @@ public class CollectionMissionView : MonoBehaviour
     private bool IsSelectedItemNameVisible(CollectionMissionSlotState slotState)
     {
         return slotState != CollectionMissionSlotState.Unknown;
+    }
+
+    private string GetCategoryTitle(CollectionMissionCategory category)
+    {
+        if (category == null)
+            return string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(category.Title))
+            return category.Title;
+
+        return CollectionMissionRaceUtility.GetRaceName(category.Race);
     }
 
     private void RefreshSubmitButton(bool canSubmit, bool isSubmitted)

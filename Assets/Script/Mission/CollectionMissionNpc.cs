@@ -13,6 +13,9 @@ public class CollectionMissionNpc : MonoBehaviour, IInteractable, IMapGuideTarge
     [SerializeField]
     private GameObject prompt;
 
+    [SerializeField]
+    private SpriteRenderer spriteRenderer;
+
     public string ID => GuideIDs.Interactable.CollectionMission(race);
 
     public CollectionMissionTracker Tracker => tracker;
@@ -23,6 +26,9 @@ public class CollectionMissionNpc : MonoBehaviour, IInteractable, IMapGuideTarge
     {
         if (tracker == null)
             tracker = FindObjectOfType<CollectionMissionTracker>();
+
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     public void SetMapGuide()
@@ -74,5 +80,14 @@ public class CollectionMissionNpc : MonoBehaviour, IInteractable, IMapGuideTarge
     {
         tracker = collectionTracker;
         race = collectionRace;
+    }
+
+    public void ApplySprite(Sprite sprite)
+    {
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        if (spriteRenderer != null && sprite != null)
+            spriteRenderer.sprite = sprite;
     }
 }

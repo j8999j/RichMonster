@@ -99,6 +99,7 @@ public class CollectionMissionTracker : MonoBehaviour
 
             var npc = Instantiate(collectionNpcPrefab, spawnPoint.Point.position, spawnPoint.Point.rotation, spawnPoint.Point.parent);
             npc.Setup(this, spawnPoint.Race);
+            ApplyCollectionNpcSprite(npc);
             spawnedCollectionNpcs.Add(npc);
         }
     }
@@ -109,8 +110,19 @@ public class CollectionMissionTracker : MonoBehaviour
         foreach (var npc in sceneNpcs)
         {
             if (npc != null && (npc.Tracker == null || npc.Tracker == this))
+            {
                 npc.Setup(this);
+                ApplyCollectionNpcSprite(npc);
+            }
         }
+    }
+
+    private void ApplyCollectionNpcSprite(CollectionMissionNpc npc)
+    {
+        if (npc == null || collectionMissionView == null)
+            return;
+
+        npc.ApplySprite(collectionMissionView.GetNpcSprite(npc.Race));
     }
 
     private void HandleViewClosed()

@@ -14,22 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   categories:
   - Race: 0
-    DisplayName: "\u5E7D\u9748"
+    Title: "\u5E7D\u9748\u4EE3\u7406\u4EBA"
     Items:
     - ItemID: DreamProjector
       Points: 1
+      Description: "\u6295\u5F71"
   - Race: 1
-    DisplayName: "\u7378\u65CF"
+    Title: "\u7378\u65CF\u4EE3\u7406\u4EBA"
     Items:
     - ItemID: JinguBang
       Points: 1
+      Description: "\u68D2\u68D2\u68D2"
   - Race: 2
-    DisplayName: "\u795E\u65CF"
+    Title: "\u795E\u65CF\u4EE3\u7406"
     Items:
     - ItemID: TianyiCottonCandy
       Points: 1
+      Description: "\u68C9\u82B1"
   - Race: 3
-    DisplayName: "\u5996\u7CBE"
+    Title: "\u5996\u7CBE\u4EE3\u7406\u4EBA"
     Items:
     - ItemID: HuizhuMoonCrown
       Points: 1
+      Description: "\u51A0\u51A0"
