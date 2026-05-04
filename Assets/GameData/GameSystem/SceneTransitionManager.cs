@@ -124,6 +124,13 @@ namespace GameSystem
         /// <param name="onComplete">場景載入完成後更新UI顯示</param>
         public void GoToMonsterScene(Action onComplete = null)
         {
+            if (_dataManager?.CurrentPlayerData != null
+                && _dataManager.CurrentPlayerData.HasReachedEnding)
+            {
+                GoToEndStoryScene(onComplete);
+                return;
+            }
+
             _dataManager.ModifyCurrentDayPhase(DayPhase.Night);
             LoadScene(SCENE_MONSTER, onComplete);
         }

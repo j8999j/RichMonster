@@ -37,9 +37,22 @@ public class GameFlow
 
         DataManager.Instance.ModifyCurrentDayPhase(newPhase);
         GameFlowEvents.InvokeDayPhaseChanged(newPhase);
+        AuctionEntryFeeGuide.Refresh();
+        AuctionDayGuide.Refresh();
+        if (newPhase == DayPhase.Night)
+        {
+            EndingType endingType = EndingConditionDetector.EvaluateForNewMonsterDay(DataManager.Instance.CurrentPlayerData);
+            if (endingType != EndingType.None)
+            {
+                DataManager.Instance.SetEndingReached(endingType);
+                await SaveGameAsync();
+                return;
+            }
+        }
+
         if (newPhase == DayPhase.HumanDay)
         {
-            EndingType endingType = EndingConditionDetector.Evaluate(DataManager.Instance.CurrentPlayerData);
+            EndingType endingType = EndingConditionDetector.EvaluateForHumanDay(DataManager.Instance.CurrentPlayerData);
             if (endingType != EndingType.None)
             {
                 DataManager.Instance.SetEndingReached(endingType);
@@ -72,4 +85,3 @@ public class GameFlow
         await DataManager.Instance.SaveAchievementAsync();
     }
 }
-

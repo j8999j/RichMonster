@@ -13,7 +13,7 @@ public class CollectionMissionNpc : MonoBehaviour, IInteractable, IMapGuideTarge
     [SerializeField]
     private GameObject prompt;
 
-    public string ID => $"CollectionMission_{race}";
+    public string ID => GuideIDs.Interactable.CollectionMission(race);
 
     public CollectionMissionTracker Tracker => tracker;
 

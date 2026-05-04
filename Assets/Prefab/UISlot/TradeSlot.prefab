@@ -61,6 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InteractButton: {fileID: 3942127557794470445}
   DefaultSprite: {fileID: 0}
+  TargetLongEdgeSize: 80
 --- !u!1 &2486232824710793317
 GameObject:
   m_ObjectHideFlags: 0

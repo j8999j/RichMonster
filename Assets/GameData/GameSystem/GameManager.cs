@@ -129,6 +129,8 @@ namespace GameSystem
                 // 場景載入完成後才執行
                 DataManager.Instance.ModifyCurrentDay(playerData.DaysPlayed);
                 GameFlowEvents.InvokeDayPhaseChanged(playerData.PlayingStatus);
+                AuctionEntryFeeGuide.Refresh();
+                AuctionDayGuide.Refresh();
                 Souvenir.SouvenirManager.Instance.ApplyAllStartEffects();
                 gameFlow.StartTutorial();
                 // 玩家初始化已由 OnSceneLoadComplete 事件處理

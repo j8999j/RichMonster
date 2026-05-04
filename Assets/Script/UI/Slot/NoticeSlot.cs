@@ -41,7 +41,7 @@ public class NoticeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             _targetImage.sprite = goldSprite;
             SpriteLoader.AdjustImageScale(_targetImage, _targetLongEdgeSize);
         }
-        if (_amountText != null) _amountText.text = $"x{amount}";
+        SetAmountText(amount, true);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class NoticeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             _targetImage.sprite = goldSprite;
             SpriteLoader.AdjustImageScale(_targetImage, _targetLongEdgeSize);
         }
-        if (_amountText != null) _amountText.text = $"x{amount}";
+        SetAmountText(amount, true);
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ public class NoticeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
                 }
             });
         }
-        if (_amountText != null) _amountText.text = $"x{amount}";
+        SetAmountText(amount, true);
     }
 
     /// <summary>
@@ -106,7 +106,39 @@ public class NoticeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             _targetImage.sprite = sprite;
             SpriteLoader.AdjustImageScale(_targetImage, _targetLongEdgeSize);
         }
-        if (_amountText != null) _amountText.text = $"x{amount}";
+        SetAmountText(amount, amount > 0);
+    }
+
+    public void SetupMonsterBook(Sprite monsterBookSprite, Action<string> onHoverEnter, Action onHoverExit)
+    {
+        _type = NoticeGetItemType.MonsterBook;
+        _displayName = "\u5996\u602A\u5716\u9451";
+        _amount = 0;
+        _onHoverEnter = onHoverEnter;
+        _onHoverExit = onHoverExit;
+
+        if (_targetImage != null && monsterBookSprite != null)
+        {
+            _targetImage.sprite = monsterBookSprite;
+            SpriteLoader.AdjustImageScale(_targetImage, _targetLongEdgeSize);
+        }
+        SetAmountText(0, false);
+    }
+
+    public void SetupMonsterInformation(int amount, Sprite monsterInformationSprite, Action<string> onHoverEnter, Action onHoverExit)
+    {
+        _type = NoticeGetItemType.MonsterInformation;
+        _displayName = "\u5996\u602A\u60C5\u5831";
+        _amount = amount;
+        _onHoverEnter = onHoverEnter;
+        _onHoverExit = onHoverExit;
+
+        if (_targetImage != null && monsterInformationSprite != null)
+        {
+            _targetImage.sprite = monsterInformationSprite;
+            SpriteLoader.AdjustImageScale(_targetImage, _targetLongEdgeSize);
+        }
+        SetAmountText(amount, true);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -125,12 +157,26 @@ public class NoticeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             case NoticeGetItemType.Others:
                 _onHoverEnter?.Invoke(_displayName);
                 break;
+            case NoticeGetItemType.MonsterBook:
+                _onHoverEnter?.Invoke(_displayName);
+                break;
+            case NoticeGetItemType.MonsterInformation:
+                _onHoverEnter?.Invoke(_displayName);
+                break;
         }
     }
     public void OnPointerExit(PointerEventData eventData)
     {
         _onHoverExit?.Invoke();
     }
-}
 
+    private void SetAmountText(int amount, bool showAmount)
+    {
+        if (_amountText == null)
+            return;
+
+        _amountText.text = showAmount ? $"x{amount}" : string.Empty;
+        _amountText.gameObject.SetActive(showAmount);
+    }
+}
 

@@ -81,14 +81,14 @@
       "InformationID": "Info_003_ApprenticeMage",
       "MonsterID": "ApprenticeMage",
       "MonsterInformationName": "強風吹拂",
-      "MonsterInformation": "因為享受強風住在山頂",
+      "MonsterInformation": "每一根翎羽都能感受吹拂的氣流，享受強風住在山頂",
       "TagID": "Wind"
     },
     {
       "InformationID": "Info_004_ApprenticeMage",
       "MonsterID": "ApprenticeMage",
       "MonsterInformationName": "討厭垃圾",
-      "MonsterInformation": "自視甚高，對於那些毫無用處的破銅爛鐵連看都不屑看一眼。",
+      "MonsterInformation": "他的那雙能在萬丈高空看清的眼睛，能夠精準識別物品的品質，對於那些毫無用處的破銅爛鐵連看都不屑看一眼。",
       "TagID": "Junk"
     },
     {
@@ -102,14 +102,14 @@
       "InformationID": "Info_002_SeniorKnight",
       "MonsterID": "SeniorKnight",
       "MonsterInformationName": "蔬食主義",
-      "MonsterInformation": "喜歡各種蔬菜作為供品",
+      "MonsterInformation": "植物在地下積累了最純粹的土地靈氣，喜歡各種蔬菜作為供品",
       "TagID": "Vegetable"
     },
     {
       "InformationID": "Info_003_SeniorKnight",
       "MonsterID": "SeniorKnight",
       "MonsterInformationName": "熱愛水果",
-      "MonsterInformation": "喜歡品嚐飯後水果。",
+      "MonsterInformation": "果實是植物在一整個生長季節裡濃縮的天地精華，喜歡品嚐飯後水果。",
       "TagID": "Fruit"
     },
     {
@@ -118,6 +118,1154 @@
       "MonsterInformationName": "解咒",
       "MonsterInformation": "有著近乎神聖的潔癖，絕對不會購買任何沾染邪氣與晦氣的物品。",
       "TagID": "Cursed"
+    },
+    {
+      "InformationID": "Info_001_WanderingBard",
+      "MonsterID": "WanderingBard",
+      "MonsterInformationName": "腐敗氣息",
+      "MonsterInformation": "殭屍體內積累了數百年的發酵氣味，對帶有腐敗氣息的物品有莫名的親切感，就像是回到了家鄉。",
+      "TagID": "Corruption"
+    },
+    {
+      "InformationID": "Info_002_WanderingBard",
+      "MonsterID": "WanderingBard",
+      "MonsterInformationName": "藥補",
+      "MonsterInformation": "身體僵硬、器官老化，能緩解身體不適或對殭屍體質有效的藥劑是他最迫切的需求。",
+      "TagID": "Potion"
+    },
+    {
+      "InformationID": "Info_003_WanderingBard",
+      "MonsterID": "WanderingBard",
+      "MonsterInformationName": "炎熱與腐化",
+      "MonsterInformation": "高溫會讓本就僵硬的關節更加難受，炎熱天氣對殭屍來說簡直是無法言喻的折磨。",
+      "TagID": "Hot"
+    },
+    {
+      "InformationID": "Info_001_ChurchPriest",
+      "MonsterID": "ChurchPriest",
+      "MonsterInformationName": "素食愛好",
+      "MonsterInformation": "河川邊生長的水生蔬菜是他最自然不過的食物，清脆的口感讓他感到滿足。",
+      "TagID": "Vegetable"
+    },
+    {
+      "InformationID": "Info_002_ChurchPriest",
+      "MonsterID": "ChurchPriest",
+      "MonsterInformationName": "酸爽口感",
+      "MonsterInformation": "酸味讓他聯想到河邊的野果，是與自然環境呼應的熟悉味道。",
+      "TagID": "Sour"
+    },
+    {
+      "InformationID": "Info_003_ChurchPriest",
+      "MonsterID": "ChurchPriest",
+      "MonsterInformationName": "潔癖水精",
+      "MonsterInformation": "守護清澈河川多年的他，對任何汙濁、骯髒的東西有著本能的排斥感。",
+      "TagID": "Dirty"
+    },
+    {
+      "InformationID": "Info_001_Oxboos",
+      "MonsterID": "Oxboos",
+      "MonsterInformationName": "乾爽偏好",
+      "MonsterInformation": "身形龐大的他不喜歡潮濕的環境，乾燥的物品讓他感到舒適自在。",
+      "TagID": "Dry"
+    },
+    {
+      "InformationID": "Info_002_Oxboos",
+      "MonsterID": "Oxboos",
+      "MonsterInformationName": "古玩收藏",
+      "MonsterInformation": "久居妖界、歷經歲月，對帶有時代風華的古物有著超乎尋常的欣賞力。",
+      "TagID": "Antique"
+    },
+    {
+      "InformationID": "Info_003_Oxboos",
+      "MonsterID": "Oxboos",
+      "MonsterInformationName": "意外嗜好",
+      "MonsterInformation": "外表威猛的大魔王有個不為人知的秘密——他無法抗拒任何精緻的甜點。",
+      "TagID": "Dessert"
+    },
+    {
+      "InformationID": "Info_004_Oxboos",
+      "MonsterID": "Oxboos",
+      "MonsterInformationName": "鼻腔警告",
+      "MonsterInformation": "辛辣的刺激氣味會讓他那靈敏的牛鼻子苦不堪言，每次聞到都忍不住連打噴嚏。",
+      "TagID": "Spicy"
+    },
+    {
+      "InformationID": "Info_001_TigerAunt",
+      "MonsterID": "TigerAunt",
+      "MonsterInformationName": "肉食天性",
+      "MonsterInformation": "天生的肉食本能讓她對各種肉類製品充滿渴望，越新鮮越香、越大塊越好。",
+      "TagID": "Meat"
+    },
+    {
+      "InformationID": "Info_002_TigerAunt",
+      "MonsterID": "TigerAunt",
+      "MonsterInformationName": "儲糧習慣",
+      "MonsterInformation": "喜歡將食物醃製保存的她，認為醃漬過的食物才算是真正的「珍藏美味」。",
+      "TagID": "Preserved"
+    },
+    {
+      "InformationID": "Info_003_TigerAunt",
+      "MonsterID": "TigerAunt",
+      "MonsterInformationName": "火熱不安",
+      "MonsterInformation": "明火對她來說是天敵，不管是用途還是氣味，只要帶有火焰屬性的就敬而遠之。",
+      "TagID": "Fire"
+    },
+    {
+      "InformationID": "Info_004_TigerAunt",
+      "MonsterID": "TigerAunt",
+      "MonsterInformationName": "油鍋恐懼",
+      "MonsterInformation": "最討厭吃油炸類型的食物認為破壞了肉的本味",
+      "TagID": "Oil"
+    },
+    {
+      "InformationID": "Info_001_WhiteBoneDemon",
+      "MonsterID": "WhiteBoneDemon",
+      "MonsterInformationName": "美麗執念",
+      "MonsterInformation": "以美貌著稱的她，對任何能提升外貌或裝點美麗的事物都有著近乎偏執的渴望。",
+      "TagID": "Beauty"
+    },
+    {
+      "InformationID": "Info_002_WhiteBoneDemon",
+      "MonsterID": "WhiteBoneDemon",
+      "MonsterInformationName": "骨中血肉",
+      "MonsterInformation": "千年白骨精雖然只剩骨架，卻依然對鮮嫩的肉食抱有強烈的念想，無法割捨。",
+      "TagID": "Meat"
+    },
+    {
+      "InformationID": "Info_003_WhiteBoneDemon",
+      "MonsterID": "WhiteBoneDemon",
+      "MonsterInformationName": "同類氣息",
+      "MonsterInformation": "自身帶有強大妖力的她，對那些已被詛咒浸染的物品有著同類相吸的直覺。",
+      "TagID": "Cursed"
+    },
+    {
+      "InformationID": "Info_004_WhiteBoneDemon",
+      "MonsterID": "WhiteBoneDemon",
+      "MonsterInformationName": "酸澀干擾",
+      "MonsterInformation": "酸澀會腐蝕骨頭，甚至讓她精心維持的美麗偽裝出現裂縫。",
+      "TagID": "Sour"
+    },
+    {
+      "InformationID": "Info_001_SpiderSpirit",
+      "MonsterID": "SpiderSpirit",
+      "MonsterInformationName": "絕世容顏",
+      "MonsterInformation": "以絕美外表為傲的她，只購買能映襯其美麗或本身就無比精緻的物品。",
+      "TagID": "Beauty"
+    },
+    {
+      "InformationID": "Info_002_SpiderSpirit",
+      "MonsterID": "SpiderSpirit",
+      "MonsterInformationName": "絲網補給",
+      "MonsterInformation": "蜘蛛妖化形需要消耗大量能量，鮮美的肉食是維持這種消耗的最佳補給。",
+      "TagID": "Meat"
+    },
+    {
+      "InformationID": "Info_003_SpiderSpirit",
+      "MonsterID": "SpiderSpirit",
+      "MonsterInformationName": "毒素研究",
+      "MonsterInformation": "對毒素有著超乎常人的迷戀，認為毒藥是世界上最「誠實」的東西——美麗而危險。",
+      "TagID": "Poison"
+    },
+    {
+      "InformationID": "Info_004_SpiderSpirit",
+      "MonsterID": "SpiderSpirit",
+      "MonsterInformationName": "陰暗習性",
+      "MonsterInformation": "蜘蛛習性讓她偏好陰暗角落，強烈的光線會讓她感到極度不適，甚至產生灼燒感。",
+      "TagID": "Light"
+    },
+    {
+      "InformationID": "Info_005_SpiderSpirit",
+      "MonsterID": "SpiderSpirit",
+      "MonsterInformationName": "驅妖剋星",
+      "MonsterInformation": "神聖的力量是天生的剋星，接觸帶有神聖氣息的物品會讓她感到一陣刺痛。",
+      "TagID": "Holy"
+    },
+    {
+      "InformationID": "Info_006_SpiderSpirit",
+      "MonsterID": "SpiderSpirit",
+      "MonsterInformationName": "毒性剋制",
+      "MonsterInformation": "純淨的東西會中和她身上的蛛毒，這對她來說是一種無形卻真實的威脅。",
+      "TagID": "Pure"
+    },
+    {
+      "InformationID": "Info_001_Kaguya-hime",
+      "MonsterID": "Kaguya-hime",
+      "MonsterInformationName": "月都潔淨",
+      "MonsterInformation": "來自純潔月都的她，對任何不受塵世玷污、保持純粹狀態的事物有著天然的親近感。",
+      "TagID": "Pure"
+    },
+    {
+      "InformationID": "Info_002_Kaguya-hime",
+      "MonsterID": "Kaguya-hime",
+      "MonsterInformationName": "星辰鄉愁",
+      "MonsterInformation": "仰望星空時總能感受到家鄉氣息，帶有星辰象徵的物品能稍解她對月都的思念。",
+      "TagID": "Star"
+    },
+    {
+      "InformationID": "Info_003_Kaguya-hime",
+      "MonsterID": "Kaguya-hime",
+      "MonsterInformationName": "月光連結",
+      "MonsterInformation": "月亮是她與故鄉之間唯一的連結，所有帶有月亮屬性的物品她都愛不釋手。",
+      "TagID": "Moon"
+    },
+    {
+      "InformationID": "Info_004_Kaguya-hime",
+      "MonsterID": "Kaguya-hime",
+      "MonsterInformationName": "素食偏好",
+      "MonsterInformation": "月都清雅的飲食習慣讓她完全無法接受肉食，那濃重的血腥氣讓她忍不住皺眉。",
+      "TagID": "Meat"
+    },
+    {
+      "InformationID": "Info_005_Kaguya-hime",
+      "MonsterID": "Kaguya-hime",
+      "MonsterInformationName": "凡塵之氣",
+      "MonsterInformation": "腐敗的氣息是地上世界最令她作嘔的東西，與月都的清冷截然相反。",
+      "TagID": "Corruption"
+    },
+    {
+      "InformationID": "Info_006_Kaguya-hime",
+      "MonsterID": "Kaguya-hime",
+      "MonsterInformationName": "塵世汙濁",
+      "MonsterInformation": "骯髒的物品對她而言是凡俗與墮落的象徵，她的衣物從不沾染一絲塵埃。",
+      "TagID": "Dirty"
+    },
+    {
+      "InformationID": "Info_001_Nekomata",
+      "MonsterID": "Nekomata",
+      "MonsterInformationName": "新鮮挑剔",
+      "MonsterInformation": "千年修煉仍保有純粹貓性的她，對食物的新鮮程度有著刁鑽的判斷力，只接受最新鮮的。",
+      "TagID": "Fresh"
+    },
+    {
+      "InformationID": "Info_002_Nekomata",
+      "MonsterID": "Nekomata",
+      "MonsterInformationName": "貓咪日照",
+      "MonsterInformation": "喜歡溫暖陽光的天性讓她對一切帶有溫熱感的物品充滿好感，恨不得窩在裡面。",
+      "TagID": "Warm"
+    },
+    {
+      "InformationID": "Info_003_Nekomata",
+      "MonsterID": "Nekomata",
+      "MonsterInformationName": "無法抗拒",
+      "MonsterInformation": "不管修煉多少年，只要聞到魚味就會忘記一切，這是刻入基因的本能反應。",
+      "TagID": "Fish"
+    },
+    {
+      "InformationID": "Info_004_Nekomata",
+      "MonsterID": "Nekomata",
+      "MonsterInformationName": "貓咪天敵",
+      "MonsterInformation": "水和潮濕是大多數貓類的天然忌諱，她更是打心底抗拒任何帶水氣的事物。",
+      "TagID": "Wet"
+    },
+    {
+      "InformationID": "Info_005_Nekomata",
+      "MonsterID": "Nekomata",
+      "MonsterInformationName": "怕冷體質",
+      "MonsterInformation": "喜歡蜷縮在溫暖角落的她，對寒冷的東西有著生理上的排斥，全身毛髮都會豎起。",
+      "TagID": "Cold"
+    },
+    {
+      "InformationID": "Info_006_Nekomata",
+      "MonsterID": "Nekomata",
+      "MonsterInformationName": "不夠新鮮",
+      "MonsterInformation": "對新鮮度有著極高要求的她，完全無法忍受醃漬或保存過的食物，「這根本不新鮮！」",
+      "TagID": "Preserved"
+    },
+    {
+      "InformationID": "Info_1_VampireCount",
+      "MonsterID": "VampireCount",
+      "MonsterInformationName": "黑夜貴族",
+      "MonsterInformation": "在黑暗中誕生、在黑暗中輝煌，帶有黑暗氣息的物品讓這位夜晚的主人感到格外愜意。",
+      "TagID": "Dark"
+    },
+    {
+      "InformationID": "Info_2_VampireCount",
+      "MonsterID": "VampireCount",
+      "MonsterInformationName": "生命之源",
+      "MonsterInformation": "血液是他的糧食、是他的執念，帶有血腥氣息的物品對他來說散發著難以抗拒的吸引力。",
+      "TagID": "Blood"
+    },
+    {
+      "InformationID": "Info_3_VampireCount",
+      "MonsterID": "VampireCount",
+      "MonsterInformationName": "月下獨酌",
+      "MonsterInformation": "月色下的夜晚才是他真正的舞台，帶有月亮屬性的物品讓他想起無數個優雅的永恆夜晚。",
+      "TagID": "Moon"
+    },
+    {
+      "InformationID": "Info_4_VampireCount",
+      "MonsterID": "VampireCount",
+      "MonsterInformationName": "神聖剋星",
+      "MonsterInformation": "神聖之力是吸血鬼族最古老的剋星，接觸帶有神聖氣息的物品會讓他感到灼燒般的疼痛。",
+      "TagID": "Holy"
+    },
+    {
+      "InformationID": "Info_5_VampireCount",
+      "MonsterID": "VampireCount",
+      "MonsterInformationName": "大蒜聯想",
+      "MonsterInformation": "凡是蔬菜類，在他眼中都與那可憎的大蒜產生聯想，讓他倒盡胃口，敬而遠之。",
+      "TagID": "Vegetable"
+    },
+    {
+      "InformationID": "Info_6_VampireCount",
+      "MonsterID": "VampireCount",
+      "MonsterInformationName": "陽光剋星",
+      "MonsterInformation": "陽光是吸血鬼最致命的弱點，帶有太陽屬性的物品對他來說是連碰都不敢碰的禁忌。",
+      "TagID": "Sun"
+    },
+    {
+      "InformationID": "Info_1_PiXiu",
+      "MonsterID": "PiXiu",
+      "MonsterInformationName": "寶石收藏",
+      "MonsterInformation": "只進不出的招財神獸對一切珍貴礦石有著本能的吞噬衝動，越稀有越想要。",
+      "TagID": "Gem"
+    },
+    {
+      "InformationID": "Info_2_PiXiu",
+      "MonsterID": "PiXiu",
+      "MonsterInformationName": "祥瑞共鳴",
+      "MonsterInformation": "自身就是吉祥的象徵，對帶有幸運氣息的物品有著同類相吸的特殊共鳴。",
+      "TagID": "Lucky"
+    },
+    {
+      "InformationID": "Info_3_PiXiu",
+      "MonsterID": "PiXiu",
+      "MonsterInformationName": "金光執念",
+      "MonsterInformation": "黃金閃耀的光芒讓他兩眼放光，這種本能的渴望深植在靈魂的最深處。",
+      "TagID": "Gold"
+    },
+    {
+      "InformationID": "Info_4_PiXiu",
+      "MonsterID": "PiXiu",
+      "MonsterInformationName": "品味嚴格",
+      "MonsterInformation": "身為招財神獸，他的眼裡只容得下有價值的東西，對廢品充滿發自內心的鄙視。",
+      "TagID": "Junk"
+    },
+    {
+      "InformationID": "Info_1_GoldenCrow",
+      "MonsterID": "GoldenCrow",
+      "MonsterInformationName": "光明載體",
+      "MonsterInformation": "居住在太陽核心的他，對任何能夠發光的物品都有著本能的親近感與同族認同。",
+      "TagID": "Light"
+    },
+    {
+      "InformationID": "Info_2_GoldenCrow",
+      "MonsterID": "GoldenCrow",
+      "MonsterInformationName": "火焰同族",
+      "MonsterInformation": "自身就是烈焰的化身，對火焰類物品有著血脈相連般的熱愛，如同見到同族。",
+      "TagID": "Fire"
+    },
+    {
+      "InformationID": "Info_3_GoldenCrow",
+      "MonsterID": "GoldenCrow",
+      "MonsterInformationName": "太陽崇拜",
+      "MonsterInformation": "以太陽之靈自居，凡是帶有太陽氣息的物品在他眼中都散發著神聖的光芒。",
+      "TagID": "Sun"
+    },
+    {
+      "InformationID": "Info_4_GoldenCrow",
+      "MonsterID": "GoldenCrow",
+      "MonsterInformationName": "火鳥天敵",
+      "MonsterInformation": "水分是他最不願意靠近的東西，潮濕的物品會讓那神聖的羽毛感到難受不適。",
+      "TagID": "Wet"
+    },
+    {
+      "InformationID": "Info_5_GoldenCrow",
+      "MonsterID": "GoldenCrow",
+      "MonsterInformationName": "黑暗對立",
+      "MonsterInformation": "驕傲的光明之鳥視黑暗為天敵，對帶有黑暗屬性的物品充滿本能的排斥。",
+      "TagID": "Dark"
+    },
+    {
+      "InformationID": "Info_6_GoldenCrow",
+      "MonsterID": "GoldenCrow",
+      "MonsterInformationName": "火焰剋星",
+      "MonsterInformation": "寒冷是火焰最直接的剋星，低溫物品讓他感到一種對自身存在的深層威脅。",
+      "TagID": "Cold"
+    },
+    {
+      "InformationID": "Info_1_Tanuki",
+      "MonsterID": "Tanuki",
+      "MonsterInformationName": "今朝有酒",
+      "MonsterInformation": "「今朝有酒今朝醉」是他的人生哲學，對各種酒類有著無盡的熱情與獨到的鑑賞力。",
+      "TagID": "Alcohol"
+    },
+    {
+      "InformationID": "Info_2_Tanuki",
+      "MonsterID": "Tanuki",
+      "MonsterInformationName": "肚皮打鼓",
+      "MonsterInformation": "他最引以為傲的就是那圓滾滾的肚皮，能配合任何音樂敲出美妙節奏，超愛音樂。",
+      "TagID": "Music"
+    },
+    {
+      "InformationID": "Info_3_Tanuki",
+      "MonsterID": "Tanuki",
+      "MonsterInformationName": "熱鬧情人",
+      "MonsterInformation": "喜歡熱鬧氣氛的他對任何能製造歡樂聲響的東西都愛不釋手，越吵越開心。",
+      "TagID": "Noise"
+    },
+    {
+      "InformationID": "Info_1_GoldenToad",
+      "MonsterID": "GoldenToad",
+      "MonsterInformationName": "重量感應",
+      "MonsterInformation": "招財靈蟾天生對沉甸甸的物品有著特殊感應，握在手裡有分量感才叫真貨。",
+      "TagID": "Heavy"
+    },
+    {
+      "InformationID": "Info_2_GoldenToad",
+      "MonsterID": "GoldenToad",
+      "MonsterInformationName": "金光引力",
+      "MonsterInformation": "見到金光燦燦的物品就如同聽到了財富的呼喚，這種渴望早已刻入靈魂深處。",
+      "TagID": "Gold"
+    },
+    {
+      "InformationID": "Info_3_GoldenToad",
+      "MonsterID": "GoldenToad",
+      "MonsterInformationName": "毒素過敏",
+      "MonsterInformation": "儘管外表像蟾蜍，他自身卻對毒素極度敏感，帶有毒性的物品讓他的皮膚立刻過敏。",
+      "TagID": "Poison"
+    },
+    {
+      "InformationID": "Info_1_Umibozu",
+      "MonsterID": "Umibozu",
+      "MonsterInformationName": "深淵之黑",
+      "MonsterInformation": "由深海黑水凝聚而成，黑暗是他的本質，帶有黑暗氣息的物品讓他感到最舒適。",
+      "TagID": "Dark"
+    },
+    {
+      "InformationID": "Info_2_Umibozu",
+      "MonsterID": "Umibozu",
+      "MonsterInformationName": "故鄉氣息",
+      "MonsterInformation": "大海是他的家鄉，所有帶有海洋味道的物品都能引起他深深的共鳴與思念。",
+      "TagID": "Ocean"
+    },
+    {
+      "InformationID": "Info_3_Umibozu",
+      "MonsterID": "Umibozu",
+      "MonsterInformationName": "海洋家族",
+      "MonsterInformation": "作為海洋的守護者，他對海洋生物有著一種奇特的親近感。",
+      "TagID": "Seafood"
+    },
+    {
+      "InformationID": "Info_4_Umibozu",
+      "MonsterID": "Umibozu",
+      "MonsterInformationName": "乾燥威脅",
+      "MonsterInformation": "乾燥是水生存在的天敵，乾燥的物品讓他那由水凝聚而成的身體感到強烈的不適。",
+      "TagID": "Dry"
+    },
+    {
+      "InformationID": "Info_5_Umibozu",
+      "MonsterID": "Umibozu",
+      "MonsterInformationName": "海底無光",
+      "MonsterInformation": "深海永無光明，他早已適應了絕對的黑暗，強烈的光線讓他感到頭暈目眩。",
+      "TagID": "Light"
+    },
+    {
+      "InformationID": "Info_6_Umibozu",
+      "MonsterID": "Umibozu",
+      "MonsterInformationName": "水火不容",
+      "MonsterInformation": "火焰是水系存在最直接的剋星，看到帶有火焰屬性的物品他就會本能地退後幾步。",
+      "TagID": "Fire"
+    },
+    {
+      "InformationID": "Info_1_Frankenstein",
+      "MonsterID": "Frankenstein",
+      "MonsterInformationName": "充電能量",
+      "MonsterInformation": "將他縫合在一起的那道閃電，深深烙印在他的記憶中，需要能夠驅動部件的能量。",
+      "TagID": "Electricity"
+    },
+    {
+      "InformationID": "Info_2_Frankenstein",
+      "MonsterID": "Frankenstein",
+      "MonsterInformationName": "機械同好",
+      "MonsterInformation": "由人造零件組成的他，對各種機械製品有著油然而生的親切感，甚至有點感同身受。",
+      "TagID": "Machine"
+    },
+    {
+      "InformationID": "Info_3_Frankenstein",
+      "MonsterID": "Frankenstein",
+      "MonsterInformationName": "組裝素材",
+      "MonsterInformation": "不停地在尋找可以用於強化自身的身體部件，新鮮的肉類在他眼中都是潛在的「零件」。",
+      "TagID": "Meat"
+    },
+    {
+      "InformationID": "Info_4_Frankenstein",
+      "MonsterID": "Frankenstein",
+      "MonsterInformationName": "廢料寶庫",
+      "MonsterInformation": "別人眼中的廢棄物，在他看來都是潛在的改造素材，說不定能裝在身上某個部位。",
+      "TagID": "Junk"
+    },
+    {
+      "InformationID": "Info_5_Frankenstein",
+      "MonsterID": "Frankenstein",
+      "MonsterInformationName": "神聖排斥",
+      "MonsterInformation": "用非自然手段創造的他，神聖的力量是一種否定其存在本身的威脅，令他痛苦。",
+      "TagID": "Holy"
+    },
+    {
+      "InformationID": "Info_6_Frankenstein",
+      "MonsterID": "Frankenstein",
+      "MonsterInformationName": "縫合警報",
+      "MonsterInformation": "火焰是最讓他焦慮的東西，縫合身體的接合部件在高溫下會發出危險的燃燒氣味。",
+      "TagID": "Fire"
+    },
+    {
+      "InformationID": "Info_1_TheMummy",
+      "MonsterID": "TheMummy",
+      "MonsterInformationName": "防腐之道",
+      "MonsterInformation": "在沙漠中保存了幾千年的他深知乾燥的重要性，乾燥才是永恆的秘訣。",
+      "TagID": "Dry"
+    },
+    {
+      "InformationID": "Info_2_TheMummy",
+      "MonsterID": "TheMummy",
+      "MonsterInformationName": "千年保存",
+      "MonsterInformation": "對所有能夠長久保存事物的技術都充滿尊敬，醃漬保存類物品讓他想起自己被製成木乃伊的過去。",
+      "TagID": "Preserved"
+    },
+    {
+      "InformationID": "Info_3_TheMummy",
+      "MonsterID": "TheMummy",
+      "MonsterInformationName": "千年宿敵",
+      "MonsterInformation": "潮濕是木乃伊的天敵，水分會讓他精心保存的身體迅速腐爛，對任何帶水氣的物品避之不及。",
+      "TagID": "Wet"
+    },
+    {
+      "InformationID": "Info_1_JadeRabbit",
+      "MonsterID": "JadeRabbit",
+      "MonsterInformationName": "製藥行家",
+      "MonsterInformation": "整日在月宮搗藥的她對各種藥材和藥劑都有著專業的鑑別力，好的靈藥讓她眼睛放光。",
+      "TagID": "Potion"
+    },
+    {
+      "InformationID": "Info_2_JadeRabbit",
+      "MonsterID": "JadeRabbit",
+      "MonsterInformationName": "星月相伴",
+      "MonsterInformation": "仰望月宮的夜空時，星辰是她最熟悉的夥伴，帶有星辰氣息的物品讓她感到溫柔的安慰。",
+      "TagID": "Star"
+    },
+    {
+      "InformationID": "Info_3_JadeRabbit",
+      "MonsterID": "JadeRabbit",
+      "MonsterInformationName": "月宮歸屬",
+      "MonsterInformation": "月亮不只是她的家，更是她存在的意義，任何與月亮相關的物品都能引起她深深的情感共鳴。",
+      "TagID": "Moon"
+    },
+    {
+      "InformationID": "Info_4_JadeRabbit",
+      "MonsterID": "JadeRabbit",
+      "MonsterInformationName": "藥性失效",
+      "MonsterInformation": "無法作為藥劑素材",
+      "TagID": "Meat"
+    },
+    {
+      "InformationID": "Info_5_JadeRabbit",
+      "MonsterID": "JadeRabbit",
+      "MonsterInformationName": "火焰恐懼",
+      "MonsterInformation": "月宮的溫度維持在永恆的清涼，火焰可能會讓藥劑出現意想不到的變化要避免。",
+      "TagID": "Fire"
+    },
+    {
+      "InformationID": "Info_1_Terracotta",
+      "MonsterID": "Terracotta",
+      "MonsterInformationName": "時代見證",
+      "MonsterInformation": "自秦始皇時代便已存在的他，對帶有歷史痕跡的古物有著超越常人的深刻理解與珍視。",
+      "TagID": "Antique"
+    },
+    {
+      "InformationID": "Info_2_Terracotta",
+      "MonsterID": "Terracotta",
+      "MonsterInformationName": "陳年底蘊",
+      "MonsterInformation": "歷經千年的他對那些充滿歲月沉澱、飽含時間氣息的物品有著本能的親近感。",
+      "TagID": "Old"
+    },
+    {
+      "InformationID": "Info_3_Terracotta",
+      "MonsterID": "Terracotta",
+      "MonsterInformationName": "質地鑑賞",
+      "MonsterInformation": "自身由堅硬陶土燒製而成的他，天生對堅固、耐用的材質有著一種工匠般的鑑賞力。",
+      "TagID": "Hard"
+    },
+    {
+      "InformationID": "Info_4_Terracotta",
+      "MonsterID": "Terracotta",
+      "MonsterInformationName": "護衛本能",
+      "MonsterInformation": "作為永恆的守衛，對各式武器有著職業性的興趣，每件武器都能讓他想起保衛皇帝的使命。",
+      "TagID": "Weapon"
+    },
+    {
+      "InformationID": "Info_5_Terracotta",
+      "MonsterID": "Terracotta",
+      "MonsterInformationName": "陶土剋星",
+      "MonsterInformation": "陶土製成的身體最怕水侵，潮濕的物品讓他感到身體深處有一種被腐蝕的危機感。",
+      "TagID": "Wet"
+    },
+    {
+      "InformationID": "Info_6_Terracotta",
+      "MonsterID": "Terracotta",
+      "MonsterInformationName": "酸蝕警告",
+      "MonsterInformation": "酸性物質對他那由礦物燒製的身體有潛在的侵蝕作用，光是靠近就渾身不舒服。",
+      "TagID": "Sour"
+    },
+    {
+      "InformationID": "Info_7_Terracotta",
+      "MonsterID": "Terracotta",
+      "MonsterInformationName": "風沙損傷",
+      "MonsterInformation": "雖然在野外站了千年，但強風帶起的沙礫會損傷他精細的陶土紋路，令他感到不悅。",
+      "TagID": "Wind"
+    },
+    {
+      "InformationID": "Info_1_Akaname",
+      "MonsterID": "Akaname",
+      "MonsterInformationName": "廢物藝術",
+      "MonsterInformation": "在常人眼中毫無價值的廢棄物，在他眼中卻是充滿滋味與故事的珍貴寶藏。",
+      "TagID": "Junk"
+    },
+    {
+      "InformationID": "Info_2_Akaname",
+      "MonsterID": "Akaname",
+      "MonsterInformationName": "腐敗美食",
+      "MonsterInformation": "腐敗發酵的氣味在他鼻中是難以抗拒的香氣，這是他那套獨特的美食鑑賞哲學。",
+      "TagID": "Corruption"
+    },
+    {
+      "InformationID": "Info_3_Akaname",
+      "MonsterID": "Akaname",
+      "MonsterInformationName": "汙垢天堂",
+      "MonsterInformation": "骯髒、充滿汙漬的物品對他來說是最高級的享受，就像頂級食材一樣讓他垂涎三尺。",
+      "TagID": "Dirty"
+    },
+    {
+      "InformationID": "Info_4_Akaname",
+      "MonsterID": "Akaname",
+      "MonsterInformationName": "純淨噁心",
+      "MonsterInformation": "任何純粹、無汙染的東西讓他感到一種奇妙的嫌惡，毫無「味道」的東西讓他興趣全無。",
+      "TagID": "Pure"
+    },
+    {
+      "InformationID": "Info_5_Akaname",
+      "MonsterID": "Akaname",
+      "MonsterInformationName": "清潔剋星",
+      "MonsterInformation": "消毒劑和清潔用品對他而言是最殘忍的刑罰，會讓他精心積累的「作品」瞬間消失。",
+      "TagID": "Clean"
+    },
+    {
+      "InformationID": "Info_1_ToothFairy",
+      "MonsterID": "ToothFairy",
+      "MonsterInformationName": "硬度鑑賞",
+      "MonsterInformation": "以收集牙齒為業的她，對任何堅硬的材質都相當著迷，硬度夠才叫好東西。",
+      "TagID": "Hard"
+    },
+    {
+      "InformationID": "Info_2_ToothFairy",
+      "MonsterID": "ToothFairy",
+      "MonsterInformationName": "潔白偏愛",
+      "MonsterInformation": "「睡前刷牙了嗎？」是她的口頭禪，對一切乾淨、潔白的物品都充滿天然的好感。",
+      "TagID": "Clean"
+    },
+    {
+      "InformationID": "Info_3_ToothFairy",
+      "MonsterID": "ToothFairy",
+      "MonsterInformationName": "金幣喜愛",
+      "MonsterInformation": "她慣用金幣交換孩子的牙齒，黃金是她唯一認可的等價交換介質。",
+      "TagID": "Gold"
+    },
+    {
+      "InformationID": "Info_4_ToothFairy",
+      "MonsterID": "ToothFairy",
+      "MonsterInformationName": "蛀牙元兇",
+      "MonsterInformation": "甜點是牙齒的大敵！身為牙齒保護者，她看到甜點就想到無數顆受損的小牙齒。",
+      "TagID": "Dessert"
+    },
+    {
+      "InformationID": "Info_5_ToothFairy",
+      "MonsterID": "ToothFairy",
+      "MonsterInformationName": "甜味警惕",
+      "MonsterInformation": "甜味讓她立刻聯想到蛀牙，這種職業病讓她對一切甜味物品都保持著高度的警惕。",
+      "TagID": "Sweet"
+    },
+    {
+      "InformationID": "Info_1_Sandman",
+      "MonsterID": "Sandman",
+      "MonsterInformationName": "入眠旋律",
+      "MonsterInformation": "音樂是引導人們進入夢境最好的橋樑，帶有音樂氣息的物品讓他感到一種專業的滿足感。",
+      "TagID": "Music"
+    },
+    {
+      "InformationID": "Info_2_Sandman",
+      "MonsterID": "Sandman",
+      "MonsterInformationName": "星光夢境",
+      "MonsterInformation": "他灑下的睡眠沙總是伴隨著點點星光，帶有星辰屬性的物品是他最得心應手的工具。",
+      "TagID": "Star"
+    },
+    {
+      "InformationID": "Info_3_Sandman",
+      "MonsterID": "Sandman",
+      "MonsterInformationName": "夢境魔法",
+      "MonsterInformation": "夢境本就是魔法的領域，帶有魔法氣息的物品讓他感到一種同行之間的深刻共鳴。",
+      "TagID": "Magic"
+    },
+    {
+      "InformationID": "Info_4_Sandman",
+      "MonsterID": "Sandman",
+      "MonsterInformationName": "夢境之門",
+      "MonsterInformation": "在黑暗中工作了無數個夜晚，黑暗是他最熟悉的工作環境，帶有黑暗屬性的物品讓他格外安心。",
+      "TagID": "Dark"
+    },
+    {
+      "InformationID": "Info_5_Sandman",
+      "MonsterID": "Sandman",
+      "MonsterInformationName": "夢境殺手",
+      "MonsterInformation": "嘈雜的聲響是他最大的職業敵人，噪音會瞬間打破精心建構的夢境，讓他的工作成果付諸東流。",
+      "TagID": "Noise"
+    },
+    {
+      "InformationID": "Info_1_Judge",
+      "MonsterID": "Judge",
+      "MonsterInformationName": "生死典籍",
+      "MonsterInformation": "手握生死薄的他，對承載文字記錄的書本有著不可動搖的信仰，知識就是法律。",
+      "TagID": "Book"
+    },
+    {
+      "InformationID": "Info_2_Judge",
+      "MonsterID": "Judge",
+      "MonsterInformationName": "靈魂審判",
+      "MonsterInformation": "作為審判靈魂的冥官，他對帶有靈魂氣息的物品有著特殊的感應力和難以克制的收集衝動。",
+      "TagID": "Soul"
+    },
+    {
+      "InformationID": "Info_3_Judge",
+      "MonsterID": "Judge",
+      "MonsterInformationName": "法度遮蔽",
+      "MonsterInformation": "過於刺眼的光芒會讓他看不清文書上的記載，嚴重妨礙他的審判工作進行。",
+      "TagID": "Light"
+    },
+    {
+      "InformationID": "Info_4_Judge",
+      "MonsterID": "Judge",
+      "MonsterInformationName": "文書過剩",
+      "MonsterInformation": "代表旺盛生命力的東西在他眼中只代表更多需要審判的靈魂，讓他的公文堆積如山。",
+      "TagID": "Growth"
+    },
+    {
+      "InformationID": "Info_1_Rokurokubi",
+      "MonsterID": "Rokurokubi",
+      "MonsterInformationName": "頸部點綴",
+      "MonsterInformation": "脖子可以無限延伸的她，對美麗的裝飾品有著格外旺盛的需求，讓那長長的頸項更引人注目。",
+      "TagID": "Beauty"
+    },
+    {
+      "InformationID": "Info_2_Rokurokubi",
+      "MonsterID": "Rokurokubi",
+      "MonsterInformationName": "配件控",
+      "MonsterInformation": "脖子每延伸一節就像多了一個展示舞台，配飾對她來說永遠不嫌多，越多越好。",
+      "TagID": "Accessory"
+    },
+    {
+      "InformationID": "Info_3_Rokurokubi",
+      "MonsterID": "Rokurokubi",
+      "MonsterInformationName": "頸部保養",
+      "MonsterInformation": "過度使用頸部肌肉讓她特別注重保養，任何能滋潤肌膚的油性物品都是她的日常必需。",
+      "TagID": "Oil"
+    },
+    {
+      "InformationID": "Info_4_Rokurokubi",
+      "MonsterID": "Rokurokubi",
+      "MonsterInformationName": "頸部天敵",
+      "MonsterInformation": "堅硬的物品對她那纖細的頸部是潛在威脅，讓她想起各種不愉快的被困或卡住記憶。",
+      "TagID": "Hard"
+    },
+    {
+      "InformationID": "Info_5_Rokurokubi",
+      "MonsterID": "Rokurokubi",
+      "MonsterInformationName": "斬頸聯想",
+      "MonsterInformation": "只要看到鋒利的武器，她腦中就會浮現那根細長脖子被切斷的可怕畫面，立刻縮頸而逃。",
+      "TagID": "Weapon"
+    },
+    {
+      "InformationID": "Info_1_Unicorn",
+      "MonsterID": "Unicorn",
+      "MonsterInformationName": "聖光共鳴",
+      "MonsterInformation": "自身就會散發柔和光芒的她，對一切帶有光明氣息的物品有著天然的親近與共鳴。",
+      "TagID": "Light"
+    },
+    {
+      "InformationID": "Info_2_Unicorn",
+      "MonsterID": "Unicorn",
+      "MonsterInformationName": "純潔天性",
+      "MonsterInformation": "只在純粹靈魂前現身的高潔靈獸，對純淨無瑕的物品有著同類相吸的強烈感應。",
+      "TagID": "Pure"
+    },
+    {
+      "InformationID": "Info_3_Unicorn",
+      "MonsterID": "Unicorn",
+      "MonsterInformationName": "自然饋贈",
+      "MonsterInformation": "彩虹盡頭的仙境裡盛產各種奇異果實，她對天然果實有著無法克制的喜愛。",
+      "TagID": "Fruit"
+    },
+    {
+      "InformationID": "Info_4_Unicorn",
+      "MonsterID": "Unicorn",
+      "MonsterInformationName": "黑暗排斥",
+      "MonsterInformation": "象徵純潔與光明的她，本能地排斥一切黑暗與陰沉的存在，甚至不願意接近。",
+      "TagID": "Dark"
+    },
+    {
+      "InformationID": "Info_5_Unicorn",
+      "MonsterID": "Unicorn",
+      "MonsterInformationName": "純潔污染",
+      "MonsterInformation": "任何骯髒的物品對她來說都是對純潔的褻瀆，她甚至無法忍受灰塵落在自己身上。",
+      "TagID": "Dirty"
+    },
+    {
+      "InformationID": "Info_1_Gargoyle",
+      "MonsterID": "Gargoyle",
+      "MonsterInformationName": "高處之風",
+      "MonsterInformation": "蟄居在建築物頂端幾百年，強勁的高空氣流是他每日的陪伴，風的氣息讓他有家的感覺。",
+      "TagID": "Wind"
+    },
+    {
+      "InformationID": "Info_2_Gargoyle",
+      "MonsterID": "Gargoyle",
+      "MonsterInformationName": "歲月石刻",
+      "MonsterInformation": "自身就是古老建築的一部分，對帶有歷史痕跡、充滿時間沉澱的陳舊物品有著深刻共鳴。",
+      "TagID": "Old"
+    },
+    {
+      "InformationID": "Info_3_Gargoyle",
+      "MonsterID": "Gargoyle",
+      "MonsterInformationName": "石質本能",
+      "MonsterInformation": "身為石製存在，他對堅硬、耐久的材質有著同類相吸的直覺，軟綿綿的東西讓他不安心。",
+      "TagID": "Hard"
+    },
+    {
+      "InformationID": "Info_4_Gargoyle",
+      "MonsterID": "Gargoyle",
+      "MonsterInformationName": "表面清潔",
+      "MonsterInformation": "作為建築的守護者，骯髒的物品靠近時，身上孔隙裡的汙跡記憶同步閃回，陳年不適的疊加感，讓他那張永遠扭曲的臉不自覺地皺得更深了幾分。",
+      "TagID": "Dirty"
+    },
+    {
+      "InformationID": "Info_5_Gargoyle",
+      "MonsterID": "Gargoyle",
+      "MonsterInformationName": "石材腐蝕",
+      "MonsterInformation": "長期暴露在風雨中讓他深知潮濕對石材的腐蝕力，帶有水分的物品讓他感到隱約的焦慮。",
+      "TagID": "Wet"
+    },
+    {
+      "InformationID": "Info_1_HuaPi",
+      "MonsterID": "HuaPi",
+      "MonsterInformationName": "皮相追求",
+      "MonsterInformation": "以精心繪製的人皮偽裝行走世間，對美麗的外表有著痴迷的執著與永無止境的追求。",
+      "TagID": "Beauty"
+    },
+    {
+      "InformationID": "Info_2_HuaPi",
+      "MonsterID": "HuaPi",
+      "MonsterInformationName": "繪製參考",
+      "MonsterInformation": "書中記載的人物形象和服飾紋樣，是她精進畫皮技術的最佳參考資料，她對書籍如飢似渴。",
+      "TagID": "Book"
+    },
+    {
+      "InformationID": "Info_3_HuaPi",
+      "MonsterID": "HuaPi",
+      "MonsterInformationName": "新鮮素材",
+      "MonsterInformation": "對她來說，新鮮的東西代表著最佳的素材品質，尤其在她那些「特殊創作」方面。",
+      "TagID": "Fresh"
+    },
+    {
+      "InformationID": "Info_4_HuaPi",
+      "MonsterID": "HuaPi",
+      "MonsterInformationName": "油彩融化",
+      "MonsterInformation": "高溫環境會讓她精心繪製的皮膚顏料開始融化，對她偽裝的維持造成嚴重威脅。",
+      "TagID": "Hot"
+    },
+    {
+      "InformationID": "Info_5_HuaPi",
+      "MonsterID": "HuaPi",
+      "MonsterInformationName": "燃燒皮相",
+      "MonsterInformation": "火焰是畫皮最大的天敵，烈焰不但會毀掉她的偽裝，更會對她的靈體造成真實傷害。",
+      "TagID": "Fire"
+    },
+    {
+      "InformationID": "Info_1_KunPeng",
+      "MonsterID": "KunPeng",
+      "MonsterInformationName": "扶搖直上",
+      "MonsterInformation": "能「摶扶搖而上九萬里」的神鳥，對風的感應超越所有生靈，強風讓他感到無上的自由。",
+      "TagID": "Wind"
+    },
+    {
+      "InformationID": "Info_2_KunPeng",
+      "MonsterID": "KunPeng",
+      "MonsterInformationName": "北冥故土",
+      "MonsterInformation": "北冥是他最初的家，大海的氣息對他來說如同鄉愁，帶有海洋氣息的物品讓他感到寬慰。",
+      "TagID": "Ocean"
+    },
+    {
+      "InformationID": "Info_3_KunPeng",
+      "MonsterID": "KunPeng",
+      "MonsterInformationName": "水中化身",
+      "MonsterInformation": "「在水為魚，在天為鳥」，他的魚形狀態讓他對魚類有著一種奇特的同族認同感。",
+      "TagID": "Fish"
+    },
+    {
+      "InformationID": "Info_4_KunPeng",
+      "MonsterID": "KunPeng",
+      "MonsterInformationName": "人造排斥",
+      "MonsterInformation": "橫跨天地的神話存在對人類的機械發明充滿鄙視，那種嗡嗡作響完全破壞了他對自然的感知。",
+      "TagID": "Machine"
+    },
+    {
+      "InformationID": "Info_5_KunPeng",
+      "MonsterID": "KunPeng",
+      "MonsterInformationName": "神體自尊",
+      "MonsterInformation": "身軀橫跨北冥的神靈，絕不允許任何廢棄垃圾出現在他的視野之內，有損神威。",
+      "TagID": "Junk"
+    },
+    {
+      "InformationID": "Info_6_KunPeng",
+      "MonsterID": "KunPeng",
+      "MonsterInformationName": "飛行阻礙",
+      "MonsterInformation": "過度的熱氣流會干擾他那精密計算的飛行路線，高溫對他的羽翼也造成無謂的損傷。",
+      "TagID": "Hot"
+    },
+    {
+      "InformationID": "Info_1_Gashadokuro",
+      "MonsterID": "Gashadokuro",
+      "MonsterInformationName": "詛咒共鳴",
+      "MonsterInformation": "自身就是一個巨大詛咒的凝聚體，對帶有詛咒性質的物品有著本能的親近感。",
+      "TagID": "Cursed"
+    },
+    {
+      "InformationID": "Info_2_Gashadokuro",
+      "MonsterID": "Gashadokuro",
+      "MonsterInformationName": "骨質鑑賞",
+      "MonsterInformation": "全身由堅硬骨頭組成，他對任何硬度出眾的材質都懷有同類相吸的本能崇敬。",
+      "TagID": "Hard"
+    },
+    {
+      "InformationID": "Info_3_Gashadokuro",
+      "MonsterID": "Gashadokuro",
+      "MonsterInformationName": "靈魂積累",
+      "MonsterInformation": "由眾多亡靈聚集而成，他對帶有靈魂氣息的物品有著特殊的吸附力，忍不住想要收集。",
+      "TagID": "Soul"
+    },
+    {
+      "InformationID": "Info_4_Gashadokuro",
+      "MonsterID": "Gashadokuro",
+      "MonsterInformationName": "戰場遺物",
+      "MonsterInformation": "從戰場上誕生，武器是他最熟悉的夥伴，看到武器就會想起那段腥風血雨的歲月。",
+      "TagID": "Weapon"
+    },
+    {
+      "InformationID": "Info_5_Gashadokuro",
+      "MonsterID": "Gashadokuro",
+      "MonsterInformationName": "神聖燃燒",
+      "MonsterInformation": "神聖的力量對亡靈骷髏是直接的剋制，接觸帶有神聖氣息的物品會讓他的骨骸感到灼熱。",
+      "TagID": "Holy"
+    },
+    {
+      "InformationID": "Info_6_Gashadokuro",
+      "MonsterID": "Gashadokuro",
+      "MonsterInformationName": "日光驅散",
+      "MonsterInformation": "陽光的力量會逐漸瓦解他由亡靈之力凝聚而成的身軀，太陽是他最需要迴避的存在。",
+      "TagID": "Sun"
+    },
+    {
+      "InformationID": "Info_1_Nian",
+      "MonsterID": "Nian",
+      "MonsterInformationName": "歲末大餐",
+      "MonsterInformation": "每逢歲末出沒的年獸，最期待的就是大口吃肉，豐盛的肉食是他下山的主要動力。",
+      "TagID": "Meat"
+    },
+    {
+      "InformationID": "Info_2_Nian",
+      "MonsterID": "Nian",
+      "MonsterInformationName": "夜色掩護",
+      "MonsterInformation": "年獸偏好在漆黑的夜晚出沒，黑暗為這個外表威猛內心膽小的傢伙提供了最大的安全感。",
+      "TagID": "Dark"
+    },
+    {
+      "InformationID": "Info_3_Nian",
+      "MonsterID": "Nian",
+      "MonsterInformationName": "沉重踏實",
+      "MonsterInformation": "巨大的身軀讓他對沉重有分量感的物品充滿好感，輕飄飄的東西讓他感到莫名不安。",
+      "TagID": "Heavy"
+    },
+    {
+      "InformationID": "Info_4_Nian",
+      "MonsterID": "Nian",
+      "MonsterInformationName": "驅獸之光",
+      "MonsterInformation": "年獸怕光是眾所周知的弱點，光亮的物品讓他感到一種來自骨子裡的恐懼和不安。",
+      "TagID": "Light"
+    },
+    {
+      "InformationID": "Info_5_Nian",
+      "MonsterID": "Nian",
+      "MonsterInformationName": "驅獸之聲",
+      "MonsterInformation": "除了光，年獸最怕的就是噪音，鞭炮聲和鑼鼓聲是他每年都要面對的心理陰影。",
+      "TagID": "Noise"
+    },
+    {
+      "InformationID": "Info_1_Baku",
+      "MonsterID": "Baku",
+      "MonsterInformationName": "夢境探索",
+      "MonsterInformation": "以吞食夢境為生的他，對充滿神秘氣息的物品有著特殊的感應力，神秘感讓他嗅到夢的氣味。",
+      "TagID": "Mystic"
+    },
+    {
+      "InformationID": "Info_2_Baku",
+      "MonsterID": "Baku",
+      "MonsterInformationName": "夢魂相連",
+      "MonsterInformation": "夢境承載著人們靈魂最脆弱的部分，帶有靈魂氣息的物品讓他聯想到那些鮮美的夢境。",
+      "TagID": "Soul"
+    },
+    {
+      "InformationID": "Info_3_Baku",
+      "MonsterID": "Baku",
+      "MonsterInformationName": "記憶饕餮",
+      "MonsterInformation": "帶有記憶屬性的物品對他來說是夢境的精華，那是人們最珍視也最難以割捨的部分。",
+      "TagID": "Memory"
+    },
+    {
+      "InformationID": "Info_4_Baku",
+      "MonsterID": "Baku",
+      "MonsterInformationName": "機械噪音",
+      "MonsterInformation": "機器運轉的規律噪音會干擾他感知夢境的能力，讓他無法集中精神捕捉那些飄逸的夢。",
+      "TagID": "Machine"
+    },
+    {
+      "InformationID": "Info_5_Baku",
+      "MonsterID": "Baku",
+      "MonsterInformationName": "清醒催化",
+      "MonsterInformation": "嘈雜的聲音會打破他精心編織的夢境環境，讓他的工作陷入混亂，難以繼續進行。",
+      "TagID": "Noise"
+    },
+    {
+      "InformationID": "Info_1_TeaSpirit",
+      "MonsterID": "TeaSpirit",
+      "MonsterInformationName": "植物家族",
+      "MonsterInformation": "從千年茶樹中孕育而生，對所有植物都有著血脈相連的親切感，見到就想靠近。",
+      "TagID": "Plant"
+    },
+    {
+      "InformationID": "Info_2_TeaSpirit",
+      "MonsterID": "TeaSpirit",
+      "MonsterInformationName": "茶飲共鳴",
+      "MonsterInformation": "自身就是最高品質的飲品，對各種飲品有著同行間的品鑑能力和發自內心的欣賞眼光。",
+      "TagID": "Drinkable"
+    },
+    {
+      "InformationID": "Info_3_TeaSpirit",
+      "MonsterID": "TeaSpirit",
+      "MonsterInformationName": "容器哲學",
+      "MonsterInformation": "好茶需要好的容器，她對陶瓷的喜愛是她的職業哲學——茶與器是不可分割的整體。",
+      "TagID": "Ceramic"
+    },
+    {
+      "InformationID": "Info_4_TeaSpirit",
+      "MonsterID": "TeaSpirit",
+      "MonsterInformationName": "茶道相悖",
+      "MonsterInformation": "酒精的濃烈氣味與茶道的清雅完全相悖，讓她感到一種對自身美學的強烈侵犯。",
+      "TagID": "Alcohol"
+    },
+    {
+      "InformationID": "Info_5_TeaSpirit",
+      "MonsterID": "TeaSpirit",
+      "MonsterInformationName": "茶香汙染",
+      "MonsterInformation": "油脂的氣味會覆蓋掉茶葉的清香，這對一個以香氣為生命的茶靈來說是難以忍受的汙染。",
+      "TagID": "Oil"
+    },
+    {
+      "InformationID": "Info_1_Raiju",
+      "MonsterID": "Raiju",
+      "MonsterInformationName": "靜電同族",
+      "MonsterInformation": "全身帶著靜電的他，對磁性物品有著天然的感應和共鳴，磁場讓他感到一種熟悉的震動。",
+      "TagID": "Magnetic"
+    },
+    {
+      "InformationID": "Info_2_Raiju",
+      "MonsterID": "Raiju",
+      "MonsterInformationName": "昆蟲獵手",
+      "MonsterInformation": "帶電的身體讓他成為天然的捕蟲高手，對昆蟲類物品有著一種獵手對獵物的特殊興趣。",
+      "TagID": "Insect"
+    },
+    {
+      "InformationID": "Info_3_Raiju",
+      "MonsterID": "Raiju",
+      "MonsterInformationName": "充電玩伴",
+      "MonsterInformation": "會動的玩具能讓他的靜電找到出口，每次讓玩具「短路」的瞬間都讓他興奮不已。",
+      "TagID": "Toy"
+    },
+    {
+      "InformationID": "Info_4_Raiju",
+      "MonsterID": "Raiju",
+      "MonsterInformationName": "導電危機",
+      "MonsterInformation": "流動的水是靜電最大的敵人，河川水流會讓他那精心積累的電荷瞬間流失殆盡。",
+      "TagID": "River"
+    },
+    {
+      "InformationID": "Info_5_Raiju",
+      "MonsterID": "Raiju",
+      "MonsterInformationName": "不良導體",
+      "MonsterInformation": "陶瓷是絕緣體，接觸陶瓷的感覺就像是靜電被突然隔絕，讓他感到一種莫名的壓抑。",
+      "TagID": "Ceramic"
+    },
+    {
+      "InformationID": "Info_6_Raiju",
+      "MonsterID": "Raiju",
+      "MonsterInformationName": "靜電陷阱",
+      "MonsterInformation": "某些布料會被任意吸附無法控制，黏的身上到處都是",
+      "TagID": "Fabric"
+    },
+    {
+      "InformationID": "Info_1_Dorotabo",
+      "MonsterID": "Dorotabo",
+      "MonsterInformationName": "田地之魂",
+      "MonsterInformation": "從廢棄農田的泥地中伸出手的幽靈，對自然的氣息有著農夫般深沉的眷戀與渴望。",
+      "TagID": "Natural"
+    },
+    {
+      "InformationID": "Info_2_Dorotabo",
+      "MonsterID": "Dorotabo",
+      "MonsterInformationName": "泥土故鄉",
+      "MonsterInformation": "骯髒的泥沙就是他的家，帶有土質氣息的物品讓他感到那片失去的田地依然存在。",
+      "TagID": "Dirty"
+    },
+    {
+      "InformationID": "Info_3_Dorotabo",
+      "MonsterID": "Dorotabo",
+      "MonsterInformationName": "農夫執念",
+      "MonsterInformation": "對那片曾屬於他的稻田魂牽夢縈，帶有米飯氣息的物品勾起他最深的農夫執念。",
+      "TagID": "Rice"
+    },
+    {
+      "InformationID": "Info_4_Dorotabo",
+      "MonsterID": "Dorotabo",
+      "MonsterInformationName": "穀物思念",
+      "MonsterInformation": "穀物是他耕種一生的成果，帶有麵條氣息的食物讓他想起那些彎腰播種的日日夜夜。",
+      "TagID": "Noodle"
+    },
+    {
+      "InformationID": "Info_5_Dorotabo",
+      "MonsterID": "Dorotabo",
+      "MonsterInformationName": "淨化排斥",
+      "MonsterInformation": "淨化類物品會洗去他珍視的泥土氣息，這對他來說是一種對田地記憶的強制抹除。",
+      "TagID": "Purify"
+    },
+    {
+      "InformationID": "Info_6_Dorotabo",
+      "MonsterID": "Dorotabo",
+      "MonsterInformationName": "地主仇恨",
+      "MonsterInformation": "黃金在他眼中代表著奪走他田地的地主，看到帶有金光的物品就會觸動他最深的積怨。",
+      "TagID": "Gold"
+    },
+    {
+      "InformationID": "Info_˙7_Dorotabo",
+      "MonsterID": "Dorotabo",
+      "MonsterInformationName": "異界干擾",
+      "MonsterInformation": "他的執念是純粹的農夫思念，魔法的存在會讓那份樸實的執念顯得格格不入，感到困惑。",
+      "TagID": "Magic"
     }
   ]
 }

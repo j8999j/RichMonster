@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Souvenir;
 public class DataManager : Singleton<DataManager>
 {
+    public const int BaseInventoryCapacity = 25;
+
     #region Game Static Data (遊戲靜態資料)
     // 資料字典 - 由 GameDataLoader 載入
     private Dictionary<string, ItemTags> _itemTagsDict = new Dictionary<string, ItemTags>();
@@ -842,6 +844,39 @@ public class DataManager : Singleton<DataManager>
         }
         return false;
     }
+
+    public int GetInventoryCapacity()
+    {
+        int extraCapacity = 0;
+        if (SouvenirManager.Instance != null && SouvenirManager.Instance.IsInitialized)
+        {
+            extraCapacity = SouvenirManager.Instance.GetExtraBagCapacity();
+        }
+
+        return BaseInventoryCapacity + Mathf.Max(0, extraCapacity);
+    }
+
+    public int GetInventoryItemCount()
+    {
+        return _currentPlayerData?.Inventory?.Items?.Count ?? 0;
+    }
+
+    public bool CanAddItemsToInventory(int amount = 1)
+    {
+        if (amount <= 0) return true;
+        return GetInventoryItemCount() + amount <= GetInventoryCapacity();
+    }
+
+    public bool TrySpendGoldForItemPurchase(int amount, int itemAmount = 1)
+    {
+        if (!CanAddItemsToInventory(itemAmount))
+        {
+            SystemInfoEvent.Show("背包已滿");
+            return false;
+        }
+
+        return TrySpendGold(amount);
+    }
     public bool TrySpendMonsterGold(int amount)
     {
         if (_currentPlayerData == null) return false;
@@ -851,6 +886,39 @@ public class DataManager : Singleton<DataManager>
             return true;
         }
         return false;
+    }
+
+    public bool TrySpendMonsterGoldForItemPurchase(int amount, int itemAmount = 1)
+    {
+        if (!CanAddItemsToInventory(itemAmount))
+        {
+            SystemInfoEvent.Show("背包已滿");
+            return false;
+        }
+
+        return TrySpendMonsterGold(amount);
+    }
+
+    public bool ExchangeAllMonsterGoldToGold(out int spentMonsterGold, out int gainedGold)
+    {
+        spentMonsterGold = 0;
+        gainedGold = 0;
+
+        if (_currentPlayerData == null || _currentPlayerData.MonsterGold <= 0)
+            return false;
+
+        spentMonsterGold = _currentPlayerData.MonsterGold;
+        long calculatedGold = ((long)spentMonsterGold * 3 + 3) / 4;
+        gainedGold = calculatedGold > int.MaxValue ? int.MaxValue : (int)calculatedGold;
+
+        _currentPlayerData.MonsterGold = 0;
+        long totalGold = (long)_currentPlayerData.Gold + gainedGold;
+        _currentPlayerData.Gold = totalGold > int.MaxValue ? int.MaxValue : (int)totalGold;
+
+        OnPlayerDataChanged = true;
+        AchievementEvents.GoldChanged(_currentPlayerData.Gold, gainedGold);
+        AdjustUpdateView();
+        return true;
     }
     /// <summary>
     /// 設定交易狀態
@@ -1116,7 +1184,12 @@ public class DataManager : Singleton<DataManager>
     /// </summary>
     public void ModifyCurrentDay(int CurrentDay)
     {
+        bool isNewDay = _currentPlayerData.DaysPlayed != CurrentDay;
         _currentPlayerData.DaysPlayed = CurrentDay;
+        if (isNewDay)
+        {
+            _currentPlayerData.IsTrade = false;
+        }
         OnPlayerDataChanged = true;
         AdjustUpdateView();
     }

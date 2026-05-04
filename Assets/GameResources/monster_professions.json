@@ -91,7 +91,7 @@
             ],
             "BaseBudgetMultiplier": 0.5,
             "PreferMaxPower": 5,
-            "Description": "僵直跳行的行屍，表情嚴肅卻意外好說話，預算有限但需求特殊。對能「以毒攻毒」或緩解身體不適的物品格外感興趣，炎熱的天氣讓本就僵硬的關節更不靈活，令他煩躁難忍。「嘿……有沒有……對身體比較好的……東西……」",
+            "Description": "僵直跳行的行屍，表情嚴肅卻意外好說話。最近的天氣讓本就僵硬的關節更不靈活，令他煩躁難忍。",
             "professionType": 0,
             "HateTags": [
                 "Hot"
@@ -162,6 +162,515 @@
             "professionType": 0,
             "HateTags": [
                 "Sour"
+            ],
+            "Race": "幽靈"
+        },
+        {
+            "Id": "SpiderSpirit",
+            "ProfessionName": "蜘蛛精",
+            "PreferredTags": [
+                "Beauty",
+                "Meat",
+                "Poison"
+            ],
+            "BaseBudgetMultiplier": 1.2,
+            "PreferMaxPower": 5,
+            "Description": "以傾城美貌行走於二界之間的蜘蛛妖，也對某些旁人避之唯恐不及的「危險素材」懷有異常興趣。「越美麗的東西越危險，就像我一樣。」",
+            "professionType": 1,
+            "HateTags": [
+                "Light",
+                "Holy",
+                "Pure"
+            ],
+            "Race": "獸族"
+        },
+        {
+            "Id": "Kaguya-hime",
+            "ProfessionName": "輝夜姬",
+            "PreferredTags": [
+                "Pure",
+                "Star",
+                "Moon"
+            ],
+            "BaseBudgetMultiplier": 1.5,
+            "PreferMaxPower": 10,
+            "Description": "從月都落入凡間的高貴公主，一身清冷氣質令人難以親近。她渴望能感受到家鄉氣息的物品，以及任何未受塵世玷污、純潔的存在。「地上的塵埃讓我感到窒息……，有什麼能帶來一點月都的清冷嗎？」",
+            "professionType": 1,
+            "HateTags": [
+                "Meat",
+                "Corruption",
+                "Dirty"
+            ],
+            "Race": "妖精"
+        },
+        {
+            "Id": "Nekomata",
+            "ProfessionName": "貓又",
+            "PreferredTags": [
+                "Fresh",
+                "Warm",
+                "Fish"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 2,
+            "Description": "修煉千年卻依然保有純粹貓性的雙尾貓妖，喜歡舒適的地方。對於食物，她比任何人都挑剔。",
+            "professionType": 0,
+            "HateTags": [
+                "Wet",
+                "Cold",
+                "Preserved"
+            ],
+            "Race": "獸族"
+        },
+        {
+            "Id": "VampireCount",
+            "ProfessionName": "吸血鬼伯爵",
+            "PreferredTags": [
+                "Dark",
+                "Blood",
+                "Moon"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 8,
+            "Description": "出身古老貴族的暗夜君主，對深沉的黑暗、月光下泛著光澤的紅色液體有著難以言喻的執著，被月色籠罩的夜晚令他感到無比愜意。「我追求的是永恆的月光與鮮紅的生命力。」",
+            "professionType": 1,
+            "HateTags": [
+                "Holy",
+                "Vegetable",
+                "Sun"
+            ],
+            "Race": "幽靈"
+        },
+        {
+            "Id": "PiXiu",
+            "ProfessionName": "貔貅",
+            "PreferredTags": [
+                "Gem",
+                "Lucky",
+                "Gold"
+            ],
+            "BaseBudgetMultiplier": 2,
+            "PreferMaxPower": 15,
+            "Description": "傳說中只進不出的招財神獸，對一切閃耀著金屬光澤的重物與珍貴礦石有著本能的吞噬衝動，帶有吉祥加持之物更讓他兩眼放光。",
+            "professionType": 2,
+            "HateTags": [
+                "Junk"
+            ],
+            "Race": "獸族"
+        },
+        {
+            "Id": "GoldenCrow",
+            "ProfessionName": "三足金烏",
+            "PreferredTags": [
+                "Light",
+                "Fire",
+                "Sun"
+            ],
+            "BaseBudgetMultiplier": 3,
+            "PreferMaxPower": 8,
+            "Description": "太陽中棲居的神聖靈鳥，驕傲地視自己為天地間最耀眼的存在，對任何能發光、能燃燒、散發太陽氣息的物品充滿孩子氣的好奇心。",
+            "professionType": 2,
+            "HateTags": [
+                "Wet",
+                "Dark",
+                "Cold"
+            ],
+            "Race": "神族"
+        },
+        {
+            "Id": "Tanuki",
+            "ProfessionName": "化狸",
+            "PreferredTags": [
+                "Alcohol",
+                "Music",
+                "Noise"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 5,
+            "Description": "肚皮可以當鼓敲的浣熊妖怪，最大的人生哲學是「今朝有酒今朝醉」，喜愛熱鬧的氣氛。「今晚月色真美，不來一杯嗎？順便奏樂！接著舞！」",
+            "professionType": 0,
+            "HateTags": [],
+            "Race": "獸族"
+        },
+        {
+            "Id": "GoldenToad",
+            "ProfessionName": "金蟾",
+            "PreferredTags": [
+                "Heavy",
+                "Gold"
+            ],
+            "BaseBudgetMultiplier": 2.5,
+            "PreferMaxPower": 10,
+            "Description": "據說招財納福的三足靈蟾，偏愛沉甸甸、拿在手裡有份量感的東西，與金光燦燦。",
+            "professionType": 2,
+            "HateTags": [
+                "Poison"
+            ],
+            "Race": "獸族"
+        },
+        {
+            "Id": "Umibozu",
+            "ProfessionName": "海坊主",
+            "PreferredTags": [
+                "Dark",
+                "Ocean",
+                "Seafood"
+            ],
+            "BaseBudgetMultiplier": 1.5,
+            "PreferMaxPower": 6,
+            "Description": "由深海黑水凝聚而成的龐然大物，沉默寡言，帶著令人窒息的海洋氣息。",
+            "professionType": 1,
+            "HateTags": [
+                "Dry",
+                "Light",
+                "Fire"
+            ],
+            "Race": "獸族"
+        },
+        {
+            "Id": "Frankenstein",
+            "ProfessionName": "科學怪人",
+            "PreferredTags": [
+                "Electricity",
+                "Machine",
+                "Meat",
+                "Junk"
+            ],
+            "BaseBudgetMultiplier": 0.9,
+            "PreferMaxPower": 4,
+            "Description": "由身體部件與廢棄零件拼湊而成的人造存在，「拼裝...身體...零件...還要更多...能量...」。",
+            "professionType": 1,
+            "HateTags": [
+                "Holy",
+                "Fire"
+            ],
+            "Race": "妖精"
+        },
+        {
+            "Id": "TheMummy",
+            "ProfessionName": "法老木乃伊",
+            "PreferredTags": [
+                "Dry",
+                "Preserved"
+            ],
+            "BaseBudgetMultiplier": 2,
+            "PreferMaxPower": 10,
+            "Description": "來自沙漠古文明的永恆王族，身體據說從千年前保存至今。",
+            "professionType": 2,
+            "HateTags": [
+                "Wet"
+            ],
+            "Race": "幽靈"
+        },
+        {
+            "Id": "JadeRabbit",
+            "ProfessionName": "玉兔",
+            "PreferredTags": [
+                "Potion",
+                "Star",
+                "Moon"
+            ],
+            "BaseBudgetMultiplier": 1.5,
+            "PreferMaxPower": 8,
+            "Description": "整日在月宮搗藥的白色靈兔，不斷地在尋找能夠製成靈藥的物品",
+            "professionType": 2,
+            "HateTags": [
+                "Meat",
+                "Fire"
+            ],
+            "Race": "獸族"
+        },
+        {
+            "Id": "Terracotta",
+            "ProfessionName": "兵馬俑",
+            "PreferredTags": [
+                "Antique",
+                "Old",
+                "Hard",
+                "Weapon"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 5,
+            "Description": "自皇陵甦醒的陶土守衛，沉默地踏著沉重步伐尋找能強化自身的物品。保衛皇帝是他的職責。",
+            "professionType": 0,
+            "HateTags": [
+                "Wet",
+                "Sour",
+                "Wind"
+            ],
+            "Race": "妖精"
+        },
+        {
+            "Id": "Akaname",
+            "ProfessionName": "垢嘗",
+            "PreferredTags": [
+                "Junk",
+                "Corruption",
+                "Dirty"
+            ],
+            "BaseBudgetMultiplier": 0.8,
+            "PreferMaxPower": 4,
+            "Description": "專門在深夜舔食浴室汙垢的奇特妖怪，「嘻嘻嘻——好久沒洗的角落才有好東西！你有沒有更髒的？」",
+            "professionType": 0,
+            "HateTags": [
+                "Pure",
+                "Clean"
+            ],
+            "Race": "妖精"
+        },
+        {
+            "Id": "ToothFairy",
+            "ProfessionName": "牙仙",
+            "PreferredTags": [
+                "Hard",
+                "Clean",
+                "Gold"
+            ],
+            "BaseBudgetMultiplier": 1.5,
+            "PreferMaxPower": 10,
+            "Description": "在孩子們睡著後悄悄收走牙齒的神秘小妖精，「睡前刷牙了嗎？我用金幣收購又白又硬的牙齒...或者類似牙齒的東西。」",
+            "professionType": 1,
+            "HateTags": [
+                "Dessert",
+                "Sweet"
+            ],
+            "Race": "妖精"
+        },
+        {
+            "Id": "Sandman",
+            "ProfessionName": "睡魔",
+            "PreferredTags": [
+                "Music",
+                "Star",
+                "Magic",
+                "Dark"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 7,
+            "Description": "掌管睡眠與夢境的神秘精靈，「噓...灑下一點星塵...做個好夢。」",
+            "professionType": 0,
+            "HateTags": [
+                "Noise"
+            ],
+            "Race": "妖精"
+        },
+        {
+            "Id": "Judge",
+            "ProfessionName": "冥府判官",
+            "PreferredTags": [
+                "Book",
+                "Soul"
+            ],
+            "BaseBudgetMultiplier": 1.2,
+            "PreferMaxPower": 6,
+            "Description": "手握生死薄的冥府官員，「生死簿上少了一頁...你有看到嗎？」",
+            "professionType": 1,
+            "HateTags": [
+                "Light",
+                "Growth"
+            ],
+            "Race": "神族"
+        },
+        {
+            "Id": "Rokurokubi",
+            "ProfessionName": "轆轤首",
+            "PreferredTags": [
+                "Beauty",
+                "Accessory",
+                "Oil"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 5,
+            "Description": "脖子可以延伸的幽靈女妖，「脖子伸長後...覺得光溜溜的有點冷。」",
+            "professionType": 0,
+            "HateTags": [
+                "Hard",
+                "Weapon"
+            ],
+            "Race": "幽靈"
+        },
+        {
+            "Id": "Unicorn",
+            "ProfessionName": "獨角獸",
+            "PreferredTags": [
+                "Light",
+                "Pure",
+                "Fruit"
+            ],
+            "BaseBudgetMultiplier": 1.5,
+            "PreferMaxPower": 2,
+            "Description": "只在彩虹盡頭現身的高潔靈獸，散發柔和光芒與溫暖",
+            "professionType": 0,
+            "HateTags": [
+                "Dark",
+                "Dirty"
+            ],
+            "Race": "獸族"
+        },
+        {
+            "Id": "Gargoyle",
+            "ProfessionName": "石像鬼",
+            "PreferredTags": [
+                "Wind",
+                "Old",
+                "Hard"
+            ],
+            "BaseBudgetMultiplier": 1.2,
+            "PreferMaxPower": 6,
+            "Description": "蟄居建築高處已有幾百年歷史的石製守護者",
+            "professionType": 0,
+            "HateTags": [
+                "Dirty",
+                "Wet"
+            ],
+            "Race": "妖精"
+        },
+        {
+            "Id": "HuaPi",
+            "ProfessionName": "畫皮",
+            "PreferredTags": [
+                "Beauty",
+                "Book",
+                "Fresh"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 0,
+            "Description": "以精心繪製的人皮偽裝行走世間的幽靈，「有什麼好看的東西嗎？」",
+            "professionType": 0,
+            "HateTags": [
+                "Hot",
+                "Fire"
+            ],
+            "Race": "幽靈"
+        },
+        {
+            "Id": "KunPeng",
+            "ProfessionName": "鯤鵬",
+            "PreferredTags": [
+                "Wind",
+                "Ocean",
+                "Fish"
+            ],
+            "BaseBudgetMultiplier": 3,
+            "PreferMaxPower": 6,
+            "Description": "身軀橫跨北冥的神話存在，「在水為魚，在天為鳥」，「水擊三千里，摶扶搖而上九萬里...在水為魚，在天為鳥。」",
+            "professionType": 2,
+            "HateTags": [
+                "Machine",
+                "Junk",
+                "Hot"
+            ],
+            "Race": "獸族"
+        },
+        {
+            "Id": "Gashadokuro",
+            "ProfessionName": "餓者骷髏",
+            "PreferredTags": [
+                "Cursed",
+                "Hard",
+                "Soul",
+                "Weapon"
+            ],
+            "BaseBudgetMultiplier": 1.5,
+            "PreferMaxPower": 5,
+            "Description": "由戰場上死難者遺骨聚集而成的巨大骷髏。全身由堅硬的骨頭組成。",
+            "professionType": 1,
+            "HateTags": [
+                "Holy",
+                "Sun"
+            ],
+            "Race": "幽靈"
+        },
+        {
+            "Id": "Nian",
+            "ProfessionName": "年獸",
+            "PreferredTags": [
+                "Meat",
+                "Dark",
+                "Heavy"
+            ],
+            "BaseBudgetMultiplier": 1.2,
+            "PreferMaxPower": 4,
+            "Description": "每逢歲末便從深山出沒的上古巨獸。看似威風其實很膽小",
+            "professionType": 1,
+            "HateTags": [
+                "Light",
+                "Noise"
+            ],
+            "Race": "獸族"
+        },
+        {
+            "Id": "Baku",
+            "ProfessionName": "食夢貘",
+            "PreferredTags": [
+                "Mystic",
+                "Soul",
+                "Memory"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 4,
+            "Description": "有吞食夢境能力的神秘獸，「夢境承載著人們最珍貴的部分。」",
+            "professionType": 0,
+            "HateTags": [
+                "Machine",
+                "Noise"
+            ],
+            "Race": "獸族"
+        },
+        {
+            "Id": "TeaSpirit",
+            "ProfessionName": "茶靈",
+            "PreferredTags": [
+                "Plant",
+                "Drinkable",
+                "Ceramic"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 4,
+            "Description": "在千年茶樹中孕育而生的清雅精靈，靠近能夠感受到茶葉的清香與氣息",
+            "professionType": 0,
+            "HateTags": [
+                "Alcohol",
+                "Oil"
+            ],
+            "Race": "妖精"
+        },
+        {
+            "Id": "Raiju",
+            "ProfessionName": "雷獸",
+            "PreferredTags": [
+                "Magnetic",
+                "Insect",
+                "Toy"
+            ],
+            "BaseBudgetMultiplier": 1,
+            "PreferMaxPower": 6,
+            "Description": "全身帶著靜電妖怪，「滋滋…噼啪！有會動的東西嗎？小心別碰我，會麻的！」",
+            "professionType": 0,
+            "HateTags": [
+                "River",
+                "Ceramic",
+                "Fabric"
+            ],
+            "Race": "獸族"
+        },
+        {
+            "Id": "Dorotabo",
+            "ProfessionName": "泥田坊",
+            "PreferredTags": [
+                "Natural",
+                "Dirty",
+                "Rice",
+                "Noodle"
+            ],
+            "BaseBudgetMultiplier": 0.8,
+            "PreferMaxPower": 3,
+            "Description": "從被廢棄農田的泥地中伸出手的幽靈，執念是那片曾屬於他的田地。",
+            "professionType": 0,
+            "HateTags": [
+                "Purify",
+                "Gold",
+                "Magic"
             ],
             "Race": "幽靈"
         }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class HumanDoor : MonoBehaviour, IInteractable, IMapGuideTarget
 {
     [SerializeField] private GameObject interactPrompt;
-    public string ID => "HumanDoor";
+    public string ID => GuideIDs.Interactable.HumanDoor;
     public void SetMapGuide()
     {
         NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);

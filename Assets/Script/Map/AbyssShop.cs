@@ -11,7 +11,7 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
     [Header("深淵商店設定")]
     public AbyssShopRewardConfig RewardConfig;
     public AbyssView ShopView;
-    public string ID => "AbyssShop";
+    public string ID => GuideIDs.Interactable.AbyssShop;
     [Header("深淵遊戲狀態")]
     private bool _isPlayed;
     private bool _ArrivedBottom;

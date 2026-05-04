@@ -9,7 +9,7 @@ public class TrashCanController : MonoBehaviour, IInteractable, IMapGuideTarget
     [Header("視圖")]
     public TrashCanView View;
     public GameObject Prompt;
-    public string ID => "TrashCan";
+    public string ID => GuideIDs.Interactable.TrashCan;
     [Header("設定")]
     public bool OnlyHumanWorld = true;
     private Item _pendingDiscardItem;

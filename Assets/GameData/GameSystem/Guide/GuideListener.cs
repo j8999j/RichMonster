@@ -120,6 +120,50 @@ public class ButtonClickListener : GuideListener
 
 // ─────────────────────────────────────────────────────
 /// <summary>監聽前往妖界</summary>
+public class MonsterTradeStartedListener : GuideListener
+{
+    protected override void OnStartListen()
+    {
+        MonsterTradeMode.OnTradeStarted += OnTradeStarted;
+    }
+
+    protected override void OnStopListen()
+    {
+        MonsterTradeMode.OnTradeStarted -= OnTradeStarted;
+    }
+
+    private void OnTradeStarted()
+    {
+        onTriggered?.Invoke();
+    }
+}
+
+public class MonsterTradeCompletedListener : GuideListener
+{
+    protected override void OnStartListen()
+    {
+        if (DataManager.Instance != null
+            && DataManager.Instance.CurrentPlayerData != null
+            && DataManager.Instance.CurrentPlayerData.IsTrade)
+        {
+            onTriggered?.Invoke();
+            return;
+        }
+
+        MonsterTradeMode.OnTradeCompleted += OnTradeCompleted;
+    }
+
+    protected override void OnStopListen()
+    {
+        MonsterTradeMode.OnTradeCompleted -= OnTradeCompleted;
+    }
+
+    private void OnTradeCompleted()
+    {
+        onTriggered?.Invoke();
+    }
+}
+
 public class EnterSpiritWorldListener : GuideListener
 {
     protected override void OnStartListen()

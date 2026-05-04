@@ -34,7 +34,7 @@ public class TutorialFlow
         {
             CurrentTaskIndex = currentTaskIndex,
             CurrentStepIndex = currentTaskIndex < taskQueue.Count
-                ? taskQueue[currentTaskIndex].CurrentStepIndex
+                ? taskQueue[currentTaskIndex].CurrentStepIndexForSave
                 : 0,
             IsComplete = currentTaskIndex >= taskQueue.Count,
             LastUpdatedDay = DataManager.Instance.CurrentPlayerData.DaysPlayed

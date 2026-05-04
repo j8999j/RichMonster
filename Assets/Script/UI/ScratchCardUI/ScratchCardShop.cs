@@ -4,7 +4,7 @@ using Player;
 public class ScratchCardShop : MonoBehaviour, IInteractable, IMapGuideTarget
 {
     [SerializeField] private ScratchCard scratchCard;
-    public string ID => "ScratchCardShop";
+    public string ID => GuideIDs.Interactable.ScratchCardShop;
     private bool isScratched;
     private int CurrentDay;
     public GameObject Prompt;

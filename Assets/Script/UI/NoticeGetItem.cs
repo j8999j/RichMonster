@@ -12,7 +12,9 @@ public enum NoticeGetItemType
     MonsterGold,  // 妖怪幣
     Gold,         // 金幣
     Item,         // 一般物品
-    Others        // 其他
+    Others,       // 其他
+    MonsterBook,  // 妖怪圖鑑
+    MonsterInformation // 妖怪情報
 }
 
 /// <summary>
@@ -68,6 +70,16 @@ public struct NoticeItemEntry
     {
         return new NoticeItemEntry(NoticeGetItemType.Others, "", amount, displayName, sprite);
     }
+
+    public static NoticeItemEntry MonsterBook()
+    {
+        return new NoticeItemEntry(NoticeGetItemType.MonsterBook, "", 0);
+    }
+
+    public static NoticeItemEntry MonsterInformation(int amount)
+    {
+        return new NoticeItemEntry(NoticeGetItemType.MonsterInformation, "", amount);
+    }
 }
 
 public class NoticeGetItem : MonoBehaviour
@@ -83,6 +95,8 @@ public class NoticeGetItem : MonoBehaviour
     [SerializeField] private Transform SlotContainer;
     [SerializeField] private Sprite MonsterGoldSprite;
     [SerializeField] private Sprite GoldSprite;
+    [SerializeField] private Sprite MonsterBookSprite;
+    [SerializeField] private Sprite MonsterInformationSprite;
 
     [Header("Tooltip 設定")]
     [SerializeField] private GameObject TooltipPanel;
@@ -170,6 +184,14 @@ public class NoticeGetItem : MonoBehaviour
                 case NoticeGetItemType.Others:
                     slot.SetupOthers(entry.DisplayName, entry.CustomSprite, entry.Amount, ShowTooltip, HideTooltip);
                     break;
+
+                case NoticeGetItemType.MonsterBook:
+                    slot.SetupMonsterBook(MonsterBookSprite, ShowTooltip, HideTooltip);
+                    break;
+
+                case NoticeGetItemType.MonsterInformation:
+                    slot.SetupMonsterInformation(entry.Amount, MonsterInformationSprite, ShowTooltip, HideTooltip);
+                    break;
             }
         }
     }
@@ -198,6 +220,12 @@ public class NoticeGetItem : MonoBehaviour
                     break;
                 case NoticeGetItemType.Others:
                     key = $"Others_{entry.DisplayName}";
+                    break;
+                case NoticeGetItemType.MonsterBook:
+                    key = "__MonsterBook__";
+                    break;
+                case NoticeGetItemType.MonsterInformation:
+                    key = "__MonsterInformation__";
                     break;
                 default:
                     key = entry.GetHashCode().ToString();

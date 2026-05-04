@@ -9,6 +9,11 @@ public static class EndingConditionDetector
 
     public static EndingType Evaluate(IReadOnlyPlayerData playerData)
     {
+        return EvaluateForHumanDay(playerData);
+    }
+
+    public static EndingType EvaluateForHumanDay(IReadOnlyPlayerData playerData)
+    {
         if (playerData == null || playerData.HasReachedEnding)
             return EndingType.None;
 
@@ -16,13 +21,21 @@ public static class EndingConditionDetector
             && !playerData.HasPaidGuaranteeDeposit)
             return EndingType.Type1;
 
-        if (playerData.DaysPlayed >= AuctionEntryFeeDeadlineDay
-            && !playerData.HasPaidAuctionEntryFee)
-            return EndingType.Type2;
-
         if (playerData.DaysPlayed >= AuctionGoldCheckDay
             && playerData.Gold < RequiredAuctionGold)
             return EndingType.Type3;
+
+        return EndingType.None;
+    }
+
+    public static EndingType EvaluateForNewMonsterDay(IReadOnlyPlayerData playerData)
+    {
+        if (playerData == null || playerData.HasReachedEnding)
+            return EndingType.None;
+
+        if (playerData.DaysPlayed >= AuctionEntryFeeDeadlineDay
+            && !playerData.HasPaidAuctionEntryFee)
+            return EndingType.Type2;
 
         return EndingType.None;
     }

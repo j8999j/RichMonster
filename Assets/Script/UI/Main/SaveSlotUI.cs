@@ -133,11 +133,17 @@ public class SaveSlotUI : MonoBehaviour
     /// </summary>
     public void DisplaySaveSlots(List<SaveSlotData> slotDataList)
     {
+        HideTooltip();
+        _pendingDeleteSlotIndex = -1;
+
+        if (deleteConfirmPanel != null)
+            deleteConfirmPanel.SetActive(false);
+
         ClearSlots();
 
         for (int i = 0; i < slotDataList.Count; i++)
         {
-            CreateSlotUI(slotDataList[i], i);
+            CreateSlotUI(slotDataList[i]);
         }
     }
 
@@ -155,10 +161,11 @@ public class SaveSlotUI : MonoBehaviour
     /// <summary>
     /// 創建單個存檔欄位 UI
     /// </summary>
-    private void CreateSlotUI(SaveSlotData slotData, int slotIndex)
+    private void CreateSlotUI(SaveSlotData slotData)
     {
         if (slotPrefab == null || slotContainer == null) return;
 
+        int slotIndex = slotData.SlotIndex;
         GameObject slotObj = Instantiate(slotPrefab, slotContainer);
         slotObj.name = $"SaveSlot_{slotIndex}";
 

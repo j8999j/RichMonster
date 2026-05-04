@@ -6,7 +6,7 @@ public class ChangeSceneDoor : MonoBehaviour, IInteractable, IMapGuideTarget //å
 {
     [SerializeField] private GameObject interactPrompt;
     [SerializeField] private SceneScriptObj scene;
-    public string ID => "ChangeSceneDoor";
+    public string ID => GuideIDs.Interactable.ChangeSceneDoor;
     public void SetMapGuide()
     {
         NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);

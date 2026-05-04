@@ -66,6 +66,7 @@ public class MonsterTradeView : MonoBehaviour
     [SerializeField, Tooltip("今日已交易時顯示的按鈕圖片")]
     private Sprite OnOpenShopButtonSprite_Traded;
     [SerializeField] private Sprite NoneSprite;
+    private Sprite OnOpenShopButtonSprite_Default;
 
     [SerializeField, Tooltip("客人圖片")]
     private Image CustomerImage;
@@ -137,6 +138,12 @@ public class MonsterTradeView : MonoBehaviour
     // ==========================================
     // Unity 生命週期
     // ==========================================
+    private void Awake()
+    {
+        if (OnOpenShopButton != null && OnOpenShopButton.image != null)
+            OnOpenShopButtonSprite_Default = OnOpenShopButton.image.sprite;
+    }
+
     void OnEnable()
     {
         ExitTradePanelButton.onClick.AddListener(ExitShopUI);
@@ -167,8 +174,12 @@ public class MonsterTradeView : MonoBehaviour
         }
         else
         {
+            if (OnOpenShopButton.image != null && OnOpenShopButtonSprite_Default != null)
+                OnOpenShopButton.image.sprite = OnOpenShopButtonSprite_Default;
             OnOpenShopButton.onClick.AddListener(InvokeOnOpenButton);
         }
+
+        OnOpenShopButton.gameObject.SetActive(true);
     }
 
     // ==========================================
@@ -180,7 +191,10 @@ public class MonsterTradeView : MonoBehaviour
     /// </summary>
     public void OpenShopUI(bool TradeState, int CustomCount)
     {
+        GameSystem.GameManager.Instance.LockPlayerMove(GameSystem.PlayerLockSources.MonsterTrade);
+        GameSystem.GameManager.Instance.LockPlayerInteract(GameSystem.PlayerLockSources.MonsterTrade);
         BeforeTradeUI.SetActive(true);
+        RefreshOpenShopButton();
     }
 
     /// <summary>
@@ -668,11 +682,11 @@ public class MonsterTradeView : MonoBehaviour
     /// </summary>
     public void EndTradeMode()
     {
-        BeforeTradeUI.SetActive(false);
+        BeforeTradeUI.SetActive(true);
         TradeingModeUI.SetActive(false);
-        // 還原玩家移動與互動
-        GameSystem.GameManager.Instance.UnlockPlayerMove(GameSystem.PlayerLockSources.MonsterTrade);
-        GameSystem.GameManager.Instance.UnlockPlayerInteract(GameSystem.PlayerLockSources.MonsterTrade);
+        RefreshOpenShopButton();
+        GameSystem.GameManager.Instance.LockPlayerMove(GameSystem.PlayerLockSources.MonsterTrade);
+        GameSystem.GameManager.Instance.LockPlayerInteract(GameSystem.PlayerLockSources.MonsterTrade);
     }
 
     /// <summary>
@@ -717,7 +731,12 @@ public class MonsterTradeView : MonoBehaviour
     private void InvokeOnOpenButton()
     {
         OnOpenShop?.Invoke();
-        StartTradeUI();
+        bool alreadyTraded = DataManager.Instance != null
+            && DataManager.Instance.CurrentPlayerData != null
+            && DataManager.Instance.CurrentPlayerData.IsTrade;
+
+        if (!alreadyTraded)
+            StartTradeUI();
     }
 
     /// <summary>

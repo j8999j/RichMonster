@@ -18,6 +18,7 @@ namespace GameSystem
         public const string TalkSystem      = "TalkSystem";
         public const string TelePoint       = "TelePoint";
         public const string AuctionNpc      = "AuctionNpc";
+        public const string MonsterGoldExchange = "MonsterGoldExchange";
 
         // 商店類
         public const string GroceryStore    = "GroceryStore";

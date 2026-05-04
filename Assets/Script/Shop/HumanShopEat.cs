@@ -121,7 +121,7 @@ namespace Shop
                 return;
             }
             // 嘗試扣款
-            if (DataManager.Instance.TrySpendGold(shelfSlot.Price))
+            if (DataManager.Instance.TrySpendGoldForItemPurchase(shelfSlot.Price))
             {
                 DataManager.Instance.AddItem(shelfSlot.Item.Id, shelfSlot.Price);
                 Debug.Log($"[商店] 購買成功: {shelfSlot.Item.Name} (價格: {shelfSlot.Price})");

@@ -8,10 +8,6 @@ public class AuctionNpc : MonoBehaviour, IInteractable, IMapGuideTarget
 {
     private const int EntryFee = EndingConditionDetector.AuctionEntryFeeAmount;
 
-    [Header("Guide")]
-    [SerializeField]
-    private string guideId = "AuctionNpc";
-
     [SerializeField]
     private GameObject prompt;
 
@@ -52,7 +48,7 @@ public class AuctionNpc : MonoBehaviour, IInteractable, IMapGuideTarget
     [SerializeField]
     private bool saveAfterPayingEntryFee = true;
 
-    public string ID => guideId;
+    public string ID => GuideIDs.Interactable.AuctionNpc;
 
     private bool isInteracting;
 
@@ -62,6 +58,18 @@ public class AuctionNpc : MonoBehaviour, IInteractable, IMapGuideTarget
             talkSystem = GameManager.Instance.talkSystem;
 
         ResolveTalkSystem();
+    }
+
+    private void OnEnable()
+    {
+        SetMapGuide();
+        AuctionEntryFeeGuide.Refresh();
+    }
+
+    private void Start()
+    {
+        SetMapGuide();
+        AuctionEntryFeeGuide.Refresh();
     }
 
     public void SetMapGuide()
@@ -97,6 +105,7 @@ public class AuctionNpc : MonoBehaviour, IInteractable, IMapGuideTarget
         {
             if (DataManager.Instance?.CurrentPlayerData?.HasPaidAuctionEntryFee == true)
             {
+                AuctionEntryFeeGuide.Hide();
                 await PlayDialogueAsync(paidDialogueId);
                 return;
             }
@@ -145,6 +154,8 @@ public class AuctionNpc : MonoBehaviour, IInteractable, IMapGuideTarget
         bool paid = DataManager.Instance != null && DataManager.Instance.TryPayAuctionEntryFee();
         if (paid)
         {
+            AuctionEntryFeeGuide.Hide();
+
             if (saveAfterPayingEntryFee)
                 await SaveGameAsync();
 

@@ -304,29 +304,23 @@ public class EventsView : MonoBehaviour
 
     /// <summary>
     /// 使用 GameEventDefinition 設定新聞按鈕。
-    /// 特殊事件依稀有度排序；同稀有度時保留原始生成順序。
+    /// 索引 0 顯示最高稀有度事件作為頭條；索引 1-4 顯示當日生成事件並保留生成順序。
     /// </summary>
     public void SetButtonEventsFromGameEvents()
     {
         if (_todayEvents == null || AllNewsButtons == null) return;
 
-        // 特殊事件放前面，並保留同稀有度事件的原始順序。
-        var sortedEvents = _todayEvents
-            .Select((eventDef, index) => new { Event = eventDef, OriginalIndex = index })
-            .OrderByDescending(x => x.Event.eventRareity)
-            .ThenBy(x => x.OriginalIndex)
-            .Select(x => x.Event)
-            .ToList();
+        List<GameEventDefinition> displayEvents = BuildHeadlineEvents(_todayEvents);
 
         for (int i = 0; i < AllNewsButtons.Count; i++)
         {
             Button btn = AllNewsButtons[i];
             btn.onClick.RemoveAllListeners();
 
-            if (i < sortedEvents.Count)
+            if (i < displayEvents.Count)
             {
                 btn.gameObject.SetActive(true);
-                GameEventDefinition currentEvent = sortedEvents[i];
+                GameEventDefinition currentEvent = displayEvents[i];
 
                 // 更新按鈕顯示文字。
                 if (AllNewsTitle != null && i < AllNewsTitle.Count)
@@ -384,6 +378,43 @@ public class EventsView : MonoBehaviour
                 btn.gameObject.SetActive(false);
             }
         }
+    }
+
+    private static List<GameEventDefinition> BuildHeadlineEvents(List<GameEventDefinition> events)
+    {
+        var generatedEvents = new List<GameEventDefinition>();
+        if (events != null)
+        {
+            for (int i = 0; i < events.Count; i++)
+            {
+                if (events[i] != null)
+                {
+                    generatedEvents.Add(events[i]);
+                }
+            }
+        }
+
+        if (generatedEvents.Count == 0)
+        {
+            return generatedEvents;
+        }
+
+        int headlineIndex = 0;
+        for (int i = 1; i < generatedEvents.Count; i++)
+        {
+            if (generatedEvents[i].eventRareity > generatedEvents[headlineIndex].eventRareity)
+            {
+                headlineIndex = i;
+            }
+        }
+
+        var result = new List<GameEventDefinition>(generatedEvents.Count + 1)
+        {
+            generatedEvents[headlineIndex]
+        };
+        result.AddRange(generatedEvents);
+
+        return result;
     }
 
     /// <summary>

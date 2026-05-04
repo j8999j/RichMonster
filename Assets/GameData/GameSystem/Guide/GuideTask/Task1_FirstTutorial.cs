@@ -47,31 +47,31 @@ public class Task1_FirstTutorial : GuideTask
                 HideTutorialDisabledButtons();
             }),
             // 步驟一：進入對話模式
-            new ForceDialogueStep(
-                GuideIDs.Dialogue.Task1_FirstTutorial_Dialogue),
+            SaveAfter(new ForceDialogueStep(
+                GuideIDs.Dialogue.Task1_FirstTutorial_Dialogue)),
             // 步驟二：對話結束後提示前往雜貨店
             // 同時啟動背景監聽「購買物品」(提早監聽步驟四)
-            new WithMapGuideStep(
+            SaveAfter(new WithMapGuideStep(
             inner: new ShowHintAndWaitStep(
                 "前往爺爺的雜貨店查看",
                 new InteractWithObjectListener(GuideIDs.Interactable.GuideOrderShop),
                 onExecuteCallback: () =>
                     earlyPurchaseListener.StartEarly(new PurchaseItemListener())),
-            targetId: GuideIDs.Interactable.GuideOrderShop),
+            targetId: GuideIDs.Interactable.GuideOrderShop)),
             //  ↑ 到達雜貨店後自動清除地圖點位
 
             // 步驟三：雜貨店互動結束後給予獎勵（剩餘庫存）
-            new GiveRewardStep(
+            SaveAfter(new GiveRewardStep(
                 () =>
                 {
                     Step_3_Reward();
-                }),
+                })),
             // 步驟四：購買任一物品（提早買過 or 已有購買紀錄則跳過）
-            new SkippableListenStep(
+            SaveAfter(new SkippableListenStep(
                 "請在其他商店中購買任一物品",
                 listener:           null,
                 skipCondition:      () => IsPurchased,
-                backgroundListener: earlyPurchaseListener),
+                backgroundListener: earlyPurchaseListener), 4),
             // 步驟五：提示再次與雜貨店互動（準備切換到午後）
             new WithMapGuideStep(
             inner: new ShowHintAndWaitStep(
@@ -79,10 +79,10 @@ public class Task1_FirstTutorial : GuideTask
                 new InteractWithObjectListener(GuideIDs.Interactable.GuideOrderShop)),
             targetId: GuideIDs.Interactable.GuideOrderShop),
             // 步驟六前置：顯示「休息一下」按鈕
-            new GiveRewardStep(() =>
+            SaveAfter(new GiveRewardStep(() =>
             {
                 if (_restButtonObj != null) _restButtonObj.SetActive(true);
-            }),
+            }), 5),
             // 步驟六：強制提示點擊「休息一下」（開啟面板）— 鎖定玩家
             new WithPlayerLockedStep(
             new ForceUIButtonStep(
@@ -90,11 +90,11 @@ public class Task1_FirstTutorial : GuideTask
                 GuideIDs.Button.GuideRest,
                 "點擊躺椅，休息一下")),
             // 步驟七：強制提示點擊「確定」（切換到午後）— 鎖定玩家
-            new WithPlayerLockedStep(
+            SaveAfter(new WithPlayerLockedStep(
             new ForceUIButtonStep(
                 new Vector2(-171.8f,-122.8f), // TODO: 填入「確定」按鈕的螢幕座標
                 GuideIDs.Button.GuideConfirmAfternoon,
-                "點擊「確定」切換到午後")),
+                "點擊「確定」切換到午後"))),
             // 步驟八：強制提示點擊紀念品箱 — 鎖定玩家
             new WithPlayerLockedStep(
             new ForceUIButtonStep(
@@ -120,7 +120,17 @@ public class Task1_FirstTutorial : GuideTask
 
         // 恢復任務時再次隱藏應該全程禁用的按鈕
         HideTutorialDisabledButtons();
+        if (fromStep >= 7 && _restButtonObj != null)
+        {
+            _restButtonObj.SetActive(true);
+        }
     }
+
+    private static GuideStep SaveAfter(GuideStep step, int? saveStepIndex = null)
+    {
+        return new WithTutorialSaveStep(step, saveStepIndex);
+    }
+
     private void Step_3_Reward()
     {
         var itemIDs = DataManager.Instance.GetRandomDistinctItemIds(ItemWorld.Human, Rarity.Common, 3);

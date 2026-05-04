@@ -8,6 +8,20 @@ public static class GuideIDs
     {
         public const string GuideOrderShop = "GuideOrderShop";
         public const string GuideGroceryStore = "GuideGroceryStore";
+        public const string AuctionNpc = "AuctionNpc";
+        public const string TrashCan = "TrashCan";
+        public const string TelePoint = "TelePoint";
+        public const string TelePointAuctionGuide = "TelePointAuctionGuide";
+        public const string ScratchCardShop = "ScratchCardShop";
+        public const string HumanDoor = "HumanDoor";
+        public const string ChangeSceneDoor = "ChangeSceneDoor";
+        public const string AbyssShop = "AbyssShop";
+        public const string CollectionMissionPrefix = "CollectionMission_";
+
+        public static string CollectionMission(CollectionMissionRace race)
+        {
+            return $"{CollectionMissionPrefix}{race}";
+        }
     }
     // 按鈕
     public static class Button

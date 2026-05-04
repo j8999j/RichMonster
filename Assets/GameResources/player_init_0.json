@@ -5,7 +5,7 @@
   "CustomerIndex": 0,
   "PlayingStatus": 0,
   "Gold": 1000,
-  "MonsterGold": 1000,
+  "MonsterGold": 0,
   "ShopShelves": [
     {
       "ShopID": "GroceryStore",

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using GameSystem;
 using UnityEngine.Serialization;
 
-public class TelePoint : MonoBehaviour, IInteractable, IMapGuideTarget
+public class TelePoint : MonoBehaviour, IInteractable
 {
     public Vector3 TelePosition;
     public GameObject interactPrompt;
@@ -24,9 +24,7 @@ public class TelePoint : MonoBehaviour, IInteractable, IMapGuideTarget
     private Sequence _teleportSequence;
     private bool _isTeleporting;
 
-    public string ID => "TelePoint";
-
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         if (_teleportSequence != null && _teleportSequence.IsActive())
         {
@@ -36,12 +34,7 @@ public class TelePoint : MonoBehaviour, IInteractable, IMapGuideTarget
         ReleaseTeleportLock();
     }
 
-    public void SetMapGuide()
-    {
-        NoticeGetItemEvents.InvokeSetMapGuide(ID, transform);
-    }
-
-    public void Interact()
+    public virtual void Interact()
     {
         NextMap();
     }

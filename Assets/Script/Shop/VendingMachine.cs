@@ -128,7 +128,7 @@ namespace Shop
                 _shopUIView.PlayBuyFailedSfx();
                 return;
             }
-            if (DataManager.Instance.TrySpendGold(shelfSlot.Price))
+            if (DataManager.Instance.TrySpendGoldForItemPurchase(shelfSlot.Price))
             {
                 DataManager.Instance.AddItem(shelfSlot.Item.Id, shelfSlot.Price);
                 shelfSlot.Purchased = true;

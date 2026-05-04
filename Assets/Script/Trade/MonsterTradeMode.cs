@@ -7,6 +7,9 @@ using GameSystem;
 
 public class MonsterTradeMode : MonoBehaviour
 {
+    public static event System.Action OnTradeStarted;
+    public static event System.Action OnTradeCompleted;
+
     private MonsterTradeView tradeView;
     //交易邏輯
     private MonsterGuestGenerator _generator;
@@ -63,9 +66,15 @@ public class MonsterTradeMode : MonoBehaviour
     /// </summary>
     public void StartTradeMode()
     {
-        DataManager.Instance.SetIsTrade(true);
         GenerateGuestList();
         LoadHistory();
+        OnTradeStarted?.Invoke();
+
+        if (GetHumanWorldInventory().Count <= 0 || monsterTradeProgress.CustomerIndex >= _TodayMonsterGuestList.Count)
+        {
+            CompleteTradeDay();
+            return;
+        }
 
         tradeView.UpdateTradeInfo(_TodayMonsterGuestList[monsterTradeProgress.CustomerIndex], DataManager.Instance.CurrentPlayerData.InventoryItems.ToList(), monsterTradeProgress.CustomerIndex, _TodayMonsterGuestList.Count, DataManager.Instance.CurrentPlayerData.MonsterGold);
         UpdateGuestDialog();
@@ -240,27 +249,18 @@ public class MonsterTradeMode : MonoBehaviour
     /// </summary>
     private void NextGuest()
     {
-        // 只計算妖界物品
-        var PlayerInventory = DataManager.Instance.CurrentPlayerData.InventoryItems
-            .Where(item =>
-            {
-                var definition = DataManager.Instance.GetItemById(item.ItemId);
-                return definition != null && definition.World == ItemWorld.Human;
-            })
-            .ToList();
+        var PlayerInventory = GetHumanWorldInventory();
         tradeView.SetSelectTradeUI();
         monsterTradeProgress.CustomerIndex += 1;
         if (PlayerInventory.Count <= 0)
         {
-            ClearTradeProgress();
-            tradeView.EndTradeMode();
+            CompleteTradeDay();
             Debug.Log("商品不足本日結束");
             return;
         }
         if (monsterTradeProgress.CustomerIndex >= _TodayMonsterGuestList.Count)
         {
-            ClearTradeProgress();
-            tradeView.EndTradeMode();
+            CompleteTradeDay();
             return;
         }
         else//下一位
@@ -281,6 +281,30 @@ public class MonsterTradeMode : MonoBehaviour
     {
         monsterTradeProgress.CustomerIndex = 0;
         SaveTradeProgress();
+    }
+
+    private void CompleteTradeDay()
+    {
+        bool wasAlreadyCompleted = DataManager.Instance.CurrentPlayerData != null
+            && DataManager.Instance.CurrentPlayerData.IsTrade;
+
+        DataManager.Instance.SetIsTrade(true);
+        ClearTradeProgress();
+        tradeView.EndTradeMode();
+
+        if (!wasAlreadyCompleted)
+            OnTradeCompleted?.Invoke();
+    }
+
+    private List<Item> GetHumanWorldInventory()
+    {
+        return DataManager.Instance.CurrentPlayerData.InventoryItems
+            .Where(item =>
+            {
+                var definition = DataManager.Instance.GetItemById(item.ItemId);
+                return definition != null && definition.World == ItemWorld.Human;
+            })
+            .ToList();
     }
     #endregion
     #region TradePrice

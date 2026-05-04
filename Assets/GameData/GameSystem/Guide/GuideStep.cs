@@ -12,6 +12,11 @@ public abstract class GuideStep
     public abstract void Execute(System.Action onComplete);
     public virtual void Dispose() { }
 }
+
+public interface IGuideStepSaveCheckpoint
+{
+    int GetSaveStepIndex(int completedStepIndex, int nextStepIndex);
+}
 // ─────────────────────────────────────────────────────
 /// <summary>強制進入對話模式，對話結束後完成</summary>
 public class ForceDialogueStep : GuideStep
@@ -95,6 +100,30 @@ public class ShowHintAndWaitStep : GuideStep
 
 // ─────────────────────────────────────────────────────
 /// <summary>發放獎勵後立即完成</summary>
+public class WaitForListenerStep : GuideStep
+{
+    private readonly GuideListener listener;
+
+    public WaitForListenerStep(GuideListener listener)
+    {
+        this.listener = listener;
+    }
+
+    public override void Execute(System.Action onComplete)
+    {
+        listener.StartListen(() =>
+        {
+            listener.StopListen();
+            onComplete?.Invoke();
+        });
+    }
+
+    public override void Dispose()
+    {
+        listener?.StopListen();
+    }
+}
+
 public class GiveRewardStep : GuideStep
 {
     private readonly System.Action rewardAction;
@@ -321,5 +350,20 @@ public class WithPlayerLockedStep : GuideStepDecorator
     {
         GameManager.Instance.UnlockPlayerMove(PlayerLockSources.Guide);
         GameManager.Instance.UnlockPlayerInteract(PlayerLockSources.Guide);
+    }
+}
+
+public class WithTutorialSaveStep : GuideStepDecorator, IGuideStepSaveCheckpoint
+{
+    private readonly int? saveStepIndex;
+
+    public WithTutorialSaveStep(GuideStep inner, int? saveStepIndex = null) : base(inner)
+    {
+        this.saveStepIndex = saveStepIndex;
+    }
+
+    public int GetSaveStepIndex(int completedStepIndex, int nextStepIndex)
+    {
+        return saveStepIndex ?? nextStepIndex;
     }
 }

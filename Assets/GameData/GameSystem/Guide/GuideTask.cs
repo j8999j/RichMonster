@@ -11,8 +11,11 @@ public abstract class GuideTask
     private int currentStepIndex = 0;
     private Action onTaskComplete;
     private Action onStepCompleted;
+    private int saveStepIndexOverride = -1;
     public int CurrentStepIndex => currentStepIndex;
+    public int CurrentStepIndexForSave => saveStepIndexOverride >= 0 ? saveStepIndexOverride : currentStepIndex;
     public bool IsCompleteTask { get; private set; } = false;
+    protected virtual bool SaveEveryStep => false;
     /// <summary>子類在此建構並回傳步驟序列</summary>
     protected abstract List<GuideStep> BuildSteps();
 
@@ -47,9 +50,24 @@ public abstract class GuideTask
 
     private void OnStepComplete()
     {
-        steps[currentStepIndex].Dispose();
+        int completedStepIndex = currentStepIndex;
+        GuideStep completedStep = steps[currentStepIndex];
+        completedStep.Dispose();
         currentStepIndex++;
-        onStepCompleted?.Invoke();
+        if (SaveEveryStep || completedStep is IGuideStepSaveCheckpoint)
+        {
+            saveStepIndexOverride = completedStep is IGuideStepSaveCheckpoint checkpoint
+                ? checkpoint.GetSaveStepIndex(completedStepIndex, currentStepIndex)
+                : currentStepIndex;
+            try
+            {
+                onStepCompleted?.Invoke();
+            }
+            finally
+            {
+                saveStepIndexOverride = -1;
+            }
+        }
         ExecuteCurrentStep();
     }
 

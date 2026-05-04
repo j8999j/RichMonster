@@ -236,7 +236,7 @@ namespace Shop
                 return;
             }
 
-            if (DataManager.Instance.TrySpendMonsterGold(shelfSlot.Price))
+            if (DataManager.Instance.TrySpendMonsterGoldForItemPurchase(shelfSlot.Price))
             {
                 DataManager.Instance.AddItem(shelfSlot.Item.Id, shelfSlot.Price);
                 Debug.Log($"[WanderingYokaiMerchant] Bought item: {shelfSlot.Item.Name} (price: {shelfSlot.Price})");

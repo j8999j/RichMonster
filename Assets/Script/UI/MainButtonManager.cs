@@ -53,7 +53,7 @@ public class MainButtonManager : MonoBehaviour
                 SetButtonsActive(
                     achievement: true,
                     backpack: true,
-                    souvenir: true,
+                    souvenir: !AuctionDayGuide.ShouldHideSouvenirButton(DataManager.Instance?.CurrentPlayerData),
                     news: false,
                     book: true
                 );
