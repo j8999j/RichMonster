@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 088f225fa8c8ed54192668fb68dbac72, type: 3}
+  m_Name: TeaSpirit_2
+  m_EditorClassIdentifier: 
+  NpcID: TeaSpirit
+  MissionID: Tea_2
+  MissionName: "\u8336\u6703\u958B\u59CB"
+  MissionDescription: "\u60F3\u8981\u4E00\u4E9B\u8207\u4EE5\u5F80\u4E0D\u540C\u7684\u98F2\u54C1\u5E36\u53BB\u8336\u6703\u559D\uFF0C\u4E26\u5206\u4EAB\u8336\u6703\u8DA3\u805E"
+  Requirement:
+    Type: 2
+    TargetItemID: IcePack
+    TargetTag: Drinkable
+    TargetType: 0
+  Rewards:
+  - RewardType: 2
+    GoldAmount: 0
+    ItemID: 
+    ItemAmount: 0
+  IsFinish: 0
+  MissionWorld: 1

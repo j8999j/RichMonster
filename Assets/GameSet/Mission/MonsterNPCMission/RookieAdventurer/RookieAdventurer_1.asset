@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 088f225fa8c8ed54192668fb68dbac72, type: 3}
+  m_Name: RookieAdventurer_1
+  m_EditorClassIdentifier: 
+  NpcID: RookieAdventurer
+  MissionID: Rookie_1
+  MissionName: "\u51B0\u808C\u4FDD\u990A"
+  MissionDescription: "\u807D\u8AAA\u6709\u80FD\u5920\u9577\u6642\u9593\u51B0\u51B7\u7684\u7279\u5225\u4EBA\u985E\u51B0\u584A"
+  Requirement:
+    Type: 1
+    TargetItemID: IcePack
+    TargetTag: Oil
+    TargetType: 0
+  Rewards:
+  - RewardType: 1
+    GoldAmount: 0
+    ItemID: FeatheredWoven
+    ItemAmount: 1
+  IsFinish: 0
+  MissionWorld: 1

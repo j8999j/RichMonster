@@ -325,6 +325,51 @@ public class WaitForSceneStep : GuideStep
 }
 
 // ============================================================
+// WaitForFramesStep - 等待指定幀數，讓場景內 Start/刷新流程先完成
+// ============================================================
+public class WaitForFramesStep : GuideStep
+{
+    private readonly int frameCount;
+    private Coroutine coroutine;
+
+    public WaitForFramesStep(int frameCount = 1)
+    {
+        this.frameCount = Mathf.Max(1, frameCount);
+    }
+
+    public override void Execute(System.Action onComplete)
+    {
+        if (GameManager.Instance == null)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+
+        coroutine = GameManager.Instance.StartCoroutine(WaitFrames(onComplete));
+    }
+
+    public override void Dispose()
+    {
+        if (coroutine != null && GameManager.Instance != null)
+        {
+            GameManager.Instance.StopCoroutine(coroutine);
+            coroutine = null;
+        }
+    }
+
+    private System.Collections.IEnumerator WaitFrames(System.Action onComplete)
+    {
+        for (int i = 0; i < frameCount; i++)
+        {
+            yield return null;
+        }
+
+        coroutine = null;
+        onComplete?.Invoke();
+    }
+}
+
+// ============================================================
 // WithPlayerLockedStep - 鎖定玩家移動與互動裝飾器
 // ============================================================
 /// <summary>

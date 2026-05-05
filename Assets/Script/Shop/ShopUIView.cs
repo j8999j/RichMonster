@@ -12,6 +12,8 @@ using GameSystem;
 /// </summary>
 public class ShopUIView : ShopViewBase
 {
+    private List<ShelfSlot> _currentItems;
+
     [Header("Root UI")]
     public GameObject PanelRoot;
     public GameObject ShopShelfUI;
@@ -25,6 +27,7 @@ public class ShopUIView : ShopViewBase
     public Image WorldIcon;
     public Image TypeIcon;
     public Image RarityIcon;
+    public Image DiscountItemIcon;
     public Sprite PropSprite;
     public Sprite FoodSprite;
     public Sprite EquipmentSprite;
@@ -55,6 +58,7 @@ public class ShopUIView : ShopViewBase
     {
         if (BuyButton != null) BuyButton.onClick.AddListener(OnBuyButtonClicked);
         if (CloseButton != null) CloseButton.onClick.AddListener(OnCloseButtonClicked);
+        SetDiscountItemIconVisible(false);
     }
 
     public override bool IsVisible => PanelRoot.activeSelf;
@@ -68,11 +72,13 @@ public class ShopUIView : ShopViewBase
         ShopShelfUI.SetActive(PanelisVisible);
         DetailRoot.SetActive(false);
         CloseButton.gameObject.SetActive(PanelisVisible);
+        UpdateDiscountItemIconVisible();
     }
 
     public override void ShowItems(List<ShelfSlot> items, Action<ShelfSlot> onBuyRequest)
     {
         _onBuyRequestCallback = onBuyRequest;
+        _currentItems = items;
         AdjustSlotCount(items.Count);
 
         for (int i = 0; i < items.Count; i++)
@@ -129,6 +135,7 @@ public class ShopUIView : ShopViewBase
         if (WorldIcon != null) WorldIcon.sprite = ItemData.World == ItemWorld.Human ? HumanTagSprite : MonsterTagSprite;
         if (TypeIcon != null) TypeIcon.sprite = ItemData.Type == ItemType.Prop ? PropSprite : ItemData.Type == ItemType.Food ? FoodSprite : EquipmentSprite;
         if (DetailIcon != null) DetailIcon.sprite = slotUI._targetImage.sprite;
+        UpdateDiscountItemIconVisible();
         SpriteLoader.AdjustImageScale(DetailIcon, TargetLongEdgeSize);
         UpdateButtonState();
         string rarityId = ItemData.Rarity.ToString();
@@ -221,6 +228,30 @@ public class ShopUIView : ShopViewBase
         DetailIcon.sprite = DetailIconSprite_Empty;
         RarityIcon.sprite = DetailIconSprite_Empty;
         _currentSelectedData = null;
+    }
+
+    private bool IsDiscountItem(ShelfSlot data)
+    {
+        if (data?.VisualInfo == null) return false;
+
+        return data.VisualInfo.IsDailySpecial
+            || !string.IsNullOrEmpty(data.VisualInfo.DiscountLabel)
+            || (data.Item != null && data.Price < data.Item.BasePrice);
+    }
+
+    private void UpdateDiscountItemIconVisible()
+    {
+        bool visible = PanelisVisible
+            && _currentItems != null
+            && _currentItems.Exists(IsDiscountItem);
+
+        SetDiscountItemIconVisible(visible);
+    }
+
+    private void SetDiscountItemIconVisible(bool visible)
+    {
+        if (DiscountItemIcon == null) return;
+        DiscountItemIcon.gameObject.SetActive(visible);
     }
 
     private void OnBuyButtonClicked()

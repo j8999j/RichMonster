@@ -17,6 +17,12 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 9f591576f5e49ed4987e1b3dc278e1cb
   m_SerializeEntries:
+  - m_GUID: 08f4b7d97adbc53489f25cf13959c87d
+    m_Address: Assets/GameSet/Mission/MonsterNPCMission/RookieAdventurer/RookieAdventurer_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 09b5256441e7a9d4ca3332c15c6bd585
     m_Address: Assets/GameSet/Mission/Investigator/Investigator_Mission_3.asset
     m_ReadOnly: 0
@@ -25,6 +31,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0eac10c4e73d3814692286cec1e92530
     m_Address: Assets/GameSet/Mission/Deliveryman/Deliveryman_Mission_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f92f1af3ebd27245a245e1685adfd43
+    m_Address: Assets/GameSet/Mission/MonsterNPCMission/ApprenticeMage/ApprenticeMage_2.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - NpcMission
@@ -71,6 +83,18 @@ MonoBehaviour:
     m_SerializedLabels:
     - NpcMission
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 411325a4550d437498d015bdc9f6b26a
+    m_Address: Assets/GameSet/Mission/MonsterNPCMission/VampireCount/VampireCount_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 436a77eb6b25a474d9ad0241b7505452
+    m_Address: Assets/GameSet/Mission/MonsterNPCMission/ChurchPriest/ChurchPriest_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4b09445899dc5cd43a1abadefeb04d40
     m_Address: Assets/GameSet/Mission/MonsterNPCMission/New Folder/WanderingBard_2.asset
     m_ReadOnly: 0
@@ -85,6 +109,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4cb1d1905cd115640be5d8bc2e99bce4
     m_Address: Assets/GameSet/Mission/Chef/Chef_Mission_3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cd5ef03a4b92a84091e6478ae8ab8f2
+    m_Address: Assets/GameSet/Mission/MonsterNPCMission/TeaSpirit/TeaSpirit_1.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - NpcMission
@@ -149,8 +179,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - NpcMission
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ffb7185316b92d4691c89df4ee035f8
+    m_Address: Assets/GameSet/Mission/MonsterNPCMission/VampireCount/VampireCount_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 902522fa190062445888a0b668b7b571
     m_Address: Assets/GameSet/Mission/Heiress/Heiress_Mission_3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 913a203d22bd1b94883e1b9908558c76
+    m_Address: Assets/GameSet/Mission/MonsterNPCMission/RookieAdventurer/RookieAdventurer_1.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - NpcMission
@@ -175,6 +217,24 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a285b31d68e68524dae431efe1c8dcc0
     m_Address: Assets/GameSet/Mission/Investigator/Investigator_Mission_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a3b36c3719ee506458da910f76a8c29e
+    m_Address: Assets/GameSet/Mission/MonsterNPCMission/ChurchPriest/ChurchPriest_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a85265807d7c83749b56f71a89601d1d
+    m_Address: Assets/GameSet/Mission/MonsterNPCMission/ApprenticeMage/ApprenticeMage_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b882386e3893d704b85473b70aa4be7a
+    m_Address: Assets/GameSet/Mission/MonsterNPCMission/TeaSpirit/TeaSpirit_2.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - NpcMission

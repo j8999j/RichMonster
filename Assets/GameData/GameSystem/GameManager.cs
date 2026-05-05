@@ -64,6 +64,7 @@ namespace GameSystem
             SetPlayerPosition(new Vector3(0, -2, 0));
             ClearAllLocks();
             SetCameraFollowPlayer();
+            ClearCameraHorizontalBounds();
             if (sceneName == SceneTransitionManager.SCENE_MONSTER)
             {
                 PlayerController.SetIsNight(true);
@@ -233,6 +234,30 @@ namespace GameSystem
             {
                 Debug.LogWarning("[GameManager] 無法設定攝影機跟隨：" +
                     (virtualCamera == null ? "找不到 VirtualCamera" : "找不到 Player"));
+            }
+        }
+
+        /// <summary>
+        /// 場景載入後解除 TelePoint 可能留下的攝影機水平邊界限制。
+        /// </summary>
+        public void ClearCameraHorizontalBounds()
+        {
+            CameraHorizontalBounds[] boundsList = FindObjectsOfType<CameraHorizontalBounds>(true);
+            for (int i = 0; i < boundsList.Length; i++)
+            {
+                if (boundsList[i] == null)
+                    continue;
+
+                boundsList[i].ClearBounds();
+            }
+
+            CinemachineVirtualCamera[] cameras = FindObjectsOfType<CinemachineVirtualCamera>(true);
+            for (int i = 0; i < cameras.Length; i++)
+            {
+                if (cameras[i] != null)
+                {
+                    cameras[i].PreviousStateIsValid = false;
+                }
             }
         }
         /// <summary>

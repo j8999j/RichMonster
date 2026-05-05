@@ -10,9 +10,15 @@ public class RewardSlot : MonoBehaviour
 
     [Header("Settings")]
     public Sprite GoldSprite;
+    public Sprite MonsterGoldSprite;
     public Sprite InfoSprite;
 
     public void Setup(MissionReward reward)
+    {
+        Setup(reward, ItemWorld.Human);
+    }
+
+    public void Setup(MissionReward reward, ItemWorld missionWorld)
     {
         if (reward == null) return;
 
@@ -21,7 +27,9 @@ public class RewardSlot : MonoBehaviour
             case RewardType.Gold:
                 if (RewardIcon != null)
                 {
-                    RewardIcon.sprite = GoldSprite;
+                    RewardIcon.sprite = missionWorld == ItemWorld.Monster && MonsterGoldSprite != null
+                        ? MonsterGoldSprite
+                        : GoldSprite;
                     SpriteLoader.AdjustImageScale(RewardIcon, 100);
                 }
                 if (NameText != null) NameText.text = $"x{reward.GoldAmount}";

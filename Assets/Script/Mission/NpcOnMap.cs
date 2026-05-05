@@ -82,10 +82,11 @@ public class NpcOnMap : MonoBehaviour, IInteractable, IMapGuideTarget
         if (NpcMission == null || NpcMission.Requirement == null || NpcMission.Requirement.Type == RequirementType.None) return true;
 
         var inventory = DataManager.Instance.CurrentPlayerData.InventoryItems;
+        ItemWorld targetWorld = GetSubmittableItemWorld();
         foreach (var item in inventory)
         {
             var def = DataManager.Instance.GetItemById(item.ItemId);
-            if (NpcMission.Requirement.IsMatch(def))
+            if (def != null && def.World == targetWorld && NpcMission.Requirement.IsMatch(def))
             {
                 return true;
             }
@@ -107,7 +108,7 @@ public class NpcOnMap : MonoBehaviour, IInteractable, IMapGuideTarget
         else if (targetItem != null)
         {
             var def = DataManager.Instance.GetItemById(targetItem.ItemId);
-            if (NpcMission.Requirement.IsMatch(def))
+            if (def != null && def.World == GetSubmittableItemWorld() && NpcMission.Requirement.IsMatch(def))
             {
                 validToSubmit = true;
             }
@@ -159,6 +160,13 @@ public class NpcOnMap : MonoBehaviour, IInteractable, IMapGuideTarget
         {
             missionView.OnSubmitClick -= HandleMissionSubmit;
         }
+    }
+
+    private ItemWorld GetSubmittableItemWorld()
+    {
+        return NpcMission != null && NpcMission.MissionWorld == ItemWorld.Monster
+            ? ItemWorld.Human
+            : ItemWorld.Monster;
     }
     public void Interact()
     {

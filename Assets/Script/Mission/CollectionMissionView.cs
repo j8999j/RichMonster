@@ -24,6 +24,12 @@ public class CollectionMissionView : MonoBehaviour
     private float progressWidthPerPoint = 57f;
 
     [SerializeField]
+    private RectTransform rewardProgressImageRect;
+
+    [SerializeField]
+    private float rewardProgressWidthPerPoint = 86f;
+
+    [SerializeField]
     private Image selectedItemImage;
 
     [SerializeField]
@@ -397,10 +403,12 @@ public class CollectionMissionView : MonoBehaviour
         if (category == null || category.Items == null)
         {
             SetProgressImageWidth(0);
+            SetRewardProgressImageWidth(0);
             return;
         }
 
         SetProgressImageWidth(clampedPoints * progressWidthPerPoint);
+        SetRewardProgressImageWidth(clampedPoints * rewardProgressWidthPerPoint);
     }
 
     private void RefreshRewards(CollectionMissionCategory category)
@@ -475,6 +483,16 @@ public class CollectionMissionView : MonoBehaviour
         var size = progressImageRect.sizeDelta;
         size.x = Mathf.Clamp(width, 0f, CollectionMissionTracker.MaxRewardPoints * progressWidthPerPoint);
         progressImageRect.sizeDelta = size;
+    }
+
+    private void SetRewardProgressImageWidth(float width)
+    {
+        if (rewardProgressImageRect == null)
+            return;
+
+        var size = rewardProgressImageRect.sizeDelta;
+        size.x = Mathf.Clamp(width, 0f, CollectionMissionTracker.MaxRewardPoints * rewardProgressWidthPerPoint);
+        rewardProgressImageRect.sizeDelta = size;
     }
 
     private void AdjustSlotCount(int targetCount)

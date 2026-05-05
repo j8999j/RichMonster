@@ -262,4 +262,5 @@ MonoBehaviour:
   RewardIcon: {fileID: 1615006696527989783}
   NameText: {fileID: 4243044148795759738}
   GoldSprite: {fileID: 313458290, guid: 74e31ef0019f40f40a303573bae5ed22, type: 3}
+  MonsterGoldSprite: {fileID: 2006492044, guid: 65b0d1416dab10e4398364c0fa11f472, type: 3}
   InfoSprite: {fileID: -820106455, guid: 45abdbf8a2cf5d9438cc50525297b63f, type: 3}

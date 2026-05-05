@@ -10,6 +10,8 @@ public class Task3_ThirdTutorial : GuideTask
         return new List<GuideStep>
         {
             new WaitForDayPhaseStep(1, DayPhase.HumanDay),
+            new WaitForSceneStep(SceneTransitionManager.SCENE_HUMAN),
+            new WaitForFramesStep(1),
             new WithMapGuideStep(
                 inner: new ShowHintAndWaitStep(
                     "前往爺爺的雜貨店查看訂單",

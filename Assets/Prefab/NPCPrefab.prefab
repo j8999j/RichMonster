@@ -96,6 +96,7 @@ MonoBehaviour:
   WorldIcon: {fileID: 8418043168381012977}
   RareLevelImage: {fileID: 8022160132497257446}
   MonsterTagSprite: {fileID: -925365888, guid: 01a0773c7f9cd4f40a7c8f14db01f22f, type: 3}
+  HumanTagSprite: {fileID: -2124447385, guid: 01a0773c7f9cd4f40a7c8f14db01f22f, type: 3}
   DetailNameText: {fileID: 5444889259062564264}
   DetailDescText: {fileID: 3545306752124993998}
   DetailPriceText: {fileID: 986936942440844470}
@@ -119,7 +120,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.5, y: 5, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &387744212688666801
 GameObject:
@@ -1516,8 +1517,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

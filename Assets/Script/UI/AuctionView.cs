@@ -132,10 +132,7 @@ public class AuctionView : MonoBehaviour
     private string alreadyHighestBidderText = "目前最高出價已經是你。"; // 目前最高出價已經是你。
 
     [SerializeField]
-    private string playerOutbidLimitTextFormat = "目前價格 {0} 元已到達你的出價上限，等待主持人落槌。";
-
-    [SerializeField]
-    private string bidBubbleFormat = "{0}\n{1}"; // 泡泡顯示格式：第一行名稱、第二行金額
+    private string bidBubbleFormat = "{0}"; // 泡泡顯示格式：只顯示出價金額
 
     [SerializeField]
     private float bubbleVisibleSeconds = 1.5f;   // 所有 NPC 對話框統一顯示秒數
@@ -717,11 +714,6 @@ public class AuctionView : MonoBehaviour
         SetHostText(alreadyHighestBidderText);
     }
 
-    public void ShowPlayerOutbidLimit(int currentPrice)
-    {
-        SetHostText(string.Format(playerOutbidLimitTextFormat, FormatAmountForTemplate(playerOutbidLimitTextFormat, currentPrice)));
-    }
-
     /// <summary>單獨更新倒數秒數欄位（不影響其他 UI）。</summary>
     public void SetTimerSeconds(int seconds)
     {
@@ -764,7 +756,7 @@ public class AuctionView : MonoBehaviour
     // -------------------------------------------------------------------------
 
     /// <summary>
-    /// 在指定出價者的對話框顯示「{名稱}\n{金額}」，bubbleVisibleSeconds 秒後自動隱藏。
+    /// 在指定出價者的對話框顯示出價金額，bubbleVisibleSeconds 秒後自動隱藏。
     /// 會優先以 bidderId 查找對應對話框，找不到時用 bidderName 解析。
     /// </summary>
     public void ShowBidBubble(string bidderId, string bidderName, int bidAmount)
@@ -780,7 +772,8 @@ public class AuctionView : MonoBehaviour
         if (entry.Root == null || entry.Text == null)
             return;
 
-        entry.Text.text = NormalizeAuctionText(string.Format(bidBubbleFormat, bidderName, FormatAmountForTemplate(bidBubbleFormat, bidAmount)));
+        string format = ResolveBidBubbleFormat();
+        entry.Text.text = NormalizeAuctionText(string.Format(format, FormatAmountForTemplate(format, bidAmount)));
         entry.Root.SetActive(true);
 
         if (entry.HideRoutine != null)
@@ -903,6 +896,14 @@ public class AuctionView : MonoBehaviour
         }
 
         return FormatMoney(amount);
+    }
+
+    private string ResolveBidBubbleFormat()
+    {
+        if (string.IsNullOrWhiteSpace(bidBubbleFormat) || bidBubbleFormat.Contains("{1}"))
+            return "{0}";
+
+        return bidBubbleFormat;
     }
 
     private static string NormalizeAuctionText(string text)

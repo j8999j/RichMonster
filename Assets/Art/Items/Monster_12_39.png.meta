@@ -613,6 +613,48 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: TeaSpirit_head
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 172
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f458238634a558b4d86e5e463dd68505
+      internalID: -1176057158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VampireCount_head
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 47
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ac7bbe28fa5f70d40bb7efd336007fa5
+      internalID: -1243069690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -643,11 +685,13 @@ TextureImporter:
       SpiderSpirit: 1463262266
       Tanuki: 26697300
       TeaSpirit: 1828939207
+      TeaSpirit_head: -1176057158
       Terracotta: -2019626022
       ToothFairy: 1340618654
       Umibozu: 1702934284
       Unicorn: -1388072676
       VampireCount: 1908945611
+      VampireCount_head: -1243069690
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

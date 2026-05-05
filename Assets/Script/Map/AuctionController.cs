@@ -8,8 +8,6 @@ using UnityEngine;
 public class AuctionController : MonoBehaviour
 {
     private const int TenThousand = 10000;
-    private const string FallbackPlayerBidderName = "Player";
-    private const string FallbackMysteryBidderName = "Mystery";
 
     private static class BidderIds
     {
@@ -19,6 +17,28 @@ public class AuctionController : MonoBehaviour
         public const string Divine = "Divine";
         public const string Fairy = "Fairy";
         public const string Mystery = "Mystery";
+
+        public static string FromRace(CollectionMissionRace race)
+        {
+            return race switch
+            {
+                CollectionMissionRace.Ghost => Ghost,
+                CollectionMissionRace.Beast => Beast,
+                CollectionMissionRace.Divine => Divine,
+                CollectionMissionRace.Fairy => Fairy,
+                _ => race.ToString()
+            };
+        }
+    }
+
+    private static class BidderDisplayNames
+    {
+        public const string Player = "主角";
+        public const string Ghost = "瘋狂博士";
+        public const string Beast = "動物園園長";
+        public const string Divine = "占卜師";
+        public const string Fairy = "偶像歌手";
+        public const string Mystery = "黑袍男子";
 
         public static string FromRace(CollectionMissionRace race)
         {
@@ -53,6 +73,9 @@ public class AuctionController : MonoBehaviour
     [SerializeField]
     private AuctionView auctionView;
 
+    [SerializeField]
+    private MainButtonManager mainButtonManager;
+
     private readonly List<AuctionBidder> bidders = new();
     private AuctionBidder playerBidder;
     private AuctionBidder currentBidder;
@@ -63,7 +86,11 @@ public class AuctionController : MonoBehaviour
     private bool auctionActive;
     private bool isResolving;
     private bool npcBiddingClosed;
-    private int lastShownSecond = -1;
+    private bool finalCallOneShown;
+    private bool finalCallTwoShown;
+
+    [SerializeField]
+    private float finalCallSettleDelaySeconds = 1f;
 
     private void Awake()
     {
@@ -82,6 +109,7 @@ public class AuctionController : MonoBehaviour
     {
         StopAuctionCoroutines();
         UnlockAuction();
+        mainButtonManager?.SetAuctionHidden(false);
     }
 
     public void StartAuction()
@@ -90,6 +118,7 @@ public class AuctionController : MonoBehaviour
             return;
 
         ResolveAuctionView();
+        ResolveMainButtonManager();
         ConfigureView();
         BuildBidders();
 
@@ -97,10 +126,11 @@ public class AuctionController : MonoBehaviour
         currentBidder = null;
         remainingTime = Mathf.Max(1f, roundSeconds);
         auctionActive = true;
-        lastShownSecond = -1;
+        ResetFinalCallState();
         npcBiddingClosed = false;
 
         LockAuction();
+        mainButtonManager?.SetAuctionHidden(true);
         auctionView?.SetVisible(true);
         auctionView?.EnsureBidderNpcsSpawned();
         auctionView?.ApplyParticipants(bidders.Select(b => b.BidderId));
@@ -118,6 +148,7 @@ public class AuctionController : MonoBehaviour
         npcBiddingClosed = false;
         StopAuctionCoroutines();
         UnlockAuction();
+        mainButtonManager?.SetAuctionHidden(false);
         auctionView?.SetVisible(false);
     }
 
@@ -126,8 +157,7 @@ public class AuctionController : MonoBehaviour
         bidders.Clear();
 
         int playerBudget = DataManager.Instance?.CurrentPlayerData?.Gold ?? 0;
-        string playerName = ResolveBidderName(BidderIds.Player, FallbackPlayerBidderName);
-        playerBidder = new AuctionBidder(BidderIds.Player, playerName, true, null, playerBudget, playerBudget);
+        playerBidder = new AuctionBidder(BidderIds.Player, BidderDisplayNames.Player, true, null, playerBudget, playerBudget);
         bidders.Add(playerBidder);
 
         CollectionMissionSaveData progress = LoadCollectionMissionProgress();
@@ -136,8 +166,7 @@ public class AuctionController : MonoBehaviour
         AddRaceBidderIfEligible(progress, CollectionMissionRace.Divine, 115 * TenThousand, 120 * TenThousand);
         AddRaceBidderIfEligible(progress, CollectionMissionRace.Fairy, 100 * TenThousand, 130 * TenThousand);
 
-        string mysteryName = ResolveBidderName(BidderIds.Mystery, FallbackMysteryBidderName);
-        AddNpcBidder(BidderIds.Mystery, mysteryName, null, 100 * TenThousand, 120 * TenThousand);
+        AddNpcBidder(BidderIds.Mystery, BidderDisplayNames.Mystery, null, 100 * TenThousand, 120 * TenThousand);
     }
 
     private void AddRaceBidderIfEligible(CollectionMissionSaveData progress, CollectionMissionRace race, int minBudget, int maxBudget)
@@ -145,8 +174,7 @@ public class AuctionController : MonoBehaviour
         if (HasReachedCollectionGoal(progress, race))
             return;
 
-        string raceName = CollectionMissionRaceUtility.GetRaceName(race);
-        AddNpcBidder(BidderIds.FromRace(race), raceName, race, minBudget, maxBudget);
+        AddNpcBidder(BidderIds.FromRace(race), BidderDisplayNames.FromRace(race), race, minBudget, maxBudget);
     }
 
     private void AddNpcBidder(string bidderId, string bidderName, CollectionMissionRace? race, int minBudget, int maxBudget)
@@ -284,7 +312,7 @@ public class AuctionController : MonoBehaviour
         currentBidder = bidder;
         currentPrice = bidAmount;
         remainingTime = Mathf.Max(1f, roundSeconds);
-        lastShownSecond = -1;
+        ResetFinalCallState();
 
         RefreshAll();
         auctionView?.ShowBid(bidder.BidderId, bidder.DisplayName, currentPrice, bidder.IsPlayer);
@@ -292,14 +320,21 @@ public class AuctionController : MonoBehaviour
         if (!bidder.IsPlayer && ShouldCloseNpcBidding())
         {
             npcBiddingClosed = true;
-            auctionView?.ShowPlayerOutbidLimit(currentPrice);
         }
     }
 
-    private async void CompleteAuctionAsync()
+    private void CompleteAuctionAsync()
     {
         if (isResolving)
             return;
+
+        StartCoroutine(CompleteAuctionRoutine());
+    }
+
+    private IEnumerator CompleteAuctionRoutine()
+    {
+        if (isResolving)
+            yield break;
 
         isResolving = true;
         auctionActive = false;
@@ -308,12 +343,21 @@ public class AuctionController : MonoBehaviour
         auctionView?.ShowFinalCall(3, currentPrice);
         RefreshBidButtons();
 
+        float delay = Mathf.Max(0f, finalCallSettleDelaySeconds);
+        if (delay > 0f)
+            yield return new WaitForSeconds(delay);
+
         bool playerWon = currentBidder != null && currentBidder.IsPlayer;
         if (playerWon)
             DataManager.Instance?.ModifyGold(-currentPrice);
 
         DataManager.Instance?.SetEndingReached(playerWon ? EndingType.Type5 : EndingType.Type4);
-        await SaveGameAsync();
+        System.Threading.Tasks.Task saveTask = SaveGameAsync();
+        while (saveTask != null && !saveTask.IsCompleted)
+            yield return null;
+
+        if (saveTask != null && saveTask.IsFaulted)
+            Debug.LogException(saveTask.Exception);
 
         UnlockAuction();
         auctionView?.SetVisible(false);
@@ -344,16 +388,24 @@ public class AuctionController : MonoBehaviour
         int seconds = Mathf.CeilToInt(Mathf.Max(0f, remainingTime));
         auctionView?.SetTimerSeconds(seconds);
 
-        if (seconds == lastShownSecond)
-            return;
-
-        lastShownSecond = seconds;
-        if (seconds == 3)
+        if (!finalCallOneShown && remainingTime <= 5f)
+        {
+            finalCallOneShown = true;
             auctionView?.ShowFinalCall(1, currentPrice);
-        else if (seconds == 2)
+            return;
+        }
+
+        if (!finalCallTwoShown && remainingTime <= 2.5f)
+        {
+            finalCallTwoShown = true;
             auctionView?.ShowFinalCall(2, currentPrice);
-        else if (seconds == 1)
-            auctionView?.ShowFinalCall(3, currentPrice);
+        }
+    }
+
+    private void ResetFinalCallState()
+    {
+        finalCallOneShown = false;
+        finalCallTwoShown = false;
     }
 
     private bool ShouldCloseNpcBidding()
@@ -411,13 +463,13 @@ public class AuctionController : MonoBehaviour
         return auctionView;
     }
 
-    private string ResolveBidderName(string bidderId, string fallback)
+    private MainButtonManager ResolveMainButtonManager()
     {
-        if (auctionView == null)
-            return fallback;
+        if (mainButtonManager != null)
+            return mainButtonManager;
 
-        string name = auctionView.GetBidderDisplayName(bidderId);
-        return string.IsNullOrWhiteSpace(name) ? fallback : name;
+        mainButtonManager = FindObjectOfType<MainButtonManager>(true);
+        return mainButtonManager;
     }
 
     private void StopAuctionCoroutines()

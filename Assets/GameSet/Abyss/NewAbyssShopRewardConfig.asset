@@ -35,6 +35,11 @@ MonoBehaviour:
       ItemID: TerracottaFragment
       ItemAmount: 1
       Weight: 50
+    - RewardType: 1
+      GoldAmount: 0
+      ItemID: FakeJinguBang
+      ItemAmount: 1
+      Weight: 50
   - Layer: 2
     Rewards:
     - RewardType: 0
@@ -57,6 +62,11 @@ MonoBehaviour:
       ItemID: RaijuFur
       ItemAmount: 1
       Weight: 50
+    - RewardType: 1
+      GoldAmount: 0
+      ItemID: BonePorcelainbox
+      ItemAmount: 1
+      Weight: 50
   - Layer: 3
     Rewards:
     - RewardType: 0
@@ -69,6 +79,16 @@ MonoBehaviour:
       ItemID: 
       ItemAmount: 1
       Weight: 50
+    - RewardType: 1
+      GoldAmount: 0
+      ItemID: SilkSachet
+      ItemAmount: 1
+      Weight: 50
+    - RewardType: 1
+      GoldAmount: 0
+      ItemID: PetrifiedEye
+      ItemAmount: 1
+      Weight: 50
   - Layer: 4
     Rewards:
     - RewardType: 0
@@ -79,5 +99,15 @@ MonoBehaviour:
     - RewardType: 0
       GoldAmount: 3000
       ItemID: 
+      ItemAmount: 1
+      Weight: 50
+    - RewardType: 1
+      GoldAmount: 0
+      ItemID: RiverGem
+      ItemAmount: 1
+      Weight: 50
+    - RewardType: 1
+      GoldAmount: 0
+      ItemID: GiantFan
       ItemAmount: 1
       Weight: 50

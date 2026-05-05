@@ -319,6 +319,90 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: RookieAdventurer_head
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 181
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a79feb8b81437cf4392d6c8ca26c051a
+      internalID: 1199783255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ApprenticeMage_head
+      rect:
+        serializedVersion: 2
+        x: 630
+        y: 190
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ce02cb25624fbd34a9036f1cfb12ee82
+      internalID: -1523200937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ChurchPriest_head
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 66
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a633ec747522cd46b2fe6e4e7180b71
+      internalID: 1402064911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WanderingBard_head
+      rect:
+        serializedVersion: 2
+        x: 733
+        y: 190
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4f69afad8c7098a41a05ecea8532bd9f
+      internalID: 1959311009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -331,15 +415,19 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       ApprenticeMage: -2052347697
+      ApprenticeMage_head: -1523200937
       ChurchPriest: -1276767070
+      ChurchPriest_head: 1402064911
       Monster_2_11_1: -235343778
       Monster_2_11_2: -720757795
       Oxboos: -379409297
       Rogue: 2095757157
       RookieAdventurer: -78199250
+      RookieAdventurer_head: 1199783255
       SeniorKnight: 1104893926
       TigerAunt: -1460301520
       WanderingBard: 1228313178
+      WanderingBard_head: 1959311009
       WardenWoods: -989343808
       WhiteBoneDemon: 1417621092
   mipmapLimitGroupName: 

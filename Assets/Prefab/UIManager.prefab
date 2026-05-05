@@ -14265,7 +14265,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2008388074943176209}
-  - component: {fileID: 670026953416824872}
   - component: {fileID: 3942748959316462424}
   - component: {fileID: 1128933699793021572}
   m_Layer: 0
@@ -14292,26 +14291,6 @@ Transform:
   - {fileID: 8862008715539191083}
   m_Father: {fileID: 4015840839633020853}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &670026953416824872
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5669672377496439182}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60cd232781c76bd43bcace663af575b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  daysPlayedText: {fileID: 2481588431448544335}
-  goldText: {fileID: 4268014699773324902}
-  statusIconImage: {fileID: 7517278614969442953}
-  HumanIcon: {fileID: 8651184371106386985}
-  MonsterIcon: {fileID: 1630950673880779314}
-  morningSprite: {fileID: -1488963663, guid: adc440cdae5c9d44e81c728cefc4c1fd, type: 3}
-  noonSprite: {fileID: -2074313847, guid: adc440cdae5c9d44e81c728cefc4c1fd, type: 3}
-  nightSprite: {fileID: -2039020589, guid: adc440cdae5c9d44e81c728cefc4c1fd, type: 3}
 --- !u!114 &3942748959316462424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23361,6 +23340,14 @@ MonoBehaviour:
   souvenirButton: {fileID: 1576877343960930467}
   newsButton: {fileID: 2336536330283431492}
   bookButton: {fileID: 4989694664804821870}
+  daysPlayedText: {fileID: 2481588431448544335}
+  goldText: {fileID: 4268014699773324902}
+  statusIconImage: {fileID: 7517278614969442953}
+  HumanIcon: {fileID: 8651184371106386985}
+  MonsterIcon: {fileID: 1630950673880779314}
+  morningSprite: {fileID: -1488963663, guid: adc440cdae5c9d44e81c728cefc4c1fd, type: 3}
+  noonSprite: {fileID: -2074313847, guid: adc440cdae5c9d44e81c728cefc4c1fd, type: 3}
+  nightSprite: {fileID: -2039020589, guid: adc440cdae5c9d44e81c728cefc4c1fd, type: 3}
 --- !u!114 &632178472921683140
 MonoBehaviour:
   m_ObjectHideFlags: 0

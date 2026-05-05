@@ -49,6 +49,7 @@ public class NPCMissionView : MonoBehaviour
     public Image WorldIcon;//世界標籤圖片
     public Image RareLevelImage;//稀有度圖標
     public Sprite MonsterTagSprite;//妖界
+    public Sprite HumanTagSprite;//人界
     public TextMeshProUGUI DetailNameText;//背包物品名稱
     public TextMeshProUGUI DetailDescText;//背包物品描述
     public TextMeshProUGUI DetailPriceText;//背包物品購買成本
@@ -95,8 +96,7 @@ public class NPCMissionView : MonoBehaviour
         // 1. 基本資訊
         if (NPCNameText != null)
         {
-            var npcData = DataManager.Instance.NPCDataDict.Values.FirstOrDefault(n => n.NpcID == mission.NpcID);
-            NPCNameText.text = npcData != null ? npcData.NpcName : "神秘人";
+            NPCNameText.text = ResolveNpcDisplayName(mission);
         }
 
         if (MissionNameText != null) MissionNameText.text = mission.MissionName;
@@ -207,7 +207,7 @@ public class NPCMissionView : MonoBehaviour
             var slot = go.GetComponent<RewardSlot>();
             if (slot != null)
             {
-                slot.Setup(reward);
+                slot.Setup(reward, _currentMission.MissionWorld);
             }
         }
     }
@@ -220,15 +220,20 @@ public class NPCMissionView : MonoBehaviour
         if (BagContainer == null || NPCTradeSlotPrefab == null) return;
 
         var inventory = DataManager.Instance.CurrentPlayerData.InventoryItems;
+        ItemWorld targetWorld = GetSubmittableItemWorld();
         int Count = 0;
-        NoneItemCanTradeText.SetActive(false);
+        if (NoneItemCanTradeText != null)
+        {
+            NoneItemCanTradeText.SetActive(false);
+        }
+
         foreach (var item in inventory)
         {
             var def = DataManager.Instance.GetItemById(item.ItemId);
             if (def == null) continue;
 
-            // 條件：妖界物品且符合任務需求
-            if (def.World == ItemWorld.Monster && (_currentMission == null || _currentMission.Requirement.Type == RequirementType.None || _currentMission.Requirement.IsMatch(def)))
+            // 人界任務提交妖界商品；妖界任務提交人界商品。
+            if (def.World == targetWorld && IsRequirementMatched(def))
             {
                 NPCTradeSlot slot = Instantiate(NPCTradeSlotPrefab, BagContainer);
                 slot.Setup(item, OnBagSlotClicked);
@@ -238,7 +243,10 @@ public class NPCMissionView : MonoBehaviour
         }
         if (Count == 0)
         {
-            NoneItemCanTradeText.SetActive(true);
+            if (NoneItemCanTradeText != null)
+            {
+                NoneItemCanTradeText.SetActive(true);
+            }
         }
     }
 
@@ -263,6 +271,9 @@ public class NPCMissionView : MonoBehaviour
         {
             switch (slot._currentDefinition.World)
             {
+                case ItemWorld.Human:
+                    WorldIcon.sprite = HumanTagSprite;
+                    break;
                 case ItemWorld.Monster:
                     WorldIcon.sprite = MonsterTagSprite;
                     break;
@@ -300,6 +311,44 @@ public class NPCMissionView : MonoBehaviour
         if (DetailIcon != null) SpriteLoader.AdjustImageScale(DetailIcon, 100);
         RefreshSubmitButton(true);
 
+    }
+
+    private ItemWorld GetSubmittableItemWorld()
+    {
+        return _currentMission != null && _currentMission.MissionWorld == ItemWorld.Monster
+            ? ItemWorld.Human
+            : ItemWorld.Monster;
+    }
+
+    private string ResolveNpcDisplayName(NpcMission mission)
+    {
+        if (mission == null)
+            return "神秘人";
+
+        if (mission.MissionWorld == ItemWorld.Monster)
+        {
+            if (DataManager.Instance.MonsterProfessionDict != null
+                && DataManager.Instance.MonsterProfessionDict.TryGetValue(mission.NpcID, out MonsterProfessionDefinition monster)
+                && monster != null
+                && !string.IsNullOrEmpty(monster.ProfessionName))
+            {
+                return monster.ProfessionName;
+            }
+
+            return string.IsNullOrEmpty(mission.NpcID) ? "神秘妖怪" : mission.NpcID;
+        }
+
+        var npcData = DataManager.Instance.NPCDataDict.Values.FirstOrDefault(n => n.NpcID == mission.NpcID);
+        return npcData != null ? npcData.NpcName : "神秘人";
+    }
+
+    private bool IsRequirementMatched(ItemDefinition itemDefinition)
+    {
+        if (_currentMission == null || _currentMission.Requirement == null)
+            return true;
+
+        return _currentMission.Requirement.Type == RequirementType.None
+            || _currentMission.Requirement.IsMatch(itemDefinition);
     }
 
     private void ClearSelected()
