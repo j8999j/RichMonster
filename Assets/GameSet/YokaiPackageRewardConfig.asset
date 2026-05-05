@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7384dbe95a97f2c448279d7fd3a27f39, type: 3}
-  m_Name: NewYokaiPackageRewardConfig
+  m_Name: YokaiPackageRewardConfig
   m_EditorClassIdentifier: 
   Rewards:
   - RewardType: 1
@@ -25,11 +25,31 @@ MonoBehaviour:
     Weight: 1
   - RewardType: 1
     GoldAmount: 0
-    ItemID: HellMagmaRock
+    ItemID: CrystalBall
     ItemAmount: 1
     Weight: 1
   - RewardType: 1
     GoldAmount: 0
-    ItemID: CrystalBall
+    ItemID: HellMagmaRock
     ItemAmount: 1
-    Weight: 1
+    Weight: 3
+  - RewardType: 1
+    GoldAmount: 0
+    ItemID: TerracottaFragment
+    ItemAmount: 1
+    Weight: 3
+  - RewardType: 0
+    GoldAmount: 200
+    ItemID: 
+    ItemAmount: 0
+    Weight: 3
+  - RewardType: 0
+    GoldAmount: 100
+    ItemID: 
+    ItemAmount: 0
+    Weight: 3
+  - RewardType: 1
+    GoldAmount: 0
+    ItemID: FakeJinguBang
+    ItemAmount: 1
+    Weight: 3

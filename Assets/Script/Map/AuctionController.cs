@@ -100,6 +100,7 @@ public class AuctionController : MonoBehaviour
 
         LockAuction();
         auctionView?.SetVisible(true);
+        auctionView?.ApplyParticipants(bidders.Select(b => b.BidderId));
         auctionView?.HideAllBidBubbles();
         auctionView?.ShowStart(currentPrice);
         RefreshAll();
@@ -121,7 +122,7 @@ public class AuctionController : MonoBehaviour
         bidders.Clear();
 
         int playerBudget = DataManager.Instance?.CurrentPlayerData?.Gold ?? 0;
-        string playerName = auctionView != null ? auctionView.PlayerBidderName : FallbackPlayerBidderName;
+        string playerName = ResolveBidderName(BidderIds.Player, FallbackPlayerBidderName);
         playerBidder = new AuctionBidder(BidderIds.Player, playerName, true, null, playerBudget, playerBudget);
         bidders.Add(playerBidder);
 
@@ -131,7 +132,7 @@ public class AuctionController : MonoBehaviour
         AddRaceBidderIfEligible(progress, CollectionMissionRace.Divine, 115 * TenThousand, 120 * TenThousand);
         AddRaceBidderIfEligible(progress, CollectionMissionRace.Fairy, 100 * TenThousand, 130 * TenThousand);
 
-        string mysteryName = auctionView != null ? auctionView.MysteryBidderName : FallbackMysteryBidderName;
+        string mysteryName = ResolveBidderName(BidderIds.Mystery, FallbackMysteryBidderName);
         AddNpcBidder(BidderIds.Mystery, mysteryName, null, 100 * TenThousand, 120 * TenThousand);
     }
 
@@ -314,7 +315,7 @@ public class AuctionController : MonoBehaviour
 
         auctionView?.RefreshState(
             currentPrice,
-            currentBidder?.DisplayName,
+            currentBidder?.BidderId,
             seconds,
             budget,
             participantNames,
@@ -384,6 +385,15 @@ public class AuctionController : MonoBehaviour
 
         auctionView = FindObjectOfType<AuctionView>(true);
         return auctionView;
+    }
+
+    private string ResolveBidderName(string bidderId, string fallback)
+    {
+        if (auctionView == null)
+            return fallback;
+
+        string name = auctionView.GetBidderDisplayName(bidderId);
+        return string.IsNullOrWhiteSpace(name) ? fallback : name;
     }
 
     private void StopAuctionCoroutines()
