@@ -51,6 +51,8 @@ public class AuctionNpc : MonoBehaviour, IInteractable, IMapGuideTarget
     public string ID => GuideIDs.Interactable.AuctionNpc;
 
     private bool isInteracting;
+    [SerializeField]
+    private Transform GuideTransform;
 
     private void Awake()
     {
@@ -74,7 +76,7 @@ public class AuctionNpc : MonoBehaviour, IInteractable, IMapGuideTarget
 
     public void SetMapGuide()
     {
-        NoticeGetItemEvents.InvokeSetMapGuide(ID, transform);
+        NoticeGetItemEvents.InvokeSetMapGuide(ID, GuideTransform);
     }
 
     public void ShowPrompt()

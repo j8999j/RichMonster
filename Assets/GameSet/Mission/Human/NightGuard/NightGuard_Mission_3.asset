@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 088f225fa8c8ed54192668fb68dbac72, type: 3}
+  m_Name: NightGuard_Mission_3
+  m_EditorClassIdentifier: 
+  NpcID: NightGuard
+  MissionID: NightGuard_3
+  MissionName: "\u591C\u665A\u7684\u5DE1\u908F"
+  MissionDescription: "\u624B\u96FB\u7B52\u58DE\u4E86\u9700\u8981\u80FD\u5920\u7167\u4EAE\u5468\u570D\u7684\u7269\u54C1\uFF0C\u8DDF\u4F60\u5206\u4EAB\u591C\u73ED\u7684\u5947\u805E"
+  Requirement:
+    Type: 2
+    TargetItemID: 
+    TargetTag: Light
+    TargetType: 0
+  Rewards:
+  - RewardType: 2
+    GoldAmount: 0
+    ItemID: 
+    ItemAmount: 0
+  IsFinish: 0
+  MissionWorld: 0

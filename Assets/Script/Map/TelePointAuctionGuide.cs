@@ -18,10 +18,10 @@ public class TelePointAuctionGuide : TelePoint, IMapGuideTarget
 
     [Header("Auction Choices")]
     [SerializeField]
-    private string readyPromptFormat = "目前持有金幣：{0}\n已達成拍賣會目標，是否準備就緒開始拍賣會？";
+    private string readyPromptFormat = "目前持有：{0}\n已達成拍賣會目標，是否準備就緒開始拍賣會？";
 
     [SerializeField]
-    private string settlePromptFormat = "目前持有金幣：{0}\n尚未達成 {1} 金幣，是否結算？";
+    private string settlePromptFormat = "目前持有：{0}\n尚未達成 {1}，是否結算？";
 
     [SerializeField]
     private string yesOptionText = "是";
@@ -33,6 +33,8 @@ public class TelePointAuctionGuide : TelePoint, IMapGuideTarget
     private float auctionStartDelayAfterTeleport = 1f;
 
     private bool isInteracting;
+    [SerializeField]
+    private Transform GuideTransform;
 
     private void Awake()
     {
@@ -56,7 +58,7 @@ public class TelePointAuctionGuide : TelePoint, IMapGuideTarget
 
     public void SetMapGuide()
     {
-        NoticeGetItemEvents.InvokeSetMapGuide(ID, transform);
+        NoticeGetItemEvents.InvokeSetMapGuide(ID, GuideTransform);
     }
 
     public override void Interact()
@@ -85,8 +87,12 @@ public class TelePointAuctionGuide : TelePoint, IMapGuideTarget
             int currentGold = DataManager.Instance?.CurrentPlayerData?.Gold ?? 0;
             bool hasEnoughGold = currentGold >= EndingConditionDetector.RequiredAuctionGold;
             string promptText = hasEnoughGold
-                ? string.Format(readyPromptFormat, currentGold)
-                : string.Format(settlePromptFormat, currentGold, EndingConditionDetector.RequiredAuctionGold);
+                ? string.Format(readyPromptFormat, FormatAmountForTemplate(readyPromptFormat, currentGold))
+                : string.Format(
+                    settlePromptFormat,
+                    FormatAmountForTemplate(settlePromptFormat, currentGold),
+                    FormatAmountForTemplate(settlePromptFormat, EndingConditionDetector.RequiredAuctionGold));
+            promptText = NormalizeAuctionText(promptText);
 
             int selectedIndex = await talk.ShowChoicesAsync(promptText, new[] { yesOptionText, noOptionText });
             if (this == null)
@@ -187,5 +193,32 @@ public class TelePointAuctionGuide : TelePoint, IMapGuideTarget
     {
         if (GameManager.Instance?.gameFlow != null)
             await GameManager.Instance.gameFlow.SaveGameAsync();
+    }
+
+    private static string FormatMoney(int amount)
+    {
+        return $"{amount:N0} 元";
+    }
+
+    private static string FormatAmountForTemplate(string template, int amount)
+    {
+        if (!string.IsNullOrEmpty(template)
+            && (template.Contains("元") || template.Contains("金幣")))
+        {
+            return amount.ToString("N0");
+        }
+
+        return FormatMoney(amount);
+    }
+
+    private static string NormalizeAuctionText(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return string.Empty;
+
+        return text
+            .Replace("目前持有金幣", "目前持有")
+            .Replace("目前持有元", "目前持有")
+            .Replace("金幣", "元");
     }
 }

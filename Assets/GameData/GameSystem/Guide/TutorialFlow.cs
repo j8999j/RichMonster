@@ -59,6 +59,7 @@ public class TutorialFlow
     {
         taskQueue.Add(new Task1_FirstTutorial());
         taskQueue.Add(new Task2_SecondTutorial());
+        taskQueue.Add(new Task3_ThirdTutorial());
     }
 
     private void ExecuteNextTask()

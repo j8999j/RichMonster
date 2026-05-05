@@ -71,6 +71,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - NpcMission
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b09445899dc5cd43a1abadefeb04d40
+    m_Address: Assets/GameSet/Mission/MonsterNPCMission/New Folder/WanderingBard_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4b5819ea89c90e94480aa7bb8e725e46
     m_Address: Assets/GameSet/Mission/Deliveryman/Deliveryman_Mission_3.asset
     m_ReadOnly: 0
@@ -151,6 +157,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 96c67fb152a7f9145aafc8a656c814c0
     m_Address: Assets/GameSet/Mission/StreetTeller/StreetTeller_Mission_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9e781ed450483054282ce423ce2d97a6
+    m_Address: Assets/GameSet/Mission/MonsterNPCMission/New Folder/WanderingBard_1.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - NpcMission

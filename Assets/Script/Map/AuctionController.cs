@@ -62,6 +62,7 @@ public class AuctionController : MonoBehaviour
     private float remainingTime;
     private bool auctionActive;
     private bool isResolving;
+    private bool npcBiddingClosed;
     private int lastShownSecond = -1;
 
     private void Awake()
@@ -97,9 +98,11 @@ public class AuctionController : MonoBehaviour
         remainingTime = Mathf.Max(1f, roundSeconds);
         auctionActive = true;
         lastShownSecond = -1;
+        npcBiddingClosed = false;
 
         LockAuction();
         auctionView?.SetVisible(true);
+        auctionView?.EnsureBidderNpcsSpawned();
         auctionView?.ApplyParticipants(bidders.Select(b => b.BidderId));
         auctionView?.HideAllBidBubbles();
         auctionView?.ShowStart(currentPrice);
@@ -112,6 +115,7 @@ public class AuctionController : MonoBehaviour
     public void StopAuction()
     {
         auctionActive = false;
+        npcBiddingClosed = false;
         StopAuctionCoroutines();
         UnlockAuction();
         auctionView?.SetVisible(false);
@@ -194,13 +198,13 @@ public class AuctionController : MonoBehaviour
 
     private IEnumerator NpcBidRoutine()
     {
-        while (auctionActive)
+        while (auctionActive && !npcBiddingClosed)
         {
             float minInterval = Mathf.Min(npcBidIntervalRange.x, npcBidIntervalRange.y);
             float maxInterval = Mathf.Max(npcBidIntervalRange.x, npcBidIntervalRange.y);
             yield return new WaitForSeconds(UnityEngine.Random.Range(minInterval, maxInterval));
 
-            if (!auctionActive)
+            if (!auctionActive || npcBiddingClosed)
                 yield break;
 
             TryNpcBid();
@@ -209,6 +213,12 @@ public class AuctionController : MonoBehaviour
 
     private void TryNpcBid()
     {
+        if (ShouldCloseNpcBidding())
+        {
+            npcBiddingClosed = true;
+            return;
+        }
+
         List<AuctionBidder> candidates = bidders
             .Where(bidder => bidder != null
                 && !bidder.IsPlayer
@@ -278,6 +288,12 @@ public class AuctionController : MonoBehaviour
 
         RefreshAll();
         auctionView?.ShowBid(bidder.BidderId, bidder.DisplayName, currentPrice, bidder.IsPlayer);
+
+        if (!bidder.IsPlayer && ShouldCloseNpcBidding())
+        {
+            npcBiddingClosed = true;
+            auctionView?.ShowPlayerOutbidLimit(currentPrice);
+        }
     }
 
     private async void CompleteAuctionAsync()
@@ -338,6 +354,14 @@ public class AuctionController : MonoBehaviour
             auctionView?.ShowFinalCall(2, currentPrice);
         else if (seconds == 1)
             auctionView?.ShowFinalCall(3, currentPrice);
+    }
+
+    private bool ShouldCloseNpcBidding()
+    {
+        return currentBidder != null
+            && !currentBidder.IsPlayer
+            && playerBidder != null
+            && currentPrice >= playerBidder.Budget;
     }
 
     private void RefreshBidButtons()

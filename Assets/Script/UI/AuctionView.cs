@@ -67,7 +67,11 @@ public class AuctionView : MonoBehaviour
     private AuctionBidderNpc bidderNpcPrefab;                 // 出價者 NPC 的 prefab（含 sprite + 對話框 + 對話文字）
 
     [SerializeField]
-    private List<AuctionBidderSpawnInfo> bidderSpawnPoints = new(); // 每個出價者一筆：ID／名稱／Sprite／生成點
+    private List<AuctionBidderSpawnInfo> bidderSpawnPoints = new(); // NPC 出價者一筆：ID／名稱／Sprite／生成點（不含 Player）
+
+    [Header("Player Bubble / Marker")]
+    [SerializeField]
+    private AuctionPlayerSpawnInfo playerSpawnInfo;            // Player 不需要 AuctionBidderNpc，只需指定對話框與最高價標示停靠點
 
     [SerializeField]
     private GameObject bubblePrefab;                          // 對話框 prefab（含背景 + 一顆 TextMeshProUGUI），由 View 統一生成於每隻 NPC 的 BubbleAnchor 下
@@ -76,11 +80,17 @@ public class AuctionView : MonoBehaviour
     [SerializeField]
     private GameObject highestBidderMarker;                   // 場景中預先擺好的單一「目前最高出價者」標示（UI 層）；View 依當前最高者把它搬到對應 HighestMarkerPoint
 
+    [SerializeField]
+    private bool logInvalidTransformReferences;
+
+    private const string PlayerBidderId = "Player"; // 與 AuctionController.BidderIds.Player 對齊
+
     // 已生成的 NPC：以 BidderId 對應，供 ShowBidBubble 查找
     private readonly Dictionary<string, AuctionBidderNpc> spawnedBidderNpcs = new();
 
     // 已生成的對話框：與 spawnedBidderNpcs 同 key，由 View 直接管理顯示／隱藏
     private readonly Dictionary<string, BubbleEntry> spawnedBubbles = new();
+    private bool bidderNpcsSpawned;
 
     private class BubbleEntry
     {
@@ -92,34 +102,37 @@ public class AuctionView : MonoBehaviour
     // ---- 文字格式（皆使用 string.Format 以便外部翻譯）-------------------
     [Header("Text")]
     [SerializeField]
-    private string startTextFormat = "拍賣會開始，起標價 {0} 金幣。"; // 拍賣會開始，起標價 {0} 金幣。
+    private string startTextFormat = "拍賣會開始，起標價 {0} 元。"; // 拍賣會開始，起標價 {0} 元。
 
     [SerializeField]
-    private string timerFormat = "倒數：{0}";                       // 倒數：{0}
+    private string timerFormat = string.Empty;
 
     [SerializeField]
     private string participantsFormat = "參與者：{0}";          // 參與者：{0}
 
     [SerializeField]
-    private string playerBidTextFormat = "主角出價 {0} 金幣。"; // 主角出價 {0} 金幣。
+    private string playerBidTextFormat = "主角出價 {0} 元。"; // 主角出價 {0} 元。
 
     [SerializeField]
-    private string npcBidTextFormat = "{0} 出價 {1} 金幣。"; // {0} 出價 {1} 金幣。
+    private string npcBidTextFormat = "{0} 出價 {1} 元。"; // {0} 出價 {1} 元。
 
     [SerializeField]
-    private string finalCallOneTextFormat = "目前價格 {0} 金幣，一次。"; // 目前價格 {0} 金幣，一次。
+    private string finalCallOneTextFormat = "目前價格 {0} 元，還有沒有更高？一次。"; // 目前價格 {0} 元，還有沒有更高？一次。
 
     [SerializeField]
-    private string finalCallTwoTextFormat = "目前價格 {0} 金幣，兩次。"; // 目前價格 {0} 金幣，兩次。
+    private string finalCallTwoTextFormat = "最後機會，目前價格 {0} 元，兩次。"; // 最後機會，目前價格 {0} 元，兩次。
 
     [SerializeField]
-    private string finalCallThreeTextFormat = "目前價格 {0} 金幣，三次，交易成立。"; // 目前價格 {0} 金幣，三次，交易成立。
+    private string finalCallThreeTextFormat = "目前價格 {0} 元，三次，交易成立。"; // 目前價格 {0} 元，三次，交易成立。
 
     [SerializeField]
-    private string noMoneyText = "金幣不足，無法出價。"; // 金幣不足，無法出價。
+    private string noMoneyText = "金額不足，無法出價。"; // 金額不足，無法出價。
 
     [SerializeField]
     private string alreadyHighestBidderText = "目前最高出價已經是你。"; // 目前最高出價已經是你。
+
+    [SerializeField]
+    private string playerOutbidLimitTextFormat = "目前價格 {0} 元已到達你的出價上限，等待主持人落槌。";
 
     [SerializeField]
     private string bidBubbleFormat = "{0}\n{1}"; // 泡泡顯示格式：第一行名稱、第二行金額
@@ -154,24 +167,24 @@ public class AuctionView : MonoBehaviour
     // -------------------------------------------------------------------------
 
     /// <summary>
-    /// Start：場景載入時生成 NPC。
-    /// 用 Start（而非 Awake）有兩個原因：
-    ///   1. AuctionView 元件可能掛在 auctionPanel 自身上，Awake 裡呼叫 SetVisible(false)
-    ///      會在生成途中把自己 GameObject 也關掉，造成後續 Instantiate / coroutine 出錯。
-    ///   2. Start 一定在所有 Awake 之後，可避免跨元件初始化順序問題。
-    /// 面板 / 對話框的初始可見性，由場景中預設 inactive 與 Controller 顯式 SetVisible 控制。
-    /// </summary>
-    private void Start()
-    {
-        SpawnBidderNpcs();
-    }
-
-    /// <summary>
     /// OnDestroy：清掉所有按鈕監聽，避免在物件銷毀後仍被外部 Action 持有 reference。
     /// </summary>
     private void OnDestroy()
     {
         ClearBidButtonActions();
+    }
+
+    /// <summary>
+    /// 由 AuctionController 在 StartAuction 時呼叫，做為拍賣會開始時「檢測 + 生成」的單一進入點：
+    ///   - 若已成功生成過 NPC（dict 非空），直接 return，避免重複 Destroy / Instantiate。
+    ///   - 否則執行 SpawnBidderNpcs()，內部會列出所有失敗原因到 Console。
+    /// </summary>
+    public void EnsureBidderNpcsSpawned()
+    {
+        if (bidderNpcsSpawned && spawnedBidderNpcs.Count > 0)
+            return;
+
+        SpawnBidderNpcs();
     }
 
     // -------------------------------------------------------------------------
@@ -205,20 +218,24 @@ public class AuctionView : MonoBehaviour
 
             if (info == null)
             {
-                Debug.LogWarning($"[AuctionView] bidderSpawnPoints[{idx}] = null，已跳過。", this);
+                if (logInvalidTransformReferences)
+                    Debug.Log($"[AuctionView] bidderSpawnPoints[{idx}] = null，已跳過。", this);
                 continue;
             }
 
             Transform spawnPoint = ResolveUsableTransform(info.SpawnPoint, "SpawnPoint", idx, info.BidderId);
             if (spawnPoint == null)
             {
-                Debug.LogWarning($"[AuctionView] bidderSpawnPoints[{idx}] (BidderId='{info.BidderId}') 未設定 SpawnPoint，已跳過。", this);
+                // 沒設這位出價者的 SpawnPoint 視為「本場不顯示這隻 NPC」，安靜跳過即可
+                if (logInvalidTransformReferences)
+                    Debug.Log($"[AuctionView] bidderSpawnPoints[{idx}] (BidderId='{info.BidderId}') 未設定 SpawnPoint，已跳過。", this);
                 continue;
             }
 
             if (!TryGetTransformPose(spawnPoint, out Vector3 spawnPosition, out Quaternion spawnRotation))
             {
-                Debug.LogWarning($"[AuctionView] bidderSpawnPoints[{idx}] (BidderId='{info.BidderId}') SpawnPoint 已失效，略過生成。", this);
+                if (logInvalidTransformReferences)
+                    Debug.Log($"[AuctionView] bidderSpawnPoints[{idx}] (BidderId='{info.BidderId}') SpawnPoint 已失效，略過生成。", this);
                 continue;
             }
 
@@ -240,24 +257,55 @@ public class AuctionView : MonoBehaviour
             string key = !string.IsNullOrEmpty(info.BidderId) ? info.BidderId : info.DisplayName;
             if (string.IsNullOrEmpty(key))
             {
-                Debug.LogWarning($"[AuctionView] bidderSpawnPoints[{idx}] 同時缺少 BidderId 與 DisplayName，無法註冊到查找字典。", this);
+                if (logInvalidTransformReferences)
+                    Debug.Log($"[AuctionView] bidderSpawnPoints[{idx}] 同時缺少 BidderId 與 DisplayName，無法註冊到查找字典。", this);
                 continue;
             }
 
             spawnedBidderNpcs[key] = npc;
 
             // 為這隻 NPC 生成一個對話框；優先掛在 info.BubbleSpawnPoint（UI 層）下
-            BubbleEntry entry = CreateBubbleFor(info, npc);
+            BubbleEntry entry = CreateBubbleFor(info);
             if (entry != null)
                 spawnedBubbles[key] = entry;
 
             spawnedCount++;
         }
 
-        Debug.Log($"[AuctionView] 成功生成 {spawnedCount} / {bidderSpawnPoints.Count} 隻 AuctionBidderNpc。", this);
+        if (spawnedCount == 0)
+            Debug.LogWarning("[AuctionView] 一隻 AuctionBidderNpc 都沒生成，請檢查 bidderSpawnPoints / SpawnPoint 設定。", this);
+        else
+            Debug.Log($"[AuctionView] 成功生成 {spawnedCount} 隻 AuctionBidderNpc（bidderSpawnPoints 共 {bidderSpawnPoints.Count} 筆）。", this);
+        bidderNpcsSpawned = spawnedCount > 0;
+
+        // Player 不需要 NPC 立繪，只註冊對話框（marker 在 UpdateHighestBidderMarker 直接讀 playerSpawnInfo）
+        RegisterPlayerBubble();
     }
 
-    private BubbleEntry CreateBubbleFor(AuctionBidderSpawnInfo info, AuctionBidderNpc npc)
+    private void RegisterPlayerBubble()
+    {
+        if (playerSpawnInfo == null || playerSpawnInfo.BubbleSpawnPoint == null || bubblePrefab == null)
+            return;
+
+        Transform parent = ResolveUsableTransform(playerSpawnInfo.BubbleSpawnPoint, "BubbleSpawnPoint", -1, PlayerBidderId);
+        if (parent == null)
+            return;
+
+        GameObject root = Instantiate(bubblePrefab, parent, false);
+        TextMeshProUGUI text = root.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (text == null && logInvalidTransformReferences)
+            Debug.LogWarning("[AuctionView] bubblePrefab 內找不到 TextMeshProUGUI（Player）。", root);
+
+        BubbleEntry entry = new()
+        {
+            Root = root,
+            Text = text
+        };
+        root.SetActive(false);
+        spawnedBubbles[PlayerBidderId] = entry;
+    }
+
+    private BubbleEntry CreateBubbleFor(AuctionBidderSpawnInfo info)
     {
         if (bubblePrefab == null)
         {
@@ -265,11 +313,8 @@ public class AuctionView : MonoBehaviour
             return null;
         }
 
-        // 優先用 UI 層的 BubbleSpawnPoint；未指定則 fallback 到 NPC 之下
+        // 一律使用 AuctionBidderSpawnInfo.BubbleSpawnPoint 作為對話框 parent
         Transform parent = ResolveUsableTransform(info?.BubbleSpawnPoint, "BubbleSpawnPoint", -1, info?.BidderId);
-        if (parent == null && npc != null)
-            parent = npc.transform;
-
         if (parent == null)
             return null;
 
@@ -293,8 +338,15 @@ public class AuctionView : MonoBehaviour
         foreach (var pair in spawnedBubbles)
         {
             BubbleEntry entry = pair.Value;
-            if (entry?.HideRoutine != null)
+            if (entry == null)
+                continue;
+
+            if (entry.HideRoutine != null)
                 StopCoroutine(entry.HideRoutine);
+
+            // bubble 是 parent 在 BubbleSpawnPoint（UI 層），不會跟著 NPC 一起被 Destroy，這裡明確清掉
+            if (entry.Root != null)
+                Destroy(entry.Root);
         }
         spawnedBubbles.Clear();
 
@@ -305,6 +357,7 @@ public class AuctionView : MonoBehaviour
         }
 
         spawnedBidderNpcs.Clear();
+        bidderNpcsSpawned = false;
     }
 
     /// <summary>
@@ -313,6 +366,8 @@ public class AuctionView : MonoBehaviour
     /// </summary>
     public void ApplyParticipants(IEnumerable<string> activeBidderIds)
     {
+        EnsureBidderNpcsSpawned();
+
         HashSet<string> activeSet = activeBidderIds != null
             ? new HashSet<string>(activeBidderIds)
             : null;
@@ -465,9 +520,9 @@ public class AuctionView : MonoBehaviour
         IReadOnlyList<int> bidAmounts,
         IReadOnlyList<bool> bidButtonStates)
     {
-        SetCurrentPrice(currentPrice.ToString());
+        SetCurrentPrice(FormatMoney(currentPrice));
         SetTimerSeconds(seconds);
-        SetPlayerBudget(playerBudget.ToString());
+        SetPlayerBudget(FormatMoney(playerBudget));
         SetBidButtonStates(bidAmounts, bidButtonStates);
         UpdateHighestBidderMarker(currentBidderId);
     }
@@ -481,62 +536,108 @@ public class AuctionView : MonoBehaviour
         if (highestBidderMarker == null)
             return;
 
-        if (string.IsNullOrEmpty(currentBidderId) || bidderSpawnPoints == null)
+        if (string.IsNullOrEmpty(currentBidderId))
         {
             highestBidderMarker.SetActive(false);
             return;
         }
 
+        // Player 從 playerSpawnInfo 取點位；其餘 NPC 從 bidderSpawnPoints 找對應 BidderId
         Transform target = null;
-        foreach (AuctionBidderSpawnInfo info in bidderSpawnPoints)
+        if (currentBidderId == PlayerBidderId)
         {
-            if (info != null && info.BidderId == currentBidderId)
+            if (playerSpawnInfo != null)
+                target = ResolveUsableTransform(playerSpawnInfo.HighestMarkerPoint, "HighestMarkerPoint", -1, PlayerBidderId);
+        }
+        else if (bidderSpawnPoints != null)
+        {
+            foreach (AuctionBidderSpawnInfo info in bidderSpawnPoints)
             {
-                target = ResolveUsableTransform(info.HighestMarkerPoint, "HighestMarkerPoint", -1, currentBidderId);
-                break;
+                if (info != null && info.BidderId == currentBidderId)
+                {
+                    target = ResolveUsableTransform(info.HighestMarkerPoint, "HighestMarkerPoint", -1, currentBidderId);
+                    break;
+                }
             }
         }
 
         if (target == null)
         {
-            Debug.LogWarning($"[AuctionView] BidderId='{currentBidderId}' 沒設定 HighestMarkerPoint，marker 無法顯示。");
+            if (logInvalidTransformReferences)
+                Debug.LogWarning($"[AuctionView] BidderId='{currentBidderId}' 沒設定 HighestMarkerPoint，marker 無法顯示。", this);
             highestBidderMarker.SetActive(false);
             return;
         }
 
         Transform markerTransform = highestBidderMarker.transform;
         markerTransform.SetParent(target, false);
+        Vector3 markerScale = new(0.15f, 0.15f, 1f);
         if (markerTransform is RectTransform rect)
         {
             rect.anchoredPosition = Vector2.zero;
             rect.localRotation = Quaternion.identity;
-            rect.localScale = Vector3.one;
+            rect.localScale = markerScale;
         }
         else
         {
             markerTransform.localPosition = Vector3.zero;
             markerTransform.localRotation = Quaternion.identity;
-            markerTransform.localScale = Vector3.one;
+            markerTransform.localScale = markerScale;
         }
         highestBidderMarker.SetActive(true);
     }
 
     private Transform ResolveUsableTransform(Transform transformValue, string fieldName, int index, string bidderId)
     {
-        if (transformValue == null)
+        if (transformValue != null)
+        {
+            try
+            {
+                _ = transformValue.gameObject;
+                return transformValue;
+            }
+            catch (MissingReferenceException)
+            {
+                if (logInvalidTransformReferences)
+                {
+                    string indexText = index >= 0 ? $"[{index}]" : string.Empty;
+                    Debug.LogWarning($"[AuctionView] bidderSpawnPoints{indexText} (BidderId='{bidderId}') 的 {fieldName} 已被銷毀，會嘗試自動查找或使用 fallback。", this);
+                }
+            }
+        }
+
+        return FindSceneTransformByBidderField(fieldName, bidderId);
+    }
+
+    private Transform FindSceneTransformByBidderField(string fieldName, string bidderId)
+    {
+        if (string.IsNullOrWhiteSpace(fieldName) || string.IsNullOrWhiteSpace(bidderId))
             return null;
 
-        try
+        string shortFieldName = fieldName.Replace("Point", string.Empty);
+        string[] candidateNames =
         {
-            _ = transformValue.gameObject;
-            return transformValue;
-        }
-        catch (MissingReferenceException)
+            $"{bidderId}_{fieldName}",
+            $"{bidderId}{fieldName}",
+            $"{fieldName}_{bidderId}",
+            $"{bidderId}_{shortFieldName}",
+            $"{shortFieldName}_{bidderId}"
+        };
+
+        Transform[] transforms = FindObjectsOfType<Transform>(true);
+        foreach (Transform candidate in transforms)
         {
-            string indexText = index >= 0 ? $"[{index}]" : string.Empty;
-            Debug.LogWarning($"[AuctionView] bidderSpawnPoints{indexText} (BidderId='{bidderId}') 的 {fieldName} 已被銷毀，請重新指定場景物件。", this);
-            return null;
+            if (candidate == null)
+                continue;
+
+            for (int i = 0; i < candidateNames.Length; i++)
+            {
+                if (candidate.name == candidateNames[i])
+                    return candidate;
+            }
         }
+
+        return null;
     }
 
     private static bool TryGetTransformPose(Transform target, out Vector3 position, out Quaternion rotation)
@@ -566,7 +667,7 @@ public class AuctionView : MonoBehaviour
     /// <summary>顯示「拍賣會開始，起標價 X 金幣」。</summary>
     public void ShowStart(int startingPrice)
     {
-        SetHostText(string.Format(startTextFormat, startingPrice));
+        SetHostText(string.Format(startTextFormat, FormatAmountForTemplate(startTextFormat, startingPrice)));
     }
 
     /// <summary>
@@ -579,8 +680,8 @@ public class AuctionView : MonoBehaviour
     public void ShowBid(string bidderId, string bidderName, int bidAmount, bool isPlayer)
     {
         string text = isPlayer
-            ? string.Format(playerBidTextFormat, bidAmount)
-            : string.Format(npcBidTextFormat, bidderName, bidAmount);
+            ? string.Format(playerBidTextFormat, FormatAmountForTemplate(playerBidTextFormat, bidAmount))
+            : string.Format(npcBidTextFormat, bidderName, FormatAmountForTemplate(npcBidTextFormat, bidAmount));
         SetHostText(text);
         ShowBidBubble(bidderId, bidderName, bidAmount);
     }
@@ -597,7 +698,7 @@ public class AuctionView : MonoBehaviour
             2 => finalCallTwoTextFormat,
             _ => finalCallThreeTextFormat
         };
-        SetHostText(string.Format(format, currentPrice));
+        SetHostText(string.Format(format, FormatAmountForTemplate(format, currentPrice)));
     }
 
     /// <summary>
@@ -605,8 +706,9 @@ public class AuctionView : MonoBehaviour
     /// </summary>
     public void ShowNoMoney()
     {
-        SetHostText(noMoneyText);
-        SystemInfoEvent.Show(noMoneyText);
+        string text = NormalizeAuctionText(noMoneyText);
+        SetHostText(text);
+        SystemInfoEvent.Show(text);
     }
 
     /// <summary>玩家想再出價但自己已是最高價時的提示。</summary>
@@ -615,10 +717,15 @@ public class AuctionView : MonoBehaviour
         SetHostText(alreadyHighestBidderText);
     }
 
+    public void ShowPlayerOutbidLimit(int currentPrice)
+    {
+        SetHostText(string.Format(playerOutbidLimitTextFormat, FormatAmountForTemplate(playerOutbidLimitTextFormat, currentPrice)));
+    }
+
     /// <summary>單獨更新倒數秒數欄位（不影響其他 UI）。</summary>
     public void SetTimerSeconds(int seconds)
     {
-        SetTimer(string.Format(timerFormat, seconds));
+        SetTimer(string.Empty);
     }
 
     // -------------------------------------------------------------------------
@@ -628,19 +735,22 @@ public class AuctionView : MonoBehaviour
     private void SetHostText(string text)
     {
         if (hostText != null)
-            hostText.text = text ?? string.Empty;
+            hostText.text = NormalizeAuctionText(text);
     }
 
     private void SetCurrentPrice(string text)
     {
         if (currentPriceText != null)
-            currentPriceText.text = text ?? string.Empty;
+            currentPriceText.text = "當前出價:  " + text ?? string.Empty;
     }
 
     private void SetTimer(string text)
     {
         if (timerText != null)
+        {
             timerText.text = text ?? string.Empty;
+            timerText.gameObject.SetActive(!string.IsNullOrEmpty(timerText.text));
+        }
     }
 
     private void SetPlayerBudget(string text)
@@ -662,13 +772,15 @@ public class AuctionView : MonoBehaviour
         BubbleEntry entry = FindBubble(bidderId, bidderName);
         if (entry == null)
         {
-            Debug.LogWarning($"[AuctionView] 找不到 bidder='{bidderId}' / name='{bidderName}' 的對話框，請檢查 bidderSpawnPoints 設定。");
+            // 該出價者沒有對應 spawn 設定（例如該位置被刻意留空）→ 不顯示對話框、安靜結束
+            if (logInvalidTransformReferences)
+                Debug.Log($"[AuctionView] 找不到 bidder='{bidderId}' / name='{bidderName}' 的對話框（bidderSpawnPoints 未設定該位）。");
             return;
         }
         if (entry.Root == null || entry.Text == null)
             return;
 
-        entry.Text.text = string.Format(bidBubbleFormat, bidderName, bidAmount);
+        entry.Text.text = NormalizeAuctionText(string.Format(bidBubbleFormat, bidderName, FormatAmountForTemplate(bidBubbleFormat, bidAmount)));
         entry.Root.SetActive(true);
 
         if (entry.HideRoutine != null)
@@ -774,7 +886,30 @@ public class AuctionView : MonoBehaviour
     {
         TextMeshProUGUI label = button.GetComponentInChildren<TextMeshProUGUI>(true);
         if (label != null)
-            label.text = $"+{amount}";
+            label.text = $"+{FormatMoney(amount)}";
+    }
+
+    private static string FormatMoney(int amount)
+    {
+        return $"{amount:N0} 元";
+    }
+
+    private static string FormatAmountForTemplate(string template, int amount)
+    {
+        if (!string.IsNullOrEmpty(template)
+            && (template.Contains("元") || template.Contains("金幣")))
+        {
+            return amount.ToString("N0");
+        }
+
+        return FormatMoney(amount);
+    }
+
+    private static string NormalizeAuctionText(string text)
+    {
+        return string.IsNullOrEmpty(text)
+            ? string.Empty
+            : text.Replace("金幣", "元");
     }
 
     /// <summary>
@@ -814,4 +949,17 @@ public class AuctionBidderSpawnInfo
     public Transform SpawnPoint;         // NPC 生成位置；NPC 會 parent 到此 Transform 之下（HumanMissionGeneator 模式）
     public Transform BubbleSpawnPoint;   // 對話框生成位置（UI 層 RectTransform；建議在 Canvas 之下）
     public Transform HighestMarkerPoint; // 「目前最高出價者」標示停靠位置（UI 層 RectTransform；建議在 Canvas 之下）
+}
+
+// =============================================================================
+// AuctionPlayerSpawnInfo：Player 專用的「對話框 + 最高出價標示停靠點」設定
+// -----------------------------------------------------------------------------
+// Player 不會被 Instantiate 成 AuctionBidderNpc（玩家本人不需要場上立繪），
+// 只需要兩個 UI 點位讓 View 在 Player 出價時把對話框／marker 放上去。
+// =============================================================================
+[Serializable]
+public class AuctionPlayerSpawnInfo
+{
+    public RectTransform BubbleSpawnPoint;   // 玩家出價時對話框停靠點（UI 層 RectTransform）
+    public Transform HighestMarkerPoint; // 玩家為最高出價者時 marker 停靠點（UI 層 RectTransform）
 }

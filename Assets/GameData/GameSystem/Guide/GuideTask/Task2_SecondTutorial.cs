@@ -117,7 +117,7 @@ public class Task2_SecondTutorial : GuideTask
 
         foreach (var itemID in itemIDs)
         {
-            DataManager.Instance.AddItem(itemID, 1);
+            DataManager.Instance.AddItem(itemID, 0);
         }
         foreach (var itemID in itemIDs)
         {

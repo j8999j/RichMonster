@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 088f225fa8c8ed54192668fb68dbac72, type: 3}
+  m_Name: StreetTeller_Mission_3
+  m_EditorClassIdentifier: 
+  NpcID: StreetTeller
+  MissionID: StreetTeller_3
+  MissionName: "\u93AE\u58D3\u715E\u6C23"
+  MissionDescription: "\u9019\u689D\u8857\u7684\u98A8\u6C34\u4E0D\u5C0D\u52C1\uFF0C\u8001\u592B\u9700\u8981\u4E00\u4EF6\u6CD5\u5668\u7A7F\u6234\u5728\u8EAB\u4E0A\u93AE\u58D3\u715E\u6C23\uFF01"
+  Requirement:
+    Type: 3
+    TargetItemID: Mineralwater
+    TargetTag: Potion
+    TargetType: 0
+  Rewards:
+  - RewardType: 0
+    GoldAmount: 1600
+    ItemID: 
+    ItemAmount: 0
+  IsFinish: 0
+  MissionWorld: 0

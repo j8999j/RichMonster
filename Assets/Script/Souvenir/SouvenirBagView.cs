@@ -304,6 +304,9 @@ namespace Souvenir
                     && interactiveSouvenir.HasInteraction
                     && interactiveSouvenir.CanShowInteractionButton())
                 {
+                    if (AuctionDayGuide.ShouldHideSouvenirUseButton(DataManager.Instance?.CurrentPlayerData))
+                        return;
+
                     InteractButton.gameObject.SetActive(true);
                     if (InteractButtonText != null)
                     {
