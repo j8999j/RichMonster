@@ -16,6 +16,7 @@ public class GuideFlowUI : MonoBehaviour
         SetGuideImageEvent += SetGuideImage;
         GuideImage.gameObject.GetComponent<Image>().alphaHitTestMinimumThreshold = 0.3f;
         GuaranteeDepositGuide.ReapplyMessage();
+        AuctionEntryFeeGuide.ReapplyMessage();
         StartCoroutine(ReapplyActiveGuideAfterSceneSetup());
     }
 
@@ -49,5 +50,6 @@ public class GuideFlowUI : MonoBehaviour
     {
         yield return null;
         GuaranteeDepositGuide.ReapplyMessage();
+        AuctionEntryFeeGuide.ReapplyMessage();
     }
 }

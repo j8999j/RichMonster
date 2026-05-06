@@ -7,6 +7,8 @@ public static class AuctionEntryFeeGuide
 
     private static GuideTask activeTask;
 
+    public static bool HasActiveMessage => ShouldShow(DataManager.Instance?.CurrentPlayerData);
+
     public static void Refresh()
     {
         if (ShouldShow(DataManager.Instance?.CurrentPlayerData))
@@ -31,10 +33,30 @@ public static class AuctionEntryFeeGuide
     private static void Show()
     {
         if (activeTask != null)
+        {
+            ReapplyMessage();
             return;
+        }
 
         activeTask = new AuctionEntryFeeGuideTask(GuideMessage);
         activeTask.Start(() => activeTask = null);
+    }
+
+    public static void ReapplyMessage()
+    {
+        if (!HasActiveMessage)
+            return;
+
+        if (activeTask == null)
+        {
+            activeTask = new AuctionEntryFeeGuideTask(GuideMessage);
+            activeTask.Start(() => activeTask = null);
+            return;
+        }
+
+        RegisterAuctionNpcGuide();
+        NoticeGetItemEvents.InvokeStartMapGuide(GuideIDs.Interactable.AuctionNpc);
+        GuideFlowUI.SetGuideFlowTextEvent?.Invoke(GuideMessage, true);
     }
 
     private static bool ShouldShow(IReadOnlyPlayerData playerData)
@@ -70,14 +92,14 @@ public static class AuctionEntryFeeGuide
                     onDisposeCallback: NoticeGetItemEvents.InvokeClearMapGuide)
             };
         }
+    }
 
-        private static void RegisterAuctionNpcGuide()
+    private static void RegisterAuctionNpcGuide()
+    {
+        AuctionNpc[] npcs = Object.FindObjectsOfType<AuctionNpc>(true);
+        for (int i = 0; i < npcs.Length; i++)
         {
-            AuctionNpc[] npcs = Object.FindObjectsOfType<AuctionNpc>(true);
-            for (int i = 0; i < npcs.Length; i++)
-            {
-                npcs[i]?.SetMapGuide();
-            }
+            npcs[i]?.SetMapGuide();
         }
     }
 }

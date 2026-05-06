@@ -155,6 +155,12 @@ public class ContractView : MonoBehaviour
         {
             payGuaranteeDepositButton.gameObject.SetActive(!hasPaidGuaranteeDeposit);
             payGuaranteeDepositButton.interactable = playerData != null
+                && !hasPaidGuaranteeDeposit;
+        }
+
+        if (guaranteeDepositConfirmButton != null)
+        {
+            guaranteeDepositConfirmButton.interactable = playerData != null
                 && !hasPaidGuaranteeDeposit
                 && currentGold >= EndingConditionDetector.GuaranteeDepositAmount;
         }
@@ -176,12 +182,6 @@ public class ContractView : MonoBehaviour
         var playerData = DataManager.Instance?.CurrentPlayerData;
         if (playerData == null || playerData.HasPaidGuaranteeDeposit)
             return;
-
-        if (playerData.Gold < EndingConditionDetector.GuaranteeDepositAmount)
-        {
-            PlaySfx(payDepositFailedSfx);
-            return;
-        }
 
         if (guaranteeDepositConfirmText != null)
         {
