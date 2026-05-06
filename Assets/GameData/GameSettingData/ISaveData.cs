@@ -34,4 +34,5 @@ public class TutorialSaveData : ISaveData
     public int CurrentStepIndex;
     public bool IsComplete;
     public bool IsPurchased;
+    public bool Task2SecondRewardClaimed;
 }

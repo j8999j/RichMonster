@@ -884,8 +884,10 @@ MonoBehaviour:
     MusicIndex: 1
   - SceneName: MonsterWorldScene
     MusicIndex: 2
-  initialMusicVolume: 0
-  initialSfxVolume: 1
+  auctionMusic: {fileID: 8300000, guid: d805a425e298d844cbd414f5c345c957, type: 3}
+  auctionMusicFadeDuration: 1
+  initialMusicVolume: 0.1
+  initialSfxVolume: 0.8
   defaultMusicFadeDuration: 1
   useUnscaledTime: 1
   saveVolumeSettings: 1

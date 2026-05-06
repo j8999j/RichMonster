@@ -1,6 +1,6 @@
 public static class EndingConditionDetector
 {
-    public const int GuaranteeDepositDeadlineDay = 7;
+    public const int GuaranteeDepositDeadlineDay = 8;
     public const int GuaranteeDepositAmount = 30000;
     public const int AuctionEntryFeeDeadlineDay = 15;
     public const int AuctionEntryFeeAmount = 100000;

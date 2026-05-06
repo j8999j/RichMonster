@@ -83,6 +83,7 @@ public class DataManager : Singleton<DataManager>
     /// <summary> 玩家主畫面資料更新事件 (Day, Gold, PlayingStatus) </summary>
     public event Action<int, int, DayPhase> PlayerMainViewUpdate;
     public event Action OnItemPurchased;
+    public event Action BookDataChanged;
     #endregion
     protected override void Awake()
     {
@@ -357,6 +358,7 @@ public class DataManager : Singleton<DataManager>
         _achievementSaveDict = new Dictionary<string, IAchievementSave>();
         _specialSouvenirSaveDict = new Dictionary<string, ISpecialSouvenirSave>();
         OnBookDataChanged = false;
+        BookDataChanged?.Invoke();
         Debug.Log("[DataManager] 圖鑑資料快取已清空");
     }
 
@@ -381,7 +383,7 @@ public class DataManager : Singleton<DataManager>
             });
         }
 
-        OnBookDataChanged = true;
+        MarkBookDataChanged();
         SaveManager.Instance.SaveBookData(_bookData);
     }
 
@@ -436,7 +438,7 @@ public class DataManager : Singleton<DataManager>
                 }
             }
 
-            OnBookDataChanged = true;
+            MarkBookDataChanged();
             SaveManager.Instance.SaveBookData(_bookData);
         }
     }
@@ -568,7 +570,7 @@ public class DataManager : Singleton<DataManager>
 
         if (changed)
         {
-            OnBookDataChanged = true;
+            MarkBookDataChanged();
             SaveManager.Instance.SaveBookData(_bookData);
         }
     }
@@ -582,7 +584,7 @@ public class DataManager : Singleton<DataManager>
         if (_bookData.MonsterBookData.NewMonsterInformationID != null
             && _bookData.MonsterBookData.NewMonsterInformationID.Remove(informationId))
         {
-            OnBookDataChanged = true;
+            MarkBookDataChanged();
             SaveManager.Instance.SaveBookData(_bookData);
             return true;
         }
@@ -598,7 +600,7 @@ public class DataManager : Singleton<DataManager>
         if (_bookData.MonsterBookData.NewMonsterStoryID != null
             && _bookData.MonsterBookData.NewMonsterStoryID.Remove(storyId))
         {
-            OnBookDataChanged = true;
+            MarkBookDataChanged();
             SaveManager.Instance.SaveBookData(_bookData);
             return true;
         }
@@ -764,6 +766,13 @@ public class DataManager : Singleton<DataManager>
     public void SetBookDataChanged(bool value)
     {
         OnBookDataChanged = value;
+        BookDataChanged?.Invoke();
+    }
+
+    private void MarkBookDataChanged()
+    {
+        OnBookDataChanged = true;
+        BookDataChanged?.Invoke();
     }
 
 

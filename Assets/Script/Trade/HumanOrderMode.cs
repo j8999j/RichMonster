@@ -262,6 +262,13 @@ public class HumanOrderMode : MonoBehaviour
     #region UIMethods
     public void ShowLargeOrderBagItems(HumanLargeOrder order)
     {
+        if (order == null)
+        {
+            _humanOrderView.ShowBagItems(new List<Item>());
+            _humanOrderView.ShowUnmatchedBagItems(new List<Item>());
+            return;
+        }
+
         var allItems = DataManager.Instance.CurrentPlayerData.InventoryItems;
         List<Item> matchedItems = new List<Item>();
         List<Item> unmatchedTypeItems = new List<Item>();
@@ -298,6 +305,13 @@ public class HumanOrderMode : MonoBehaviour
     }
     public void ShowSmallOrderBagItems(HumanSmallOrder order)
     {
+        if (order == null)
+        {
+            _humanOrderView.ShowBagItems(new List<Item>());
+            _humanOrderView.ShowUnmatchedBagItems(new List<Item>());
+            return;
+        }
+
         var allItems = DataManager.Instance.CurrentPlayerData.InventoryItems;
         List<Item> matchedItems = new List<Item>();
         List<Item> unmatchedTypeItems = new List<Item>();
@@ -332,9 +346,13 @@ public class HumanOrderMode : MonoBehaviour
     }
     private void ShowTodayOrder()
     {
+        ShowTodayOrder(true);
+    }
+    private void ShowTodayOrder(bool selectFirstOrder)
+    {
         LoadOrdersHistory();
         var (largeOrders, smallOrders) = GetTodayOrders();
-        _humanOrderView.ShowAllOrderSlots(largeOrders, smallOrders);
+        _humanOrderView.ShowAllOrderSlots(largeOrders, smallOrders, selectFirstOrder);
     }
     #endregion
     #region UI 操作
@@ -434,7 +452,7 @@ public class HumanOrderMode : MonoBehaviour
                 DataManager.Instance.RemoveItem(item);
             }
             // 刷新訂單列表顯示
-            ShowTodayOrder();
+            ShowTodayOrder(false);
             ShowLargeOrderBagItems(SelectedLargeOrder);
             ClearSelectedData();
             _humanOrderView.ClearOrderView();
@@ -451,7 +469,7 @@ public class HumanOrderMode : MonoBehaviour
             AchievementEvents.CompleteOrder(SelectedSmallOrder.OrderId, itemIds, TradePrice);
             DataManager.Instance.RemoveItem(SelectedOrderItems[0]);
             // 刷新訂單列表顯示
-            ShowTodayOrder();
+            ShowTodayOrder(false);
             ShowSmallOrderBagItems(SelectedSmallOrder);
             ClearSelectedData();
             _humanOrderView.ClearOrderView();

@@ -8983,7 +8983,7 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 70, y: 40}
-  m_Spacing: {x: 0, y: 0}
+  m_Spacing: {x: 5, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!1 &810334483
@@ -9212,7 +9212,7 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 70, y: 40}
-  m_Spacing: {x: 0, y: 0}
+  m_Spacing: {x: 5, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!1 &818361491
@@ -17657,7 +17657,7 @@ MonoBehaviour:
   MonsterText: {fileID: 1812521987}
   PreferContain: {fileID: 808528963}
   HateContain: {fileID: 812851575}
-  MonsterTagTargetSize: 80
+  MonsterTagTargetSize: 75
   TradeDropZone: {fileID: 1215116034}
   HatedEffect: {fileID: 3849510}
   OkayEffect: {fileID: 469851447}
@@ -18131,6 +18131,7 @@ MonoBehaviour:
   LeavePanel: {fileID: 433096056}
   GamePanel: {fileID: 1057747804}
   IsPlayPanel: {fileID: 895716470}
+  IsPlayText: {fileID: 2131594943}
   PlayerObj: {fileID: 95238168}
   EatHole: {fileID: 205460572}
   TreasureBox: {fileID: 117397714}

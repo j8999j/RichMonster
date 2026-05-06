@@ -112,6 +112,8 @@ public class GameBookView : MonoBehaviour
     private readonly Color _activeColor = Color.white;
     private readonly Color _dimColor = new Color(0.5f, 0.5f, 0.5f, 1f);
     private bool _monsterContentHighlightRegistered;
+    private DataManager _subscribedBookDataManager;
+    private Coroutine _bookNotificationRefreshRoutine;
 
     private void Awake()
     {
@@ -152,6 +154,29 @@ public class GameBookView : MonoBehaviour
             FairyButton.onClick.AddListener(() => SetRaceFilter(RaceFilter.Fairy));
 
         RegisterMonsterContentHighlightListeners();
+    }
+
+    private void OnEnable()
+    {
+        SubscribeBookDataChanged();
+        QueueBookNotificationRefresh();
+    }
+
+    private void Start()
+    {
+        SubscribeBookDataChanged();
+        QueueBookNotificationRefresh();
+    }
+
+    private void OnDisable()
+    {
+        if (_bookNotificationRefreshRoutine != null)
+        {
+            StopCoroutine(_bookNotificationRefreshRoutine);
+            _bookNotificationRefreshRoutine = null;
+        }
+
+        UnsubscribeBookDataChanged();
     }
 
     #region 圖鑑切換
@@ -593,6 +618,10 @@ public class GameBookView : MonoBehaviour
                     unlockedInfosList.Add(info);
                 }
             }
+
+            unlockedInfosList = unlockedInfosList
+                .OrderBy(info => SaveBook.MonsterBookData.UnlockMonsterInformationID.IndexOf(info.InformationID))
+                .ToList();
         }
 
         unlockedInfoCount = unlockedInfosList.Count;
@@ -723,11 +752,65 @@ public class GameBookView : MonoBehaviour
     /// </summary>
     private void UpdateGlobalNewIcon()
     {
-        bool hasAny = DataManager.Instance.HasAnyNewMonsterInfo();
+        bool hasAny = DataManager.Instance != null && DataManager.Instance.HasAnyNewMonsterInfo();
         if (NewIcon != null)
             NewIcon.gameObject.SetActive(hasAny);
         if (NewIcon_PageButton != null)
             NewIcon_PageButton.gameObject.SetActive(hasAny);
+    }
+
+    private void RefreshBookNotificationState()
+    {
+        if (DataManager.Instance != null)
+        {
+            SaveBook = DataManager.Instance.GetBookData();
+        }
+
+        UpdateGlobalNewIcon();
+    }
+
+    private void QueueBookNotificationRefresh()
+    {
+        if (_bookNotificationRefreshRoutine != null || !isActiveAndEnabled)
+        {
+            return;
+        }
+
+        _bookNotificationRefreshRoutine = StartCoroutine(RefreshBookNotificationWhenReady());
+    }
+
+    private System.Collections.IEnumerator RefreshBookNotificationWhenReady()
+    {
+        while (DataManager.Instance == null || !DataManager.Instance.IsInitialized)
+        {
+            yield return null;
+        }
+
+        _bookNotificationRefreshRoutine = null;
+        SubscribeBookDataChanged();
+        RefreshBookNotificationState();
+    }
+
+    private void SubscribeBookDataChanged()
+    {
+        if (_subscribedBookDataManager != null || DataManager.Instance == null)
+        {
+            return;
+        }
+
+        _subscribedBookDataManager = DataManager.Instance;
+        _subscribedBookDataManager.BookDataChanged += RefreshBookNotificationState;
+    }
+
+    private void UnsubscribeBookDataChanged()
+    {
+        if (_subscribedBookDataManager == null)
+        {
+            return;
+        }
+
+        _subscribedBookDataManager.BookDataChanged -= RefreshBookNotificationState;
+        _subscribedBookDataManager = null;
     }
 
     /// <summary>

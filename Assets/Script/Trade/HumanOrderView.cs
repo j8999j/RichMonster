@@ -4,7 +4,6 @@ using System.Linq;
 using GameSystem;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using Player;
 using TMPro;
 
 public class HumanOrderView : MonoBehaviour, IGuideInteractable
@@ -251,24 +250,47 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
     }
     private void InvokeSelectedOrder(HumanLargeOrder order)
     {
-        PlaySfx(selectOrderSfx);
-        OnSelectedLargeOrder?.Invoke(order);
-        UpdateOrderView(order);
-        BagscrollRect.verticalNormalizedPosition = 1f;
+        SelectOrder(order, true);
     }
     private void InvokeSelectedOrder(HumanSmallOrder order)
     {
-        PlaySfx(selectOrderSfx);
+        SelectOrder(order, true);
+    }
+    private void SelectOrder(HumanLargeOrder order, bool playSound)
+    {
+        if (order == null) return;
+
+        if (playSound)
+        {
+            PlaySfx(selectOrderSfx);
+        }
+
+        OnSelectedLargeOrder?.Invoke(order);
+        UpdateOrderView(order);
+        if (BagscrollRect != null) BagscrollRect.verticalNormalizedPosition = 1f;
+    }
+    private void SelectOrder(HumanSmallOrder order, bool playSound)
+    {
+        if (order == null) return;
+
+        if (playSound)
+        {
+            PlaySfx(selectOrderSfx);
+        }
+
         OnSelectedSmallOrder?.Invoke(order);
         UpdateOrderView(order);
-        BagscrollRect.verticalNormalizedPosition = 1f;
+        if (BagscrollRect != null) BagscrollRect.verticalNormalizedPosition = 1f;
     }
     /// <summary>
     /// 顯示所有訂單（大訂單根據稀有度排序，小訂單在後面）
     /// </summary>
-    public void ShowAllOrderSlots(List<HumanLargeOrder> largeOrders, List<HumanSmallOrder> smallOrders)
+    public void ShowAllOrderSlots(List<HumanLargeOrder> largeOrders, List<HumanSmallOrder> smallOrders, bool selectFirstOrder = true)
     {
         // 根據稀有度排序大訂單（降序：SuperRare > Rare > Common）
+        largeOrders = largeOrders ?? new List<HumanLargeOrder>();
+        smallOrders = smallOrders ?? new List<HumanSmallOrder>();
+
         var sortedLargeOrders = largeOrders.OrderByDescending(o => o.OrderRank).ToList();
 
         int totalCount = sortedLargeOrders.Count + smallOrders.Count;
@@ -295,6 +317,20 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         for (int i = totalCount; i < _orderSlots.Count; i++)
         {
             _orderSlots[i].gameObject.SetActive(false);
+        }
+
+        if (!selectFirstOrder)
+        {
+            return;
+        }
+
+        if (sortedLargeOrders.Count > 0)
+        {
+            SelectOrder(sortedLargeOrders[0], false);
+        }
+        else if (smallOrders.Count > 0)
+        {
+            SelectOrder(smallOrders[0], false);
         }
     }
     #endregion

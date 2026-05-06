@@ -130,6 +130,7 @@ namespace GameSystem
                 // 場景載入完成後才執行
                 DataManager.Instance.ModifyCurrentDay(playerData.DaysPlayed);
                 GameFlowEvents.InvokeDayPhaseChanged(playerData.PlayingStatus);
+                GuaranteeDepositGuide.Refresh();
                 AuctionEntryFeeGuide.Refresh();
                 AuctionDayGuide.Refresh();
                 Souvenir.SouvenirManager.Instance.ApplyAllStartEffects();

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Serialization;
 
 namespace GameSystem
 {
@@ -48,12 +49,18 @@ namespace GameSystem
         [SerializeField] private float sceneMusicFadeOutDuration = 0.5f;
         [SerializeField] private float sceneMusicSilenceDuration = 0.25f;
         [SerializeField] private float sceneMusicFadeInDuration = 1f;
-        [SerializeField] private SceneMusicSetting[] sceneMusicSettings =
+        [SerializeField]
+        private SceneMusicSetting[] sceneMusicSettings =
         {
             new SceneMusicSetting(SceneTransitionManager.SCENE_MAIN_MENU, 0),
             new SceneMusicSetting(SceneTransitionManager.SCENE_HUMAN, 1),
             new SceneMusicSetting(SceneTransitionManager.SCENE_MONSTER, 2)
         };
+
+        [Header("Auction Music")]
+        [FormerlySerializedAs("auctionMusicClip")]
+        [SerializeField] private AudioClip auctionMusic;
+        [SerializeField] private float auctionMusicFadeDuration = 1f;
 
         [Header("Defaults")]
         [SerializeField, Range(0f, 1f)] private float initialMusicVolume = 1f;
@@ -82,6 +89,10 @@ namespace GameSystem
         private float _sceneMusicFadeOutStartedAt = -1f;
         private float _activeSceneMusicFadeOutDuration;
         private Coroutine _sceneMusicRoutine;
+        private AudioClip _preAuctionMusicClip;
+        private int _preAuctionMusicIndex = -1;
+        private AudioClip _activeAuctionMusicClip;
+        private bool _auctionMusicOverrideActive;
 
         public float MusicVolume => _musicVolume;
         public float SfxVolume => _sfxVolume;
@@ -191,6 +202,49 @@ namespace GameSystem
         public void SwitchMusic(int index, float fadeDuration = -1f)
         {
             PlayMusicByIndex(index, true, fadeDuration);
+        }
+
+        public void PlayAuctionMusic(float fadeDuration = -1f)
+        {
+            if (auctionMusic == null)
+                return;
+
+            if (!_auctionMusicOverrideActive)
+            {
+                _preAuctionMusicClip = CurrentMusicClip;
+                _preAuctionMusicIndex = _currentMusicIndex;
+            }
+
+            _activeAuctionMusicClip = auctionMusic;
+            _auctionMusicOverrideActive = true;
+            PlayMusic(auctionMusic, true, ResolveAuctionFadeDuration(fadeDuration));
+        }
+
+        public void StopAuctionMusic(float fadeDuration = -1f)
+        {
+            if (!_auctionMusicOverrideActive)
+                return;
+
+            AudioClip restoreClip = _preAuctionMusicClip;
+            int restoreIndex = _preAuctionMusicIndex;
+            AudioClip auctionClip = _activeAuctionMusicClip;
+
+            _auctionMusicOverrideActive = false;
+            _preAuctionMusicClip = null;
+            _preAuctionMusicIndex = -1;
+            _activeAuctionMusicClip = null;
+
+            float resolvedFadeDuration = ResolveAuctionFadeDuration(fadeDuration);
+            if (IsValidMusicIndex(restoreIndex))
+            {
+                PlayMusicByIndex(restoreIndex, true, resolvedFadeDuration);
+                return;
+            }
+
+            if (restoreClip != null && restoreClip != auctionClip)
+                PlayMusic(restoreClip, true, resolvedFadeDuration);
+            else
+                StopMusic(resolvedFadeDuration);
         }
 
         public void PlayNextMusic(float fadeDuration = -1f)
@@ -802,6 +856,11 @@ namespace GameSystem
         private float ResolveFadeDuration(float fadeDuration)
         {
             return fadeDuration >= 0f ? fadeDuration : Mathf.Max(0f, defaultMusicFadeDuration);
+        }
+
+        private float ResolveAuctionFadeDuration(float fadeDuration)
+        {
+            return fadeDuration >= 0f ? fadeDuration : Mathf.Max(0f, auctionMusicFadeDuration);
         }
 
         private float GetDeltaTime()

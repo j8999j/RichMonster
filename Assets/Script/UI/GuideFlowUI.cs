@@ -24,6 +24,13 @@ public class GuideFlowUI : MonoBehaviour
 
     public void SetGuideFlowText(string text, bool isActive)
     {
+        if (!isActive && GuaranteeDepositGuide.ShouldBlockClose)
+        {
+            GameFlowPanel.SetActive(true);
+            GameFlowText.text = GuaranteeDepositGuide.CurrentMessage;
+            return;
+        }
+
         GameFlowPanel.SetActive(isActive);
         GameFlowText.text = text;
     }

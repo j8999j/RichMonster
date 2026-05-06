@@ -122,6 +122,18 @@ public class CollectionMissionView : MonoBehaviour
     [SerializeField]
     private AudioClip closeSfx;
 
+    [SerializeField]
+    private AudioClip claimRewardSfx;
+
+    [SerializeField]
+    private AudioClip openRewardPanelSfx;
+
+    [SerializeField]
+    private AudioClip closeRewardPanelSfx;
+
+    [SerializeField, Range(0f, 1f)]
+    private float sfxVolumeScale = 1f;
+
     public event Action OnClosed;
 
     private readonly List<CollectionMissionRequirementSlot> activeSlots = new List<CollectionMissionRequirementSlot>();
@@ -153,10 +165,10 @@ public class CollectionMissionView : MonoBehaviour
             closeButton.onClick.AddListener(Close);
 
         if (rewardPanelToggleButton != null)
-            rewardPanelToggleButton.onClick.AddListener(ToggleRewardPanel);
+            rewardPanelToggleButton.onClick.AddListener(OnRewardPanelToggleButtonClicked);
 
         if (rewardPanelCloseButton != null)
-            rewardPanelCloseButton.onClick.AddListener(() => SetRewardPanelOpen(false));
+            rewardPanelCloseButton.onClick.AddListener(OnRewardPanelCloseButtonClicked);
 
         if (reward3Button != null)
             reward3Button.onClick.AddListener(() => ClaimReward(CollectionMissionTracker.BronzeRewardPoints));
@@ -426,17 +438,26 @@ public class CollectionMissionView : MonoBehaviour
         RefreshRewardButton(reward10Button, reward10ButtonImage, category, CollectionMissionTracker.GoldRewardPoints);
     }
 
-    private void ToggleRewardPanel()
+    private void OnRewardPanelToggleButtonClicked()
     {
-        SetRewardPanelOpen(!rewardPanelOpen);
+        SetRewardPanelOpen(!rewardPanelOpen, true);
     }
 
-    private void SetRewardPanelOpen(bool isOpen)
+    private void OnRewardPanelCloseButtonClicked()
     {
+        SetRewardPanelOpen(false, true);
+    }
+
+    private void SetRewardPanelOpen(bool isOpen, bool playSound = false)
+    {
+        bool wasOpen = rewardPanelOpen;
         rewardPanelOpen = isOpen && mission != null && tracker != null && mission.GetCategory(currentRace) != null;
 
         if (rewardPanel != null)
             rewardPanel.SetActive(rewardPanelOpen);
+
+        if (playSound && wasOpen != rewardPanelOpen)
+            PlaySfx(rewardPanelOpen ? openRewardPanelSfx : closeRewardPanelSfx);
     }
 
     private void RefreshRewardButton(Button button, Image image, CollectionMissionCategory category, int milestone)
@@ -464,7 +485,10 @@ public class CollectionMissionView : MonoBehaviour
             return;
 
         if (tracker.TryClaimReward(currentRace, milestone, out _))
+        {
+            PlaySfx(claimRewardSfx);
             Refresh();
+        }
     }
 
     private bool HasReachedRewardLimit()
@@ -519,6 +543,6 @@ public class CollectionMissionView : MonoBehaviour
     private void PlaySfx(AudioClip clip)
     {
         if (clip != null && AudioManager.Instance != null)
-            AudioManager.Instance.PlaySfx(clip);
+            AudioManager.Instance.PlaySfx(clip, sfxVolumeScale);
     }
 }

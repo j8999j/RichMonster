@@ -622,7 +622,7 @@ TextureImporter:
         width: 50
         height: 50
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -643,7 +643,7 @@ TextureImporter:
         width: 50
         height: 50
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -651,6 +651,90 @@ TextureImporter:
       bones: []
       spriteID: ac7bbe28fa5f70d40bb7efd336007fa5
       internalID: -1243069690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gashadokuro
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 369
+        width: 83
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a2ef7fa3525ca74cb73b00ca3151e61
+      internalID: -1930753890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TheMummy
+      rect:
+        serializedVersion: 2
+        x: 595
+        y: 250
+        width: 69
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef1eb0bd4b512204e9bcb8a998631b13
+      internalID: 309081773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Kaguya-hime
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 8
+        width: 94
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 258ba22a0f549804faff9608a6473055
+      internalID: 1041397875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GoldenToad
+      rect:
+        serializedVersion: 2
+        x: 531
+        y: 4
+        width: 101
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d182d8eb51bdb7d4ba4099ebb7c7e74c
+      internalID: -1204095344
       vertices: []
       indices: 
       edges: []
@@ -671,10 +755,13 @@ TextureImporter:
       Dorotabo: 973135289
       Frankenstein: 1860915936
       Gargoyle: -1159060637
+      Gashadokuro: -1930753890
       GoldenCrow: 1229408828
+      GoldenToad: -1204095344
       HuaPi: 682792369
       JadeRabbit: 1441669235
       Judge: 1468138878
+      Kaguya-hime: 1041397875
       KunPeng: -1580174893
       Nekomata: -1519022690
       Nian: 281970418
@@ -687,6 +774,7 @@ TextureImporter:
       TeaSpirit: 1828939207
       TeaSpirit_head: -1176057158
       Terracotta: -2019626022
+      TheMummy: 309081773
       ToothFairy: 1340618654
       Umibozu: 1702934284
       Unicorn: -1388072676

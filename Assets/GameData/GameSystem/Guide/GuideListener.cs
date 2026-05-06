@@ -191,6 +191,7 @@ public class BackgroundListener
         {
             isTriggered = true;
             listener.StopListen();
+            OnTriggered?.Invoke();
             pendingCallback?.Invoke();
             pendingCallback = null;
         });

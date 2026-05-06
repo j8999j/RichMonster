@@ -83,6 +83,16 @@ public class AuctionView : MonoBehaviour
     [SerializeField]
     private bool logInvalidTransformReferences;
 
+    [Header("Audio")]
+    [SerializeField]
+    private AudioClip npcBidSfx;
+    [SerializeField]
+    private AudioClip playerBidSfx;
+    [SerializeField, Range(0f, 1f)]
+    private float sfxVolumeScale = 1f;
+    [SerializeField]
+    private float auctionMusicFadeDuration = 1f;
+
     private const string PlayerBidderId = "Player"; // 與 AuctionController.BidderIds.Player 對齊
 
     // 已生成的 NPC：以 BidderId 對應，供 ShowBidBubble 查找
@@ -168,6 +178,7 @@ public class AuctionView : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
+        StopAuctionMusic();
         ClearBidButtonActions();
     }
 
@@ -432,10 +443,15 @@ public class AuctionView : MonoBehaviour
         if (auctionPanel != null)
             auctionPanel.SetActive(visible);
 
-        if (!visible)
+        if (visible)
+        {
+            PlayAuctionMusic();
+        }
+        else
         {
             HideAllBidBubbles();
             UpdateHighestBidderMarker(null);
+            StopAuctionMusic();
         }
     }
 
@@ -680,6 +696,7 @@ public class AuctionView : MonoBehaviour
             ? string.Format(playerBidTextFormat, FormatAmountForTemplate(playerBidTextFormat, bidAmount))
             : string.Format(npcBidTextFormat, bidderName, FormatAmountForTemplate(npcBidTextFormat, bidAmount));
         SetHostText(text);
+        PlayBidSfx(isPlayer);
         ShowBidBubble(bidderId, bidderName, bidAmount);
     }
 
@@ -911,6 +928,35 @@ public class AuctionView : MonoBehaviour
         return string.IsNullOrEmpty(text)
             ? string.Empty
             : text.Replace("金幣", "元");
+    }
+
+    private void PlayBidSfx(bool isPlayer)
+    {
+        PlaySfx(isPlayer ? playerBidSfx : npcBidSfx);
+    }
+
+    private void PlaySfx(AudioClip clip)
+    {
+        if (clip == null || GameSystem.AudioManager.Instance == null)
+            return;
+
+        GameSystem.AudioManager.Instance.PlaySfx(clip, sfxVolumeScale);
+    }
+
+    private void PlayAuctionMusic()
+    {
+        if (GameSystem.AudioManager.Instance == null)
+            return;
+
+        GameSystem.AudioManager.Instance.PlayAuctionMusic(auctionMusicFadeDuration);
+    }
+
+    private void StopAuctionMusic()
+    {
+        if (GameSystem.AudioManager.Instance == null)
+            return;
+
+        GameSystem.AudioManager.Instance.StopAuctionMusic(auctionMusicFadeDuration);
     }
 
     /// <summary>

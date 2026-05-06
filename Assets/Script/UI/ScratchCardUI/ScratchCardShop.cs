@@ -99,7 +99,7 @@ public class ScratchCardShop : MonoBehaviour, IInteractable, IMapGuideTarget
         switch (prize)
         {
             case ScratchCardPrizeType.GrandPrize:
-                goldReward = 10000;
+                goldReward = 500000;
                 AchievementEvents.ScratchCardCompleted(0);
                 break;
             case ScratchCardPrizeType.FirstPrize:

@@ -109,7 +109,7 @@ public class AuctionController : MonoBehaviour
     {
         StopAuctionCoroutines();
         UnlockAuction();
-        mainButtonManager?.SetAuctionHidden(false);
+        ResolveMainButtonManager()?.SetAuctionHidden(false);
     }
 
     public void StartAuction()
@@ -130,7 +130,7 @@ public class AuctionController : MonoBehaviour
         npcBiddingClosed = false;
 
         LockAuction();
-        mainButtonManager?.SetAuctionHidden(true);
+        ResolveMainButtonManager()?.SetAuctionHidden(true);
         auctionView?.SetVisible(true);
         auctionView?.EnsureBidderNpcsSpawned();
         auctionView?.ApplyParticipants(bidders.Select(b => b.BidderId));
@@ -148,7 +148,7 @@ public class AuctionController : MonoBehaviour
         npcBiddingClosed = false;
         StopAuctionCoroutines();
         UnlockAuction();
-        mainButtonManager?.SetAuctionHidden(false);
+        ResolveMainButtonManager()?.SetAuctionHidden(false);
         auctionView?.SetVisible(false);
     }
 

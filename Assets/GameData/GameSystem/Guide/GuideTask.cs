@@ -35,6 +35,11 @@ public abstract class GuideTask
     /// <summary>子類可覆寫，在從中途恢復時執行特定初始化</summary>
     protected virtual void OnResume(int fromStep) { }
 
+    protected void RequestProgressSave()
+    {
+        onStepCompleted?.Invoke();
+    }
+
     private void ExecuteCurrentStep()
     {
         if (currentStepIndex >= steps.Count)

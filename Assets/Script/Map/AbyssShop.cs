@@ -35,10 +35,11 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
         LoadGame();
         if (ShopView != null)
         {
-            ShopView.Open(_isPlayed);
-            if (_isPlayed)
+            bool cannotEnterToday = _isPlayed || _ArrivedBottom;
+            ShopView.Open(cannotEnterToday);
+            if (cannotEnterToday)
             {
-                ShopView.IsPlayView();
+                ShopView.IsPlayView(_ArrivedBottom);
             }
             GameManager.Instance.LockPlayerMove(ID);
         }
@@ -77,20 +78,17 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
     }
     private void LoadGame()
     {
-        if (DataManager.Instance.GetPlayerSaveData<AbyssSave>("AbyssShop") != null)
+        var abyssSave = DataManager.Instance.GetPersistentSaveData<AbyssSave>("AbyssShop");
+        _ArrivedBottom = abyssSave.ArrivedBottom;
+
+        if (abyssSave.LastUpdatedDay == GameManager.Instance.gameFlow.CurrentDay)
         {
-            var abyssSave = DataManager.Instance.GetPlayerSaveData<AbyssSave>("AbyssShop");
-            if (abyssSave.LastUpdatedDay == GameManager.Instance.gameFlow.CurrentDay)
-            {
-                _isPlayed = abyssSave.IsPlayed;
-                _ArrivedBottom = abyssSave.ArrivedBottom;
-            }
-            else
-            {
-                _isPlayed = false;
-                _ArrivedBottom = false;
-                SaveGame();
-            }
+            _isPlayed = abyssSave.IsPlayed;
+        }
+        else
+        {
+            _isPlayed = false;
+            SaveGame();
         }
     }
     private void SaveGame()

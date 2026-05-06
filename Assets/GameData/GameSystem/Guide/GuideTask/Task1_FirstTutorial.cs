@@ -38,7 +38,7 @@ public class Task1_FirstTutorial : GuideTask
 
     protected override List<GuideStep> BuildSteps()
     {
-        earlyPurchaseListener.OnTriggered = () => IsPurchased = true;
+        earlyPurchaseListener.OnTriggered = MarkPurchased;
         return new List<GuideStep>
         {
             // 步驟零：隱藏教學期間暫時不讓玩家點擊的按鈕
@@ -129,6 +129,17 @@ public class Task1_FirstTutorial : GuideTask
     private static GuideStep SaveAfter(GuideStep step, int? saveStepIndex = null)
     {
         return new WithTutorialSaveStep(step, saveStepIndex);
+    }
+
+    private void MarkPurchased()
+    {
+        if (IsPurchased)
+        {
+            return;
+        }
+
+        IsPurchased = true;
+        RequestProgressSave();
     }
 
     private void Step_3_Reward()

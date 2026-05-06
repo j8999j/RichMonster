@@ -26,6 +26,10 @@ public class TutorialFlow
         {
             task1.IsPurchased = data.IsPurchased;
         }
+        if (currentTaskIndex < taskQueue.Count && taskQueue[currentTaskIndex] is Task2_SecondTutorial task2)
+        {
+            task2.SecondRewardClaimed = data.Task2SecondRewardClaimed || data.CurrentStepIndex >= 4;
+        }
     }
 
     private async void SaveProgress()
@@ -43,6 +47,10 @@ public class TutorialFlow
         if (currentTaskIndex < taskQueue.Count && taskQueue[currentTaskIndex] is Task1_FirstTutorial task1)
         {
             data.IsPurchased = task1.IsPurchased;
+        }
+        if (currentTaskIndex < taskQueue.Count && taskQueue[currentTaskIndex] is Task2_SecondTutorial task2)
+        {
+            data.Task2SecondRewardClaimed = task2.SecondRewardClaimed;
         }
         DataManager.Instance.SetPlayerData(SAVE_KEY, data);
         try
@@ -78,6 +86,11 @@ public class TutorialFlow
         var task = taskQueue[currentTaskIndex];
         var data = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>(SAVE_KEY);
         int startStep = (currentTaskIndex == data.CurrentTaskIndex) ? data.CurrentStepIndex : 0;
+        if (currentTaskIndex == data.CurrentTaskIndex && task is Task2_SecondTutorial task2)
+        {
+            task2.SecondRewardClaimed = data.Task2SecondRewardClaimed || data.CurrentStepIndex >= 4;
+            startStep = task2.GetResumeStep(startStep);
+        }
 
         Debug.Log($"[GameFlowGuide] 開始 {task.TaskName}");
         task.Start(OnTaskComplete, startStep, SaveProgress);

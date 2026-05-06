@@ -12,6 +12,7 @@ public class AbyssView : MonoBehaviour
     [SerializeField] private CanvasGroup LeavePanel;
     [SerializeField] private GameObject GamePanel;
     [SerializeField] private GameObject IsPlayPanel;
+    [SerializeField] private TextMeshProUGUI IsPlayText;
     [SerializeField] private GameObject PlayerObj;
     [SerializeField] private GameObject EatHole;
     [SerializeField] private GameObject TreasureBox;
@@ -91,6 +92,10 @@ public class AbyssView : MonoBehaviour
     // 是否為必定安全（無吃洞）的樓層
     private bool _isSafeLayer = true;
     private bool _isFinalLayer = false;
+    private bool _isLeaving = false;
+
+    private const string PlayedTodayText = "\u672c\u65e5\u5df2\u737b\u4e0a\u904e\u7269\u54c1";
+    private const string ArrivedBottomText = "\u4f60\u5df2\u5230\u9054\u6df1\u6df5\u4e4b\u5e95";
 
     // ─────────────────────────────────────────────────
     private int _testLayer = 1; // 獨立測試用層數
@@ -137,13 +142,7 @@ public class AbyssView : MonoBehaviour
 
         LeaveButton    .onClick.AddListener(() => 
         {
-            PlaySfx(leaveWithRewardSfx);
-            OnLeaveClicked?.Invoke();
-            
-            if (OnLeaveClicked == null)
-            {
-                Close();
-            }
+            PlayLeaveSequence();
         });
 
         MoveRightButton.onClick.AddListener(OnMoveRight);
@@ -153,10 +152,12 @@ public class AbyssView : MonoBehaviour
     // ── 公開介面 ──────────────────────────────────────
     public void Open(bool alreadyPlayedToday = false)
     {
+        _isLeaving = false;
         IsPlayPanel.SetActive(false);
         StartPanel.SetActive(true);
         GamePanel.SetActive(false);
         if (CloseButton != null) CloseButton.gameObject.SetActive(true);
+        if (LeavePanel != null) LeavePanel.gameObject.SetActive(false);
         
         if (alreadyPlayedToday)
         {
@@ -182,9 +183,13 @@ public class AbyssView : MonoBehaviour
             _activeSlots.Clear();
         }
     }
-    public void IsPlayView()
+    public void IsPlayView(bool arrivedBottom = false)
     {
         NotionTitle.SetActive(false);
+        if (IsPlayText != null)
+        {
+            IsPlayText.text = arrivedBottom ? ArrivedBottomText : PlayedTodayText;
+        }
         IsPlayPanel.SetActive(true);
     }
 
@@ -674,5 +679,38 @@ public class AbyssView : MonoBehaviour
         }
 
         GameSystem.AudioManager.Instance.PlaySfx(clip, sfxVolumeScale);
+    }
+
+    private void PlayLeaveSequence()
+    {
+        if (_isLeaving) return;
+        _isLeaving = true;
+
+        PlaySfx(leaveWithRewardSfx);
+
+        if (LeavePanel == null)
+        {
+            InvokeLeave();
+            return;
+        }
+
+        FadeIn(LeavePanel.gameObject, 0.5f, () =>
+        {
+            DOVirtual.DelayedCall(0.75f, () =>
+            {
+                FadeOut(LeavePanel.gameObject, 0.5f, InvokeLeave);
+            });
+        });
+    }
+
+    private void InvokeLeave()
+    {
+        _isLeaving = false;
+        OnLeaveClicked?.Invoke();
+
+        if (OnLeaveClicked == null)
+        {
+            Close();
+        }
     }
 }

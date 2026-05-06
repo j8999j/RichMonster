@@ -3045,6 +3045,10 @@ MonoBehaviour:
   submitSfx: {fileID: 8300000, guid: 4599ca1ce557ea44abb7d1cd4eb24d9b, type: 3}
   selectSfx: {fileID: 8300000, guid: a9dadc59bca79bd45a0b7314c641147a, type: 3}
   closeSfx: {fileID: 8300000, guid: 3abb40a91eb50294584f15eae1fa5fe5, type: 3}
+  claimRewardSfx: {fileID: 8300000, guid: e56e1d2b20725ae48badc0bd1bf1534e, type: 3}
+  openRewardPanelSfx: {fileID: 8300000, guid: ed278f29bbec4e24e99d9182f8e4aba6, type: 3}
+  closeRewardPanelSfx: {fileID: 8300000, guid: 3abb40a91eb50294584f15eae1fa5fe5, type: 3}
+  sfxVolumeScale: 1
 --- !u!1 &94182330
 GameObject:
   m_ObjectHideFlags: 0
@@ -40827,6 +40831,10 @@ MonoBehaviour:
   bubblePrefab: {fileID: 2609729849196502775, guid: 1aa29ccf0975dfc4eb4fd48d666dd69c, type: 3}
   highestBidderMarker: {fileID: 932163567}
   logInvalidTransformReferences: 0
+  npcBidSfx: {fileID: 8300000, guid: 7459b0e150cbf054d928e13c41069b01, type: 3}
+  playerBidSfx: {fileID: 8300000, guid: 7459b0e150cbf054d928e13c41069b01, type: 3}
+  sfxVolumeScale: 1
+  auctionMusicFadeDuration: 1
   startTextFormat: "\u62CD\u8CE3\u6703\u958B\u59CB\uFF0C\u8D77\u6A19\u50F9 {0} \u91D1\u5E63\u3002"
   timerFormat: "\u5012\u6578\uFF1A{0}"
   participantsFormat: "\u53C3\u8207\u8005\uFF1A{0}"
@@ -59030,10 +59038,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 954655846251311210, guid: 6d3f62fedcd4c70419fd30362b383de3, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4015840839633020853, guid: 6d3f62fedcd4c70419fd30362b383de3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -59074,17 +59078,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5669672377496439182, guid: 6d3f62fedcd4c70419fd30362b383de3, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 9018021099573891215, guid: 6d3f62fedcd4c70419fd30362b383de3, type: 3}
       propertyPath: m_Name
       value: UIManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 9018021099573891215, guid: 6d3f62fedcd4c70419fd30362b383de3, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

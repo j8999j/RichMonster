@@ -8,6 +8,9 @@ public class Task2_SecondTutorial : GuideTask
 {
     public override string TaskName => "任務二：妖怪雜貨店與圖鑑";
 
+    private const int GroceryGuideStepIndex = 2;
+    private const int AfterSecondRewardStepIndex = 4;
+    public bool SecondRewardClaimed;
     private GameObject _bookButtonObj;
 
     private void HideTutorialDisabledButtons()
@@ -43,13 +46,8 @@ public class Task2_SecondTutorial : GuideTask
             // 步驟二：獲得隨機三項庫存、隨機解鎖兩條妖怪情報，並且顯示妖怪圖鑑按鈕
             SaveAfter(new GiveRewardStep(() =>
             {
-                DataManager.Instance.ModifyMonsterGold(5000);
-                GiveRandomMonsterItems(3, 5000, true, 2);
+                GiveSecondRewardOnce();
                 
-                // 隨機解鎖兩條尚未解鎖的妖怪情報
-                DataManager.Instance.UnlockRandomMonsterInformation();
-                DataManager.Instance.UnlockRandomMonsterInformation();
-
                 if (_bookButtonObj != null) _bookButtonObj.SetActive(true);
             })),
             
@@ -70,6 +68,16 @@ public class Task2_SecondTutorial : GuideTask
                 "可使用紀念品鑰匙回家休息，或到處逛逛",
                 new ButtonClickListener(GuideIDs.Button.GuideUseKey))
         };
+    }
+
+    public int GetResumeStep(int savedStep)
+    {
+        if (savedStep == AfterSecondRewardStepIndex)
+        {
+            return GroceryGuideStepIndex;
+        }
+
+        return savedStep;
     }
 
     private static GuideStep SaveAfter(GuideStep step, int? saveStepIndex = null)
@@ -124,5 +132,19 @@ public class Task2_SecondTutorial : GuideTask
             noticeItems.Add(NoticeItemEntry.ItemEntry(itemID, 1));
         }
         NoticeGetItemEvents.InvokeShowNotice("爺爺的妖怪雜貨", noticeItems);
+    }
+
+    private void GiveSecondRewardOnce()
+    {
+        if (SecondRewardClaimed)
+        {
+            return;
+        }
+
+        SecondRewardClaimed = true;
+        DataManager.Instance.ModifyMonsterGold(5000);
+        GiveRandomMonsterItems(3, 5000, true, 2);
+        DataManager.Instance.UnlockRandomMonsterInformation();
+        DataManager.Instance.UnlockRandomMonsterInformation();
     }
 }

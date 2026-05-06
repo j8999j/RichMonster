@@ -37,6 +37,7 @@ public class GameFlow
 
         DataManager.Instance.ModifyCurrentDayPhase(newPhase);
         GameFlowEvents.InvokeDayPhaseChanged(newPhase);
+        GuaranteeDepositGuide.Refresh();
         AuctionEntryFeeGuide.Refresh();
         AuctionDayGuide.Refresh();
         if (newPhase == DayPhase.Night)
