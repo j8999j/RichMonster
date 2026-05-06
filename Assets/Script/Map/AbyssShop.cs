@@ -20,10 +20,10 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
     private List<string> _accumulatedItems = new List<string>();
 
     // 每層成功率：100%, 75%, 50%, 40%, 20%
-    private readonly float[] _successRates = { 0.90f, 0.75f, 0.50f, 0.40f, 0.20f };
+    private readonly float[] _successRates = { 0.90f, 0.90f, 0.90f, 0.90f, 0.90f };
     public void SetMapGuide()
     {
-        NoticeGetItemEvents.InvokeSetMapGuide(ID,transform);
+        NoticeGetItemEvents.InvokeSetMapGuide(ID, transform);
     }
     public void Interact()
     {
@@ -58,10 +58,10 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
         if (ShopView != null)
         {
             ShopView.OnContinueClicked += HandleContinue;
-            ShopView.OnLeaveClicked    += ExitGame;
-            ShopView.OnFail            += HandleFail;
+            ShopView.OnLeaveClicked += ExitGame;
+            ShopView.OnFail += HandleFail;
             ShopView.OnItemDroppedToStart += HandleItemDropped;
-            ShopView.OnCloseClicked    += ClosePanel;
+            ShopView.OnCloseClicked += ClosePanel;
         }
     }
     private void OnDestroy()
@@ -69,10 +69,10 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
         if (ShopView != null)
         {
             ShopView.OnContinueClicked -= HandleContinue;
-            ShopView.OnLeaveClicked    -= ExitGame;
-            ShopView.OnFail            -= HandleFail;
+            ShopView.OnLeaveClicked -= ExitGame;
+            ShopView.OnFail -= HandleFail;
             ShopView.OnItemDroppedToStart -= HandleItemDropped;
-            ShopView.OnCloseClicked    -= ClosePanel;
+            ShopView.OnCloseClicked -= ClosePanel;
         }
     }
     private void LoadGame()
@@ -167,21 +167,6 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
 
     private void GiveLayerReward(int layer)
     {
-        // 第五層特殊結算
-        if (layer == 5)
-        {
-            _accumulatedMonsterGold += 5000;
-            _accumulatedItems.Add("SpecialReward_AbyssCore"); // Placeholder
-            Debug.Log("[AbyssShop] 達到第 5 層！獲得特殊獎勵：5000 妖怪幣 與 SpecialReward_AbyssCore");
-
-            if (ShopView != null)
-            {
-                ShopView.AddRewardDisplay(AbyssRewardType.MonsterGold, "", 5000);
-                ShopView.AddRewardDisplay(AbyssRewardType.Item, "SpecialReward_AbyssCore", 0);
-            }
-            return;
-        }
-
         if (RewardConfig == null)
         {
             Debug.LogWarning("[AbyssShop] 未綁定 RewardConfig，給予預設獎勵。");
@@ -202,7 +187,8 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
         int currentDay = DataManager.Instance.CurrentPlayerData?.DaysPlayed ?? 0;
 
         // 依照層數決定抽取次數
-        for (int drawIndex = 0; drawIndex < layer; drawIndex++)
+        int drawCount = layer == 5 ? 1 : layer;
+        for (int drawIndex = 0; drawIndex < drawCount; drawIndex++)
         {
             // 使用 GameRng 抽選，加上 drawIndex 避免同層每次抽中一樣的東西
             string rndKey = $"AbyssReward_Day{currentDay}_Layer{layer}_Draw{drawIndex}";
@@ -235,7 +221,7 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
                     for (int i = 0; i < selectedReward.ItemAmount; i++)
                     {
                         _accumulatedItems.Add(selectedReward.ItemID);
-                        
+
                         if (ShopView != null) ShopView.AddRewardDisplay(AbyssRewardType.Item, selectedReward.ItemID, 0);
                     }
                     Debug.Log($"[AbyssShop] 第 {layer} 層第 {drawIndex + 1} 抽獲得物品: {selectedReward.ItemID} x{selectedReward.ItemAmount}");
@@ -255,7 +241,7 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
         // 確保不會超過陣列長度
         // _currentLayer 是當前已完成的層數，下一層的索引是 _currentLayer
         // 例如，從第1層進入第2層，_currentLayer=1，nextLayerIndex=1，對應 _successRates[1]
-        int nextLayerIndex = _currentLayer; 
+        int nextLayerIndex = _currentLayer;
         float rate = (nextLayerIndex < _successRates.Length) ? _successRates[nextLayerIndex] : 0.2f;
 
         int currentDay = DataManager.Instance.CurrentPlayerData?.DaysPlayed ?? 0;
@@ -272,6 +258,7 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
             if (ShopView != null)
             {
                 ShopView.ProceedToNextLayer(_currentLayer, true);
+                ShopView.SetFinalLayer(_currentLayer == 5);
             }
 
             // 抵達第5層強制結算（或者您可以讓玩家選擇是否要自己按離開，此處暫不強制立即退出關閉UI）
@@ -320,7 +307,7 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
         }
         _accumulatedMonsterGold = 0;
         _accumulatedItems.Clear();
-        
+
         if (ShopView != null)
         {
             ShopView.ClearRewards();

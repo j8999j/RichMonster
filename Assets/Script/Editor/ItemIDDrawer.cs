@@ -35,12 +35,18 @@ public class ItemIDDrawer : PropertyDrawer
             var options = BuildOptionList();
             
             // 顯示搜尋視窗
-            SearchablePopupWindow.Show(buttonRect, options, currentValue, (selected) =>
-            {
-                property.serializedObject.Update();
-                property.stringValue = selected;
-                property.serializedObject.ApplyModifiedProperties();
-            });
+            SearchablePopupWindow.Show(
+                buttonRect,
+                options,
+                currentValue,
+                (selected) =>
+                {
+                    property.serializedObject.Update();
+                    property.stringValue = selected;
+                    property.serializedObject.ApplyModifiedProperties();
+                },
+                BuildTypeFilters(),
+                BuildWorldFilters());
         }
     }
 
@@ -63,11 +69,55 @@ public class ItemIDDrawer : PropertyDrawer
             {
                 Value = item.Id,
                 DisplayName = $"{item.Name} ({item.Id})",
-                SearchText = $"{item.Name} {item.Id}".ToLower()
+                SearchText = $"{item.Name} {item.Id} {GetTypeDisplayName(item.Type)} {GetWorldDisplayName(item.World)}".ToLower(),
+                TypeFilter = item.Type.ToString(),
+                WorldFilter = item.World.ToString()
             });
         }
 
         return options.ToArray();
+    }
+
+    private SearchablePopupWindow.FilterOption[] BuildTypeFilters()
+    {
+        return new[]
+        {
+            new SearchablePopupWindow.FilterOption { Value = "", DisplayName = "全部類型" },
+            new SearchablePopupWindow.FilterOption { Value = ((int)ItemType.Equipment).ToString(), DisplayName = "裝備" },
+            new SearchablePopupWindow.FilterOption { Value = ((int)ItemType.Food).ToString(), DisplayName = "食物" },
+            new SearchablePopupWindow.FilterOption { Value = ((int)ItemType.Prop).ToString(), DisplayName = "道具" }
+        };
+    }
+
+    private SearchablePopupWindow.FilterOption[] BuildWorldFilters()
+    {
+        return new[]
+        {
+            new SearchablePopupWindow.FilterOption { Value = "", DisplayName = "全部世界" },
+            new SearchablePopupWindow.FilterOption { Value = ((int)ItemWorld.Human).ToString(), DisplayName = "人界" },
+            new SearchablePopupWindow.FilterOption { Value = ((int)ItemWorld.Monster).ToString(), DisplayName = "妖界" }
+        };
+    }
+
+    private string GetTypeDisplayName(int type)
+    {
+        return type switch
+        {
+            (int)ItemType.Equipment => "裝備",
+            (int)ItemType.Food => "食物",
+            (int)ItemType.Prop => "道具",
+            _ => type.ToString()
+        };
+    }
+
+    private string GetWorldDisplayName(int world)
+    {
+        return world switch
+        {
+            (int)ItemWorld.Human => "人界",
+            (int)ItemWorld.Monster => "妖界",
+            _ => world.ToString()
+        };
     }
 
     private string GetDisplayName(string itemId)

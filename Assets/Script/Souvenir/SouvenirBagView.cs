@@ -37,6 +37,7 @@ namespace Souvenir
         [SerializeField] private AudioClip selectItemSound;
         [SerializeField] private AudioClip closeSound;
         [SerializeField] private AudioClip useSound;
+        [SerializeField] private AudioClip souKeyUseSound;
         [SerializeField] private AudioClip useFailedSound;
 
         [Header("Settings")]
@@ -316,7 +317,7 @@ namespace Souvenir
                     _currentInteractListener = () =>
                     {
                         bool success = interactiveSouvenir.OnInteraction();
-                        PlaySound(success ? useSound : useFailedSound);
+                        PlaySound(success ? GetUseSuccessSound(data.SouvenirID) : useFailedSound);
                     };
                     InteractButton.onClick.AddListener(_currentInteractListener);
                 }
@@ -347,6 +348,16 @@ namespace Souvenir
                 return;
 
             AudioManager.Instance.PlaySfx(clip);
+        }
+
+        private AudioClip GetUseSuccessSound(string souvenirId)
+        {
+            if (souvenirId == "Sou_key" && souKeyUseSound != null)
+            {
+                return souKeyUseSound;
+            }
+
+            return useSound;
         }
     }
 }

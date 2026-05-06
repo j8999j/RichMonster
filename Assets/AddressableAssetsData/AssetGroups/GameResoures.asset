@@ -62,6 +62,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b405b8901b0ace64599e669292635540
+    m_Address: GroceryCards
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b4c04ee4a57afb64ab3190284b88619d
     m_Address: monster_traits
     m_ReadOnly: 0

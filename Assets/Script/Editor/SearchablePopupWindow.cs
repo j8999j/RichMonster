@@ -3,32 +3,48 @@ using UnityEditor;
 using System;
 using System.Collections.Generic;
 
-/// <summary>
-/// 可搜尋的彈出視窗 - 支援中英文快速搜尋
-/// </summary>
 public class SearchablePopupWindow : EditorWindow
 {
-    // 選項資料結構
     public struct OptionData
     {
-        public string Value;       // 實際儲存的值 (例如: ItemId, TagId)
-        public string DisplayName; // 顯示名稱 (例如: "礦泉水 (Mineralwater)")
-        public string SearchText;  // 搜尋用文字 (中文名 + 英文ID，小寫)
+        public string Value;
+        public string DisplayName;
+        public string SearchText;
+        public string TypeFilter;
+        public string WorldFilter;
+    }
+
+    public struct FilterOption
+    {
+        public string Value;
+        public string DisplayName;
     }
 
     private static SearchablePopupWindow _instance;
     private string _searchText = "";
     private Vector2 _scrollPos;
     private OptionData[] _allOptions;
-    private List<OptionData> _filteredOptions = new List<OptionData>();
+    private readonly List<OptionData> _filteredOptions = new List<OptionData>();
+    private FilterOption[] _typeFilters;
+    private FilterOption[] _worldFilters;
+    private string _selectedTypeFilter = "";
+    private string _selectedWorldFilter = "";
     private Action<string> _onSelected;
     private string _currentValue;
     private int _selectedIndex = -1;
 
-    /// <summary>
-    /// 顯示搜尋視窗
-    /// </summary>
     public static void Show(Rect buttonRect, OptionData[] options, string currentValue, Action<string> onSelected)
+    {
+        Show(buttonRect, options, currentValue, onSelected, null, null);
+    }
+
+    public static void Show(
+        Rect buttonRect,
+        OptionData[] options,
+        string currentValue,
+        Action<string> onSelected,
+        FilterOption[] typeFilters,
+        FilterOption[] worldFilters)
     {
         if (_instance != null)
         {
@@ -36,20 +52,18 @@ public class SearchablePopupWindow : EditorWindow
         }
 
         _instance = CreateInstance<SearchablePopupWindow>();
-        _instance._allOptions = options;
+        _instance._allOptions = options ?? Array.Empty<OptionData>();
         _instance._currentValue = currentValue;
         _instance._onSelected = onSelected;
+        _instance._typeFilters = typeFilters;
+        _instance._worldFilters = worldFilters;
+        _instance._selectedTypeFilter = "";
+        _instance._selectedWorldFilter = "";
         _instance._searchText = "";
         _instance.FilterOptions();
 
-        // 計算視窗位置和大小
-        float windowWidth = Mathf.Max(buttonRect.width, 250);
-        float windowHeight = 300;
-        
-        // 將按鈕位置轉換為螢幕座標
-        Vector2 screenPos = GUIUtility.GUIToScreenPoint(new Vector2(buttonRect.x, buttonRect.yMax));
-        Rect windowRect = new Rect(screenPos.x, screenPos.y, windowWidth, windowHeight);
-
+        float windowWidth = Mathf.Max(buttonRect.width, 360);
+        float windowHeight = 360;
         _instance.ShowAsDropDown(buttonRect, new Vector2(windowWidth, windowHeight));
     }
 
@@ -58,22 +72,13 @@ public class SearchablePopupWindow : EditorWindow
         _filteredOptions.Clear();
         string search = _searchText.ToLower().Trim();
 
-        if (string.IsNullOrEmpty(search))
+        foreach (var opt in _allOptions)
         {
-            _filteredOptions.AddRange(_allOptions);
-        }
-        else
-        {
-            foreach (var opt in _allOptions)
-            {
-                if (opt.SearchText.Contains(search))
-                {
-                    _filteredOptions.Add(opt);
-                }
-            }
+            if (!MatchesFilters(opt)) continue;
+            if (!string.IsNullOrEmpty(search) && !opt.SearchText.Contains(search)) continue;
+            _filteredOptions.Add(opt);
         }
 
-        // 找到當前選中項目的索引
         _selectedIndex = -1;
         for (int i = 0; i < _filteredOptions.Count; i++)
         {
@@ -85,9 +90,28 @@ public class SearchablePopupWindow : EditorWindow
         }
     }
 
+    private bool MatchesFilters(OptionData option)
+    {
+        if (string.IsNullOrEmpty(option.Value))
+        {
+            return true;
+        }
+
+        if (!string.IsNullOrEmpty(_selectedTypeFilter) && option.TypeFilter != _selectedTypeFilter)
+        {
+            return false;
+        }
+
+        if (!string.IsNullOrEmpty(_selectedWorldFilter) && option.WorldFilter != _selectedWorldFilter)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     private void OnGUI()
     {
-        // 搜尋框
         EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
         GUI.SetNextControlName("SearchField");
         string newSearch = EditorGUILayout.TextField(_searchText, EditorStyles.toolbarSearchField);
@@ -98,20 +122,18 @@ public class SearchablePopupWindow : EditorWindow
         }
         EditorGUILayout.EndHorizontal();
 
-        // 結果數量提示
-        EditorGUILayout.LabelField($"搜尋結果: {_filteredOptions.Count} / {_allOptions.Length}", EditorStyles.miniLabel);
+        DrawFilterToolbar(_typeFilters, ref _selectedTypeFilter);
+        DrawFilterToolbar(_worldFilters, ref _selectedWorldFilter);
 
-        // 選項列表
+        EditorGUILayout.LabelField($"Results: {_filteredOptions.Count} / {_allOptions.Length}", EditorStyles.miniLabel);
+
         _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos);
-        
         for (int i = 0; i < _filteredOptions.Count; i++)
         {
             var opt = _filteredOptions[i];
-            bool isSelected = (opt.Value == _currentValue);
-
-            // 繪製選項按鈕
+            bool isSelected = opt.Value == _currentValue;
             GUIStyle style = isSelected ? CreateSelectedStyle() : EditorStyles.label;
-            
+
             Rect rect = EditorGUILayout.GetControlRect(GUILayout.Height(20));
             if (GUI.Button(rect, opt.DisplayName, style))
             {
@@ -120,24 +142,38 @@ public class SearchablePopupWindow : EditorWindow
                 return;
             }
 
-            // 滑鼠懸停效果
             if (rect.Contains(Event.current.mousePosition))
             {
                 EditorGUI.DrawRect(rect, new Color(0.3f, 0.5f, 0.8f, 0.2f));
                 Repaint();
             }
         }
-
         EditorGUILayout.EndScrollView();
 
-        // 鍵盤事件處理
         HandleKeyboardInput();
 
-        // 自動聚焦搜尋框
         if (Event.current.type == EventType.Repaint && string.IsNullOrEmpty(_searchText))
         {
             EditorGUI.FocusTextInControl("SearchField");
         }
+    }
+
+    private void DrawFilterToolbar(FilterOption[] filters, ref string selectedValue)
+    {
+        if (filters == null || filters.Length == 0) return;
+
+        EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
+        foreach (var filter in filters)
+        {
+            bool selected = selectedValue == filter.Value;
+            bool nextSelected = GUILayout.Toggle(selected, filter.DisplayName, EditorStyles.toolbarButton);
+            if (nextSelected && !selected)
+            {
+                selectedValue = filter.Value;
+                FilterOptions();
+            }
+        }
+        EditorGUILayout.EndHorizontal();
     }
 
     private void HandleKeyboardInput()
@@ -199,6 +235,7 @@ public class SearchablePopupWindow : EditorWindow
         {
             pixels[i] = color;
         }
+
         Texture2D tex = new Texture2D(width, height);
         tex.SetPixels(pixels);
         tex.Apply();

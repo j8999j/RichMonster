@@ -90,6 +90,7 @@ public class AbyssView : MonoBehaviour
     
     // 是否為必定安全（無吃洞）的樓層
     private bool _isSafeLayer = true;
+    private bool _isFinalLayer = false;
 
     // ─────────────────────────────────────────────────
     private int _testLayer = 1; // 獨立測試用層數
@@ -155,6 +156,7 @@ public class AbyssView : MonoBehaviour
         IsPlayPanel.SetActive(false);
         StartPanel.SetActive(true);
         GamePanel.SetActive(false);
+        if (CloseButton != null) CloseButton.gameObject.SetActive(true);
         
         if (alreadyPlayedToday)
         {
@@ -293,6 +295,7 @@ public class AbyssView : MonoBehaviour
     {
         StartPanel.SetActive(false);
         GamePanel .SetActive(true);
+        _isFinalLayer = false;
         SetLayer(_testLayer); // 給純視覺測試用的初始化
         ResetPlayer();
     }
@@ -365,6 +368,11 @@ public class AbyssView : MonoBehaviour
     public void AddRewardDisplay(GameSystem.AbyssRewardType type, string itemId, int goldAmount)
     {
         _pendingRewards.Add(new PendingReward { Type = type, ItemId = itemId, GoldAmount = goldAmount });
+    }
+
+    public void SetFinalLayer(bool isFinalLayer)
+    {
+        _isFinalLayer = isFinalLayer;
     }
 
     /// <summary>
@@ -557,8 +565,9 @@ public class AbyssView : MonoBehaviour
                     // 顯示 Continue 與 Leave，隱藏 Move 按鈕
                     MoveRightButton.gameObject.SetActive(false);
                     MoveLeftButton.gameObject.SetActive(false);
-                    ContinueButton.gameObject.SetActive(true);
+                    ContinueButton.gameObject.SetActive(!_isFinalLayer);
                     LeaveButton.gameObject.SetActive(true);
+                    if (CloseButton != null) CloseButton.gameObject.SetActive(!_isFinalLayer);
                 });
             });
             return;

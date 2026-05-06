@@ -111,3 +111,10 @@ MonoBehaviour:
       ItemID: GiantFan
       ItemAmount: 1
       Weight: 50
+  - Layer: 5
+    Rewards:
+    - RewardType: 1
+      GoldAmount: 0
+      ItemID: HuizhuMoonCrown
+      ItemAmount: 1
+      Weight: 1

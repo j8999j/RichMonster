@@ -23320,7 +23320,8 @@ MonoBehaviour:
   switchPageSound: {fileID: 8300000, guid: 7459b0e150cbf054d928e13c41069b01, type: 3}
   selectItemSound: {fileID: 8300000, guid: a9dadc59bca79bd45a0b7314c641147a, type: 3}
   closeSound: {fileID: 8300000, guid: 3abb40a91eb50294584f15eae1fa5fe5, type: 3}
-  useSound: {fileID: 8300000, guid: a9b92a99832cacc489e042565ecbf211, type: 3}
+  useSound: {fileID: 8300000, guid: 7459b0e150cbf054d928e13c41069b01, type: 3}
+  souKeyUseSound: {fileID: 8300000, guid: a9b92a99832cacc489e042565ecbf211, type: 3}
   useFailedSound: {fileID: 8300000, guid: 0f03579380c9ff54fb33f1d42d3928ee, type: 3}
   ShowCurrentRunOnly: 1
 --- !u!114 &149252354281994345
