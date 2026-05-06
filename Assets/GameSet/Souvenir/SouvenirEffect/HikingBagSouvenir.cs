@@ -11,7 +11,7 @@ namespace Souvenir
 
         public int GetExtraCapacity()
         {
-            return 15;
+            return 10;
         }
     }
 }

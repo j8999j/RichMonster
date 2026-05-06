@@ -690,8 +690,8 @@ public class GameBookView : MonoBehaviour
             ? DataManager.Instance.GetMonsterStoriesByMonsterID(slot.CurrentDefinition.Id)
             : new List<MonsterStoryDatabase>();
 
-        SetupStoryButton(StoryButton_1, slot, allStories, 0, unlockedStoryCount >= 1, newStoryIds);
-        SetupStoryButton(StoryButton_2, slot, allStories, 1, unlockedStoryCount >= 2, newStoryIds);
+        SetupStoryButtonWithFallback(StoryButton_1, slot, allStories, 0, unlockedStoryCount >= 1, newStoryIds);
+        SetupStoryButtonWithFallback(StoryButton_2, slot, allStories, 1, unlockedStoryCount >= 2, newStoryIds);
 
         HighlightMonsterContentButton(DescriptionButton);
 
@@ -874,6 +874,66 @@ public class GameBookView : MonoBehaviour
     /// <summary>
     /// 清空妖怪圖鑑選中狀態
     /// </summary>
+    private void SetupStoryButtonWithFallback(Button storyButton, BookMonsterSlot slot,
+        List<MonsterStoryDatabase> stories, int storyIndex, bool isVisible, List<string> newStoryIds)
+    {
+        if (storyButton == null) return;
+
+        storyButton.onClick.RemoveAllListeners();
+
+        GameObject storyNewIcon = null;
+        bool hasStoryData = isVisible && stories != null && storyIndex < stories.Count;
+        bool isNewStory = false;
+        if (storyButton.transform.childCount > 1)
+        {
+            storyNewIcon = storyButton.transform.GetChild(1).gameObject;
+            isNewStory = hasStoryData
+                && newStoryIds != null && newStoryIds.Contains(stories[storyIndex].MonsterStoryID);
+            storyNewIcon.SetActive(isNewStory);
+        }
+
+        if (!isVisible)
+            return;
+
+        MonsterStoryDatabase storyData = hasStoryData ? stories[storyIndex] : null;
+        string storyText = storyData != null && !string.IsNullOrEmpty(storyData.MonsterStory)
+            ? storyData.MonsterStory
+            : GetFallbackMonsterStoryText(slot);
+
+        var capturedIcon = storyNewIcon;
+        bool capturedIsNew = isNewStory && storyData != null;
+        Button capturedButton = storyButton;
+        storyButton.onClick.AddListener(() =>
+        {
+            PlaySound(selectMonsterInfoSound);
+            if (MonsterDescription != null)
+            {
+                MonsterDescription.text = storyText;
+            }
+
+            if (capturedIsNew && capturedIcon != null)
+            {
+                DataManager.Instance.ConfirmSingleNewStory(storyData.MonsterStoryID);
+                capturedIcon.SetActive(false);
+                RefreshSlotNewIcon(slot);
+                UpdateGlobalNewIcon();
+            }
+
+            HighlightMonsterContentButton(capturedButton);
+        });
+    }
+
+    private string GetFallbackMonsterStoryText(BookMonsterSlot slot)
+    {
+        string monsterName = slot != null && slot.CurrentDefinition != null
+            ? slot.CurrentDefinition.ProfessionName
+            : string.Empty;
+
+        return string.IsNullOrEmpty(monsterName)
+            ? "\u5996\u602a\u5c0f\u6545\u4e8b"
+            : $"{monsterName}\u5c0f\u6545\u4e8b";
+    }
+
     private void ClearMonsterBookSelected()
     {
         DescriptionButton.gameObject.SetActive(false);

@@ -19,8 +19,8 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
     private int _accumulatedMonsterGold = 0;
     private List<string> _accumulatedItems = new List<string>();
 
-    // 每層成功率：100%, 75%, 50%, 40%, 20%
-    private readonly float[] _successRates = { 0.90f, 0.90f, 0.90f, 0.90f, 0.90f };
+    // 每層成功率：90%, 75%, 50%, 40%, 20%
+    private readonly float[] _successRates = { 0.90f, 0.75f, 0.50f, 0.40f, 0.20f };
     public void SetMapGuide()
     {
         NoticeGetItemEvents.InvokeSetMapGuide(ID, transform);
