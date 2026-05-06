@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System;
+using System.Collections;
 using UnityEngine.UI;
 public class GuideFlowUI : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class GuideFlowUI : MonoBehaviour
         SetGuideFlowTextEvent += SetGuideFlowText;
         SetGuideImageEvent += SetGuideImage;
         GuideImage.gameObject.GetComponent<Image>().alphaHitTestMinimumThreshold = 0.3f;
+        GuaranteeDepositGuide.ReapplyMessage();
+        StartCoroutine(ReapplyActiveGuideAfterSceneSetup());
     }
 
     private void OnDisable()
@@ -40,5 +43,11 @@ public class GuideFlowUI : MonoBehaviour
         GuideImage.gameObject.SetActive(isActive);
         if (isActive)
             GuideImage.anchoredPosition = position;
+    }
+
+    private IEnumerator ReapplyActiveGuideAfterSceneSetup()
+    {
+        yield return null;
+        GuaranteeDepositGuide.ReapplyMessage();
     }
 }

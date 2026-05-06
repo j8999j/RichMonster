@@ -64,7 +64,7 @@
       "Type": 2,
       "World": 1,
       "Rarity": 2,
-      "BasePrice": 500,
+      "BasePrice": 6000,
       "Description": "深海或深穴中自然生成的寶珠，散發著柔和光芒，珠面常年凝著水氣並帶有潮濕的氣息。",
       "ShopType": [
         "YokaiStore",
@@ -82,7 +82,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 1,
-      "BasePrice": 300,
+      "BasePrice": 2000,
       "Description": "能把空氣中的水分抽出來的大盒子。在濕度高的地區銷售量極佳，水生生物看到會不自覺地後退一步。",
       "ShopType": [
         "FurnituresStore"
@@ -115,7 +115,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 1,
-      "BasePrice": 150,
+      "BasePrice": 220,
       "Description": "火烤過的新鮮肉類大集合。今天值得吃點好的。",
       "ShopType": [
         "FoodShop"
@@ -132,7 +132,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 30,
+      "BasePrice": 60,
       "Description": "跟名稱一樣普通的沙拉。纖維素是當中含量第二高的成分，第一高的是「後悔沒點別的」。",
       "ShopType": [
         "FoodShop"
@@ -148,7 +148,7 @@
       "Type": 1,
       "World": 1,
       "Rarity": 0,
-      "BasePrice": 40,
+      "BasePrice": 50,
       "Description": "奈何橋邊的名物，甘甜可口，據說好吃到令人失憶。咦，我剛剛吃飯了嗎?",
       "ShopType": [
         "YokaiStoreEat"
@@ -165,7 +165,7 @@
       "Type": 1,
       "World": 1,
       "Rarity": 0,
-      "BasePrice": 70,
+      "BasePrice": 130,
       "Description": "用鬼火炙烤的醃漬豬排，外焦內嫩，鬼火燒出的焦香比一般火焰更深沉。妖界夜市的人氣小吃。",
       "ShopType": [
         "YokaiStoreEat"
@@ -182,7 +182,7 @@
       "Type": 1,
       "World": 1,
       "Rarity": 1,
-      "BasePrice": 160,
+      "BasePrice": 260,
       "Description": "湯頭由地獄特產熬製，端上桌時整碗還在冒著熊熊烈火，不建議趁熱享用。",
       "ShopType": [
         "YokaiStoreEat"
@@ -197,7 +197,7 @@
       "Type": 0,
       "World": 0,
       "Rarity": 2,
-      "BasePrice": 350,
+      "BasePrice": 900,
       "Description": "用高級羽絨填充的外套，保暖效果一流，但價格也不便宜。",
       "ShopType": [
         "GroceryStore"
@@ -214,7 +214,7 @@
       "Type": 0,
       "World": 0,
       "Rarity": 3,
-      "BasePrice": 1000,
+      "BasePrice": 9000,
       "Description": "閃著耀眼光芒的貴金屬圈環。小小一個卻意外地沉。",
       "ShopType": [
         "GroceryStore"
@@ -230,7 +230,7 @@
       "Type": 0,
       "World": 1,
       "Rarity": 1,
-      "BasePrice": 150,
+      "BasePrice": 1500,
       "Description": "傳說曾屬於牛魔王本人的護腕，厚重堅硬，戴上後不管面對什麼都會多一份底氣——前提是舉得起來。",
       "ShopType": [
         "YokaiStore"
@@ -247,7 +247,7 @@
       "Type": 2,
       "World": 1,
       "Rarity": 2,
-      "BasePrice": 500,
+      "BasePrice": 550,
       "Description": "天狗掉落的羽毛製成的扇子。輕搖能喚來溫暖的山風，天狗們用它來哄幼崽睡覺。",
       "ShopType": [
         "YokaiStore"
@@ -263,7 +263,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 20,
+      "BasePrice": 25,
       "Description": "人類發明的神祕小鐵盒按一下就可以召喚火焰!?",
       "ShopType": [
         "GroceryStore"
@@ -281,7 +281,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 1,
-      "BasePrice": 50,
+      "BasePrice": 570,
       "Description": "高達58度酒精的獨特飲品，一口下肚全身發熱，兩口下肚開始懷疑人生，三口下肚就不需要懷疑了。",
       "ShopType": [
         "FoodShop"
@@ -314,7 +314,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 2,
-      "BasePrice": 600,
+      "BasePrice": 7500,
       "Description": "鑲滿切割水晶的豪華吊燈。光線穿過時會被折射成無數道彩虹從天花板灑下。",
       "ShopType": [
         "FurnituresStore"
@@ -330,7 +330,7 @@
       "Type": 2,
       "World": 1,
       "Rarity": 2,
-      "BasePrice": 600,
+      "BasePrice": 3000,
       "Description": "沉甸甸的一顆藥丸，服下後身體會變得像釘在地上。連十七級颶風都吹不動。",
       "ShopType": [
         "MonsterMerchant_Rare"
@@ -365,7 +365,7 @@
       "Type": 2,
       "World": 1,
       "Rarity": 0,
-      "BasePrice": 70,
+      "BasePrice": 80,
       "Description": "樹妖精的種子，生命力驚人。無論是冰原還是沙漠，埋下去都能長出東西——雖然長出來的不一定是預期的植物。",
       "ShopType": [
         "YokaiStore"
@@ -383,7 +383,7 @@
       "Type": 2,
       "World": 1,
       "Rarity": 3,
-      "BasePrice": 3000,
+      "BasePrice": 30000,
       "Description": "黃金製成的容器，摩擦後會喚出居於當中的存在，能夠實現願望，而你又願意付出什麼樣的代價呢?",
       "ShopType": [
         "MonsterMerchant_Rare"
@@ -398,7 +398,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 150,
+      "BasePrice": 85,
       "Description": "用來驅散黑暗的工具，不需要火就能發光的神奇物品。",
       "ShopType": [
         "GroceryStore"
@@ -432,7 +432,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 35,
+      "BasePrice": 25,
       "Description": "充滿氣泡的黑色甜水，喝下去會想打嗝。",
       "ShopType": [
         "VendingMachine"
@@ -449,7 +449,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 50,
+      "BasePrice": 45,
       "Description": "薄脆可口的零食，一吃就停不下來，雖然袋子裡三分之一是空氣。",
       "ShopType": [
         "FoodShop"
@@ -480,7 +480,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 250,
+      "BasePrice": 40,
       "Description": "沉睡著植物的生命，埋進土裡澆水就會甦醒。",
       "ShopType": [
         "GroceryStore"
@@ -497,7 +497,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 300,
+      "BasePrice": 55,
       "Description": "將深海魚肉封存在金屬罐中，打開就能聞到海洋的味道。在陸地上想念海，這一罐就夠。",
       "ShopType": [
         "FoodShop"
@@ -529,7 +529,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 400,
+      "BasePrice": 235,
       "Description": "一束吸水布條綁在木棍上。大掃除的必備神器，沒有它地板會逐漸變成沼澤。",
       "ShopType": [
         "GroceryStore"
@@ -545,7 +545,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 160,
+      "BasePrice": 35,
       "Description": "綠色的辛辣泥狀物。吃一口鼻腔瞬間通暢，同時眼淚會自己流下來。",
       "ShopType": [
         "GroceryStore"
@@ -562,7 +562,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 600,
+      "BasePrice": 960,
       "Description": "來自遙遠鹽水世界的螺殼。貼在耳朵上能聽見海浪聲——沒人知道那聲音是從哪來的。",
       "ShopType": [
         "GroceryStore"
@@ -578,7 +578,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 70,
+      "BasePrice": 55,
       "Description": "小小的圓盤，永遠指向北方的神奇盤子，據說是指引迷途的靈魂回到故鄉。",
       "ShopType": [
         "GroceryStore"
@@ -611,7 +611,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 700,
+      "BasePrice": 1680,
       "Description": "一點燃就衝上天空、在夜空中炸成花的筒狀物。剎那間極致的光與熱。",
       "ShopType": [
         "GroceryStore"
@@ -629,7 +629,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 60,
+      "BasePrice": 65,
       "Description": "裹著金色錫箔的甜食，當中的成分靠能對某些生物來說有毒。",
       "ShopType": [
         "GroceryStore"
@@ -646,7 +646,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 130,
+      "BasePrice": 135,
       "Description": "漆黑如墨、苦澀如膽的一小杯液體。",
       "ShopType": [
         "HumanShopEat"
@@ -664,7 +664,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 550,
+      "BasePrice": 125,
       "Description": "來自熱帶的水果，橫切面呈現完美的五角形。造型像是掉下來的星星碎片。",
       "ShopType": [
         "FoodShop"
@@ -698,7 +698,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 440,
+      "BasePrice": 25,
       "Description": "濃稠、深紅色的液體，帶有鐵鏽味，其實是罐頭味。視覺上跟鮮血有 90% 相似度。",
       "ShopType": [
         "VendingMachine"
@@ -730,7 +730,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 160,
+      "BasePrice": 180,
       "Description": "形的金色餅塊，上面印著神祕的符號，切開後裡面常藏著另一個小月亮。",
       "ShopType": [
         "FoodShop"
@@ -746,7 +746,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 80,
+      "BasePrice": 65,
       "Description": "散發著濃烈的、彷彿屍體放置三天的氣味，但表面炸得金黃酥脆。氣味是敵人，味道是朋友。",
       "ShopType": [
         "HumanShopEat"
@@ -762,7 +762,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 650,
+      "BasePrice": 280,
       "Description": "小小的管子。吸一口像是把暴風雪吸進鼻腔，涼意直衝腦門，睡意立刻煙消雲散。",
       "ShopType": [
         "GroceryStore"
@@ -779,7 +779,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 220,
+      "BasePrice": 90,
       "Description": "外皮金黃酥脆，內餡是紅豆泥的魚形蛋糕。除了長得像魚，跟海鮮沒有任何關係。",
       "ShopType": [
         "HumanShopEat"
@@ -830,7 +830,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 1,
-      "BasePrice": 380,
+      "BasePrice": 280,
       "Description": "一根細鐵絲，點燃後會噴濺出金色的星光，雖然短暫但極其燦爛。",
       "ShopType": [
         "GroceryStore"
@@ -847,7 +847,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 10,
+      "BasePrice": 140,
       "Description": "綠色的漩渦狀條，點燃後冒出有驅蟲效果的輕煙。精巧的螺旋，怎麼看都像某種特殊飾品?",
       "ShopType": [
         "GroceryStore"
@@ -863,7 +863,7 @@
       "Type": 0,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 10,
+      "BasePrice": 290,
       "Description": "兩片黑色的鏡片，戴上後世界會變暗。",
       "ShopType": [
         "GroceryStore"
@@ -913,7 +913,7 @@
       "Type": 0,
       "World": 0,
       "Rarity": 3,
-      "BasePrice": 7000,
+      "BasePrice": 70000,
       "Description": "沉甸甸的金塊，精密的工藝。它代表的不僅是時間，更是地位。",
       "ShopType": [
         "GroceryStore"
@@ -947,7 +947,7 @@
       "Type": 0,
       "World": 0,
       "Rarity": 3,
-      "BasePrice": 8000,
+      "BasePrice": 80000,
       "Description": "經過精密切割的碳結晶，在光線下閃爍著令人目眩的光彩。",
       "ShopType": [
         "GroceryStore"
@@ -1030,7 +1030,7 @@
       "Type": 0,
       "World": 0,
       "Rarity": 2,
-      "BasePrice": 1200,
+      "BasePrice": 1100,
       "Description": "滿是銅綠與凹痕的古代戰甲。穿上很難動，不穿又覺得可惜，收藏家最矛盾的藏品。",
       "ShopType": [
         "GroceryStore"
@@ -1114,7 +1114,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 2,
-      "BasePrice": 3333,
+      "BasePrice": 3500,
       "Description": "昆蟲被困在透明樹脂裡，姿勢仍是千萬年前那一瞬間。琥珀是讓生命變成永恆的方式。",
       "ShopType": [
         "GroceryStore"
@@ -1147,7 +1147,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 130,
+      "BasePrice": 145,
       "Description": "鋪滿酸爽檸檬餡的塔皮甜點。一口咬下，甜味之後酸味會突襲味蕾。",
       "ShopType": [
         "HumanShopEat"
@@ -1163,7 +1163,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 6300,
+      "BasePrice": 63000,
       "Description": "點亮後會發出藍紫色光芒的燈管。照一照細菌跟病毒都會消失。",
       "ShopType": [
         "FurnituresStore"
@@ -1180,7 +1180,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 3,
-      "BasePrice": 700,
+      "BasePrice": 500,
       "Description": "沒有內建電池，使用太陽能最為能量來源的手電筒，當需要使用時拿個燈照他就會發光了",
       "ShopType": [
         "GroceryStore"
@@ -1196,7 +1196,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 75,
+      "BasePrice": 55,
       "Description": "冷水沖過的麵條淋上芝麻醬與小黃瓜絲。夏天的救贖。",
       "ShopType": [
         "GroceryStore"
@@ -1278,7 +1278,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 390,
+      "BasePrice": 290,
       "Description": "泡在醋裡的小黃瓜。酸脆爽口，配什麼都解膩。",
       "ShopType": [
         "FoodShop"
@@ -1362,7 +1362,7 @@
       "Type": 2,
       "World": 1,
       "Rarity": 2,
-      "BasePrice": 800,
+      "BasePrice": 8000,
       "Description": "從賽壬身上剝落的藍綠色鱗片，永遠濕潤。放在耳邊能聽到迷幻的歌聲，助眠效果絕佳。",
       "ShopType": [
         "MonsterMerchant_Ocean"
@@ -1396,7 +1396,7 @@
       "Type": 1,
       "World": 1,
       "Rarity": 4,
-      "BasePrice": 6000,
+      "BasePrice": 60000,
       "Description": "玉兔搗藥時的完成品，散發著淡淡的桂花香。服下後身體會漸漸變輕，據說吃下後可以長生不老",
       "ShopType": [
         "YokaiStore"
@@ -1483,7 +1483,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 300,
+      "BasePrice": 85,
       "Description": "一整袋燒製過的木頭。能生火、能烤肉、能除臭、能淨水，是低調的多功能產品。",
       "ShopType": [
         "GroceryStore"
@@ -1500,7 +1500,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 190,
+      "BasePrice": 155,
       "Description": "強效清潔液，能把任何污漬從衣服上抹去——連衣服的顏色一起抹去。氣味刺鼻，使用請開窗。",
       "ShopType": [
         "GroceryStore"
@@ -1518,7 +1518,7 @@
       "Type": 1,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 85,
+      "BasePrice": 75,
       "Description": "深褐色的甜點塊，人類最愛的情緒補品之一。甜中帶苦，而對某些生物來說是致命毒物。",
       "ShopType": [
         "GroceryStore"
@@ -1603,7 +1603,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 2,
-      "BasePrice": 4200,
+      "BasePrice": 42000,
       "Description": "年代久遠的絹本畫卷，展開時能聞到舊紙與墨的氣息。畫面內容在不同光線下看起來略有不同",
       "ShopType": [
         "GroceryStore"
@@ -1620,7 +1620,7 @@
       "Type": 0,
       "World": 1,
       "Rarity": 3,
-      "BasePrice": 2200,
+      "BasePrice": 22000,
       "Description": "巨大的芭蕉葉扇子，輕輕一搧能掀起十里狂風，連老屋都能一掃而空。——某牛短記：「家中大小事不再用它，上次搧了一下屋頂就沒了。」",
       "ShopType": [
         "MonsterMerchant_Rare"
@@ -1672,7 +1672,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 1,
-      "BasePrice": 3500,
+      "BasePrice": 5000,
       "Description": "甲殼散發著真實黃金光澤的稀有甲蟲。",
       "ShopType": [
         "GroceryStore"
@@ -1758,7 +1758,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 25,
+      "BasePrice": 30,
       "Description": "河邊隨處可見、表面覆著青苔的石頭，滑溜溜的。",
       "ShopType": [
         "GroceryStore"
@@ -1792,7 +1792,7 @@
       "Type": 1,
       "World": 1,
       "Rarity": 0,
-      "BasePrice": 300,
+      "BasePrice": 350,
       "Description": "妖界山頂生長的翠綠葉片，翠綠得發光的葉子。泡水飲用後，能讓人保持絕對清醒三天三夜，是考生與加班族的至寶。",
       "ShopType": [
         "YokaiStore"
@@ -1809,7 +1809,7 @@
       "Type": 2,
       "World": 1,
       "Rarity": 0,
-      "BasePrice": 600,
+      "BasePrice": 650,
       "Description": "一袋永遠潮濕的泥土，散發著腐殖與生機的氣味。種在裡面的植物會以十倍速度生長。",
       "ShopType": [
         "YokaiStore"
@@ -2014,7 +2014,7 @@
       "Type": 1,
       "World": 1,
       "Rarity": 0,
-      "BasePrice": 500,
+      "BasePrice": 800,
       "Description": "天宮織女製作的棉花糖，精緻的色彩如天上的雲彩，口感如頂級絲綢般滑順，完全不黏牙。",
       "ShopType": [
         "YokaiStoreEat"
@@ -2277,7 +2277,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 410,
+      "BasePrice": 1410,
       "Description": "利用低溫循環氣流慢慢退冰，能盡量保住食材的新鮮口感，不會一下子被解壞。",
       "ShopType": [
         "FurnituresStore"
@@ -2294,7 +2294,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 220,
+      "BasePrice": 1220,
       "Description": "利用燈光吸引蚊蟲靠近再一網打盡，對夏夜裡常被叮得滿腿包的人來說非常有用。",
       "ShopType": [
         "FurnituresStore"
@@ -2311,7 +2311,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 1,
-      "BasePrice": 600,
+      "BasePrice": 2000,
       "Description": "會自己在房間裡巡邏打掃的圓盤機器，雖然偶爾會迷路，但大部分時間都很能幹。",
       "ShopType": [
         "FurnituresStore"
@@ -2329,7 +2329,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 1,
-      "BasePrice": 360,
+      "BasePrice": 3600,
       "Description": "利用磁力讓燈體懸浮的小型桌燈。",
       "ShopType": [
         "FurnituresStore"
@@ -2347,7 +2347,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 0,
-      "BasePrice": 260,
+      "BasePrice": 760,
       "Description": "能把熱飯快速整形成固定大小的飯糰，方便、乾淨，而且很適合忙碌的早晨。",
       "ShopType": [
         "FurnituresStore"
@@ -2366,7 +2366,7 @@
       "Type": 2,
       "World": 0,
       "Rarity": 1,
-      "BasePrice": 4000,
+      "BasePrice": 40000,
       "Description": "薄博的螢幕中藏著無限的世界，看一眼使靈魂沉浸其中。",
       "ShopType": [
         "FurnituresStore"
@@ -2427,7 +2427,7 @@
     },
     {
       "Id": "MoonPestle",
-      "Name": "月兔搗藥杵",
+      "Name": "月兔搗藥組",
       "Tags": [
         "Potion",
         "Heavy",
@@ -2439,7 +2439,7 @@
       "World": 1,
       "Rarity": 0,
       "BasePrice": 360,
-      "Description": "玉兔用壞後淘汰的小藥杵，表面還殘留淡淡月光藥香。拿來搗藥效果很好。",
+      "Description": "玉兔淘汰的搗藥組，表面還殘留淡淡藥香。拿來搗藥效果很好。",
       "ShopType": [
         "YokaiStore"
       ]
@@ -2475,7 +2475,7 @@
       "Type": 0,
       "World": 1,
       "Rarity": 4,
-      "BasePrice": 9900,
+      "BasePrice": 88000,
       "Description": "傳說中的金箍棒",
       "ShopType": []
     },
@@ -2492,7 +2492,7 @@
       "Type": 0,
       "World": 1,
       "Rarity": 2,
-      "BasePrice": 900,
+      "BasePrice": 9000,
       "Description": "帶上後無法取下，感覺頭緊緊的",
       "ShopType": [
         "MonsterMerchant_Rare"
@@ -2545,7 +2545,7 @@
       "Type": 2,
       "World": 1,
       "Rarity": 2,
-      "BasePrice": 1000,
+      "BasePrice": 4000,
       "Description": "深海蚌殼裡取出的夜珠仍帶著潮氣，放在黑暗處會發出柔和藍光。看久了會有一種被海底凝視的感覺。",
       "ShopType": [
         "MonsterMerchant_Ocean"
@@ -2578,7 +2578,7 @@
       "Type": 2,
       "World": 1,
       "Rarity": 0,
-      "BasePrice": 1352,
+      "BasePrice": 3350,
       "Description": "會自動吐出符籙的妖怪機械，輸入咒文後就能印出一整疊。妖界辦公必備",
       "ShopType": []
     }

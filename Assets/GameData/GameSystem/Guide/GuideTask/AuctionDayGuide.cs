@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class AuctionDayGuide
@@ -7,7 +8,15 @@ public static class AuctionDayGuide
     private const string HumanDayMessage = "\u4ECA\u5929\u5C07\u8209\u884C\u62CD\u8CE3\u6703\uFF0C\u8ACB\u5728\u9EC3\u660F\u524D\u505A\u597D\u6E96\u5099\u3002";
     private const string AfterNoonMessage = "\u505A\u597D\u6240\u6709\u6E96\u5099\uFF0C\u958B\u59CB\u62CD\u8CE3\u6703\u3002";
 
-    private static bool isActive;
+    private enum ActiveGuide
+    {
+        None,
+        HumanDay,
+        AfterNoon
+    }
+
+    private static GuideTask activeTask;
+    private static ActiveGuide activeGuide = ActiveGuide.None;
     private static bool isAfterNoonGuideCompleted;
 
     public static void Refresh()
@@ -22,7 +31,7 @@ public static class AuctionDayGuide
         if (showHumanDay)
         {
             isAfterNoonGuideCompleted = false;
-            ShowTextOnly(HumanDayMessage);
+            ShowHumanDayGuide();
             return;
         }
 
@@ -77,27 +86,42 @@ public static class AuctionDayGuide
 
     private static void ShowTextOnly(string message)
     {
-        GuideFlowUI.SetGuideFlowTextEvent?.Invoke(message, true);
-        NoticeGetItemEvents.InvokeClearMapGuide();
-        isActive = true;
+        StartTask(new AuctionDayTextGuideTask(message), ActiveGuide.HumanDay);
+    }
+
+    private static void ShowHumanDayGuide()
+    {
+        ShowTextOnly(HumanDayMessage);
     }
 
     private static void ShowAfterNoonGuide()
     {
-        GuideFlowUI.SetGuideFlowTextEvent?.Invoke(AfterNoonMessage, true);
-        RegisterAuctionTelePointGuide();
-        NoticeGetItemEvents.InvokeStartMapGuide(GuideIDs.Interactable.TelePointAuctionGuide);
-        isActive = true;
+        StartTask(new AuctionDayMapGuideTask(AfterNoonMessage), ActiveGuide.AfterNoon);
     }
 
     private static void Hide()
     {
-        if (!isActive)
+        if (activeTask == null)
             return;
 
-        GuideFlowUI.SetGuideFlowTextEvent?.Invoke(string.Empty, false);
-        NoticeGetItemEvents.InvokeClearMapGuide();
-        isActive = false;
+        activeTask.Dispose();
+        activeTask = null;
+        activeGuide = ActiveGuide.None;
+    }
+
+    private static void StartTask(GuideTask task, ActiveGuide guide)
+    {
+        if (activeTask != null && activeGuide == guide)
+            return;
+
+        Hide();
+        activeTask = task;
+        activeGuide = guide;
+        activeTask.Start(() =>
+        {
+            activeTask = null;
+            activeGuide = ActiveGuide.None;
+        });
     }
 
     private static void SetAuctionTelePointActive(bool active)
@@ -124,6 +148,56 @@ public static class AuctionDayGuide
             {
                 guides[i].SetMapGuide();
             }
+        }
+    }
+
+    private class AuctionDayTextGuideTask : GuideTask
+    {
+        private readonly string message;
+
+        public AuctionDayTextGuideTask(string message)
+        {
+            this.message = message;
+        }
+
+        public override string TaskName => "Auction Day Human Guide";
+
+        protected override List<GuideStep> BuildSteps()
+        {
+            return new List<GuideStep>
+            {
+                new PersistentHintStep(
+                    message,
+                    onExecuteCallback: NoticeGetItemEvents.InvokeClearMapGuide,
+                    onDisposeCallback: NoticeGetItemEvents.InvokeClearMapGuide)
+            };
+        }
+    }
+
+    private class AuctionDayMapGuideTask : GuideTask
+    {
+        private readonly string message;
+
+        public AuctionDayMapGuideTask(string message)
+        {
+            this.message = message;
+        }
+
+        public override string TaskName => "Auction Day AfterNoon Guide";
+
+        protected override List<GuideStep> BuildSteps()
+        {
+            return new List<GuideStep>
+            {
+                new PersistentHintStep(
+                    message,
+                    onExecuteCallback: () =>
+                    {
+                        RegisterAuctionTelePointGuide();
+                        NoticeGetItemEvents.InvokeStartMapGuide(GuideIDs.Interactable.TelePointAuctionGuide);
+                    },
+                    onDisposeCallback: NoticeGetItemEvents.InvokeClearMapGuide)
+            };
         }
     }
 }

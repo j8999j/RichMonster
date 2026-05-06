@@ -136,6 +136,46 @@ public class GiveRewardStep : GuideStep
     }
 }
 
+public class PersistentHintStep : GuideStep
+{
+    private readonly string hintMessage;
+    private readonly System.Action onExecuteCallback;
+    private readonly System.Action onDisposeCallback;
+    private readonly bool clearHintOnDispose;
+    private bool disposed;
+
+    public PersistentHintStep(
+        string hintMessage,
+        bool clearHintOnDispose = true,
+        System.Action onExecuteCallback = null,
+        System.Action onDisposeCallback = null)
+    {
+        this.hintMessage = hintMessage;
+        this.clearHintOnDispose = clearHintOnDispose;
+        this.onExecuteCallback = onExecuteCallback;
+        this.onDisposeCallback = onDisposeCallback;
+    }
+
+    public override void Execute(System.Action onComplete)
+    {
+        disposed = false;
+        onExecuteCallback?.Invoke();
+        GuideFlowUI.SetGuideFlowTextEvent?.Invoke(hintMessage, true);
+    }
+
+    public override void Dispose()
+    {
+        if (disposed)
+            return;
+
+        disposed = true;
+        onDisposeCallback?.Invoke();
+
+        if (clearHintOnDispose)
+            GuideFlowUI.SetGuideFlowTextEvent?.Invoke(string.Empty, false);
+    }
+}
+
 // ─────────────────────────────────────────────────────
 /// <summary>可略過步驟：條件達成或背景已監聽到則直接完成</summary>
 public class SkippableListenStep : GuideStep

@@ -181,14 +181,23 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler, IPo
     /// </summary>
     public void BuyScratchCard()
     {
-        if (DataManager.Instance.TrySpendGold(300))
-        {
-            LeaveButton.SetActive(false);
-            BuyScratchButton.gameObject.SetActive(false);
-            BuyPanelRaycastImage.SetActive(false);
-            CanClosePanel = false;
-            PlaySfx(buySfx);
-        }
+        bool isFree = Souvenir.SouvenirManager.Instance != null
+            && Souvenir.SouvenirManager.Instance.IsInitialized
+            && Souvenir.SouvenirManager.Instance.IsScratchCardFree();
+
+        if (!isFree && !DataManager.Instance.TrySpendGold(300))
+            return;
+
+        StartPurchasedScratchCard();
+    }
+
+    private void StartPurchasedScratchCard()
+    {
+        LeaveButton.SetActive(false);
+        BuyScratchButton.gameObject.SetActive(false);
+        BuyPanelRaycastImage.SetActive(false);
+        CanClosePanel = false;
+        PlaySfx(buySfx);
     }
     public void ConfirmRewardButton()
     {
