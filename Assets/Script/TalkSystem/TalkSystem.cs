@@ -48,14 +48,16 @@ namespace Talksystem
         [SerializeField] private float defaultTypeSpeed = 0.05f;
 
         [Header("輸入設定")]
-        [Tooltip("按鍵觸發下一步")]
+        [Tooltip("逐字播放完畢後，按此鍵切換到下一句")]
         [SerializeField] private KeyCode nextKey = KeyCode.Space;
-        [Tooltip("按鍵跳過逐字顯示")]
-        [SerializeField] private KeyCode skipKey = KeyCode.Return;
         [Tooltip("跳過整段對話的按鈕。若未指定，會在對話框上自動建立一個。")]
         [SerializeField] private Button skipDialogueButton;
         [Tooltip("是否啟用按鍵輸入 (設為 false 時需手動呼叫 Next())")]
         [SerializeField] private bool enableKeyInput = true;
+        [Tooltip("避免連續按鍵在同一段對話狀態切換時重複推進")]
+        [SerializeField] private float advanceInputCooldownSeconds = 0.08f;
+        [Tooltip("跳過整段對話時，保留對話框與故事面板淡出的時間")]
+        [SerializeField] private float skipFadeOutDuration = 0.25f;
 
         [Header("玩家鎖定")]
         [Tooltip("開始對話時自動鎖定玩家移動與互動，結束或中斷時自動解除")]
@@ -82,6 +84,9 @@ namespace Talksystem
         private TaskCompletionSource<bool> _currentDialogueTaskSource;
         private bool _ownsAutoMoveLock;
         private bool _ownsAutoInteractLock;
+        private bool _isAdvancingDialogue;
+        private bool _isSkippingDialogue;
+        private float _nextAdvanceInputTime;
 
         // 等待按鍵後的行為
         private bool _waitClearAfter;
@@ -124,14 +129,8 @@ namespace Talksystem
             if (!enableKeyInput || !_isDialogueActive || _isPaused)
                 return;
 
-            // 跳過逐字顯示 (立即顯示完)
-            if (_isTyping && Input.GetKeyDown(skipKey))
-            {
-                SkipTypewriter();
-                return;
-            }
-
-            // 等待按鍵繼續
+            // 僅在當前句子逐字播放完畢、進入等待狀態時才允許按鍵推進，
+            // 避免打字途中被中斷導致對話疊加或故事順序錯亂。
             if (_isWaitingForInput && Input.GetKeyDown(nextKey))
             {
                 Next();
@@ -223,13 +222,16 @@ namespace Talksystem
         /// </summary>
         public void Next()
         {
-            if (!_isDialogueActive)
+            if (!_isDialogueActive || !CanAdvanceInput())
                 return;
+
+            _isAdvancingDialogue = true;
 
             // 如果正在打字，先完成當前文字
             if (_isTyping)
             {
-                SkipTypewriter();
+                _isAdvancingDialogue = false;
+                BlockAdvanceInputBriefly();
                 return;
             }
 
@@ -256,6 +258,9 @@ namespace Talksystem
 
                 ProcessNodes();
             }
+
+            _isAdvancingDialogue = false;
+            BlockAdvanceInputBriefly();
         }
 
         /// <summary>
@@ -296,10 +301,10 @@ namespace Talksystem
         /// </summary>
         public void SkipDialogue()
         {
-            if (!_isDialogueActive)
+            if (!_isDialogueActive || _isSkippingDialogue)
                 return;
 
-            FinishDialogue(true, true, true);
+            StartCoroutine(SkipDialogueWithFadeRoutine());
         }
 
         /// <summary>
@@ -357,6 +362,9 @@ namespace Talksystem
             _isTyping = false;
             _isWaitingForInput = false;
             _isPaused = false;
+            _isAdvancingDialogue = false;
+            _isSkippingDialogue = false;
+            _nextAdvanceInputTime = 0f;
             AcquireAutoPlayerLocks();
             BindSkipDialogueButton();
             SetSkipDialogueButtonVisible(true);
@@ -483,6 +491,9 @@ namespace Talksystem
             _appendNewLineAfterWait = false;
             _currentDisplayText = "";
             _nodes = null;
+            _isAdvancingDialogue = false;
+            _isSkippingDialogue = false;
+            _nextAdvanceInputTime = 0f;
 
             SetSkipDialogueButtonVisible(false);
 
@@ -515,6 +526,54 @@ namespace Talksystem
                 dialogueView.ShowAllCharacters();
                 dialogueView.HidePanel();
             }
+        }
+
+        private IEnumerator SkipDialogueWithFadeRoutine()
+        {
+            _isSkippingDialogue = true;
+
+            if (_typewriterCoroutine != null)
+            {
+                StopCoroutine(_typewriterCoroutine);
+                _typewriterCoroutine = null;
+            }
+
+            _isDialogueActive = false;
+            _isTyping = false;
+            _isWaitingForInput = false;
+            _isPaused = false;
+            _waitClearAfter = false;
+            _appendNewLineAfterWait = false;
+            _nodes = null;
+            _isAdvancingDialogue = false;
+            _nextAdvanceInputTime = 0f;
+
+            SetSkipDialogueButtonVisible(false);
+            HideChoices();
+
+            Task storyFadeTask = null;
+            StoryPlaybackPanel panel = ResolveStoryPlaybackPanel();
+            if (panel != null)
+            {
+                storyFadeTask = panel.HideAsync(skipFadeOutDuration);
+            }
+
+            if (dialogueView != null)
+            {
+                dialogueView.HideContinueIndicator();
+                dialogueView.ShowAllCharacters();
+                yield return dialogueView.FadeOut(skipFadeOutDuration);
+                dialogueView.ClearText();
+            }
+
+            while (storyFadeTask != null && !storyFadeTask.IsCompleted)
+            {
+                yield return null;
+            }
+
+            _currentDisplayText = string.Empty;
+            _isSkippingDialogue = false;
+            CompleteCurrentDialogue(true, true);
         }
 
         private void BindSkipDialogueButton()
@@ -852,8 +911,19 @@ namespace Talksystem
             _waitClearAfter = clearAfter;
             _appendNewLineAfterWait = newLineAfter;
             _isWaitingForInput = true;
+            BlockAdvanceInputBriefly();
             dialogueView?.ShowContinueIndicator();
             OnWaitingForInput?.Invoke();
+        }
+
+        private bool CanAdvanceInput()
+        {
+            return !_isAdvancingDialogue && Time.unscaledTime >= _nextAdvanceInputTime;
+        }
+
+        private void BlockAdvanceInputBriefly()
+        {
+            _nextAdvanceInputTime = Time.unscaledTime + Mathf.Max(0f, advanceInputCooldownSeconds);
         }
 
         /// <summary>
@@ -891,13 +961,15 @@ namespace Talksystem
         /// </summary>
         private void StartTypewriter(string text)
         {
-            // 記錄新文字之前已可見的字元數
+            // 記錄新文字之前已可見的字元數，避免接續輸入時把已顯示的內容重新打字
             int previousVisibleCount = 0;
-            if (dialogueView?.DialogueTextComponent != null)
+            if (dialogueView != null)
             {
-                int currentMax = dialogueView.DialogueTextComponent.maxVisibleCharacters;
-                if (currentMax != int.MaxValue)
-                    previousVisibleCount = currentMax;
+                previousVisibleCount = Mathf.Min(
+                    dialogueView.DialogueTextComponent != null
+                        ? dialogueView.DialogueTextComponent.maxVisibleCharacters
+                        : 0,
+                    dialogueView.GetParsedTextLength());
             }
 
             _currentDisplayText += text;
@@ -954,24 +1026,6 @@ namespace Talksystem
             _typewriterCoroutine = null;
 
             // 打字完成後繼續處理下一個節點
-            ProcessNodes();
-        }
-
-        /// <summary>
-        /// 跳過逐字顯示，立即顯示完整文字
-        /// </summary>
-        private void SkipTypewriter()
-        {
-            if (_typewriterCoroutine != null)
-            {
-                StopCoroutine(_typewriterCoroutine);
-                _typewriterCoroutine = null;
-            }
-
-            _isTyping = false;
-            dialogueView?.ShowAllCharacters();
-
-            // 繼續處理後續節點
             ProcessNodes();
         }
 

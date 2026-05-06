@@ -827,9 +827,9 @@ MonoBehaviour:
   dialogueChoicePresenter: {fileID: 381028783}
   defaultTypeSpeed: 0.05
   nextKey: 32
-  skipKey: 32
   skipDialogueButton: {fileID: 1115172305}
   enableKeyInput: 1
+  advanceInputCooldownSeconds: 0.08
   autoLockPlayer: 1
 --- !u!114 &381028779
 MonoBehaviour:

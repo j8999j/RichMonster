@@ -95,12 +95,17 @@ namespace Talksystem
         /// </summary>
         public int GetParsedTextLength()
         {
-            if (dialogueText != null)
+            if (dialogueText == null)
+                return 0;
+
+            if (dialogueText.isActiveAndEnabled)
             {
                 dialogueText.ForceMeshUpdate();
-                return dialogueText.textInfo.characterCount;
+                if (dialogueText.textInfo != null)
+                    return dialogueText.textInfo.characterCount;
             }
-            return 0;
+
+            return dialogueText.text != null ? dialogueText.text.Length : 0;
         }
 
         /// <summary>
@@ -108,10 +113,21 @@ namespace Talksystem
         /// </summary>
         public void ShowAllCharacters()
         {
-            if (dialogueText != null)
+            if (dialogueText == null)
+                return;
+
+            int characterCount = 0;
+            if (dialogueText.isActiveAndEnabled)
             {
-                dialogueText.maxVisibleCharacters = int.MaxValue;
+                dialogueText.ForceMeshUpdate();
+                if (dialogueText.textInfo != null)
+                    characterCount = dialogueText.textInfo.characterCount;
             }
+
+            if (characterCount <= 0)
+                characterCount = dialogueText.text != null ? dialogueText.text.Length : 0;
+
+            dialogueText.maxVisibleCharacters = characterCount;
         }
 
         /// <summary>
