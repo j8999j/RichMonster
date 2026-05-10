@@ -830,6 +830,7 @@ MonoBehaviour:
   skipDialogueButton: {fileID: 1115172305}
   enableKeyInput: 1
   advanceInputCooldownSeconds: 0.08
+  skipFadeOutDuration: 0.25
   autoLockPlayer: 1
 --- !u!114 &381028779
 MonoBehaviour:

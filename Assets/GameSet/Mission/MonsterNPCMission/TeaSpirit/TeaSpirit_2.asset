@@ -26,5 +26,9 @@ MonoBehaviour:
     GoldAmount: 0
     ItemID: 
     ItemAmount: 0
+  - RewardType: 1
+    GoldAmount: 0
+    ItemID: CeladonCup
+    ItemAmount: 1
   IsFinish: 0
   MissionWorld: 1

@@ -127,7 +127,8 @@
       "Tags": [
         "Natural",
         "Fruit",
-        "Vegetable"
+        "Vegetable",
+        "Fresh"
       ],
       "Type": 1,
       "World": 0,
@@ -492,7 +493,8 @@
       "Tags": [
         "Preserved",
         "Seafood",
-        "Ocean"
+        "Ocean",
+        "Fish"
       ],
       "Type": 1,
       "World": 0,
@@ -2504,13 +2506,14 @@
       "Tags": [
         "Dark",
         "Preserved",
-        "Ocean"
+        "Ocean",
+        "Dry"
       ],
       "Type": 1,
       "World": 1,
       "Rarity": 1,
       "BasePrice": 800,
-      "Description": "經過的黑潮中提煉出的鹽，顏色深得像夜晚的海。灑在料理上會有濃厚海味。",
+      "Description": "經過的黑潮中提煉出的鹽，會不斷吸收周圍的水氣，顏色深得像夜晚的海。灑在料理上會有濃厚海味。",
       "ShopType": [
         "MonsterMerchant_Ocean"
       ]
@@ -2581,6 +2584,211 @@
       "BasePrice": 3350,
       "Description": "會自動吐出符籙的妖怪機械，輸入咒文後就能印出一整疊。妖界辦公必備",
       "ShopType": []
+    },
+    {
+      "Id": "ZombieTalisman",
+      "Name": "僵屍的符咒",
+      "Tags": [
+        "Dry",
+        "Cold",
+        "Magic"
+      ],
+      "Type": 0,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 100,
+      "Description": "殭屍貼在額頭上的符咒，具有乾燥防腐功能，並且帶有陣陣涼意",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "IceRose",
+      "Name": "冰晶玫瑰",
+      "Tags": [
+        "Wet",
+        "Beauty",
+        "Cold"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 2,
+      "BasePrice": 3600,
+      "Description": "永遠不會凋謝的玫瑰，花瓣上凝結著水滴與冰霜。",
+      "ShopType": []
+    },
+    {
+      "Id": "SkyGlassJade",
+      "Name": "星空琉璃玉",
+      "Tags": [
+        "Beauty",
+        "Luxury",
+        "Gem",
+        "Pure",
+        "Star"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 3,
+      "BasePrice": 10000,
+      "Description": "彷彿將整片星空封存其中的純粹寶石",
+      "ShopType": []
+    },
+    {
+      "Id": "BananaPancake",
+      "Name": "芭蕉秘製烤餅",
+      "Tags": [
+        "Dry",
+        "Dessert",
+        "Warm"
+      ],
+      "Type": 1,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 90,
+      "Description": "外表粗獷但內餡精緻的乾燥甜餅，一口咬下滿是驚喜。",
+      "ShopType": [
+        "YokaiStoreEat"
+      ]
+    },
+    {
+      "Id": "CeladonCup",
+      "Name": "汝窯青瓷杯",
+      "Tags": [
+        "Antique",
+        "Ceramic"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 1,
+      "BasePrice": 880,
+      "Description": "釉色溫潤如玉，能將茶湯質感提升到極致的古董茶具。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "Parchment",
+      "Name": "羊皮紙殘卷",
+      "Tags": [
+        "Antique",
+        "Book",
+        "Mystic"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 1,
+      "BasePrice": 1250,
+      "Description": "散發著濃郁墨水香氣的陳舊紙張，記載著失落的知識。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "GoldenScarab",
+      "Name": "黃金聖甲蟲",
+      "Tags": [
+        "Holy",
+        "Luxury",
+        "Antique",
+        "Soul",
+        "Gold"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 3,
+      "BasePrice": 20000,
+      "Description": "傳說中的聖甲蟲",
+      "ShopType": [
+        "MonsterMerchant_Rare"
+      ]
+    },
+    {
+      "Id": "BronzeSword",
+      "Name": "青銅古劍",
+      "Tags": [
+        "Antique",
+        "Old",
+        "Hard",
+        "Weapon"
+      ],
+      "Type": 0,
+      "World": 1,
+      "Rarity": 1,
+      "BasePrice": 2300,
+      "Description": "長埋地下千年，雖然劍刃已鈍但依然堅不可摧。",
+      "ShopType": [
+        "MonsterMerchant_Rare"
+      ]
+    },
+    {
+      "Id": "NightmareBottle",
+      "Name": "夢魘封印瓶",
+      "Tags": [
+        "Mystic",
+        "Memory",
+        "Noise"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 200,
+      "Description": "裡面裝著翻滾的黑色迷霧，當中封印著惡夢，能吸收周圍所有的吵雜與惡夢。",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "DeepSeaSashimi",
+      "Name": "深海生魚片",
+      "Tags": [
+        "Meat",
+        "Ocean",
+        "Seafood",
+        "Sweet",
+        "Sour",
+        "Mystic"
+      ],
+      "Type": 1,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 250,
+      "Description": "深海不明觸手製作成的生魚片，配上酸甜可口的醬汁，是一道高人氣美食",
+      "ShopType": [
+        "YokaiStoreEat"
+      ]
+    },
+    {
+      "Id": "ColdPack",
+      "Name": "零度冷冷包",
+      "Tags": [
+        "Cold"
+      ],
+      "Type": 2,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 70,
+      "Description": "始終保持在零度的冰冷包，時常用來保持食物新鮮，或在炎熱的天氣帶出門使用",
+      "ShopType": [
+        "YokaiStore"
+      ]
+    },
+    {
+      "Id": "CopperPendant",
+      "Name": "銅錢掛墜",
+      "Tags": [
+        "Luxury",
+        "Antique",
+        "Old"
+      ],
+      "Type": 0,
+      "World": 1,
+      "Rarity": 0,
+      "BasePrice": 160,
+      "Description": "市集裡常見的幸運小物",
+      "ShopType": [
+        "YokaiStore"
+      ]
     }
   ]
 }

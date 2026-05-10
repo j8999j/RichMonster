@@ -10,25 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 088f225fa8c8ed54192668fb68dbac72, type: 3}
-  m_Name: WanderingBard_1
+  m_Name: Kaguya-hime_1
   m_EditorClassIdentifier: 
-  NpcID: WanderingBard
-  MissionID: Wandering_1
-  MissionName: "\u6F64\u6ED1\u9700\u6C42"
-  MissionDescription: "\u6700\u8FD1\u8DF3\u8E8D\u7684\u6642\u5019\u611F\u89BA\u5361\u5361\u7684\u9700\u8981\u4E00\u4E9B\u6F64\u6ED1"
+  NpcID: Kaguya-hime
+  MissionID: Kaguya_1
+  MissionName: "\u60F3\u5FF5\u6708\u4EAE"
+  MissionDescription: "\u81EA\u5F9E\u610F\u5916\u4F86\u5230\u5730\u7403\u5F8C\u5C31\u4E0D\u65B7\u5C0B\u627E\u6709\u8457\u5BB6\u9109\u5473\u9053\u7684\u7269\u54C1"
   Requirement:
     Type: 2
-    TargetItemID: 
-    TargetTag: Oil
+    TargetItemID: Mineralwater
+    TargetTag: Moon
     TargetType: 0
   Rewards:
-  - RewardType: 0
-    GoldAmount: 200
-    ItemID: 
-    ItemAmount: 0
   - RewardType: 1
     GoldAmount: 0
-    ItemID: ZombieTalisman
-    ItemAmount: 1
+    ItemID: SkyGlassJade
+    ItemAmount: 0
   IsFinish: 0
   MissionWorld: 1

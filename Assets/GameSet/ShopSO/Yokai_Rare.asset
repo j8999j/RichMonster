@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Yokai_Rare
   m_EditorClassIdentifier: 
   ShopID: MonsterMerchant_Rare
-  GreetingDialogueId: Wandering_Ocean_Dialogue
+  GreetingDialogueId: Wandering_Rare_Dialogue

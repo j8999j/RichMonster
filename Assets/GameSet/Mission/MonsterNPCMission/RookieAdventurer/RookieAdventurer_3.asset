@@ -10,25 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 088f225fa8c8ed54192668fb68dbac72, type: 3}
-  m_Name: WanderingBard_1
+  m_Name: RookieAdventurer_3
   m_EditorClassIdentifier: 
-  NpcID: WanderingBard
-  MissionID: Wandering_1
-  MissionName: "\u6F64\u6ED1\u9700\u6C42"
-  MissionDescription: "\u6700\u8FD1\u8DF3\u8E8D\u7684\u6642\u5019\u611F\u89BA\u5361\u5361\u7684\u9700\u8981\u4E00\u4E9B\u6F64\u6ED1"
+  NpcID: RookieAdventurer
+  MissionID: Rookie_3
+  MissionName: "\u6676\u7469\u5254\u900F"
+  MissionDescription: "\u807D\u8AAA\u6709\u8DDF\u51B0\u4E00\u6A23\u6E05\u900F\u537B\u611F\u53D7\u4E0D\u5230\u5BD2\u51B7\u7684\u7269\u54C1"
   Requirement:
     Type: 2
     TargetItemID: 
-    TargetTag: Oil
-    TargetType: 0
+    TargetTag: Glass
+    TargetType: 2
   Rewards:
-  - RewardType: 0
-    GoldAmount: 200
-    ItemID: 
-    ItemAmount: 0
   - RewardType: 1
     GoldAmount: 0
-    ItemID: ZombieTalisman
+    ItemID: IceRose
     ItemAmount: 1
   IsFinish: 0
   MissionWorld: 1

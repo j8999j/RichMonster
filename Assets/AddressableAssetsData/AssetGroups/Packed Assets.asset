@@ -29,8 +29,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - Dialogue
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3173acd2a0444d242a7ed69b50ab2432
+    m_Address: Assets/GameSet/Mission/MonsterNPCMission/Kaguya-hime/Kaguya-hime_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - NpcMission
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3a821c83bf59440d9bf9868c37188b80
     m_Address: AuctionNpc_AfterPaid_Dialogue
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Dialogue
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5d0e0912baa72e246941709035bc2c05
+    m_Address: Wandering_Rare_Dialogue
     m_ReadOnly: 0
     m_SerializedLabels:
     - Dialogue

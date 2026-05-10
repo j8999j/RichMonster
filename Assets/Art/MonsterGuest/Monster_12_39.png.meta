@@ -664,7 +664,7 @@ TextureImporter:
         width: 83
         height: 98
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -685,7 +685,7 @@ TextureImporter:
         width: 69
         height: 98
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -706,7 +706,7 @@ TextureImporter:
         width: 94
         height: 95
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -727,7 +727,7 @@ TextureImporter:
         width: 101
         height: 95
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -735,6 +735,27 @@ TextureImporter:
       bones: []
       spriteID: d182d8eb51bdb7d4ba4099ebb7c7e74c
       internalID: -1204095344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Kaguya-hime_head
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 53
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98dddae2d76f2584bb893e1f17ddcc8b
+      internalID: -230939834
       vertices: []
       indices: 
       edges: []
@@ -762,6 +783,7 @@ TextureImporter:
       JadeRabbit: 1441669235
       Judge: 1468138878
       Kaguya-hime: 1041397875
+      Kaguya-hime_head: -230939834
       KunPeng: -1580174893
       Nekomata: -1519022690
       Nian: 281970418
