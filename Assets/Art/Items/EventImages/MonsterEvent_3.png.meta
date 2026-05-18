@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5ad12449cc56c0143862519cc3814f92
+guid: c67fc192ca700e94e9a80779b9f51b28
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,28 +110,28 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: DryadOvergrowth
+      name: YearEndStampede
       rect:
         serializedVersion: 2
         x: 0
-        y: 921
+        y: 920
         width: 600
-        height: 299
+        height: 300
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7541dbd67dc23b54aa3afeb4011c8a78
-      internalID: 1715308670
+      spriteID: d74d2bb2b5da75e408855ee3a1d30145
+      internalID: -51404728
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: LibraryDusting
+      name: JudgeAudit
       rect:
         serializedVersion: 2
         x: 620
@@ -139,104 +139,104 @@ TextureImporter:
         width: 600
         height: 300
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3e61ebb0d4d09074eac11918c43b8cbd
-      internalID: 161041200
+      spriteID: 497c60a2d30ba4a4e8d259ff170d02d6
+      internalID: 1076804766
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FoxWedding
+      name: NekomataSunGathering
       rect:
         serializedVersion: 2
         x: 0
-        y: 617
+        y: 613
         width: 600
         height: 300
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 862208fb15e53cc4db73be5b21908ece
-      internalID: -944684278
+      spriteID: 838984cf05619aa4bb5671d211e63b0d
+      internalID: -1836593754
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: InkDisaster
+      name: KappaCucumberHarvest
       rect:
         serializedVersion: 2
         x: 620
-        y: 612
+        y: 613
         width: 600
         height: 300
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2a9314cc9f413e44ab43dfe99024a206
-      internalID: -1541339472
+      spriteID: de5834650f0239a4e86990d0d74db2e2
+      internalID: -1582272558
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SandmanBagLeak
+      name: TerracottaParade
       rect:
         serializedVersion: 2
         x: 0
-        y: 308
+        y: 306
         width: 600
         height: 300
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d0223f67882394542920c8d6c8b4c1a7
-      internalID: -333334721
+      spriteID: 2088cd40a3e96634bb2a55b78a0cd814
+      internalID: 1716906359
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GargoyleStrike
+      name: BloodMoon
       rect:
         serializedVersion: 2
-        x: 616
-        y: 286
-        width: 604
-        height: 302
+        x: 620
+        y: 306
+        width: 600
+        height: 300
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5fe9ccb2fe47edb4897cdc79a3e13e22
-      internalID: -37537604
+      spriteID: 8c1fae87e7e863d4d958d63c5043910a
+      internalID: -1164117662
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ZombieAerobics
+      name: TanukiMoonParty
       rect:
         serializedVersion: 2
         x: 0
@@ -244,14 +244,35 @@ TextureImporter:
         width: 600
         height: 300
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: defd2bfb975b3114782bb48e0570878f
-      internalID: -1408760933
+      spriteID: 343e66529b1381047bcf9a09bd300ef0
+      internalID: -549591834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KaguyaMoonCall
+      rect:
+        serializedVersion: 2
+        x: 620
+        y: 0
+        width: 600
+        height: 300
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c6f9a79c49a8a24a9ac762c3b6417a8
+      internalID: -1627176569
       vertices: []
       indices: 
       edges: []
@@ -259,7 +280,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: ce883b96db301764d9c28a5b3b9e129a
+    spriteID: 44f0e56440a956f40b7fd1c1a75f07d2
     internalID: 0
     vertices: []
     indices: 
@@ -267,13 +288,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      DryadOvergrowth: 1715308670
-      FoxWedding: -944684278
-      GargoyleStrike: -37537604
-      InkDisaster: -1541339472
-      LibraryDusting: 161041200
-      SandmanBagLeak: -333334721
-      ZombieAerobics: -1408760933
+      BloodMoon: -1164117662
+      JudgeAudit: 1076804766
+      KaguyaMoonCall: -1627176569
+      KappaCucumberHarvest: -1582272558
+      NekomataSunGathering: -1836593754
+      TanukiMoonParty: -549591834
+      TerracottaParade: 1716906359
+      YearEndStampede: -51404728
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

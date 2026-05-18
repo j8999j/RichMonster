@@ -64,7 +64,7 @@
         {
             "OrderId": "BizarreGourmet",
             "OrderName": "美食勇者",
-            "OrderDescription": "是個美食部落客，專門挑戰未知的味道。只要是「食物」，不管味道我都願意嘗試，快端上來吧！",
+            "OrderDescription": "是個美食部落客，專門挑戰未知的味道。讀者說我最近太溫和了，我需要能讓我寫出全新文章得題材。",
             "OrderType": 1,
             "OrderNeedTags": []
         },
@@ -78,100 +78,229 @@
         {
             "OrderId": "CosplayEmergency",
             "OrderName": "漫展緊急狀況",
-            "OrderDescription": "再過十分鐘就要上台，我的角色道具剛好壞了！快給我任何一件「裝備」，我會硬說那是隱藏造型！",
+            "OrderDescription": "再過十分鐘就要上台，我的角色道具剛好壞了，完全無法補救。你有沒有什麼可以掛在身上、套起來的東西？我會硬說那是隱藏造型！",
             "OrderType": 0,
             "OrderNeedTags": []
         },
         {
             "OrderId": "StreamerChallenge",
             "OrderName": "直播盲測挑戰",
-            "OrderDescription": "觀眾想看閉眼食物挑戰。隨便給我一份特別的食物。",
+            "OrderDescription": "觀眾想看閉眼味覺挑戰，只靠靠嗅覺和味覺猜東西。我需要一樣能放進嘴裡的，最好在我說出謎底前，彈幕還在瘋狂猜測——越讓人摸不著頭緒越好。",
             "OrderType": 1,
             "OrderNeedTags": []
         },
         {
             "OrderId": "CrushChannel",
             "OrderName": "舒壓頻道的素材",
-            "OrderDescription": "觀眾投票想看我用液壓機壓扁東西。給我一個看起來很堅固的「裝備」，不管是頭盔還是護腕，我都要把它壓成紙！",
+            "OrderDescription": "我的頻道專門拍「液壓機壓扁東西」的影片，最近流量與觀眾新鮮感衰退，我需要一樣特別的物品讓我的頻道重回巔峰。",
             "OrderType": 2,
             "OrderNeedTags": []
         },
         {
             "OrderId": "TimeCapsule",
             "OrderName": "時光膠囊的填充物",
-            "OrderDescription": "我們正在埋藏時光膠囊，還缺最後一樣物品。隨便給我一個「道具」，最好是那種讓未來考古學家完全看不懂是什麼的東西！",
+            "OrderDescription": "我們班在埋時光膠囊，每個人放一樣「代表這個時代」的東西進去，最好是那種讓未來考古學家完全看不懂是什麼的東西！",
             "OrderType": 2,
             "OrderNeedTags": []
         },
         {
             "OrderId": "BlindBoxMaker",
             "OrderName": "自製盲盒的隱藏款",
-            "OrderDescription": "我在做驚喜盲盒送朋友，需要一個神秘的「道具」當作隱藏大獎。不用管實用性，只要塞得進盒子裡就行。",
+            "OrderDescription": "我在做驚喜盲盒送朋友，需要一個神秘的物品當作隱藏大獎。不用管實用性，只要塞得進盒子裡就行。",
             "OrderType": 2,
             "OrderNeedTags": []
         },
         {
             "OrderId": "FoleyArtist",
             "OrderName": "擬音師的素材",
-            "OrderDescription": "我正在錄製怪獸電影的音效，需要一個特別的聲音！",
+            "OrderDescription": "我在幫一部怪獸電影做後製音效，明天截止，但「怪獸踩碎東西的那段」還沒採到理想的音源。我需要一樣拿起來摔下去、踩下去，能製造讓人意外的聲響的東西。",
             "OrderType": 2,
             "OrderNeedTags": []
         },
         {
             "OrderId": "BioLabAccident",
             "OrderName": "實驗室的不明生物",
-            "OrderDescription": "我們實驗室培養皿裡的菌株突然變異了，它需要大量的有機物！快給我任何一種「食物」，它好像什麼都吃！",
+            "OrderDescription": "我們實驗室培養皿裡的某樣東西昨晚突然長大了很多，需要持續補充有機物才能維持穩定狀態。我需要任何可以餵生物的東西，越快越好，它好像有點不耐煩了。",
             "OrderType": 1,
             "OrderNeedTags": []
         },
         {
             "OrderId": "CompostKing",
             "OrderName": "頂級堆肥原料",
-            "OrderDescription": "我在測試最新的生化堆肥機。需要投入不同質地的有機物。你有沒有賣不掉的「食物」？腐爛的也可以，我都收。",
+            "OrderDescription": "我在測試最新的生化堆肥機。投入的有機物種類越多元，菌種越活躍，堆肥效果越好。有沒有特別的有機物就可以了",
             "OrderType": 1,
             "OrderNeedTags": []
         },
         {
             "OrderId": "FoodStylist",
             "OrderName": "攝影用道具菜",
-            "OrderDescription": "我在拍一組前衛的時尚照，需要一個看起來很厲害的「食物」當背景。反正拍完會噴亮光漆，過期或能不能吃都無所謂。",
+            "OrderDescription": "我下週有個前衛時尚攝影的案子，攝影師要在畫面裡放一樣讓人感覺「不完全存在這個世界的」視覺元素。",
             "OrderType": 1,
             "OrderNeedTags": []
         },
         {
             "OrderId": "ScarecrowUpgrade",
             "OrderName": "稻草人的武裝",
-            "OrderDescription": "最近的烏鴉越來越大膽了...我需要給田裡的稻草人穿點「裝備」增加威懾力。生鏽的、缺角的都行，能嚇走鳥就好！",
+            "OrderDescription": "田裡的烏鴉最近越來越囂張，連我自己站在那邊揮手都沒用了。我打算重新武裝我的稻草人，讓它看起來比我更有威懾力。",
             "OrderType": 0,
             "OrderNeedTags": []
         },
         {
             "OrderId": "StatueRepair",
             "OrderName": "銅像的替補品",
-            "OrderDescription": "銅像的配件被人偷了！快給我一件外型差不多的「裝備」頂替一下，我噴上金漆應該沒人會發現。",
+            "OrderDescription": "廣場的銅像手裡拿的東西昨晚被人敲掉了，市政府明天要來視察，得盡快補回去，我噴上金漆應該沒人會發現。",
             "OrderType": 0,
             "OrderNeedTags": []
         },
         {
             "OrderId": "GhostHouseManager",
             "OrderName": "鬼屋的佈置",
-            "OrderDescription": "遊樂園的鬼屋不夠恐怖，老闆叫我弄點真的像是戰死士兵穿過的「裝備」。越破舊越好，帶點陰森氣息更佳！",
+            "OrderDescription": "遊樂園的恐怖屋正在翻新，讓遊客覺得裡面的場景是真實發生過的。需要幾樣實際用過、特別的東西——最好是那種讓人光看著就覺得背後有段說不清楚故事的。",
             "OrderType": 0,
             "OrderNeedTags": []
         },
         {
             "OrderId": "GardenCreative",
             "OrderName": "文青風花盆",
-            "OrderDescription": "我看網路上流行用舊頭盔種多肉植物。有沒有那種凹下去、能裝土的「裝備」？生鏽的最好，比較有工業風。",
+            "OrderDescription": "我看網路上流行用舊頭盔種多肉植物。有沒有那種凹下去、能裝夠容納植物與泥土的物品",
             "OrderType": 0,
             "OrderNeedTags": []
         },
         {
             "OrderId": "MuseumFiller",
             "OrderName": "博物館湊數",
-            "OrderDescription": "展覽明天就要開始了，但展示櫃還空著一格...隨便給我一件看起來舊舊的「裝備」，我們會自己幫它編一個歷史故事。",
+            "OrderDescription": "明天展覽就要開始了，但展示櫃還空著一格。放什麼都行裝備，我們會自己幫它編一個歷史故事。",
             "OrderType": 0,
             "OrderNeedTags": []
+        },
+        {
+            "OrderId": "CyberpunkParty",
+            "OrderName": "賽博龐克主題派對",
+            "OrderDescription": "科幻俱樂部籌備的「賽博龐克 2099」派對即將舉行，本來訂的科技配件全部斷貨。急需大量帶有未來機械感、能讓參加者直接穿戴上身的閃光電子配件！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Machine"
+            ]
+        },
+        {
+            "OrderId": "CyberpunkParty_1",
+            "OrderName": "賽博龐克主題派對",
+            "OrderDescription": "科幻俱樂部籌備的「賽博龐克 2099」派對即將舉行，本來訂的科技配件全部斷貨。急需大量帶有未來機械感、能讓參加者直接穿戴上身的閃光電子配件！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Light"
+            ]
+        },
+        {
+            "OrderId": "CyberpunkParty_2",
+            "OrderName": "賽博龐克主題派對",
+            "OrderDescription": "科幻俱樂部籌備的「賽博龐克 2099」派對即將舉行，本來訂的科技配件全部斷貨。急需大量帶有未來機械感、能讓參加者直接穿戴上身的閃光電子配件！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Electricity"
+            ]
+        },
+        {
+            "OrderId": "PlantTherapist",
+            "OrderName": "植物療癒師",
+            "OrderDescription": "新開業的植物療育診間需要生命力旺盛、生長茂盛、看了讓人感到療癒的植物類用品！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Plant"
+            ]
+        },
+        {
+            "OrderId": "FolkMuseum",
+            "OrderName": "民俗博物館特展",
+            "OrderDescription": "博物館這週要籌備新展「因時代消失的生活用品」，但策展團隊找的物件都太「現代」了，急需年代久遠、有歲月感的古老物件！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Old"
+            ]
+        },
+        {
+            "OrderId": "FolkMuseum_1",
+            "OrderName": "民俗博物館特展",
+            "OrderDescription": "博物館這週要籌備新展「因時代消失的生活用品」，但策展團隊找的物件都太「現代」了，急需年代久遠、有歲月感的古老物件！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Antique"
+            ]
+        },
+        {
+            "OrderId": "MusicFestival",
+            "OrderName": "素人音樂祭",
+            "OrderDescription": "獨立音樂祭「搖滾派對」下週末舉辦，我需要最奇特最吸引最能吸引觀眾眼球的裝扮！",
+            "OrderType": 0,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "PetGrooming",
+            "OrderName": "寵物美容比賽",
+            "OrderDescription": "這次寵物美容大賽有100000元的獎金，為了打敗蟬聯三屆的冠軍，我需要能夠最突顯我寵物特點的裝扮",
+            "OrderType": 0,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "ExtremeMountain",
+            "OrderName": "極限登山",
+            "OrderDescription": "下個月要挑戰一條無人登過的山，需要一件能夠在最險惡環境中可靠運作的特殊登山裝備。",
+            "OrderType": 0,
+            "OrderNeedTags": []
+        },
+        {
+            "OrderId": "OldPainter",
+            "OrderName": "古屋油漆工",
+            "OrderDescription": "油漆工這週遇到個客戶，他要的「不是把牆漆新、是要把新房漆出五十年使用感」，客戶付了高價錢但要求極端：「每道油漆都要看起來像沾過時光的污垢」。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Dirty"
+            ]
+        },
+        {
+            "OrderId": "OldPainter_1",
+            "OrderName": "古屋油漆工",
+            "OrderDescription": "油漆工這週遇到個客戶，他要的「不是把牆漆新、是要把新房漆出五十年使用感」，客戶付了高價錢但要求極端：「每道油漆都要看起來像沾過時光的污垢」。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Junk"
+            ]
+        },
+        {
+            "OrderId": "InsectExhibition",
+            "OrderName": "昆蟲特展",
+            "OrderDescription": "下個月要在國家科博館舉辦「消失的昆蟲」特展，但他需要的稀有蝶類標本在早已絕跡多年，需要稀有的昆蟲類珍品作替代！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Insect"
+            ]
+        },
+        {
+            "OrderId": "CaptainRoom",
+            "OrderName": "船長的書房",
+            "OrderDescription": "遠洋船長退休回家，他這輩子在海上漂了四十年，現在想在書房擺出「真正有海的氣息」的紀念物。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Ocean"
+            ]
+        },
+        {
+            "OrderId": "CaptainRoom_1",
+            "OrderName": "船長的書房",
+            "OrderDescription": "遠洋船長退休回家，他這輩子在海上漂了四十年，現在想在書房擺出「真正有海的氣息」的紀念物。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Memory"
+            ]
+        },
+        {
+            "OrderId": "SushiRestaurant",
+            "OrderName": "壽司店試營運",
+            "OrderDescription": "來自外國的壽司大師來到這座城市開店，需要最頂級新鮮、帶著海洋原味的食材。",
+            "OrderType": 1,
+            "OrderNeedTags": [
+                "Seafood"
+            ]
         }
     ]
 }

@@ -17,12 +17,12 @@
             "OrderId": "IceSculpture_02",
             "OrderEventId": "IceSculpture",
             "OrderName": "熱食補給",
-            "OrderDescription": "這種天氣適合吃點保暖的食物",
+            "OrderDescription": "外面冷得要命，我在家裡穿了三件毛衣還是凍。暖氣開到最強也無濟於事，這種冷法不像是正常天氣。現在只想吃點夠辣、夠熱的東西，讓身體暖起來。",
             "OrderType": 1,
             "OrderNeedTags": [
-                "Fire",
                 "Warm",
-                "Hot"
+                "Spicy",
+                "Oil"
             ],
             "OrderRank": "1"
         },
@@ -53,7 +53,7 @@
             "OrderId": "LibraryDusting_02",
             "OrderEventId": "LibraryDusting",
             "OrderName": "靈感大爆發",
-            "OrderDescription": "雖然一直打噴嚏，但腦中突然湧現好多靈感！",
+            "OrderDescription": "整理書架時被的書上灰塵氣撲了個正臉，打了幾個噴嚏之後，突然湧出大量靈感，沉睡在那些書頁裡的字句一口氣全被我吸進去了。我需要趕快把這些想法記下來。",
             "OrderType": 2,
             "OrderNeedTags": [
                 "Book"
@@ -64,7 +64,7 @@
             "OrderId": "LibraryDusting_03",
             "OrderEventId": "LibraryDusting",
             "OrderName": "路上的照明",
-            "OrderDescription": "空氣霧濛濛的看不清楚道路，急需照明用具",
+            "OrderDescription": "附近整條街都被一層奇怪的灰霧籠罩著，路燈亮著，光線卻像是被吸收掉了一樣，根本照不出去。我需要一個夠亮的光源，能穿透這種莫名其妙的霧氣，不然完全無法出門行動。",
             "OrderType": 2,
             "OrderNeedTags": [
                 "Light"
@@ -75,12 +75,12 @@
             "OrderId": "RiverDredging_01",
             "OrderEventId": "RiverDredging",
             "OrderName": "除霉除藻劑",
-            "OrderDescription": "街道因為不知道漫出的泥水長滿了滑溜溜的青苔與藻類，急需化學藥劑來刷洗。",
+            "OrderDescription": "街道因為不知道漫出的泥水長滿了滑溜溜的青苔與藻類，急需藥劑來刷洗。",
             "OrderType": 2,
             "OrderNeedTags": [
                 "Poison"
             ],
-            "OrderRank": "2"
+            "OrderRank": "1"
         },
         {
             "OrderId": "RiverDredging_02",
@@ -98,7 +98,7 @@
             "OrderId": "InkDisaster_01",
             "OrderEventId": "InkDisaster",
             "OrderName": "食物污染",
-            "OrderDescription": "食物被不知名的黑色流體汙染短缺",
+            "OrderDescription": "附近商店架上大量商品被一種黑色黏稠液體汙染，超黏、不透明，完全擦不掉。這東西不知道從哪來的，沒人見過。只要是沒沾到黑色東西的正常食物都可以。",
             "OrderType": 1,
             "OrderNeedTags": [
                 "Meat",
@@ -166,7 +166,7 @@
                 "Machine",
                 "Electricity"
             ],
-            "OrderRank": "2"
+            "OrderRank": "1"
         },
         {
             "OrderId": "Raiju_02",
@@ -216,7 +216,7 @@
                 "Gem",
                 "Accessory"
             ],
-            "OrderRank": "2"
+            "OrderRank": "1"
         },
         {
             "OrderId": "Fashion_03",
@@ -265,7 +265,7 @@
                 "Purify",
                 "Clean"
             ],
-            "OrderRank": "2"
+            "OrderRank": "1"
         },
         {
             "OrderId": "Zombie_01",
@@ -336,7 +336,7 @@
                 "Mystic",
                 "Magnetic"
             ],
-            "OrderRank": "2"
+            "OrderRank": "1"
         },
         {
             "OrderId": "Fox_02",
@@ -345,7 +345,8 @@
             "OrderDescription": "這霧氣太詭異了，手電筒的光都照不透。我需要高品質的鏡片或強力光源來看清路況。",
             "OrderType": 2,
             "OrderNeedTags": [
-                "Light"
+                "Light",
+                "Wind"
             ],
             "OrderRank": "1"
         },
@@ -377,14 +378,14 @@
             "OrderId": "Gargoyle_02",
             "OrderEventId": "GargoyleStrike",
             "OrderName": "替補守護者",
-            "OrderDescription": "屋頂上的石像跑了",
+            "OrderDescription": "我住的大樓這幾天倒楣透頂——電梯連續卡頓三次，地下室管線無端漏水。有鄰居說屋頂那幾座老石雕好像不見了，也不知道有沒有關係。我要找個夠重、看起來有點氣勢的東西擺在屋頂，他們說越沉越好，最好讓人一看就有點敬畏感。",
             "OrderType": 2,
             "OrderNeedTags": [
                 "Heavy",
                 "Mystic",
                 "Toy"
             ],
-            "OrderRank": "2"
+            "OrderRank": "1"
         },
         {
             "OrderId": "Dryad_01",
@@ -413,13 +414,271 @@
             "OrderId": "Dryad_03",
             "OrderEventId": "DryadOvergrowth",
             "OrderName": "開路先鋒",
-            "OrderDescription": "我出不了門了，門口被巨型捕蠅草堵住了。急需鋒利的武器來劈開一條血路！",
+            "OrderDescription": "我出不了門了，門口被巨型捕蠅草堵住了。急需武器來劈開一條血路！",
             "OrderType": 2,
             "OrderNeedTags": [
                 "Hard",
                 "Weapon"
             ],
-            "OrderRank": "2"
+            "OrderRank": "1"
+        },
+        {
+            "OrderId": "BloodMoon_1",
+            "OrderEventId": "BloodMoon",
+            "OrderName": "血月防護",
+            "OrderDescription": "今天是紅色月亮的夜晚，不知道為什麼窗外突然出現了許多蝙蝠與奇怪的黑影",
+            "OrderType": 3,
+            "OrderNeedTags": [
+                "Holy",
+                "Accessory",
+                "Sun"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "BloodMoon_2",
+            "OrderEventId": "BloodMoon",
+            "OrderName": "補充營養",
+            "OrderDescription": "最近出現了好多新品種的吸血蝙蝠，到處攻擊人類，被咬過的人都十分虛弱需要補充營養",
+            "OrderType": 1,
+            "OrderNeedTags": [
+                "Blood",
+                "Meat",
+                "Vegetable"
+            ],
+            "OrderRank": "1"
+        },
+        {
+            "OrderId": "BloodMoon_3",
+            "OrderEventId": "BloodMoon",
+            "OrderName": "血月儀式",
+            "OrderDescription": "我們組織已經等了整整十四年，就為了今夜這場紅月。地下祭壇昨晚已完成了最後準備，結果預計今天送達的最後一批儀式用具在半路遺失。急需能夠讓我們繼續儀式的物品",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Cursed",
+                "Corruption",
+                "Blood"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Terracotta_1",
+            "OrderEventId": "TerracottaParade",
+            "OrderName": "古董熱潮",
+            "OrderDescription": "最近有新的兵馬俑坑道被發現，大量古物出土全城陷入考古狂熱",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Antique",
+                "Old"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Terracotta_2",
+            "OrderEventId": "TerracottaParade",
+            "OrderName": "古兵器熱潮",
+            "OrderDescription": "最近有新的兵馬俑坑道被發現，大量古物出土，當中有著許多奇特的古代兵器許多武器收藏家來到鎮上",
+            "OrderType": 3,
+            "OrderNeedTags": [
+                "Weapon",
+                "Hard",
+                "Antique"
+            ],
+            "OrderRank": "1"
+        },
+        {
+            "OrderId": "Terracotta_3",
+            "OrderEventId": "TerracottaParade",
+            "OrderName": "地震頻繁",
+            "OrderDescription": "家裡家具與牆面都在晃，家具都被掉落物砸壞了，再一震就要全垮，急需穩固又耐撞的物品幫忙撐住！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Hard",
+                "Heavy",
+                "Machine"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "MoonCall_1",
+            "OrderEventId": "KaguyaMoonCall",
+            "OrderName": "天文異相",
+            "OrderDescription": "地球與月球之間出現的一到光柱，紀念品店「月華堂」這週每天有十多個收藏家與天文愛好者來問「有沒有跟那次純白光柱有關的東西」。庫存空了，急需任何看起來有紀念價值的稀罕物品！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Star",
+                "Moon",
+                "Glass"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "MoonCall_2",
+            "OrderEventId": "KaguyaMoonCall",
+            "OrderName": "光柱效應",
+            "OrderDescription": "地球與月球之間出現的一到光柱，受到光柱的影響，電器出現異常，需要不受磁場與電力影響的器具",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Machine",
+                "Ceramic",
+                "Wood"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "MoonParty_1",
+            "OrderEventId": "TanukiMoonParty",
+            "OrderName": "滿月慶祝",
+            "OrderDescription": "我們酒館已經連續多天爆滿，所有的酒全部售罄，連其他飲品都賣光了。今晚預約又爆滿，再不進酒就要關店，急需大量能暢飲的酒類！",
+            "OrderType": 1,
+            "OrderNeedTags": [
+                "Meat",
+                "Alcohol",
+                "Drinkable"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "MoonParty_2",
+            "OrderEventId": "TanukiMoonParty",
+            "OrderName": "滿月派對",
+            "OrderDescription": "派對公司這週生意爆量，接了十二場明天就要辦的派對訂單，現有道具全部用光，急需能營造熱鬧氣氛的音樂與燈光道具！",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Light",
+                "Music",
+                "Toy"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "YearEnd_1",
+            "OrderEventId": "YearEndStampede",
+            "OrderName": "紅光警示物",
+            "OrderDescription": "年底山區傳聞又有傳聞年獸即將來臨，需能發出真正炙熱紅光的物品來驅趕嚇跑年獸。",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Light",
+                "Fire",
+                "Noise"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "YearEnd_2",
+            "OrderEventId": "YearEndStampede",
+            "OrderName": "新年年貨準備",
+            "OrderDescription": "新年即將到來，店裡的年貨都賣完了，急需補充大量的食物年貨",
+            "OrderType": 1,
+            "OrderNeedTags": [
+                "Meat",
+                "Dessert",
+                "Vegetable",
+                "Rice",
+                "Noodle"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "YearEnd_3",
+            "OrderEventId": "YearEndStampede",
+            "OrderName": "新年服裝準備",
+            "OrderDescription": "新年即將到來，服飾店裡的衣服熱銷一空，需要補充更多的過年氛圍的衣服",
+            "OrderType": 3,
+            "OrderNeedTags": [
+                "Luxury",
+                "Accessory",
+                "Fabric"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "NekomataSun_1",
+            "OrderEventId": "NekomataSunGathering",
+            "OrderName": "鮮魚緊急補貨",
+            "OrderDescription": "海鮮店裡的魚在昨天的下午不明原因全部消失，急需補充明天的食材",
+            "OrderType": 1,
+            "OrderNeedTags": [
+                "Fish"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "NekomataSun_2",
+            "OrderEventId": "NekomataSunGathering",
+            "OrderName": "驅趕屋頂貓咪",
+            "OrderDescription": "最近屋頂出現了幾十隻的貓咪，貓咪們在屋頂走來走去的噪音與落下毛髮。我需要能夠驅趕但不傷害他們的東西",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Wet",
+                "Cold",
+                "Clean"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "NekomataSun_3",
+            "OrderEventId": "NekomataSunGathering",
+            "OrderName": "貓毛過敏",
+            "OrderDescription": "最近街道上的貓咪變得好多，我需要能夠防止過敏的東西",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Potion",
+                "Fabric",
+                "Purify"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Judge_1",
+            "OrderEventId": "JudgeAudit",
+            "OrderName": "護身避邪小物",
+            "OrderDescription": "聽說最近靈異事件頻傳:書桌上沒人碰的筆記本會自己翻頁、半夜聽見書房傳來蓋章聲，我們寺廟的護身符，全部發完了急需補充",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Holy",
+                "Magic"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "Judge_2",
+            "OrderEventId": "JudgeAudit",
+            "OrderName": "精神科門診",
+            "OrderDescription": "最近來精神科門診的患者增多，最新的食物療法材料已經使用完了，需要補充能安定心神的食物",
+            "OrderType": 1,
+            "OrderNeedTags": [
+                "Warm",
+                "Soul"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "CucumberHarvest_1",
+            "OrderEventId": "KappaCucumberHarvest",
+            "OrderName": "黃瓜味的水",
+            "OrderDescription": "最近河流上都飄著小黃瓜，水龍頭打開都是帶有小黃瓜味道的水，需購能過濾異味淨化河流的物品",
+            "OrderType": 2,
+            "OrderNeedTags": [
+                "Purify",
+                "River"
+            ],
+            "OrderRank": "0"
+        },
+        {
+            "OrderId": "CucumberHarvest_2",
+            "OrderEventId": "KappaCucumberHarvest",
+            "OrderName": "蔬果慶典",
+            "OrderDescription": "最近市場上多了許多便宜又美味的小黃瓜，是時候舉辦一場蔬果慶典了",
+            "OrderType": 1,
+            "OrderNeedTags": [
+                "Fruit",
+                "Natural",
+                "Fresh",
+                "Vegetable",
+                "Plant"
+            ],
+            "OrderRank": "0"
         }
     ]
 }

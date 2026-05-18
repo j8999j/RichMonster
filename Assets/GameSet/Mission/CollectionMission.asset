@@ -28,6 +28,12 @@ MonoBehaviour:
     - ItemID: ClayFigurines
       Points: 1
       Description: "\u4E0D\u77E5\u9053\u52D5\u8D77\u4F86\u7684\u539F\u7406\u662F\u4EC0\u9EBC"
+    - ItemID: ColdPack
+      Points: 1
+      Description: "\u6253\u7834\u7269\u7406\u5B9A\u5F8B\u4E26\u59CB\u7D42\u4FDD\u6301\u51B0\u51B7"
+    - ItemID: NightmareBottle
+      Points: 1
+      Description: "\u80FD\u5920\u63D0\u53D6\u4E26\u5C01\u5370\u5669\u5922\uFF0C\u4E26\u80FD\u5920\u8B93\u5176\u4ED6\u4F7F\u7528\u8005\u770B\u9AD4\u9A57\u60E1\u5922\uFF0C\u503C\u5F97\u7814\u7A76"
   - Race: 1
     Title: "\u52D5\u7269\u5712\u5712\u9577-\u7378\u65CF\u4EE3\u7406\u4EBA"
     Items:
@@ -40,6 +46,9 @@ MonoBehaviour:
     - ItemID: MoonPestle
       Points: 1
       Description: "\u4E0D\u77E5\u9053\u8207\u4EBA\u985E\u4F7F\u7528\u7684\u6709\u4EC0\u9EBC\u6A23\u7684\u5340\u5225"
+    - ItemID: DeepSeaSashimi
+      Points: 1
+      Description: "\u4F86\u81EA\u53E6\u4E00\u500B\u4E16\u754C\u7684\u751F\u7269\u505A\u6210\u7684\u7F8E\u98DF\u597D\u60F3\u8A66\u8A66\u770B"
   - Race: 2
     Title: "\u5360\u535C\u5E2B-\u795E\u65CF\u4EE3\u7406\u4EBA"
     Items:
@@ -55,6 +64,9 @@ MonoBehaviour:
     - ItemID: DeathNote
       Points: 3
       Description: "\u64DA\u8AAA\u8A18\u9304\u8457\u4E00\u500B\u4EBA\u7684\u751F\u6B7B\u547D\u904B"
+    - ItemID: GoldenScarab
+      Points: 3
+      Description: "\u64DA\u8AAA\u662F\u5FA9\u6D3B\u6B7B\u8005\u7684\u95DC\u9375\u9053\u5177"
   - Race: 3
     Title: "\u5076\u50CF\u6B4C\u624B-\u5996\u7CBE\u4EE3\u7406\u4EBA"
     Items:
@@ -64,3 +76,6 @@ MonoBehaviour:
     - ItemID: FoxfireBurner
       Points: 3
       Description: "\u98C4\u6563\u51FA\u7684\u7159\u9727\u80FD\u5920\u8B93\u4EBA\u770B\u5230\u53E6\u4E00\u500B\u4E16\u754C\u7684\u7279\u6B8A\u6548\u679C"
+    - ItemID: SkyGlassJade
+      Points: 4
+      Description: "\u4E0D\u65B7\u9583\u720D\u8457\u661F\u7A7A\u7684\u5149\u8292\uFF0C\u80FD\u5920\u5C07\u6574\u500B\u7A7A\u9593\u6295\u5F71\u6210\u5B87\u5B99\u7A7A\u9593"
