@@ -6,7 +6,7 @@
     },
     {
       "NpcID": "SupernaturalStudents",
-      "NpcName": "靈異研究社的高中生 小美"
+      "NpcName": "靈異研究社社長 小美"
     },
     {
       "NpcID": "Novelist",
@@ -14,11 +14,11 @@
     },
     {
       "NpcID": "Ken",
-      "NpcName": "追求流量的探險實況主 Ken"
+      "NpcName": "探險實況主 Ken"
     },
     {
       "NpcID": "StreetTeller",
-      "NpcName": "招搖撞騙的街頭半仙 阿財"
+      "NpcName": "街頭半仙 阿財"
     },
     {
       "NpcID": "Deliveryman",
@@ -26,7 +26,7 @@
     },
     {
       "NpcID": "Chef",
-      "NpcName": "怪奇主廚  狂人老王"
+      "NpcName": "怪奇主廚  老王"
     },
     {
       "NpcID": "Heiress",

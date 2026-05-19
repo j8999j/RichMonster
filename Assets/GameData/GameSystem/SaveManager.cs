@@ -11,7 +11,7 @@ namespace GameSystem
     /// <summary>
     /// 負責遊戲存檔與讀檔，直接保存完整的 PlayerData（含 Inventory 與商店變更）。
     /// </summary>
-    public class SaveManager : Singleton<SaveManager>
+    public class SaveManager : Singleton<SaveManager>, IGameSaveRepository
     {
         private const string BookSaveFilePattern = "illustrated_book.json";
         private const string SaveFilePattern = "save_slot_{0}.json";

@@ -82,7 +82,7 @@ public class GameFlow
         // 下一次呼叫就會把那筆變更補寫進磁碟，避免被誤判為「已存」。
         DataManager.Instance.SetPlayerDataChanged(false);
 
-        await SaveManager.Instance.SaveGameAsync(_currentPlayerData as PlayerData, _saveSlot);
+        await DataManager.Instance.SaveRepository.SaveGameAsync(_currentPlayerData as PlayerData, _saveSlot);
         await DataManager.Instance.SaveAchievementAsync();
     }
 }

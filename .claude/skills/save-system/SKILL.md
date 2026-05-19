@@ -129,13 +129,13 @@ Scene 載入 → SaveManager.Awake()              ← _cachedBookData = LoadBook
 
 ### 6.1 PlayerData（Slot 存檔）
 - `DataManager.SaveCurrentPlayerAsync(slot)` → `SaveManager.SaveGameAsync(playerData, slot)` → `save_slot_{slot}.json`
-- 有 `IsSaving` 旗標防連點；一次只允許一個寫入中。
+- 內部用 `SemaphoreSlim _saveLock`（1,1）序列化寫檔；對外暴露 `IsSaving => _saveLock.CurrentCount == 0`。
 - 透過 JSON clone 保存，所以存進去的是 snapshot 非活引用。
 
 ### 6.2 BookData（Book 存檔）
 - 同步：`SaveManager.SaveBookData(bookData)`（多數流程走同步，因圖鑑變動頻繁且小）。
 - 非同步：`SaveManager.SaveBookDataAsync(bookData)`（有 `IsSavingBook` 旗標）。
-- `DataManager` 內每個 mutator（`UnlockMonsterInformation` / `AddItemToBook` / `UpdateAchievementSaveData` / `UpdateSpecialSouvenirSaveData` …）都會在改完之後 `SaveBookData(_bookData)` 立即落檔 + `OnBookDataChanged = true`。
+- `DataManager` 內每個 mutator（`UnlockMonsterInformation` / `UnlockRandomMonsterInformation` / `AddItemToBook` / `ConfirmSingleNewInfo` / `ConfirmSingleNewStory` / `ConfirmMonsterNewInfo` / `UpdateAchievementSaveData` / `UpdateAllAchievementSaveData` / `UpdateSpecialSouvenirSaveData` …）都會在改完之後 `SaveBookData(_bookData)` 立即落檔 + `OnBookDataChanged = true` + 觸發 `BookDataChanged` event。
 
 ### 6.3 成就 / 特殊紀念品的雙層字典
 `SaveManager` 內部維護 `_achievementDict` / `_specialSouvenirDict`（Dictionary by ID），存檔時 `DictToList(...)` 寫回 `bookData.AchievementData / SpecialSouvenirProgressData`。`DataManager._achievementSaveDict` 引用同一個 Dictionary 物件，任一側新增 key 另一側也看得見。
@@ -187,7 +187,7 @@ Scene 載入 → SaveManager.Awake()              ← _cachedBookData = LoadBook
 |---|:---:|:---:|---|
 | `InitializeAsync()` / `WhenInitialized() → Task` | 🔄 | — | 對外 await 點**在 DataManager 上**（不在 SaveManager） |
 | `IsInitialized → bool` | ⏳ | — | 啟動守衛 |
-| `LoadPlayerFromSave(SaveFileData)` | ⏳ | — | 由 Presenter 呼叫；不落檔 |
+| `LoadCurrentPlayerFromSlot(int slot = 0)` | ⏳ | — | 由 Presenter 呼叫；內部走 `SaveManager.Load(slot)` + clone 後覆蓋 `_currentPlayerData`，不落檔 |
 | `SaveCurrentPlayerAsync(int slot)` | 🔄 | ✅ | 包住 `SaveManager.SaveGameAsync` |
 | `GetBookData() → GameSaveBook` | ⏳ | — | 活引用（與 SaveManager 同一物件） |
 | `SetBookDataChanged(bool)` | ⏳ | — | 供 UI 紅點 / 存檔判斷用 |
@@ -196,9 +196,13 @@ Scene 載入 → SaveManager.Awake()              ← _cachedBookData = LoadBook
 | `SetPlayerData<T>(string key, T data) where T : ISaveData` | ⏳ | — | 設 `OnPlayerDataChanged=true`；**不自動落檔**，需呼叫 `SaveCurrentPlayerAsync` |
 | `GetPlayerSaveData<T>(string key) → T` | ⏳ | — | **跨日回新實例**（依 `LastUpdatedDay`） |
 | `GetPersistentSaveData<T>(string key) → T` | ⏳ | — | **跨日保留** |
-| `UnlockMonsterInformation(string)` / `AddItemToBook(string)` / 類似 mutator | ⏳ | ✅ | 內部呼叫 `SaveManager.SaveBookData` |
+| `UnlockMonsterInformation(string)` / `UnlockRandomMonsterInformation()` / `AddItemToBook(string)` | ⏳ | ✅ | 內部呼叫 `SaveManager.SaveBookData`；前者自動處理「每 2 個情報→新故事」門檻並寫紅點 |
+| `ConfirmSingleNewInfo(id)` / `ConfirmSingleNewStory(id)` / `ConfirmMonsterNewInfo(monsterId)` | ⏳ | ✅ | 清紅點；有實際移除才落檔 |
+| `IsMonsterInfoUnlocked(id)` / `HasAnyNewMonsterInfo()` / `HasNewMonsterInfo(monsterId)` | ⏳ | — | 圖鑑紅點查詢 |
 | `UpdateAchievementSaveData(IAchievementSave)` | ⏳ | ✅ | 寫入 `_achievementDict` 並落檔 |
+| `UpdateAllAchievementSaveData()` | ⏳ | ✅ | 從 `AchievementManager` 撈所有已完成 + 未完成成就，批次寫 dict 並落檔 |
 | `UpdateSpecialSouvenirSaveData(ISpecialSouvenirSave)` | ⏳ | ✅ | 寫入 `_specialSouvenirDict` 並落檔 |
+| `BookDataChanged` event | ⏳ | — | 圖鑑/成就/紀念品任一筆改動會 fire，UI 紅點訂閱此事件 |
 | `ModifyGold(int)` / `ModifyMonsterGold(int)` / `TrySpendGold(int) → bool` | ⏳ | — | 僅改記憶體；觸發 `AchievementEvents.OnGoldChanged` |
 
 ---
@@ -208,7 +212,7 @@ Scene 載入 → SaveManager.Awake()              ← _cachedBookData = LoadBook
 ### 8.1 `SaveSlotUI` + `SaveSlotPresenter` (MVP)
 - Prefab 子物件順序（硬編碼）：`child0`=slotText、`child1`=dayText、`child2`=goldText、`child3`=刪除按鈕。
 - View 事件：`OnSlotSelected(slotIndex, isEmpty)`、`OnSlotDeleteRequested(slotIndex)`、`OnRefreshRequested`。
-- Presenter 處理選取 → `DataManager.LoadPlayerFromSave` + `GameManager.InitializeGame`；刪除 → `SaveManager.DeleteSaveSlot` + 刷新。
+- Presenter 處理選取 → `DataManager.LoadCurrentPlayerFromSlot` + `GameManager.InitializeGame`；刪除 → `SaveManager.DeleteSaveSlot` + 刷新。
 - **刪除二次確認**：View 內建 `deleteConfirmPanel` + `_pendingDeleteSlotIndex`；按刪除先彈面板，確認才觸發 `OnSlotDeleteRequested`。
 - `LoadAndDisplaySaveSlots()` 只把非空 slot 加入 list（空 slot 不顯示）。
 

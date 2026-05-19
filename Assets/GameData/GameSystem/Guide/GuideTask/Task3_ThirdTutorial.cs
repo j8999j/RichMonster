@@ -5,6 +5,19 @@ public class Task3_ThirdTutorial : GuideTask
 {
     public override string TaskName => "教學三：查看訂單";
 
+    private const string WaitHumanDayStepId = "Task3.WaitHumanDay";
+    private const string WaitHumanSceneStepId = "Task3.WaitHumanScene";
+    private const string WaitFrameStepId = "Task3.WaitFrame";
+    private const string OrderShopGuideStepId = "Task3.OrderShopGuide";
+
+    protected override IReadOnlyList<string> StepIds => new[]
+    {
+        WaitHumanDayStepId,
+        WaitHumanSceneStepId,
+        WaitFrameStepId,
+        OrderShopGuideStepId
+    };
+
     protected override List<GuideStep> BuildSteps()
     {
         return new List<GuideStep>

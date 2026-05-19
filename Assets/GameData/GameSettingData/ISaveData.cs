@@ -32,6 +32,7 @@ public class TutorialSaveData : ISaveData
     public int LastUpdatedDay { get; set; }
     public int CurrentTaskIndex;
     public int CurrentStepIndex;
+    public string CurrentStepId;
     public bool IsComplete;
     public bool IsPurchased;
     public bool Task2SecondRewardClaimed;

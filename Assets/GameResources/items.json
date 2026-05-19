@@ -2413,7 +2413,6 @@
       "Name": "鹽酥雞",
       "Tags": [
         "Meat",
-        "Fried",
         "Oil",
         "Spicy",
         "Vegetable"
@@ -2742,7 +2741,6 @@
       "Id": "DeepSeaSashimi",
       "Name": "深海生魚片",
       "Tags": [
-        "Meat",
         "Ocean",
         "Seafood",
         "Sweet",

@@ -12,7 +12,7 @@ using System.Collections.ObjectModel;
 /// <summary>
 /// 遊戲資料載入器 - 負責從 Addressables 載入所有遊戲設定資料
 /// </summary>
-public class GameDataLoader
+public class GameDataLoader : GameSystem.IGameDataProvider
 {
     public const string DIALOGUE_LABEL = "Dialogue";
 
@@ -43,33 +43,14 @@ public class GameDataLoader
     /// <summary>
     /// 載入所有遊戲資料的結果
     /// </summary>
-    public class LoadResult
-    {
-        public Dictionary<string, ItemTags> ItemTagsDict = new Dictionary<string, ItemTags>();
-        public Dictionary<string, ItemDefinition> ItemDict = new Dictionary<string, ItemDefinition>();
-        public Dictionary<string, MonsterProfessionDefinition> MonsterProfessionDict = new Dictionary<string, MonsterProfessionDefinition>();
-        public Dictionary<string, MonsterTraitDefinition> MonsterTraitDict = new Dictionary<string, MonsterTraitDefinition>();
-        public Dictionary<string, GameEventDefinition> EventDict = new Dictionary<string, GameEventDefinition>();
-        public Dictionary<string, ShopDefinition> ShopDict = new Dictionary<string, ShopDefinition>();
-        public Dictionary<string, HumanLargeOrder> HumanLargeOrderDict = new Dictionary<string, HumanLargeOrder>();
-        public Dictionary<string, HumanSmallOrder> HumanSmallOrderDict = new Dictionary<string, HumanSmallOrder>();
-        public Dictionary<string, NpcMission> MissionDict = new Dictionary<string, NpcMission>();
-        public Dictionary<string, AchievementConfig> AchievementDict = new Dictionary<string, AchievementConfig>();
-        public Dictionary<string, MonsterInformationDatabase> MonsterInfoDict = new Dictionary<string, MonsterInformationDatabase>();
-        public Dictionary<string, MonsterStoryDatabase> MonsterStoryDict = new Dictionary<string, MonsterStoryDatabase>();
-        public Dictionary<string, NPCMissionData> NPCDataDict = new Dictionary<string, NPCMissionData>();
-        public Dictionary<string, AchievementSouvenirData> AchievementSouvenirDict = new Dictionary<string, AchievementSouvenirData>();
-        public Dictionary<string, SpecialSouvenirData> SpecialSouvenirDict = new Dictionary<string, SpecialSouvenirData>();
-        public PlayerData InitialPlayerData;
-        public GameSaveBook BookData;
-    }
+    public class LoadResult : GameSystem.GameDataLoadResult { }
 
     /// <summary>
     /// 載入所有遊戲資料
     /// </summary>
-    public async Task<LoadResult> LoadAllGameDataAsync()
+    public async Task<GameSystem.GameDataLoadResult> LoadAllGameDataAsync()
     {
-        var result = new LoadResult();
+        var result = new GameSystem.GameDataLoadResult();
 
         await PreloadDialoguesByLabelAsync();
         result.ItemTagsDict = await LoadItemTagsAsync();

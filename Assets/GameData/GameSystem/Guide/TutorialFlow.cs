@@ -1,17 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
+
 public class TutorialFlow
 {
     private const string SAVE_KEY = "TutorialSaveData";
+
     private readonly List<GuideTask> taskQueue = new List<GuideTask>();
-    private int currentTaskIndex = 0;
+    private int currentTaskIndex;
+
     public void Start()
     {
         RegisterTasks();
         LoadTaskData();
         ExecuteNextTask();
     }
-    //載入存檔任務進度
+
     private void LoadTaskData()
     {
         var data = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>(SAVE_KEY);
@@ -20,16 +23,9 @@ public class TutorialFlow
             currentTaskIndex = taskQueue.Count;
             return;
         }
-        currentTaskIndex = data.CurrentTaskIndex;
-        // 還原 Task1 專屬狀態
-        if (currentTaskIndex < taskQueue.Count && taskQueue[currentTaskIndex] is Task1_FirstTutorial task1)
-        {
-            task1.IsPurchased = data.IsPurchased;
-        }
-        if (currentTaskIndex < taskQueue.Count && taskQueue[currentTaskIndex] is Task2_SecondTutorial task2)
-        {
-            task2.SecondRewardClaimed = data.Task2SecondRewardClaimed || data.CurrentStepIndex >= 4;
-        }
+
+        currentTaskIndex = Mathf.Clamp(data.CurrentTaskIndex, 0, taskQueue.Count);
+        LoadCurrentTaskState(data);
     }
 
     private async void SaveProgress()
@@ -40,26 +36,23 @@ public class TutorialFlow
             CurrentStepIndex = currentTaskIndex < taskQueue.Count
                 ? taskQueue[currentTaskIndex].CurrentStepIndexForSave
                 : 0,
+            CurrentStepId = currentTaskIndex < taskQueue.Count
+                ? taskQueue[currentTaskIndex].CurrentStepIdForSave
+                : null,
             IsComplete = currentTaskIndex >= taskQueue.Count,
             LastUpdatedDay = DataManager.Instance.CurrentPlayerData.DaysPlayed
         };
-        // 儲存 Task1 專屬狀態
-        if (currentTaskIndex < taskQueue.Count && taskQueue[currentTaskIndex] is Task1_FirstTutorial task1)
-        {
-            data.IsPurchased = task1.IsPurchased;
-        }
-        if (currentTaskIndex < taskQueue.Count && taskQueue[currentTaskIndex] is Task2_SecondTutorial task2)
-        {
-            data.Task2SecondRewardClaimed = task2.SecondRewardClaimed;
-        }
+
+        WriteCurrentTaskState(data);
         DataManager.Instance.SetPlayerData(SAVE_KEY, data);
+
         try
         {
             await GameSystem.GameManager.Instance.gameFlow.SaveGameAsync();
         }
         catch (System.Exception ex)
         {
-            Debug.LogError($"[TutorialFlow] 教學進度存檔失敗: {ex}");
+            Debug.LogError($"[TutorialFlow] Failed to save tutorial progress: {ex}");
         }
     }
 
@@ -79,21 +72,20 @@ public class TutorialFlow
             {
                 SaveProgress();
             }
-            Debug.Log("[GameFlowGuide] 所有引導任務完成");
+
+            Debug.Log("[GameFlowGuide] Tutorial flow complete.");
             return;
         }
 
         var task = taskQueue[currentTaskIndex];
         var data = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>(SAVE_KEY);
-        int startStep = (currentTaskIndex == data.CurrentTaskIndex) ? data.CurrentStepIndex : 0;
-        if (currentTaskIndex == data.CurrentTaskIndex && task is Task2_SecondTutorial task2)
-        {
-            task2.SecondRewardClaimed = data.Task2SecondRewardClaimed || data.CurrentStepIndex >= 4;
-            startStep = task2.GetResumeStep(startStep);
-        }
+        bool resumesSavedTask = currentTaskIndex == data.CurrentTaskIndex;
+        int fallbackStartStep = resumesSavedTask ? data.CurrentStepIndex : 0;
+        string startStepId = resumesSavedTask ? ResolveCurrentTaskResumeStepId(data) : null;
 
-        Debug.Log($"[GameFlowGuide] 開始 {task.TaskName}");
-        task.Start(OnTaskComplete, startStep, SaveProgress);
+        LoadCurrentTaskState(data);
+        Debug.Log($"[GameFlowGuide] Start {task.TaskName}");
+        task.Start(OnTaskComplete, startStepId, fallbackStartStep, SaveProgress);
     }
 
     private void OnTaskComplete()
@@ -101,6 +93,32 @@ public class TutorialFlow
         currentTaskIndex++;
         SaveProgress();
         ExecuteNextTask();
+    }
+
+    private void LoadCurrentTaskState(TutorialSaveData data)
+    {
+        if (currentTaskIndex < taskQueue.Count && taskQueue[currentTaskIndex] is ITutorialTaskState taskState)
+        {
+            taskState.LoadState(data);
+        }
+    }
+
+    private void WriteCurrentTaskState(TutorialSaveData data)
+    {
+        if (currentTaskIndex < taskQueue.Count && taskQueue[currentTaskIndex] is ITutorialTaskState taskState)
+        {
+            taskState.WriteState(data);
+        }
+    }
+
+    private string ResolveCurrentTaskResumeStepId(TutorialSaveData data)
+    {
+        if (currentTaskIndex < taskQueue.Count && taskQueue[currentTaskIndex] is ITutorialTaskState taskState)
+        {
+            return taskState.ResolveResumeStepId(data);
+        }
+
+        return data.CurrentStepId;
     }
 
     private void OnDestroy()

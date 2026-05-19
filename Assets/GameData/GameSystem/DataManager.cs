@@ -53,6 +53,8 @@ public class DataManager : Singleton<DataManager>
     /// <summary> 資料管理器是否已完成初始化 </summary>
     public bool IsInitialized { get; private set; }
     private Task _initTask;
+    private IGameDataProvider _gameDataProvider;
+    private IGameSaveRepository _saveRepository;
     #endregion
 
     #region Read-only Data Accessors (唯讀屬性)
@@ -85,6 +87,24 @@ public class DataManager : Singleton<DataManager>
     public event Action OnItemPurchased;
     public event Action BookDataChanged;
     #endregion
+
+    public IGameDataProvider GameDataProvider => _gameDataProvider ??= new GameDataLoader();
+    public IGameSaveRepository SaveRepository => _saveRepository ??= SaveManager.Instance;
+
+    public void ConfigureDataSources(IGameDataProvider gameDataProvider = null, IGameSaveRepository saveRepository = null)
+    {
+        if (IsInitialized)
+        {
+            Debug.LogWarning("[DataManager] ConfigureDataSources called after initialization. Reload data to apply a new game data provider.");
+        }
+
+        if (gameDataProvider != null)
+            _gameDataProvider = gameDataProvider;
+
+        if (saveRepository != null)
+            _saveRepository = saveRepository;
+    }
+
     protected override void Awake()
     {
         base.Awake();
@@ -101,8 +121,7 @@ public class DataManager : Singleton<DataManager>
 
     public async Task LoadGameDataAsync()
     {
-        var loader = new GameDataLoader();
-        var result = await loader.LoadAllGameDataAsync();
+        var result = await GameDataProvider.LoadAllGameDataAsync();
 
         // 將載入結果設定到各個字典
         _itemTagsDict = result.ItemTagsDict;
@@ -125,11 +144,11 @@ public class DataManager : Singleton<DataManager>
         _bookData = result.BookData;
 
         // 同步圖鑑快取到 SaveManager
-        SaveManager.Instance.SetBookDataCache(_bookData);
+        SaveRepository.SetBookDataCache(_bookData);
 
         // 將成就存檔 List 轉為 Dictionary 使用
-        _achievementSaveDict = SaveManager.Instance.GetAchievementDict();
-        _specialSouvenirSaveDict = SaveManager.Instance.GetSpecialSouvenirDict();
+        _achievementSaveDict = SaveRepository.GetAchievementDict();
+        _specialSouvenirSaveDict = SaveRepository.GetSpecialSouvenirDict();
 
         InitializeProgressManagers();
 
@@ -384,7 +403,7 @@ public class DataManager : Singleton<DataManager>
         }
 
         MarkBookDataChanged();
-        SaveManager.Instance.SaveBookData(_bookData);
+        SaveRepository.SaveBookData(_bookData);
     }
 
     /// <summary>
@@ -439,7 +458,7 @@ public class DataManager : Singleton<DataManager>
             }
 
             MarkBookDataChanged();
-            SaveManager.Instance.SaveBookData(_bookData);
+            SaveRepository.SaveBookData(_bookData);
         }
     }
 
@@ -571,7 +590,7 @@ public class DataManager : Singleton<DataManager>
         if (changed)
         {
             MarkBookDataChanged();
-            SaveManager.Instance.SaveBookData(_bookData);
+            SaveRepository.SaveBookData(_bookData);
         }
     }
 
@@ -585,7 +604,7 @@ public class DataManager : Singleton<DataManager>
             && _bookData.MonsterBookData.NewMonsterInformationID.Remove(informationId))
         {
             MarkBookDataChanged();
-            SaveManager.Instance.SaveBookData(_bookData);
+            SaveRepository.SaveBookData(_bookData);
             return true;
         }
         return false;
@@ -601,7 +620,7 @@ public class DataManager : Singleton<DataManager>
             && _bookData.MonsterBookData.NewMonsterStoryID.Remove(storyId))
         {
             MarkBookDataChanged();
-            SaveManager.Instance.SaveBookData(_bookData);
+            SaveRepository.SaveBookData(_bookData);
             return true;
         }
         return false;
@@ -644,7 +663,7 @@ public class DataManager : Singleton<DataManager>
 
         _achievementSaveDict[saveData.AchievementID] = saveData;
         OnBookDataChanged = true;
-        SaveManager.Instance.SaveAchievementData(_achievementSaveDict);
+        SaveRepository.SaveAchievementData(_achievementSaveDict);
     }
 
     /// <summary>
@@ -663,7 +682,7 @@ public class DataManager : Singleton<DataManager>
             }
         }
         OnBookDataChanged = true;
-        SaveManager.Instance.SaveAchievementData(_achievementSaveDict);
+        SaveRepository.SaveAchievementData(_achievementSaveDict);
     }
 
     /// <summary>
@@ -671,7 +690,7 @@ public class DataManager : Singleton<DataManager>
     /// </summary>
     public async Task SaveAchievementAsync()
     {
-        await SaveManager.Instance.SaveAchievementDataAsync(_achievementSaveDict);
+        await SaveRepository.SaveAchievementDataAsync(_achievementSaveDict);
         OnBookDataChanged = false;
     }
 
@@ -693,7 +712,7 @@ public class DataManager : Singleton<DataManager>
 
         _specialSouvenirSaveDict[saveData.SouvenirID] = saveData;
         OnBookDataChanged = true;
-        SaveManager.Instance.SaveSpecialSouvenirData(_specialSouvenirSaveDict);
+        SaveRepository.SaveSpecialSouvenirData(_specialSouvenirSaveDict);
     }
     #endregion
 
@@ -720,7 +739,7 @@ public class DataManager : Singleton<DataManager>
     public async Task SaveCurrentPlayerAsync(int slot = 0)
     {
         var dataToSave = _currentPlayerData ?? _initialPlayerData ?? new PlayerData();
-        await SaveManager.Instance.SaveGameAsync(dataToSave, slot);
+        await SaveRepository.SaveGameAsync(dataToSave, slot);
     }
 
     /// <summary>
@@ -728,7 +747,7 @@ public class DataManager : Singleton<DataManager>
     /// </summary>
     public void LoadCurrentPlayerFromSlot(int slot = 0)
     {
-        var save = SaveManager.Instance.Load(slot);
+        var save = SaveRepository.Load(slot);
         _currentPlayerData = ClonePlayerData(save?.Player ?? _initialPlayerData ?? new PlayerData());
     }
 
@@ -747,7 +766,7 @@ public class DataManager : Singleton<DataManager>
     {
         if (OnBookDataChanged)
         {
-            await SaveManager.Instance.SaveBookDataAsync(GetBookData());
+            await SaveRepository.SaveBookDataAsync(GetBookData());
             OnBookDataChanged = false;
         }
     }

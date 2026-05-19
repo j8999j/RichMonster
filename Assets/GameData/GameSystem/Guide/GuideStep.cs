@@ -9,13 +9,16 @@ using GameSystem;
 public abstract class GuideStep
 {
     public int StepIndex { get; set; }
+    public string StepId { get; set; }
     public abstract void Execute(System.Action onComplete);
+    public virtual void Restore() { }
     public virtual void Dispose() { }
 }
 
 public interface IGuideStepSaveCheckpoint
 {
     int GetSaveStepIndex(int completedStepIndex, int nextStepIndex);
+    string GetSaveStepId(GuideStep completedStep, GuideStep nextStep);
 }
 // ─────────────────────────────────────────────────────
 /// <summary>強制進入對話模式，對話結束後完成</summary>
@@ -67,16 +70,19 @@ public class ShowHintAndWaitStep : GuideStep
 {
     private readonly string hintMessage;
     private readonly GuideListener listener;
+    private readonly System.Action onRestoreCallback;
     private readonly System.Action onExecuteCallback; // 可選：用來啟動背景監聽
 
     public ShowHintAndWaitStep(
         string hintMessage,
         GuideListener listener,
-        System.Action onExecuteCallback = null)
+        System.Action onExecuteCallback = null,
+        System.Action onRestoreCallback = null)
     {
         this.hintMessage        = hintMessage;
         this.listener           = listener;
         this.onExecuteCallback  = onExecuteCallback;
+        this.onRestoreCallback  = onRestoreCallback;
     }
 
     public override void Execute(System.Action onComplete)
@@ -95,6 +101,11 @@ public class ShowHintAndWaitStep : GuideStep
     {
         GuideFlowUI.SetGuideFlowTextEvent?.Invoke("", false);
         listener?.StopListen();
+    }
+
+    public override void Restore()
+    {
+        onRestoreCallback?.Invoke();
     }
 }
 
@@ -127,12 +138,23 @@ public class WaitForListenerStep : GuideStep
 public class GiveRewardStep : GuideStep
 {
     private readonly System.Action rewardAction;
-    public GiveRewardStep(System.Action rewardAction)
-        => this.rewardAction = rewardAction;
+    private readonly System.Action restoreAction;
+
+    public GiveRewardStep(System.Action rewardAction, System.Action restoreAction = null)
+    {
+        this.rewardAction = rewardAction;
+        this.restoreAction = restoreAction;
+    }
+
     public override void Execute(System.Action onComplete)
     {
         rewardAction?.Invoke();
         onComplete?.Invoke();
+    }
+
+    public override void Restore()
+    {
+        restoreAction?.Invoke();
     }
 }
 
@@ -298,6 +320,11 @@ public abstract class GuideStepDecorator : GuideStep
         inner.Dispose();
     }
 
+    public override void Restore()
+    {
+        inner.Restore();
+    }
+
     protected virtual void OnBeforeExecute() { }  // 步驟開始前
     protected virtual void OnAfterComplete() { }  // 步驟完成後
     protected virtual void OnDispose()       { }  // 清理時
@@ -441,14 +468,21 @@ public class WithPlayerLockedStep : GuideStepDecorator
 public class WithTutorialSaveStep : GuideStepDecorator, IGuideStepSaveCheckpoint
 {
     private readonly int? saveStepIndex;
+    private readonly string saveStepId;
 
-    public WithTutorialSaveStep(GuideStep inner, int? saveStepIndex = null) : base(inner)
+    public WithTutorialSaveStep(GuideStep inner, string saveStepId = null, int? saveStepIndex = null) : base(inner)
     {
+        this.saveStepId = saveStepId;
         this.saveStepIndex = saveStepIndex;
     }
 
     public int GetSaveStepIndex(int completedStepIndex, int nextStepIndex)
     {
         return saveStepIndex ?? nextStepIndex;
+    }
+
+    public string GetSaveStepId(GuideStep completedStep, GuideStep nextStep)
+    {
+        return saveStepId ?? nextStep?.StepId ?? completedStep?.StepId;
     }
 }

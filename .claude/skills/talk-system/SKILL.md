@@ -1,6 +1,6 @@
 ---
 name: talk-system
-description: 本專案（ForTest / 紅盒子）對話系統 (Talksystem) 完整指南。當使用者提到 TalkSystem、對話、talkSystem、StartDialogue、PlayDialogueAsync、OnDialogueEnd、autoLockPlayer、DialogueView、DialogueParser、DialogueCommand、DialogueCommandRegistry、DialogueNode、TalkText、TalkData、talk_sample、對話指令 ([w] [l] [r] [lr] [c] [wait] [speed] [color] [size] [b] [i] [fadein] [fadeout])、自訂指令 RegisterCommand、TMPro rich text、逐字顯示 typewriter、SkipTypewriter、DialogueEndListener、GameDataLoader.LoadDialogueTextAsync、GameDataLoader.PreloadDialoguesByLabelAsync、Dialogue Label、DialogueIdSelect、Addressables label 預載對話、對話 fade in/out、NPC 互動觸發對話、商店問候對話 (WanderingYokaiMerchant 等) 時載入此 skill。
+description: 本專案（ForTest / 紅盒子）對話系統 (Talksystem) 完整指南。當使用者提到 TalkSystem、對話、talkSystem、StartDialogue、PlayDialogueAsync、OnDialogueEnd、autoLockPlayer、SkipDialogue、跳過對話、skipDialogueButton、DialogueView、DialogueParser、DialogueCommand、DialogueCommandRegistry、DialogueNode、DialogueChoicePresenter、ShowChoicesAsync、HideChoices、對話選項、StoryPlaybackPanel、故事面板、[storypanel]、[storyopen]、[storyimage]、[storyclose]、TalkText、TalkData、talk_sample、對話指令 ([w] [l] [r] [lr] [c] [wait] [speed] [color] [size] [b] [i] [fadein] [fadeout])、自訂指令 RegisterCommand、TMPro rich text、逐字顯示 typewriter、DialogueEndListener、GameDataLoader.LoadDialogueTextAsync、GameDataLoader.PreloadDialoguesByLabelAsync、Dialogue Label、DialogueIdSelect、Addressables label 預載對話、對話 fade in/out、NPC 互動觸發對話、商店問候對話 (WanderingYokaiMerchant 等) 時載入此 skill。
 ---
 
 # 對話系統 Talksystem
@@ -20,8 +20,10 @@ description: 本專案（ForTest / 紅盒子）對話系統 (Talksystem) 完整�
 | 觸發一段對話 | §3.1 三種 StartDialogue 過載 |
 | 等對話結束做事（如開商店、推進任務） | §4 `PlayDialogueAsync` 模式 + §6 範例 |
 | 對話文本怎麼寫（指令） | §5 內建指令完整表 |
+| 故事面板（大圖 + 全螢幕對話） | §5.4 storypanel 指令 |
+| 對話選項 / 分支 | §3.5 ShowChoicesAsync |
 | 加入新的自訂指令 | §3.4 RegisterCommand |
-| 中斷 / 暫停 / 恢復對話 | §3.3 控制 API |
+| 中斷 / 暫停 / 恢復 / 跳過對話 | §3.3 控制 API |
 | 從統一入口載對話 | §6.2 GameDataLoader 範例 |
 | 對話卡住 / 不結束 | §8 Pitfalls |
 
@@ -38,10 +40,12 @@ description: 本專案（ForTest / 紅盒子）對話系統 (Talksystem) 完整�
 
 | 路徑 | 角色 |
 |---|---|
-| [Assets/Script/TalkSystem/TalkSystem.cs](Assets/Script/TalkSystem/TalkSystem.cs) | 主控制器：狀態機、typewriter coroutine、事件、指令分派 |
+| [Assets/Script/TalkSystem/TalkSystem.cs](Assets/Script/TalkSystem/TalkSystem.cs) | 主控制器：狀態機、typewriter coroutine、事件、指令分派、跳過按鈕、autoLockPlayer |
 | [Assets/Script/TalkSystem/DialogueParser.cs](Assets/Script/TalkSystem/DialogueParser.cs) | 純文字解析器：`Parse(string/TextAsset/List<string>) → List<DialogueNode>` |
 | [Assets/Script/TalkSystem/DialogueCommand.cs](Assets/Script/TalkSystem/DialogueCommand.cs) | `DialogueCommandRegistry`、`CommandHandler` delegate、`DialogueNode` |
 | [Assets/Script/TalkSystem/DialogueView.cs](Assets/Script/TalkSystem/DialogueView.cs) | View：TMP_Text 顯示、CanvasGroup fade、繼續指示器、說話者名稱 |
+| [Assets/Script/TalkSystem/DialogueChoicePresenter.cs](Assets/Script/TalkSystem/DialogueChoicePresenter.cs) | 對話選項 UI：`ShowChoicesAsync(prompt, options) → Task<int>`、`HideChoices` |
+| [Assets/Script/TalkSystem/StoryPlaybackPanel.cs](Assets/Script/TalkSystem/StoryPlaybackPanel.cs) | 全螢幕故事/CG 面板：`ShowAsync` / `HideAsync` / `LoadImageAsync(addressableId)` / `CloseImmediate` |
 | [Assets/Script/TalkSystem/TalkTest.cs](Assets/Script/TalkSystem/TalkTest.cs) | 最小範例（用 `DialogueIdSelect` 選 ID，再交給 `GameDataLoader` 載入） |
 | [Assets/GameData/GameSystem/GameDataLoader.cs](Assets/GameData/GameSystem/GameDataLoader.cs) | `PreloadDialoguesByLabelAsync` + `LoadDialogueTextAsync`：以 `Dialogue` label 預載所有對話，再由 ID 取文案 |
 | [Assets/Resources/TalkData/talk_sample.txt](Assets/Resources/TalkData/talk_sample.txt) | 內建指令展示文本 |
@@ -130,10 +134,16 @@ GameManager.Instance.talkSystem.StartDialogue(new List<string> {
 |---|---|
 | `PlayDialogueAsync(string/TextAsset/List<string>)` | 啟動對話並等待自然結束；若被中斷則回傳 `false` |
 | `Next()` | 玩家按下繼續鍵時呼叫（若 `enableKeyInput=false`） |
-| `StopDialogue()` | 強制中斷（停 coroutine、清狀態） |
+| `StopDialogue()` | 強制中斷（停 coroutine、清狀態）；`PlayDialogueAsync` 會以 `false` 完成 |
+| `SkipDialogue()` | 玩家按「跳過」按鈕。會 fade out 對話框與 StoryPlaybackPanel，並以**正常完成**流程（`PlayDialogueAsync` 回 `true`、`OnDialogueEnd` 會發）結束 — 與 `StopDialogue` 不同 |
 | `Pause()` / `Resume()` | 暫停／恢復 typewriter 進度 |
 | `SetDialogueView(view)` | runtime 換 View 引用 |
 | `IsDialogueActive` / `IsWaitingForInput` / `IsTyping` | 狀態查詢 |
+| `CurrentDialogueView` / `CurrentChoicePresenter` / `CommandRegistry` | 取得內部組件 |
+
+**跳過按鈕**：若 `skipDialogueButton` 在 Inspector 未指派，TalkSystem 會在 `BindSkipDialogueButton` 時自動生成一個位於對話框右上角的「跳過」TextMeshPro Button。對話結束時自動隱藏。
+
+**輸入冷卻**：`advanceInputCooldownSeconds`（預設 0.08s）避免連續按 Space 在同一段對話狀態切換時重複推進，由 `BlockAdvanceInputBriefly` 設定。
 
 ### 3.4 自訂指令 RegisterCommand
 
@@ -144,9 +154,23 @@ GameManager.Instance.talkSystem.RegisterCommand("playsfx", parameters => {
     }
 });
 ```
-- `keyword` 不可與內建衝突（`w/l/r/lr/c/wait/speed/fadein/fadeout/color/size/b/i` 等）
+- `keyword` 不可與內建衝突（`w/l/r/lr/c/wait/speed/fadein/fadeout/color/size/b/i/storypanel/storyopen/storyimage/storyclose` 等）
 - 執行時的 keyword 寫法：`[playsfx,bell]`
 - 例外會被 `DialogueCommandRegistry.ExecuteCommand` 捕獲並 LogError
+
+### 3.5 對話選項 ShowChoicesAsync
+
+```csharp
+int chosen = await GameManager.Instance.talkSystem.ShowChoicesAsync(
+    "你要怎麼回答？",
+    new[] { "好啊", "下次吧", "拒絕" });
+// chosen = 0 / 1 / 2，使用者取消或無 Presenter 回 -1
+GameManager.Instance.talkSystem.HideChoices();
+```
+
+- 實際渲染由 `DialogueChoicePresenter` 負責；TalkSystem 用 `ResolveDialogueChoicePresenter` 找到並 `Configure(dialogueView)`，找不到時警告並回 `-1`
+- 若 dialogueView 沒附 `DialogueChoicePresenter` 元件，TalkSystem 會自動 `AddComponent`
+- 與 PlayDialogueAsync 並用時，請在對話開始 → ShowChoicesAsync → 根據結果走不同分支再 PlayDialogueAsync
 
 ---
 
@@ -215,6 +239,28 @@ GameManager.Instance.talkSystem.StartDialogue(text);
 格式指令可嵌套，與流程指令穿插：
 ```
 [color,#FF5555]注意！[/color]這裡有[b]重要[/b]訊息。[w]
+```
+
+### 5.4 故事面板（StoryPlaybackPanel）
+
+對應 `StoryPlaybackPanel` 全螢幕故事/CG 面板，圖片走 Addressables ID 載入。
+
+| 指令 | 行為 |
+|---|---|
+| `[storyopen]` 或 `[storyopen,秒]` | 顯示面板（fade in）；秒省略時走 panel 預設值 |
+| `[storyimage,addressableId]` | 載入並切換面板圖片（async） |
+| `[storyclose]` 或 `[storyclose,秒]` | 隱藏面板（fade out） |
+| `[storypanel,show/open[,秒]]` | 同 storyopen |
+| `[storypanel,image,addressableId]` / `[storypanel,load,id]` | 同 storyimage |
+| `[storypanel,close/hide[,秒]]` | 同 storyclose |
+
+實作位於 [TalkSystem.cs](Assets/Script/TalkSystem/TalkSystem.cs) `ProcessStoryPanelCommand` / `StartStoryPanelShow` / `StartStoryImageLoad` / `StartStoryPanelHide`，全部走 coroutine `await Task`。`SkipDialogue` 會同時 fade out 故事面板。
+
+範例（一頁有圖故事）：
+```
+[storyopen,0.4][storyimage,Story_Chapter1_01]這是序章的第一張圖。[w]
+[storyimage,Story_Chapter1_02]翻到第二張。[w]
+[storyclose,0.3]
 ```
 
 ---
@@ -384,8 +430,8 @@ void Awake() {
 - 結束或中斷時自動解除
 - 已盤點現有對話呼叫點，移除流浪商人對話期的重複手動鎖；商店 UI 期仍保留自己的 `WanderingYokaiMerchant` lock source
 
-#### 🟢 P3：`enableKeyInput` 寫死 nextKey/skipKey
-目前 `Space` / `Return` 是 SerializeField，但全專案統一鎖在 TalkSystem 元件 Inspector，不能 runtime 換。
+#### 🟢 P3：`nextKey` 寫死為 Space
+目前只有 `nextKey` 一個 SerializeField，預設 `Space`；UI 上的「跳過」按鈕走 `skipDialogueButton.onClick`，沒有快捷鍵。全專案統一鎖在 TalkSystem 元件 Inspector，不能 runtime 換。
 
 **建議**：改透過 InputAction（Unity 新 Input System）或 KeyBindings 設定取得。
 

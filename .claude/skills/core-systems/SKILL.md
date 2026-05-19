@@ -1,6 +1,6 @@
 ---
 name: core-systems
-description: 本專案（ForTest / 紅盒子）核心執行時三大 Singleton 的完整地圖。當使用者提到 GameManager、GameFlow、DataManager、Singleton、場景切換 (SceneTransitionManager、GoToHumanScene/GoToMonsterScene/GoToNextDay)、玩家鎖定 (LockPlayerMove、UnlockPlayerMove、LockPlayerInteract、_moveLockSources)、天數切換 (NextDay、CurrentDay、DayPhase)、SwitchGameStageAndSave、StartTutorial、GameRng (InitDailySeed、RangeKeyed、ValueKeyed、MasterSeed、固定式隨機)、玩家靜態字典查詢 (ItemDict、ShopDict、MissionDict 等)、ModifyGold/ModifyMonsterGold/TrySpendGold/AddItem、OnPlayerDataChanged、SetPlayerData / GetPlayerSaveData / GetPersistentSaveData、GameFlowEvents、NoticeGetItemEvents、PlayerInfoUIEvents、Cinemachine 攝影機跟隨、StartNewGame/InitializeGame 啟動流程等核心執行時議題時載入此 skill。與 save-system（磁碟 I/O 層）互補：core-systems 是 runtime 操作中樞，save-system 是 persistence 管線。
+description: 本專案（ForTest / 紅盒子）核心執行時三大 Singleton 的完整地圖。當使用者提到 GameManager、GameFlow、DataManager、Singleton、場景切換 (SceneTransitionManager、GoToHumanScene/GoToMonsterScene/GoToNextDay/GoToEndStoryScene、SCENE_END_STORY)、玩家鎖定 (LockPlayerMove、UnlockPlayerMove、LockPlayerInteract、_moveLockSources、PlayerLockSources)、天數切換 (NextDay、CurrentDay、DayPhase)、SwitchGameStageAndSave、TutorialFlow、StartTutorial、TutorialSaveData、GameRng (InitDailySeed、RangeKeyed、ValueKeyed、MasterSeed、固定式隨機)、結局系統 (EndingType、EndingConditionDetector、SetEndingReached、HasReachedEnding、ReachedEndingType、TryPayGuaranteeDeposit、TryPayAuctionEntryFee、HasPaidGuaranteeDeposit、HasPaidAuctionEntryFee、GuaranteeDepositGuide、AuctionEntryFeeGuide、AuctionDayGuide)、玩家靜態字典查詢 (ItemDict、ShopDict、MissionDict 等)、ModifyGold/ModifyMonsterGold/TrySpendGold/AddItem、背包容量 (BaseInventoryCapacity、GetInventoryCapacity、CanAddItemsToInventory、TrySpendGoldForItemPurchase)、ExchangeAllMonsterGoldToGold、OnPlayerDataChanged、BookDataChanged、SetPlayerData / GetPlayerSaveData / GetPersistentSaveData、GameFlowEvents、NoticeGetItemEvents、PlayerInfoUIEvents、Cinemachine 攝影機跟隨 (ClearCameraHorizontalBounds、CameraHorizontalBounds)、StartNewGame/InitializeGame 啟動流程等核心執行時議題時載入此 skill。與 save-system（磁碟 I/O 層）互補：core-systems 是 runtime 操作中樞，save-system 是 persistence 管線。
 ---
 
 # 核心系統（GameManager / GameFlow / DataManager）
@@ -29,6 +29,7 @@ description: 本專案（ForTest / 紅盒子）核心執行時三大 Singleton �
 | 固定式隨機（抽商店、抽獎） | §6 |
 | 接收日 / 階段變化事件 | §7 |
 | 遊戲啟動流程 / 新遊戲 | §8 |
+| 結局 / 拍賣保證金 / 入場費 | §10 |
 | 重構、命名、效能議題 | §9 架構建議 |
 
 **不要做的事**：
@@ -90,10 +91,12 @@ GameManager.Instance.UnlockPlayerMove(PlayerLockSources.GroceryStore);
 | `LockPlayerInteract / UnlockPlayerInteract` | 同模式用於 E 鍵互動 |
 | `ClearAllLocks()` | 清光兩個 HashSet；場景切換時自動呼叫 |
 
-**常數清單**（全部定義於 [PlayerLockSources.cs](Assets/GameData/GameSystem/PlayerLockSources.cs)）：
-- 通用：`Guide` / `TrashCan` / `ScratchCardShop` / `PlayerInfoUI` / `NoticeGetItem` / `MonsterTrade` / `HumanOrderView` / `NpcOnMap` / `AbyssShop`
-- 商店：`GroceryStore` / `YokaiStore` / `FurnituresShop` / `FoodShop` / `VendingMachine` / `YokaiEat` / `HumanShopEat`
+**常數清單**（全部定義於 [PlayerLockSources.cs](Assets/GameData/GameSystem/PlayerLockSources.cs)，目前共 24 個）：
+- 通用：`Guide` / `TrashCan` / `ScratchCardShop` / `PlayerInfoUI` / `NoticeGetItem` / `MonsterTrade` / `HumanOrderView` / `NpcOnMap` / `AbyssShop` / `TalkSystem` / `MonsterGoldExchange`
+- 傳送與拍賣：`TelePoint` / `TelePointAuctionGuide` / `Auction` / `AuctionNpc`
+- 商店：`GroceryStore` / `YokaiStore` / `FurnituresShop` / `FoodShop` / `VendingMachine` / `YokaiEat` / `HumanShopEat` / `WanderingYokaiMerchant`
 - 例外：AbyssShop 內部用 `ID` 屬性（`IMapGuideTarget` 介面契約）傳入，值與 `PlayerLockSources.AbyssShop` 一致
+- 對話系統：`TalkSystem.autoLockPlayer = true` 時，由 TalkSystem 自動以 `PlayerLockSources.TalkSystem` 鎖定，呼叫端不需重複手動鎖
 
 **常見 bug**：`_moveLockSources` 用 HashSet 不支援重複計數，同一 source 鎖多次只存一次，**不要**當成 int stack 使用。
 
@@ -106,12 +109,13 @@ private PlayerController PlayerController;
 [SerializeField] private CinemachineVirtualCamera virtualCamera;
 ```
 
-場景載入完成（`OnSceneLoadComplete`）自動：
+場景載入完成（`OnSceneLoadComplete`）會略過 `SCENE_MAIN_MENU` 與 `SCENE_END_STORY`，其餘場景自動：
 1. `SetPlayer()` → Instantiate(PlayerPrefab)
-2. `SetPlayerPosition(new Vector3(0, -2, 0))`（寫死）
+2. `SetPlayerPosition(new Vector3(0, -2, 0))`（寫死；內部走 `PlayerController.TeleportTo(position)`）
 3. `ClearAllLocks()`
 4. `SetCameraFollowPlayer()`
-5. 如果是妖怪場景 → `PlayerController.SetIsNight(true)`
+5. `ClearCameraHorizontalBounds()` — 解除 TelePoint 可能留下的 `CameraHorizontalBounds` 限制並重置 `PreviousStateIsValid`
+6. 如果是妖怪場景 → `PlayerController.SetIsNight(true)`
 
 **手動切玩家位置**：`GameManager.Instance.SwitchPlayerPos(Vector3)`
 
@@ -141,7 +145,7 @@ gameFlow = new GameFlow(playerData, slot);
 // 銷毀：遊戲結束 / 回主選單時（實際未顯式銷毀，由 GameManager 重指派覆蓋）
 ```
 
-建構子會**立刻**呼叫 `GameRng.InitDailySeed(MasterSeed, CurrentDay)`，所以 `new GameFlow` 之後當天所有 Keyed 隨機都已就緒。
+建構子會**立刻**呼叫 `GameRng.InitDailySeed(MasterSeed, CurrentDay)` + `new TutorialFlow()`，所以 `new GameFlow` 之後當天所有 Keyed 隨機已就緒、教學流程也已就位。
 
 ### 3.2 核心 API
 
@@ -149,8 +153,8 @@ gameFlow = new GameFlow(playerData, slot);
 |---|---|---|
 | `CurrentDay` | 讀取 | 單局當前天數（以 `PlayerData.DaysPlayed` 為 source of truth） |
 | `NextDay()` | 夜晚結束 | `CurrentDay++` → `DataManager.ModifyCurrentDay` → 重設 RNG 種子 → `SwitchGameStageAndSave(Night)` |
-| `SwitchGameStageAndSave(DayPhase)` | 切換日夜階段 | 清訂單進度、改階段、發 `OnDayPhaseChanged`；若進 HumanDay 還會發 `OnDayChanged` 與 `AchievementEvents.DayEndGold`；最後 `SaveGameAsync` |
-| `StartTutorial()` | InitializeGame | 跨局 key `"TutorialSaveData"` + `DaysPlayed <= 1` 才啟動 |
+| `SwitchGameStageAndSave(DayPhase)` | 切換日夜階段 | 1) 非 AfterNoon 清訂單進度 2) `ModifyCurrentDayPhase` + 發 `OnDayPhaseChanged` 3) 刷新 `GuaranteeDepositGuide` / `AuctionEntryFeeGuide` / `AuctionDayGuide` 4) Night/HumanDay 呼叫 `EndingConditionDetector.EvaluateForNewMonsterDay/HumanDay`，若有結局則 `SetEndingReached` + 存檔 + 提前 return 5) HumanDay 發 `OnDayChanged` 與 `AchievementEvents.DayEndGold` 6) `SaveGameAsync` |
+| `StartTutorial()` | InitializeGame | 讀跨局 `GetPersistentSaveData<TutorialSaveData>("TutorialSaveData")`，**未完成 (`!IsComplete`) 且 `DaysPlayed <= 1`** 時 `_tutorialFlow.Start()`。實際教學流程封裝在 `TutorialFlow` class，不再內聯 |
 | `SaveGameAsync()` | 存檔點 | 檢查 `OnPlayerDataChanged`，先清旗標再 `await SaveManager.SaveGameAsync` + `DataManager.SaveAchievementAsync` |
 
 **日夜階段**（`DayPhase` enum）：`HumanDay` → `AfterNoon` → `Night` → ...
@@ -217,15 +221,32 @@ private const int DAY_THRESHOLD_LATE = 14;  // 進入後期
 |---|---|
 | `ModifyGold(int)` / `ModifyMonsterGold(int)` | 加減金幣（自動 clamp 0） |
 | `TrySpendGold(int)` / `TrySpendMonsterGold(int)` | 足額才扣；Gold 版本會觸發 `OnItemPurchased` 事件 |
+| `TrySpendGoldForItemPurchase(amount, itemAmount=1)` / `TrySpendMonsterGoldForItemPurchase(...)` | 先 `CanAddItemsToInventory` 檢查背包再扣金；背包滿時走 `SystemInfoEvent.Show("背包已滿")` |
+| `ExchangeAllMonsterGoldToGold(out spent, out gained)` | 妖怪金幣按 3/4 (向上取整) 兌成人界金幣，會 clamp 至 `int.MaxValue` |
 | `AddItem(itemId, costPrice)` | 加入背包；自動 `AchievementEvents.GetItem` + `AddItemToBook` |
 | `RemoveItem(Item)` | 需 id + costPrice 同時符合 |
 | `SetIsTrade(bool)` | 白天開店狀態旗標 |
-| `ModifyCurrentDay(int)` | 改天數（通常由 GameFlow 呼叫） |
+| `ModifyCurrentDay(int)` | 改天數（通常由 GameFlow 呼叫）；跨日會自動把 `IsTrade=false` |
 | `ModifyCurrentDayPhase(DayPhase)` | 改階段；會發 `GameFlowEvents.InvokeDayPhaseChanged` |
+| `SetEndingReached(EndingType)` | 標記本局已達結局（同時設定 `HasReachedEnding`），詳見 §10 |
+| `TryPayGuaranteeDeposit()` / `TryPayAuctionEntryFee()` | 一次性支付保證金 / 拍賣入場費；已支付過直接回 true，金幣不足回 false |
 | `RefreshPlayerMainView()` | 手動觸發 `PlayerMainViewUpdate` 事件（UI 初始化時呼叫） |
 | `GetMonsterTradeHistory()` | 從 GameSaveFile 讀 `"MonsterTradeHistory"`，無則回傳 new |
 
+**背包容量類**：
+- 常數 `DataManager.BaseInventoryCapacity = 25`
+- `GetInventoryCapacity()` = Base + `SouvenirManager.GetExtraBagCapacity()`
+- `GetInventoryItemCount()` / `CanAddItemsToInventory(amount=1)` 用於 UI / 商店扣款前檢查
+
 **查詢類**：`GetItemCountByRarity` / `GetDistinctItemCountByTypeAndWorld` / `GetHumanItemCount` / `GetMonsterItemCount`
+
+**圖鑑 mutator（會立刻 `SaveBookData` 落檔 + 觸發 `BookDataChanged` 事件）**：
+- `UnlockMonsterInformation(string)` / `UnlockRandomMonsterInformation()` — 解鎖單筆 / 隨機一筆未解鎖情報，自動處理「每 2 個情報解鎖 1 個故事」門檻並寫入 `NewMonsterInformationID / NewMonsterStoryID` 紅點
+- `ConfirmSingleNewInfo(id)` / `ConfirmSingleNewStory(id)` / `ConfirmMonsterNewInfo(monsterId)` — 清單筆 / 整個妖怪的紅點
+- `IsMonsterInfoUnlocked(id)` / `HasAnyNewMonsterInfo()` / `HasNewMonsterInfo(monsterId)` — 圖鑑紅點查詢
+- `UpdateAchievementSaveData(IAchievementSave)` / `UpdateAllAchievementSaveData()` — 單筆 / 批次寫成就 dict 並同步落檔
+- `UpdateSpecialSouvenirSaveData(ISpecialSouvenirSave)` — 同上但用於特殊紀念品
+- `BookDataChanged` event：圖鑑/成就/紀念品任一筆改動都會 fire，UI 紅點訂閱此事件
 
 ### 4.4 單局按 key 存取（ISaveData 模式）
 
@@ -349,19 +370,23 @@ PlayerInfoUIEvents.InvokeCloseAll();          // 關閉全部
                      - GetNextAvailableSlot
                      - new MasterSeed = Random.Range
                      - HoldAchievementSouvenirID 從 Book 複製一份
+                     - 重置結局旗標：HasReachedEnding=false / ReachedEndingType=None
+                     - 重置一次性費用：HasPaidGuaranteeDeposit=false / HasPaidAuctionEntryFee=false
                      - SetCurrentPlayer + SaveCurrentPlayerAsync
                      - InitializeGame(slot)
-5. 按「讀取存檔」 → LoadPlayerFromSave(slot) + InitializeGame(slot)
+5. 按「讀取存檔」 → DataManager.LoadCurrentPlayerFromSlot(slot) + InitializeGame(slot)
 6. InitializeGame →
+    - 若 playerData.HasReachedEnding == true → GoToEndStoryScene() 直接結束
     - Souvenir.ResnapshotForCurrentGame
-    - new GameFlow(playerData, slot)          // 此時呼叫 GameRng.InitDailySeed
+    - new GameFlow(playerData, slot)          // 此時呼叫 GameRng.InitDailySeed + new TutorialFlow
     - sceneTransitionManager.GoToSceneByPhase →
-        - 場景載入完成（OnSceneLoadComplete）
+        - 場景載入完成（OnSceneLoadComplete，略過 MAIN_MENU 與 END_STORY）
         - ModifyCurrentDay(DaysPlayed)
         - InvokeDayPhaseChanged(PlayingStatus)
+        - GuaranteeDepositGuide.Refresh / AuctionEntryFeeGuide.Refresh / AuctionDayGuide.Refresh
         - ApplyAllStartEffects（紀念品常駐效果）
         - gameFlow.StartTutorial
-        - InitializePlayerInScene（SetPlayer / SetPosition / ClearAllLocks / SetCamera）
+        - InitializePlayerInScene（SetPlayer / TeleportTo / ClearAllLocks / SetCamera / ClearCameraHorizontalBounds）
 ```
 
 ---
@@ -418,7 +443,7 @@ void HandleDay(int day) { ... }
 GameManager 只保留「Singleton 入口 + 組合這些 Component」。
 
 #### 🟠 P1：DataManager 過 God Object
-**問題**：1162 行、16 個靜態字典、30+ public API、多個職責交疊（Game Data Registry + Player Save Proxy + ModifyAPI + Book 代理）。
+**問題**：1289 行、15 個靜態字典、40+ public API、多個職責交疊（Game Data Registry + Player Save Proxy + ModifyAPI + Book 代理 + 結局/拍賣狀態）。
 
 **建議**：拆分為
 - `GameDataRegistry`（16 個 Dictionary + 唯讀存取）
@@ -475,3 +500,34 @@ DataManager 保留 Singleton 入口與三者組合。這項工程較大，但能
 - **save-system**：Slot/Book 雙管線、ISaveData 契約、磁碟 I/O、JSON 細節、SaveSlot UI
 
 兩份 skill 會互相引用彼此的章節，遇到「怎麼新增一類存檔」要同時看 core-systems §4.3（API）+ save-system §9（磁碟面）。
+
+---
+
+## 10. 結局與拍賣保證金
+
+本局是否抵達結局是「在 `GameFlow.SwitchGameStageAndSave` 切換到 Night 或 HumanDay 時」由 `EndingConditionDetector` 判定，並寫回 `PlayerData` 並立刻存檔。
+
+### 10.1 PlayerData 旗標
+
+| 欄位 | 型別 | 寫入點 |
+|---|---|---|
+| `HasReachedEnding` | bool | `DataManager.SetEndingReached(EndingType)` 在 GameFlow 偵測到結局時呼叫；`StartNewGame` 會清回 false |
+| `ReachedEndingType` | `EndingType` | 同上；用 `EndingType.None` 表示尚未結局 |
+| `HasPaidGuaranteeDeposit` | bool | `TryPayGuaranteeDeposit()` 成功支付後設 true |
+| `HasPaidAuctionEntryFee` | bool | `TryPayAuctionEntryFee()` 成功支付後設 true |
+
+### 10.2 流程
+1. `GameFlow.SwitchGameStageAndSave(Night)` → `EndingConditionDetector.EvaluateForNewMonsterDay(player)`
+2. `GameFlow.SwitchGameStageAndSave(HumanDay)` → `EndingConditionDetector.EvaluateForHumanDay(player)`
+3. 任一回傳非 `EndingType.None` → `DataManager.SetEndingReached(endingType)` → `SaveGameAsync` → 提早 return
+4. 下次 `GameManager.InitializeGame(slot)` 偵測到 `HasReachedEnding` → `GoToEndStoryScene()`
+
+### 10.3 保證金 / 入場費
+- `EndingConditionDetector.GuaranteeDepositAmount` / `EndingConditionDetector.AuctionEntryFeeAmount` 為靜態金額常數
+- `DataManager.TryPayGuaranteeDeposit()` / `TryPayAuctionEntryFee()` 是冪等支付：已支付直接回 true、金幣不足回 false
+- UI 顯示由 `GuaranteeDepositGuide` / `AuctionEntryFeeGuide` / `AuctionDayGuide` 三個 static class 的 `Refresh()` 驅動，GameFlow 切換階段時呼叫
+- 對應 PlayerLockSources：`Auction` / `AuctionNpc` / `TelePointAuctionGuide`
+
+### 10.4 重置點
+- `GameManager.StartNewGame()` 才會清回 false / None；讀檔不會重置
+- 進入結局後，舊存檔再讀取會直接 `GoToEndStoryScene()`，**不能**回頭繼續玩同一槽位 — 要重開新局

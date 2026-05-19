@@ -42,7 +42,7 @@ public class SaveSlotPresenter : MonoBehaviour
 
         for (int i = 0; i < maxSlots; i++)
         {
-            var slotData = SaveManager.Instance.LoadSlotInfo(i);
+            var slotData = DataManager.Instance.SaveRepository.LoadSlotInfo(i);
             // 只加入非空存檔
             if (!slotData.IsEmpty)
             {
@@ -71,7 +71,7 @@ public class SaveSlotPresenter : MonoBehaviour
     private void HandleSlotDeleteRequested(int slotIndex)
     {
         Debug.Log($"[SaveSlotPresenter] 刪除存檔 {slotIndex}");
-        SaveManager.Instance.DeleteSaveSlot(slotIndex);
+        DataManager.Instance.SaveRepository.DeleteSaveSlot(slotIndex);
         LoadAndDisplaySaveSlots();
     }
 
