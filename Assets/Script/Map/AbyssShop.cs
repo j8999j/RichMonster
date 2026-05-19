@@ -78,7 +78,7 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
     }
     private void LoadGame()
     {
-        var abyssSave = DataManager.Instance.GetPersistentSaveData<AbyssSave>("AbyssShop");
+        var abyssSave = DataManager.Instance.GetPersistentSaveData<AbyssSave>(SaveDataKeys.Abyss);
         _ArrivedBottom = abyssSave.ArrivedBottom;
 
         if (abyssSave.LastUpdatedDay == GameManager.Instance.gameFlow.CurrentDay)
@@ -99,7 +99,7 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
             ArrivedBottom = _ArrivedBottom,
             LastUpdatedDay = GameManager.Instance.gameFlow.CurrentDay
         };
-        DataManager.Instance.SetPlayerData("AbyssShop", abyssSave);
+        DataManager.Instance.SetPlayerData(SaveDataKeys.Abyss, abyssSave);
     }
     private void HandleContinue()
     {
@@ -326,7 +326,7 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
 }
 public class AbyssSave : ISaveData
 {
-    public string UniqueID => "AbyssShop";
+    public string UniqueID => SaveDataKeys.Abyss;
     public int LastUpdatedDay { get; set; } = 0;
     public bool IsPlayed = false;
     public bool ArrivedBottom = false;

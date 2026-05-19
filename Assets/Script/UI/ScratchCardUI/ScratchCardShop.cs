@@ -69,7 +69,7 @@ public class ScratchCardShop : MonoBehaviour, IInteractable, IMapGuideTarget
 
     private bool LoadData()
     {
-        var data = DataManager.Instance.GetPlayerSaveData<ScratchCardShopData>("ScratchCardShopData");
+        var data = DataManager.Instance.GetPlayerSaveData<ScratchCardShopData>(SaveDataKeys.ScratchCardShop);
         return data.IsScratched;
     }
 
@@ -78,7 +78,7 @@ public class ScratchCardShop : MonoBehaviour, IInteractable, IMapGuideTarget
         var data = new ScratchCardShopData();
         data.IsScratched = isScratched;
         data.LastUpdatedDay = CurrentDay;
-        DataManager.Instance.SetPlayerData("ScratchCardShopData", data);
+        DataManager.Instance.SetPlayerData(SaveDataKeys.ScratchCardShop, data);
     }
     /// <summary>
     /// ScratchCard 刮除完成後的回調 (由 ScratchCard.onScratchComplete 事件觸發)
@@ -170,7 +170,7 @@ public class ScratchCardShop : MonoBehaviour, IInteractable, IMapGuideTarget
 
 public class ScratchCardShopData : ISaveData
 {
-    public string UniqueID => "ScratchCardShopData";
+    public string UniqueID => SaveDataKeys.ScratchCardShop;
     public int LastUpdatedDay { get; set; }
     public bool IsScratched;
 }

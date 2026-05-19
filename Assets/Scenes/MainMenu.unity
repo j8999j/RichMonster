@@ -170,8 +170,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -214,8 +214,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -290,8 +290,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -1387,6 +1387,7 @@ GameObject:
   - component: {fileID: 144475251}
   - component: {fileID: 144475250}
   - component: {fileID: 144475249}
+  - component: {fileID: 144475253}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1476,6 +1477,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &144475253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144475248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4beb3b3db8e44a8820e68f348318e06, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  souvenirBagView: {fileID: 360182374}
+  achievementViewFactory: {fileID: 1079260455}
+  gameBookView: {fileID: 236357797}
+  souvenirShopView: {fileID: 228414218}
+  initialPage: 0
+  closePagesOnStart: 1
 --- !u!1 &156092034
 GameObject:
   m_ObjectHideFlags: 0
@@ -3174,8 +3193,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59b52f6cbcd3d73489617a1757d4319f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   action: 2
 --- !u!1 &349007030
 GameObject:
@@ -8088,6 +8107,7 @@ GameObject:
   - component: {fileID: 970737130}
   - component: {fileID: 970737129}
   - component: {fileID: 970737128}
+  - component: {fileID: 970737131}
   m_Layer: 5
   m_Name: SouvenirShopButton
   m_TagString: Untagged
@@ -8157,19 +8177,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 970737129}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 228414218}
-        m_TargetAssemblyTypeName: SouvenirShopView, Assembly-CSharp
-        m_MethodName: OpenShop
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &970737129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8208,6 +8216,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 970737126}
   m_CullTransparentMesh: 1
+--- !u!114 &970737131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 970737126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b52f6cbcd3d73489617a1757d4319f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  action: 7
 --- !u!1 &977099070
 GameObject:
   m_ObjectHideFlags: 0
@@ -12609,15 +12630,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1381125367}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8880ceaa8f671c24db66a7a74c48eaf9, type: 3}
+  m_Script: {fileID: 11500000, guid: d4beb3b3db8e44a8820e68f348318e06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerView: {fileID: 0}
   souvenirBagView: {fileID: 360182374}
   achievementViewFactory: {fileID: 1079260455}
   gameBookView: {fileID: 236357797}
-  eventsView: {fileID: 0}
-  contractView: {fileID: 0}
+  souvenirShopView: {fileID: 228414218}
+  initialPage: 0
+  closePagesOnStart: 1
 --- !u!1 &1386569403
 GameObject:
   m_ObjectHideFlags: 0
@@ -14273,8 +14294,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59b52f6cbcd3d73489617a1757d4319f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   action: 3
 --- !u!1 &1598978295
 GameObject:
@@ -15453,7 +15474,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1742494101
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16395,6 +16416,7 @@ GameObject:
   - component: {fileID: 1822839205}
   - component: {fileID: 1822839204}
   - component: {fileID: 1822839203}
+  - component: {fileID: 1822839206}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -16464,19 +16486,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1822839204}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 228414218}
-        m_TargetAssemblyTypeName: SouvenirShopView, Assembly-CSharp
-        m_MethodName: CloseShop
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1822839204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16515,6 +16525,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1822839201}
   m_CullTransparentMesh: 1
+--- !u!114 &1822839206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1822839201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b52f6cbcd3d73489617a1757d4319f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  action: 3
 --- !u!1 &1853545413
 GameObject:
   m_ObjectHideFlags: 0

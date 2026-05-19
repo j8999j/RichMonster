@@ -134,7 +134,7 @@ public static class CollectionMissionRaceUtility
 [Serializable]
 public class CollectionMissionSaveData : ISaveData
 {
-    public string UniqueID { get; set; } = CollectionMissionTracker.SaveKey;
+    public string UniqueID { get; set; } = SaveDataKeys.CollectionMission;
     public int LastUpdatedDay { get; set; }
     public int TotalPoints;
     public List<CollectionMissionRaceProgress> RaceProgress = new List<CollectionMissionRaceProgress>();

@@ -6,9 +6,7 @@ namespace Souvenir
     [System.Serializable]
     public class GroceryPurchaseSaveData : ISaveData
     {
-        public const string SaveDataKey = "GroceryPurchaseSaveData";
-
-        public string UniqueID { get; set; } = SaveDataKey;
+        public string UniqueID { get; set; } = SaveDataKeys.GroceryPurchase;
         public int LastUpdatedDay { get; set; }
         public int PurchaseCount;
     }
@@ -25,11 +23,11 @@ namespace Souvenir
             if (shopId != ShopIDs.GroceryStore) return;
 
             GroceryPurchaseSaveData saveData = DataManager.Instance
-                .GetPersistentSaveData<GroceryPurchaseSaveData>(GroceryPurchaseSaveData.SaveDataKey);
+                .GetPersistentSaveData<GroceryPurchaseSaveData>(SaveDataKeys.GroceryPurchase);
 
             if (string.IsNullOrEmpty(saveData.UniqueID))
             {
-                saveData.UniqueID = GroceryPurchaseSaveData.SaveDataKey;
+                saveData.UniqueID = SaveDataKeys.GroceryPurchase;
             }
 
             int completedRewardCount = 0;
@@ -41,7 +39,7 @@ namespace Souvenir
             }
 
             saveData.LastUpdatedDay = DataManager.Instance.CurrentPlayerData.DaysPlayed;
-            DataManager.Instance.SetPlayerData(GroceryPurchaseSaveData.SaveDataKey, saveData);
+            DataManager.Instance.SetPlayerData(SaveDataKeys.GroceryPurchase, saveData);
 
             QueueRewards(completedRewardCount);
         }
@@ -110,7 +108,7 @@ namespace Souvenir
         private int GetCurrentPoints()
         {
             GroceryPurchaseSaveData saveData = DataManager.Instance
-                .GetPersistentSaveData<GroceryPurchaseSaveData>(GroceryPurchaseSaveData.SaveDataKey);
+                .GetPersistentSaveData<GroceryPurchaseSaveData>(SaveDataKeys.GroceryPurchase);
 
             return saveData != null && !string.IsNullOrEmpty(saveData.UniqueID)
                 ? saveData.PurchaseCount

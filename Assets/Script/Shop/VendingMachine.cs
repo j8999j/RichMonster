@@ -149,7 +149,7 @@ namespace Shop
         /// </summary>
         public void NewShopShelfData(ShelfSlot shelfSlot)
         {
-            ThisShopShelfData.UniqueID = ShopID + "ShopShelfData";
+            ThisShopShelfData.UniqueID = SaveDataKeys.BuildShopShelf(ShopID);
             ThisShopShelfData.LastUpdatedDay = GameManager.Instance.gameFlow.CurrentDay;
             ThisShopShelfData.Changes[shelfSlot.SlotIndex] = new ShopInventoryChange
             {

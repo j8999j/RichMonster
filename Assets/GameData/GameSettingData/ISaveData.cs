@@ -16,7 +16,7 @@ public class MissionSaveData : ISaveData
 }
 public class SpicalItemList : ISaveData
 {
-    public string UniqueID { get; set; }
+    public string UniqueID { get; set; } = SaveDataKeys.SpicalItemList;
     public int LastUpdatedDay { get; set; }
     public List<SpicalItem> PurchasedItemsList;
 }
@@ -28,7 +28,7 @@ public class SpicalItem
 }
 public class TutorialSaveData : ISaveData
 {
-    public string UniqueID => "TutorialSaveData";
+    public string UniqueID => SaveDataKeys.Tutorial;
     public int LastUpdatedDay { get; set; }
     public int CurrentTaskIndex;
     public int CurrentStepIndex;

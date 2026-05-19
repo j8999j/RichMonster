@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using GameSystem;
 
-public class ContractView : MonoBehaviour
+public class ContractView : MonoBehaviour, IPlayerInfoPage
 {
     [Header("UI Components")]
     public GameObject ContractPanel;
@@ -102,10 +102,14 @@ public class ContractView : MonoBehaviour
         RefreshPaymentState();
     }
 
+    public void OpenPage() => OpenContractPanel();
+
     public void CloseContractPanel()
     {
         SetContractPanelVisible(false, true);
     }
+
+    public void ClosePage() => CloseContractPanel();
 
     public void RequestCloseContractPanel()
     {

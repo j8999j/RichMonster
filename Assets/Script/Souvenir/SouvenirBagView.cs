@@ -7,7 +7,7 @@ using GameSystem;
 
 namespace Souvenir
 {
-    public class SouvenirBagView : MonoBehaviour
+    public class SouvenirBagView : MonoBehaviour, IPlayerInfoPage
     {
         [Header("Panels")]
         public GameObject MainPanel;
@@ -62,6 +62,8 @@ namespace Souvenir
         public void RequestOpenBag() => PlayerInfoUIEvents.InvokeOpenSouvenirBag();
         public void RequestCloseBag() => PlayerInfoUIEvents.InvokeCloseAll();
 
+        public void OpenPage() => OpenBag();
+
         public void OpenBag()
         {
             if (MainPanel != null) MainPanel.SetActive(true);
@@ -74,6 +76,8 @@ namespace Souvenir
             _currentPage = 0;
             RefreshPage();
         }
+
+        public void ClosePage() => CloseBag();
 
         public void CloseBag()
         {

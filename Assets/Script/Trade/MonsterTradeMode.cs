@@ -273,7 +273,7 @@ public class MonsterTradeMode : MonoBehaviour
     }
     private async void SaveTradeProgress()
     {
-        DataManager.Instance.SetPlayerData("MonsterTradeHistory", monsterTradeProgress);
+        DataManager.Instance.SetPlayerData(SaveDataKeys.MonsterTradeProgress, monsterTradeProgress);
         await GameManager.Instance.gameFlow.SaveGameAsync();
     }
 

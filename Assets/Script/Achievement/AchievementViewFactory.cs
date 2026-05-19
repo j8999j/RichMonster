@@ -16,7 +16,7 @@ using UnityEngine.UI;
 ///  ├── scrollRect     → ScrollRect 元件（用於垂直捲動）
 ///  └── categoryButtons → 四個分類按鈕 (依序: Item, Transaction, Record, Others)
 /// </summary>
-public class AchievementViewFactory : MonoBehaviour
+public class AchievementViewFactory : MonoBehaviour, IPlayerInfoPage
 {
     [Header("Prefabs")]
     [SerializeField] private AchievementDefaultItemView defaultPrefab;
@@ -73,6 +73,8 @@ public class AchievementViewFactory : MonoBehaviour
 
 
     /// <summary>供按鈕呼叫：開啟成就面板，重新取得最新資料並生成顯示</summary>
+    public void OpenPage() => OpenAndRefresh();
+
     public void OpenAndRefresh()
     {
         _souvenirProvider = Souvenir.SouvenirManager.Instance;
@@ -204,6 +206,8 @@ public class AchievementViewFactory : MonoBehaviour
     }
 
     /// <summary>關閉成就面板</summary>
+    public void ClosePage() => ClosePanel();
+
     public void ClosePanel()
     {
         if (AchievementPanel != null)

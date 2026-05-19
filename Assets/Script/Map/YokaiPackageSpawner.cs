@@ -29,7 +29,6 @@ public class YokaiPackageSpawner : MonoBehaviour
     [SerializeField] private AudioClip pickupSfx;
     [SerializeField, Range(0f, 1f)] private float sfxVolumeScale = 1f;
 
-    private const string SaveKey = "YokaiPackage";
     private YokaiPackageSave _save;
     private readonly Dictionary<int, YokaiPackage> _spawned = new Dictionary<int, YokaiPackage>();
 
@@ -42,7 +41,7 @@ public class YokaiPackageSpawner : MonoBehaviour
     private void LoadOrGenerate()
     {
         int currentDay = GameManager.Instance.gameFlow.CurrentDay;
-        var existing = DataManager.Instance.GetPlayerSaveData<YokaiPackageSave>(SaveKey);
+        var existing = DataManager.Instance.GetPlayerSaveData<YokaiPackageSave>(SaveDataKeys.YokaiPackage);
 
         if (existing != null && existing.LastUpdatedDay == currentDay && existing.SpawnIndices.Count > 0)
         {
@@ -56,7 +55,7 @@ public class YokaiPackageSpawner : MonoBehaviour
             SpawnIndices = PickSpawnIndices(currentDay),
             PickedIndices = new List<int>()
         };
-        DataManager.Instance.SetPlayerData(SaveKey, _save);
+        DataManager.Instance.SetPlayerData(SaveDataKeys.YokaiPackage, _save);
     }
 
     private List<int> PickSpawnIndices(int currentDay)
@@ -128,7 +127,7 @@ public class YokaiPackageSpawner : MonoBehaviour
         }
 
         _save.PickedIndices.Add(index);
-        DataManager.Instance.SetPlayerData(SaveKey, _save);
+        DataManager.Instance.SetPlayerData(SaveDataKeys.YokaiPackage, _save);
 
         if (_spawned.TryGetValue(index, out var pkg) && pkg != null)
         {
@@ -164,7 +163,7 @@ public class YokaiPackageSpawner : MonoBehaviour
 
 public class YokaiPackageSave : ISaveData
 {
-    public string UniqueID => "YokaiPackage";
+    public string UniqueID => SaveDataKeys.YokaiPackage;
     public int LastUpdatedDay { get; set; } = 0;
     public List<int> SpawnIndices = new List<int>();
     public List<int> PickedIndices = new List<int>();

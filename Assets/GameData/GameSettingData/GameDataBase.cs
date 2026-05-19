@@ -225,7 +225,7 @@ public class ShopInventoryChange
 [System.Serializable]
 public class MonsterTradeProgress : ISaveData
 {
-    public string UniqueID { get; set; }
+    public string UniqueID { get; set; } = SaveDataKeys.MonsterTradeProgress;
     public int LastUpdatedDay { get; set; }
     
     /// <summary> 當日顧客排隊或接待的索引進度 </summary>
@@ -237,7 +237,7 @@ public class MonsterTradeProgress : ISaveData
 /// </summary>
 public class OrderHistoryData : ISaveData
 {
-    public string UniqueID { get; set; }
+    public string UniqueID { get; set; } = SaveDataKeys.OrderHistory;
     public int LastUpdatedDay { get; set; }
     
     /// <summary> 歷史訂單的完成狀態清單 </summary>

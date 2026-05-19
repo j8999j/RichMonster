@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System;
 using GameSystem;
 //遊戲主UI(View)
-public class PlayerView : MonoBehaviour
+public class PlayerView : MonoBehaviour, IPlayerInfoPage
 {
     //玩家背包相關
     public GameObject PlayerBag;//背包根物件
@@ -142,6 +142,8 @@ public class PlayerView : MonoBehaviour
     public void OpenBags() => PlayerInfoUIEvents.InvokeOpenBag();
 
     // 供 PlayerInfoUI 控制器呼叫（不含移動控制）
+    public void OpenPage() => OpenBagView();
+
     public void OpenBagView()
     {
         ClearSelected();
@@ -418,6 +420,8 @@ public class PlayerView : MonoBehaviour
         }
     }
     public void CloseBags() => PlayerInfoUIEvents.InvokeCloseAll();
+
+    public void ClosePage() => CloseBagView();
 
     public void CloseBagView()
     {

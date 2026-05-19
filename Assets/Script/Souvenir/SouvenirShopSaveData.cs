@@ -10,7 +10,7 @@ namespace Souvenir
     [Serializable]
     public class SouvenirShopSaveData : ISaveData
     {
-        public string UniqueID { get; set; } = "SouvenirShopSaveData";
+        public string UniqueID { get; set; } = SaveDataKeys.SouvenirShop;
         public int LastUpdatedDay { get; set; }
         
         /// <summary>

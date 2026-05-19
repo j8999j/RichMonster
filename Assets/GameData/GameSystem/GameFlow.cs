@@ -68,7 +68,7 @@ public class GameFlow
     }
     public void StartTutorial()
     {
-        var tutorialData = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>("TutorialSaveData");
+        var tutorialData = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>(SaveDataKeys.Tutorial);
         if (!tutorialData.IsComplete && _currentPlayerData.DaysPlayed <= 1)
         {
             _tutorialFlow.Start();

@@ -1,42 +1,44 @@
 using UnityEngine;
-using GameSystem;
-public class PlayerInfoUI : MonoBehaviour
+
+public class PlayerInfoUIMenu : MonoBehaviour
 {
-    [SerializeField] private PlayerView playerView;
     [SerializeField] private Souvenir.SouvenirBagView souvenirBagView;
     [SerializeField] private AchievementViewFactory achievementViewFactory;
     [SerializeField] private GameBookView gameBookView;
-    [SerializeField] private EventsView eventsView;
-    [SerializeField] private ContractView contractView;
+    [SerializeField] private SouvenirShopView souvenirShopView;
+    [SerializeField] private PlayerInfoPage initialPage = PlayerInfoPage.None;
+    [SerializeField] private bool closePagesOnStart = true;
 
     private PlayerInfoPage _activePage = PlayerInfoPage.None;
 
     private void OnEnable()
     {
-        PlayerInfoUIEvents.OnOpenBag += HandleOpenBag;
         PlayerInfoUIEvents.OnOpenSouvenirBag += HandleOpenSouvenirBag;
         PlayerInfoUIEvents.OnOpenAchievement += HandleOpenAchievement;
         PlayerInfoUIEvents.OnOpenBook += HandleOpenBook;
-        PlayerInfoUIEvents.OnOpenNews += HandleOpenNews;
-        PlayerInfoUIEvents.OnOpenContract += HandleOpenContract;
+        PlayerInfoUIEvents.OnOpenSouvenirShop += HandleOpenSouvenirShop;
         PlayerInfoUIEvents.OnCloseAll += HandleCloseAll;
         PlayerInfoUIEvents.SetActivePage(_activePage);
     }
 
+    private void Start()
+    {
+        if (closePagesOnStart)
+            CloseAllPages();
+
+        if (initialPage != PlayerInfoPage.None)
+            OpenPage(initialPage);
+        else
+            PlayerInfoUIEvents.SetActivePage(_activePage);
+    }
+
     private void OnDisable()
     {
-        PlayerInfoUIEvents.OnOpenBag -= HandleOpenBag;
         PlayerInfoUIEvents.OnOpenSouvenirBag -= HandleOpenSouvenirBag;
         PlayerInfoUIEvents.OnOpenAchievement -= HandleOpenAchievement;
         PlayerInfoUIEvents.OnOpenBook -= HandleOpenBook;
-        PlayerInfoUIEvents.OnOpenNews -= HandleOpenNews;
-        PlayerInfoUIEvents.OnOpenContract -= HandleOpenContract;
+        PlayerInfoUIEvents.OnOpenSouvenirShop -= HandleOpenSouvenirShop;
         PlayerInfoUIEvents.OnCloseAll -= HandleCloseAll;
-    }
-
-    private void HandleOpenBag()
-    {
-        OpenPage(PlayerInfoPage.Bag);
     }
 
     private void HandleOpenSouvenirBag()
@@ -54,33 +56,29 @@ public class PlayerInfoUI : MonoBehaviour
         OpenPage(PlayerInfoPage.Book);
     }
 
-    private void HandleOpenNews()
+    private void HandleOpenSouvenirShop()
     {
-        OpenPage(PlayerInfoPage.News);
-    }
-
-    private void HandleOpenContract()
-    {
-        OpenPage(PlayerInfoPage.Contract);
+        OpenPage(PlayerInfoPage.SouvenirShop);
     }
 
     private void HandleCloseAll()
     {
-        if (_activePage == PlayerInfoPage.None) return;
+        if (_activePage == PlayerInfoPage.None)
+            return;
+
         CloseCurrentPage();
-        SetPlayerFrozen(false);
         PlayerInfoUIEvents.SetActivePage(_activePage);
     }
 
     private void OpenPage(PlayerInfoPage page)
     {
         IPlayerInfoPage pageController = GetPageController(page);
-        if (pageController == null || _activePage == page) return;
+        if (pageController == null || _activePage == page)
+            return;
 
         CloseCurrentPage();
         pageController.OpenPage();
         _activePage = page;
-        SetPlayerFrozen(true);
         PlayerInfoUIEvents.SetActivePage(_activePage);
     }
 
@@ -91,38 +89,29 @@ public class PlayerInfoUI : MonoBehaviour
         _activePage = PlayerInfoPage.None;
     }
 
+    private void CloseAllPages()
+    {
+        souvenirBagView?.ClosePage();
+        achievementViewFactory?.ClosePage();
+        gameBookView?.ClosePage();
+        souvenirShopView?.ClosePage();
+        _activePage = PlayerInfoPage.None;
+    }
+
     private IPlayerInfoPage GetPageController(PlayerInfoPage page)
     {
         switch (page)
         {
-            case PlayerInfoPage.Bag:
-                return playerView;
             case PlayerInfoPage.SouvenirBag:
                 return souvenirBagView;
             case PlayerInfoPage.Achievement:
                 return achievementViewFactory;
             case PlayerInfoPage.Book:
                 return gameBookView;
-            case PlayerInfoPage.News:
-                return eventsView;
-            case PlayerInfoPage.Contract:
-                return contractView;
+            case PlayerInfoPage.SouvenirShop:
+                return souvenirShopView;
             default:
                 return null;
-        }
-    }
-
-    private void SetPlayerFrozen(bool frozen)
-    {
-        if (frozen)
-        {
-            GameManager.Instance.LockPlayerMove(PlayerLockSources.PlayerInfoUI);
-            GameManager.Instance.LockPlayerInteract(PlayerLockSources.PlayerInfoUI);
-        }
-        else
-        {
-            GameManager.Instance.UnlockPlayerMove(PlayerLockSources.PlayerInfoUI);
-            GameManager.Instance.UnlockPlayerInteract(PlayerLockSources.PlayerInfoUI);
         }
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using GameSystem;
 
-public class EventsView : MonoBehaviour
+public class EventsView : MonoBehaviour, IPlayerInfoPage
 {
     private const string MonsterSceneAlias = "MonsterScene";
     private const float AutoOpenDelaySeconds = 1f;
@@ -185,6 +185,8 @@ public class EventsView : MonoBehaviour
     /// <summary>
     /// 開啟新聞面板並載入今天事件。
     /// </summary>
+    public void OpenPage() => OpenNewsPanel();
+
     public void OpenNewsPanel()
     {
         if (NewsPanel != null)
@@ -202,6 +204,8 @@ public class EventsView : MonoBehaviour
     /// <summary>
     /// 關閉新聞面板。
     /// </summary>
+    public void ClosePage() => CloseNewsPanel();
+
     public void CloseNewsPanel()
     {
         CloseNewsPanel(true);

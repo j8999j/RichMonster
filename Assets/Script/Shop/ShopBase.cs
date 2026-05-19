@@ -103,7 +103,7 @@ namespace Shop
             var result = new List<ShelfSlot>();
             if (shelves == null) return result;
 
-            var targetShopId = ShopID + "ShopShelfData";
+            var targetShopId = SaveDataKeys.BuildShopShelf(ShopID);
             ThisShopShelfData = DataManager.Instance.GetPlayerSaveData<ShopShelfData>(targetShopId);
             if (ThisShopShelfData.LastUpdatedDay != GameManager.Instance.gameFlow.CurrentDay)
             {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System;
 using Souvenir;
 using GameSystem;
-public class SouvenirShopView : MonoBehaviour
+public class SouvenirShopView : MonoBehaviour, IPlayerInfoPage
 {
     [Header("Panels")]
     public GameObject MainPanel;
@@ -57,6 +57,8 @@ public class SouvenirShopView : MonoBehaviour
     /// <summary>
     /// 開啟紀念品商店
     /// </summary>
+    public void OpenPage() => OpenShop();
+
     public void OpenShop()
     {
         if (MainPanel != null) MainPanel.SetActive(true);
@@ -74,6 +76,8 @@ public class SouvenirShopView : MonoBehaviour
     /// <summary>
     /// 關閉紀念品商店
     /// </summary>
+    public void ClosePage() => CloseShop();
+
     public void CloseShop()
     {
         if (MainPanel != null)

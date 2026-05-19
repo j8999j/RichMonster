@@ -202,7 +202,7 @@ public class AuctionController : MonoBehaviour
             return new CollectionMissionSaveData();
 
         CollectionMissionSaveData progress =
-            DataManager.Instance.GetPersistentSaveData<CollectionMissionSaveData>(CollectionMissionTracker.SaveKey);
+            DataManager.Instance.GetPersistentSaveData<CollectionMissionSaveData>(SaveDataKeys.CollectionMission);
         progress.RaceProgress ??= new List<CollectionMissionRaceProgress>();
         return progress;
     }

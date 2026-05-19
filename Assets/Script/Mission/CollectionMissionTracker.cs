@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class CollectionMissionTracker : MonoBehaviour
 {
-    public const string SaveKey = "CollectionMissionProgress";
     public const int MaxRewardPoints = 10;
     public const int BronzeRewardPoints = 3;
     public const int SilverRewardPoints = 5;
@@ -247,11 +246,11 @@ public class CollectionMissionTracker : MonoBehaviour
 
         raceProgress.ClaimedRewardMilestones ??= new List<int>();
         raceProgress.ClaimedRewardMilestones.Add(milestone);
-        progress.UniqueID = SaveKey;
+        progress.UniqueID = SaveDataKeys.CollectionMission;
         progress.LastUpdatedDay = dataManager.CurrentPlayerData?.DaysPlayed ?? 0;
 
         dataManager.ModifyGold(goldAmount);
-        dataManager.SetPlayerData(SaveKey, progress);
+        dataManager.SetPlayerData(SaveDataKeys.CollectionMission, progress);
         return true;
     }
 
@@ -301,7 +300,7 @@ public class CollectionMissionTracker : MonoBehaviour
             return false;
 
         var progress = LoadProgress();
-        progress.UniqueID = SaveKey;
+        progress.UniqueID = SaveDataKeys.CollectionMission;
         progress.LastUpdatedDay = dataManager.CurrentPlayerData?.DaysPlayed ?? 0;
 
         string targetRaceName = category.RaceName;
@@ -321,7 +320,7 @@ public class CollectionMissionTracker : MonoBehaviour
         progress.TotalPoints += points;
         addedPoints = points;
 
-        dataManager.SetPlayerData(SaveKey, progress);
+        dataManager.SetPlayerData(SaveDataKeys.CollectionMission, progress);
         return true;
     }
 
@@ -352,8 +351,8 @@ public class CollectionMissionTracker : MonoBehaviour
         if (DataManager.Instance == null)
             return new CollectionMissionSaveData();
 
-        var progress = DataManager.Instance.GetPersistentSaveData<CollectionMissionSaveData>(SaveKey);
-        progress.UniqueID = SaveKey;
+        var progress = DataManager.Instance.GetPersistentSaveData<CollectionMissionSaveData>(SaveDataKeys.CollectionMission);
+        progress.UniqueID = SaveDataKeys.CollectionMission;
         progress.RaceProgress ??= new System.Collections.Generic.List<CollectionMissionRaceProgress>();
         return progress;
     }

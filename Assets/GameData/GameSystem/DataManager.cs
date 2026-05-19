@@ -1117,9 +1117,9 @@ public class DataManager : Singleton<DataManager>
         if (_currentPlayerData.GameSaveFile.GameData == null)
             _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
 
-        if (_currentPlayerData.GameSaveFile.GameData.ContainsKey("OrderHistory"))
+        if (_currentPlayerData.GameSaveFile.GameData.ContainsKey(SaveDataKeys.OrderHistory))
         {
-            var orderHistoryData = _currentPlayerData.GameSaveFile.GameData["OrderHistory"] as OrderHistoryData;
+            var orderHistoryData = _currentPlayerData.GameSaveFile.GameData[SaveDataKeys.OrderHistory] as OrderHistoryData;
             if (orderHistoryData.OrderHistory == null || orderHistoryData.LastUpdatedDay != _currentPlayerData.DaysPlayed)
             {
                 orderHistoryData.OrderHistory = new List<OrderProgress>();
@@ -1129,8 +1129,8 @@ public class DataManager : Singleton<DataManager>
         }
         else
         {
-            _currentPlayerData.GameSaveFile.GameData.Add("OrderHistory", new OrderHistoryData());
-            var orderHistoryData = _currentPlayerData.GameSaveFile.GameData["OrderHistory"] as OrderHistoryData;
+            _currentPlayerData.GameSaveFile.GameData.Add(SaveDataKeys.OrderHistory, new OrderHistoryData());
+            var orderHistoryData = _currentPlayerData.GameSaveFile.GameData[SaveDataKeys.OrderHistory] as OrderHistoryData;
             if (orderHistoryData.OrderHistory == null || orderHistoryData.LastUpdatedDay != _currentPlayerData.DaysPlayed)
             {
                 orderHistoryData.OrderHistory = new List<OrderProgress>();
@@ -1149,9 +1149,9 @@ public class DataManager : Singleton<DataManager>
         if (_currentPlayerData.GameSaveFile.GameData == null)
             _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
 
-        if (_currentPlayerData.GameSaveFile.GameData.ContainsKey("OrderHistory"))
+        if (_currentPlayerData.GameSaveFile.GameData.ContainsKey(SaveDataKeys.OrderHistory))
         {
-            var orderHistoryData = _currentPlayerData.GameSaveFile.GameData["OrderHistory"] as OrderHistoryData;
+            var orderHistoryData = _currentPlayerData.GameSaveFile.GameData[SaveDataKeys.OrderHistory] as OrderHistoryData;
             if (orderHistoryData.OrderHistory == null)
             {
                 orderHistoryData.OrderHistory = new List<OrderProgress>();
@@ -1294,9 +1294,9 @@ public class DataManager : Singleton<DataManager>
     /// </summary>
     public MonsterTradeProgress GetMonsterTradeHistory()
     {
-        if (_currentPlayerData.GameSaveFile.GameData.ContainsKey("MonsterTradeHistory"))
+        if (_currentPlayerData.GameSaveFile.GameData.ContainsKey(SaveDataKeys.MonsterTradeProgress))
         {
-            return _currentPlayerData.GameSaveFile.GameData["MonsterTradeHistory"] as MonsterTradeProgress;
+            return _currentPlayerData.GameSaveFile.GameData[SaveDataKeys.MonsterTradeProgress] as MonsterTradeProgress;
         }
         else
         {

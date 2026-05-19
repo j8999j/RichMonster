@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class TutorialFlow
 {
-    private const string SAVE_KEY = "TutorialSaveData";
-
     private readonly List<GuideTask> taskQueue = new List<GuideTask>();
     private int currentTaskIndex;
 
@@ -17,7 +15,7 @@ public class TutorialFlow
 
     private void LoadTaskData()
     {
-        var data = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>(SAVE_KEY);
+        var data = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>(SaveDataKeys.Tutorial);
         if (data.IsComplete)
         {
             currentTaskIndex = taskQueue.Count;
@@ -44,7 +42,7 @@ public class TutorialFlow
         };
 
         WriteCurrentTaskState(data);
-        DataManager.Instance.SetPlayerData(SAVE_KEY, data);
+        DataManager.Instance.SetPlayerData(SaveDataKeys.Tutorial, data);
 
         try
         {
@@ -67,7 +65,7 @@ public class TutorialFlow
     {
         if (currentTaskIndex >= taskQueue.Count)
         {
-            var savedData = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>(SAVE_KEY);
+            var savedData = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>(SaveDataKeys.Tutorial);
             if (!savedData.IsComplete)
             {
                 SaveProgress();
@@ -78,7 +76,7 @@ public class TutorialFlow
         }
 
         var task = taskQueue[currentTaskIndex];
-        var data = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>(SAVE_KEY);
+        var data = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>(SaveDataKeys.Tutorial);
         bool resumesSavedTask = currentTaskIndex == data.CurrentTaskIndex;
         int fallbackStartStep = resumesSavedTask ? data.CurrentStepIndex : 0;
         string startStepId = resumesSavedTask ? ResolveCurrentTaskResumeStepId(data) : null;

@@ -94,7 +94,7 @@ public class HumanOrderMode : MonoBehaviour
             order.IsFinish = false;
         }
 
-        var orderHistory = DataManager.Instance.GetPlayerSaveData<OrderHistoryData>("OrderHistory");
+        var orderHistory = DataManager.Instance.GetPlayerSaveData<OrderHistoryData>(SaveDataKeys.OrderHistory);
         if (orderHistory == null || orderHistory.OrderHistory.Count == 0) return;
         // 建立已完成訂單 ID 的快速查詢集合
         var completedOrderIds = new HashSet<string>(

@@ -4,7 +4,7 @@ using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 using GameSystem;
-public class GameBookView : MonoBehaviour
+public class GameBookView : MonoBehaviour, IPlayerInfoPage
 {
     private GameSaveBook SaveBook;
     public GameObject BookPanel;
@@ -183,6 +183,8 @@ public class GameBookView : MonoBehaviour
     /// <summary>
     /// 開啟圖鑑面板
     /// </summary>
+    public void OpenPage() => OpenBook();
+
     public void OpenBook()
     {
         if (BookPanel == null) return;
@@ -190,6 +192,8 @@ public class GameBookView : MonoBehaviour
         PlaySound(openSound);
         SwitchToMonsterBook(false);
     }
+
+    public void ClosePage() => CloseBook();
 
     public void CloseBook()
     {

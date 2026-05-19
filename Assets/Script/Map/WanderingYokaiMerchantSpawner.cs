@@ -17,7 +17,6 @@ public class WanderingYokaiMerchantSpawner : MonoBehaviour
     [Tooltip("Prefab with WanderingYokaiMerchant and its view.")]
     public WanderingYokaiMerchant MerchantPrefab;
 
-    private const string SaveKey = "WanderingYokaiMerchant";
     private WanderingYokaiMerchantSave _save;
     private WanderingYokaiMerchant _spawned;
 
@@ -30,7 +29,7 @@ public class WanderingYokaiMerchantSpawner : MonoBehaviour
     private void LoadOrGenerate()
     {
         int currentDay = GameManager.Instance.gameFlow.CurrentDay;
-        var existing = DataManager.Instance.GetPlayerSaveData<WanderingYokaiMerchantSave>(SaveKey);
+        var existing = DataManager.Instance.GetPlayerSaveData<WanderingYokaiMerchantSave>(SaveDataKeys.WanderingYokaiMerchant);
 
         if (existing != null
             && existing.LastUpdatedDay == currentDay
@@ -47,7 +46,7 @@ public class WanderingYokaiMerchantSpawner : MonoBehaviour
             SpawnIndex = PickSpawnIndex(currentDay),
             ShopIndex = PickShopIndex(currentDay)
         };
-        DataManager.Instance.SetPlayerData(SaveKey, _save);
+        DataManager.Instance.SetPlayerData(SaveDataKeys.WanderingYokaiMerchant, _save);
     }
 
     private int PickSpawnIndex(int currentDay)
@@ -83,7 +82,7 @@ public class WanderingYokaiMerchantSpawner : MonoBehaviour
 
 public class WanderingYokaiMerchantSave : ISaveData
 {
-    public string UniqueID => "WanderingYokaiMerchant";
+    public string UniqueID => SaveDataKeys.WanderingYokaiMerchant;
     public int LastUpdatedDay { get; set; } = 0;
     public int SpawnIndex = -1;
     public int ShopIndex = -1;

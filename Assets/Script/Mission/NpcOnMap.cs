@@ -15,7 +15,8 @@ public class NpcOnMap : MonoBehaviour, IInteractable, IMapGuideTarget
     }
     public void LoadData()
     {
-        var data = DataManager.Instance.GetPlayerSaveData<NPCMissionSave>(NpcMission.MissionID);
+        string saveKey = SaveDataKeys.BuildNPCMission(NpcMission.MissionID);
+        var data = DataManager.Instance.GetPlayerSaveData<NPCMissionSave>(saveKey);
         if (data != null && data.LastUpdatedDay == GameManager.Instance.gameFlow.CurrentDay)
         {
             NpcMission.IsFinish = data.IsFinish;
@@ -28,9 +29,10 @@ public class NpcOnMap : MonoBehaviour, IInteractable, IMapGuideTarget
     private void SaveData()
     {
         var data = new NPCMissionSave();
+        data.UniqueID = SaveDataKeys.BuildNPCMission(NpcMission.MissionID);
         data.IsFinish = NpcMission.IsFinish;
         data.LastUpdatedDay = GameManager.Instance.gameFlow.CurrentDay;
-        DataManager.Instance.SetPlayerData(NpcMission.MissionID, data);
+        DataManager.Instance.SetPlayerData(data.UniqueID, data);
     }
     /// <summary>
     /// 設定 NPC 任務與顯示圖示
