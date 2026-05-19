@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using GameSystem;      // 加入以存取 GameManager
 
 namespace Souvenir
 {
@@ -18,6 +17,11 @@ namespace Souvenir
         // 存放所有特殊紀念品實例
         private Dictionary<string, SpecialSouvenir> _specialSouvenirs
             = new Dictionary<string, SpecialSouvenir>();
+
+        // 統一索引：SouvenirID → SouvenirBase（同時涵蓋兩種紀念品）
+        // 供 ForEachOwnedSouvenir 等高頻廣播路徑使用，避免每個 id 兩次 dict lookup
+        private Dictionary<string, SouvenirBase> _souvenirById
+            = new Dictionary<string, SouvenirBase>();
 
         // 當前持有的紀念品 IDs
         private HashSet<string> _ownedSouvenirIds = new HashSet<string>();
@@ -36,10 +40,12 @@ namespace Souvenir
                 return;
             }
 
-            // 1. 處理 AchievementSouvenir
-            var achSouvenirTypes = FindAllSouvenirTypes<AchievementSouvenir>();
-            Debug.Log($"[SouvenirManager] 找到 {achSouvenirTypes.Count} 個成就紀念品腳本類別");
+            // 從共用反射快取一次取出兩種紀念品的衍生類別（避免 AppDomain 全掃兩次）
+            var achSouvenirTypes = GameSystem.GameTypeCache.GetConcreteSubclassesOf<AchievementSouvenir>();
+            var splSouvenirTypes = GameSystem.GameTypeCache.GetConcreteSubclassesOf<SpecialSouvenir>();
+            Debug.Log($"[SouvenirManager] 找到 {achSouvenirTypes.Count} 個成就紀念品、{splSouvenirTypes.Count} 個特殊紀念品腳本類別");
 
+            // 1. 處理 AchievementSouvenir
             foreach (var type in achSouvenirTypes)
             {
                 try
@@ -61,6 +67,7 @@ namespace Souvenir
                         }
 
                         _achievementSouvenirs[instance.SouvenirID] = instance;
+                        _souvenirById[instance.SouvenirID] = instance;
                         Debug.Log($"[SouvenirManager] 載入成就紀念品: {instance.SouvenirID}");
                     }
                 }
@@ -71,9 +78,6 @@ namespace Souvenir
             }
 
             // 2. 處理 SpecialSouvenir
-            var splSouvenirTypes = FindAllSouvenirTypes<SpecialSouvenir>();
-            Debug.Log($"[SouvenirManager] 找到 {splSouvenirTypes.Count} 個特殊紀念品腳本類別");
-
             foreach (var type in splSouvenirTypes)
             {
                 try
@@ -95,6 +99,7 @@ namespace Souvenir
                         }
 
                         _specialSouvenirs[instance.SouvenirID] = instance;
+                        _souvenirById[instance.SouvenirID] = instance;
                         Debug.Log($"[SouvenirManager] 載入特殊紀念品: {instance.SouvenirID}");
                     }
                 }
@@ -108,25 +113,6 @@ namespace Souvenir
             SnapshotOwnedSouvenirs();
             RegisterAll();
             Debug.Log($"[SouvenirManager] 初始化完成，共載入 {_achievementSouvenirs.Count} 個成就紀念品與 {_specialSouvenirs.Count} 個特殊紀念品");
-        }
-
-        /// <summary>
-        /// 透過反射找出所有繼承指定基類的非抽象具體類別
-        /// </summary>
-        private List<Type> FindAllSouvenirTypes<T>()
-        {
-            var baseType = typeof(T);
-
-            return AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(assembly =>
-                {
-                    try { return assembly.GetTypes(); }
-                    catch { return Type.EmptyTypes; }
-                })
-                .Where(t => t != baseType
-                         && baseType.IsAssignableFrom(t)
-                         && !t.IsAbstract)
-                .ToList();
         }
 
         #region Public Query & Event API
@@ -273,13 +259,9 @@ namespace Souvenir
         {
             foreach (var id in _ownedSouvenirIds)
             {
-                if (_achievementSouvenirs.TryGetValue(id, out var ach) && ach is T targetAch)
+                if (_souvenirById.TryGetValue(id, out var souvenir) && souvenir is T target)
                 {
-                    action(targetAch);
-                }
-                else if (_specialSouvenirs.TryGetValue(id, out var spl) && spl is T targetSpl)
-                {
-                    action(targetSpl);
+                    action(target);
                 }
             }
         }
@@ -424,24 +406,18 @@ namespace Souvenir
         #region 觸發與廣播機制
 
         /// <summary>
-        /// 註冊所有紀念品事件 (通常在每局遊戲開始時呼叫)。
-        /// 已持有的紀念品呼叫 Register() 以套用功能效果；
-        /// 尚未收集但需要跨局追蹤進度的特殊紀念品也會呼叫 Register() 以恢復計數。
+        /// 註冊所有特殊紀念品事件 (通常在每局遊戲開始時呼叫)。
+        /// 不論是否已持有，每個特殊紀念品都會 Register() 一次：
+        ///   - 已持有：套用功能效果 + 訂閱事件
+        ///   - 未持有：從存檔恢復進度計數（讓尚未解鎖的進度型紀念品也能繼續累積）
         /// </summary>
         public void RegisterAll()
         {
-            // 1. 已持有的特殊紀念品：觸發效果型事件訂閱
-            ForEachOwnedSouvenir<SpecialSouvenir>(souvenir => souvenir.Register());
-
-            // 2. 尚未收集的特殊紀念品：呼叫 Register() 以從存檔恢復進度計數
             foreach (var souvenir in _specialSouvenirs.Values)
             {
-                if (!_ownedSouvenirIds.Contains(souvenir.SouvenirID))
-                {
-                    souvenir.Register();
-                }
+                souvenir.Register();
             }
-            Debug.Log("[SouvenirManager] 已註冊所持有的紀念品事件，並初始化未收集紀念品的進度追蹤");
+            Debug.Log("[SouvenirManager] 已註冊所有特殊紀念品事件");
         }
 
         /// <summary>
@@ -579,6 +555,7 @@ namespace Souvenir
             UnregisterAll();
             _achievementSouvenirs.Clear();
             _specialSouvenirs.Clear();
+            _souvenirById.Clear();
             _ownedSouvenirIds.Clear();
             _isInitialized = false;
             Debug.Log("[SouvenirManager] 紀念品系統已重置");

@@ -94,6 +94,7 @@ MonoBehaviour:
     - default
     - Dialogue
     - NpcMission
+    - ConfigJson
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 428b207a75a982b4abe9b2e3c416ae7e, type: 2}

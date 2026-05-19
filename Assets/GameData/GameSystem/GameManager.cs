@@ -1,6 +1,6 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Player;
 
 using Cinemachine;
@@ -71,10 +71,9 @@ namespace GameSystem
             }
         }
 
-        private IEnumerator Start()
+        private async void Start()
         {
-            while (!dataManager.IsInitialized)
-                yield return null;
+            await dataManager.WhenInitialized();
             sceneTransitionManager.LoadScene(SceneTransitionManager.SCENE_MAIN_MENU);
         }
 

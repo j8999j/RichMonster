@@ -115,6 +115,16 @@ public class DataManager : Singleton<DataManager>
 
     private async Task InitializeAsync()
     {
+        // 背景預熱 GameTypeCache：assembly scan 與 Addressables IO 並行跑。
+        // 若預熱在 InitializeProgressManagers 之前完成，反射查詢直接命中快取；
+        // 若未完成，主執行緒首次 GetConcreteSubclassesOf 會 block 在同一把 lock，
+        // 行為等價於沒有預熱，不會出錯。
+        _ = Task.Run(() =>
+        {
+            try { _ = GameTypeCache.AllConcreteGameTypes; }
+            catch (Exception ex) { Debug.LogError($"[DataManager] GameTypeCache 預熱失敗: {ex}"); }
+        });
+
         await LoadGameDataAsync();
         IsInitialized = true;
     }

@@ -15,12 +15,13 @@ using System.Collections.ObjectModel;
 public class GameDataLoader : GameSystem.IGameDataProvider
 {
     public const string DIALOGUE_LABEL = "Dialogue";
+    public const string CONFIG_JSON_LABEL = "ConfigJson";
 
-    // Addressable Keys
+    // Addressable Keys — 同時是該 TextAsset 的資產名稱（透過 Label 批次載入後以 name 對應）
     private const string KEY_ITEMS = "items";
     private const string KEY_SHOPS = "shops";
     private const string KEY_PLAYER_INIT = "player_init";
-    private const string KEY_EVENTS = "events";
+    private const string KEY_EVENTS = "events_Monster";
     private const string KEY_ITEM_TAGS = "itemtags";
     private const string KEY_MONSTER_PROFESSIONS = "monster_professions";
     private const string KEY_MONSTER_TRAITS = "monster_traits";
@@ -46,29 +47,64 @@ public class GameDataLoader : GameSystem.IGameDataProvider
     public class LoadResult : GameSystem.GameDataLoadResult { }
 
     /// <summary>
-    /// 載入所有遊戲資料
+    /// 載入所有遊戲資料。
+    /// 三條獨立的 IO 流並行：
+    ///   1. Dialogue TextAssets (Label = "Dialogue")
+    ///   2. NpcMission ScriptableObjects (Key = "NpcMission")
+    ///   3. 所有 Config JSON TextAssets (Label = "ConfigJson")，回傳後在 thread pool 並行解析
     /// </summary>
     public async Task<GameSystem.GameDataLoadResult> LoadAllGameDataAsync()
     {
         var result = new GameSystem.GameDataLoadResult();
 
-        await PreloadDialoguesByLabelAsync();
-        result.ItemTagsDict = await LoadItemTagsAsync();
-        result.ItemDict = await LoadItemsAsync();
-        result.ShopDict = await LoadShopDataAsync();
-        result.MonsterProfessionDict = await LoadMonsterProfessionsAsync();
-        result.MonsterTraitDict = await LoadMonsterTraitsAsync();
-        result.HumanLargeOrderDict = await LoadHumanLargeOrdersAsync();
-        result.HumanSmallOrderDict = await LoadHumanSmallOrdersAsync();
-        result.MissionDict = await LoadMissionsAsync();
-        result.AchievementDict = await LoadAchievementsAsync();
-        result.MonsterInfoDict = await LoadMonsterInfoAsync();
-        result.MonsterStoryDict = await LoadMonsterStoryAsync();
-        result.NPCDataDict = await LoadNPCDataAsync();
-        result.InitialPlayerData = await LoadInitialPlayerDataAsync();
-        result.EventDict = await LoadEventDataAsync();
-        result.AchievementSouvenirDict = await LoadAchievementSouvenirsAsync();
-        result.SpecialSouvenirDict = await LoadSpecialSouvenirsAsync();
+        Task dialogueTask = PreloadDialoguesByLabelAsync();
+        Task<Dictionary<string, NpcMission>> missionsTask = LoadMissionsAsync();
+        Task<Dictionary<string, string>> jsonBatchTask = LoadConfigJsonBatchAsync();
+
+        await Task.WhenAll(dialogueTask, missionsTask, jsonBatchTask);
+
+        Dictionary<string, string> jsonByName = jsonBatchTask.Result;
+
+        // Thread pool 並行反序列化所有 Config JSON
+        var itemTagsT = Task.Run(() => ParseItemTags(jsonByName));
+        var itemsT = Task.Run(() => ParseItems(jsonByName));
+        var shopsT = Task.Run(() => ParseShops(jsonByName));
+        var professionsT = Task.Run(() => ParseMonsterProfessions(jsonByName));
+        var traitsT = Task.Run(() => ParseMonsterTraits(jsonByName));
+        var largeOrdersT = Task.Run(() => ParseHumanLargeOrders(jsonByName));
+        var smallOrdersT = Task.Run(() => ParseHumanSmallOrders(jsonByName));
+        var achievementsT = Task.Run(() => ParseAchievements(jsonByName));
+        var monsterInfoT = Task.Run(() => ParseMonsterInfo(jsonByName));
+        var monsterStoryT = Task.Run(() => ParseMonsterStory(jsonByName));
+        var npcDataT = Task.Run(() => ParseNPCData(jsonByName));
+        var playerInitT = Task.Run(() => ParseInitialPlayerData(jsonByName));
+        var eventsT = Task.Run(() => ParseEventData(jsonByName));
+        var achSouvenirsT = Task.Run(() => ParseAchievementSouvenirs(jsonByName));
+        var specialSouvenirsT = Task.Run(() => ParseSpecialSouvenirs(jsonByName));
+
+        await Task.WhenAll(
+            itemTagsT, itemsT, shopsT, professionsT, traitsT,
+            largeOrdersT, smallOrdersT, achievementsT, monsterInfoT,
+            monsterStoryT, npcDataT, playerInitT, eventsT,
+            achSouvenirsT, specialSouvenirsT);
+
+        result.ItemTagsDict = itemTagsT.Result;
+        result.ItemDict = itemsT.Result;
+        result.ShopDict = shopsT.Result;
+        result.MonsterProfessionDict = professionsT.Result;
+        result.MonsterTraitDict = traitsT.Result;
+        result.HumanLargeOrderDict = largeOrdersT.Result;
+        result.HumanSmallOrderDict = smallOrdersT.Result;
+        result.AchievementDict = achievementsT.Result;
+        result.MonsterInfoDict = monsterInfoT.Result;
+        result.MonsterStoryDict = monsterStoryT.Result;
+        result.NPCDataDict = npcDataT.Result;
+        result.InitialPlayerData = playerInitT.Result;
+        result.EventDict = eventsT.Result;
+        result.AchievementSouvenirDict = achSouvenirsT.Result;
+        result.SpecialSouvenirDict = specialSouvenirsT.Result;
+
+        result.MissionDict = missionsTask.Result;
         result.BookData = LoadBookData();
 
         return result;
@@ -114,6 +150,60 @@ public class GameDataLoader : GameSystem.IGameDataProvider
         Debug.LogError($"[GameDataLoader] 找不到對話文本: {dialogueId}");
         return null;
     }
+
+    #region Config JSON Batch Loader
+    /// <summary>
+    /// 以 Addressables Label 一次抓取所有 Config JSON，回傳 {assetName: jsonText} 字典。
+    /// 取出 .text（string 是 immutable copy）後即可釋放 handle，反序列化交由 thread pool 並行處理。
+    /// </summary>
+    private async Task<Dictionary<string, string>> LoadConfigJsonBatchAsync()
+    {
+        AsyncOperationHandle<IList<TextAsset>> handle = default;
+        var dict = new Dictionary<string, string>();
+        try
+        {
+            handle = Addressables.LoadAssetsAsync<TextAsset>(CONFIG_JSON_LABEL, null);
+            IList<TextAsset> textAssets = await handle.Task;
+
+            if (handle.Status != AsyncOperationStatus.Succeeded || textAssets == null)
+            {
+                Debug.LogError($"[GameDataLoader] 無法以 Label 載入 Config JSON: {CONFIG_JSON_LABEL}");
+                return dict;
+            }
+
+            foreach (TextAsset ta in textAssets)
+            {
+                if (ta == null) continue;
+                if (dict.ContainsKey(ta.name))
+                {
+                    Debug.LogError($"[GameDataLoader] Config JSON 名稱重複，已跳過: {ta.name}");
+                    continue;
+                }
+                dict[ta.name] = ta.text;
+            }
+
+            Debug.Log($"[GameDataLoader] Config JSON Label 載入 {dict.Count} 筆");
+            return dict;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[GameDataLoader] LoadConfigJsonBatchAsync 失敗: {ex}");
+            return dict;
+        }
+        finally
+        {
+            if (handle.IsValid()) Addressables.Release(handle);
+        }
+    }
+
+    private static bool TryGetJson(Dictionary<string, string> jsonByName, string key, out string json)
+    {
+        if (jsonByName.TryGetValue(key, out json) && !string.IsNullOrEmpty(json))
+            return true;
+        Debug.LogError($"[GameDataLoader] Config JSON 中找不到 {key}（請確認 Addressable 資產 \"{key}\" 已加上 \"{CONFIG_JSON_LABEL}\" Label）");
+        return false;
+    }
+    #endregion
 
     #region Book Data Loader (File System)
     private static readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
@@ -234,300 +324,10 @@ public class GameDataLoader : GameSystem.IGameDataProvider
     }
     #endregion
 
-    #region Individual Loaders
-    private async Task<Dictionary<string, ItemTags>> LoadItemTagsAsync()
-    {
-        AsyncOperationHandle<TextAsset> handle = default;
-        try
-        {
-            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_ITEM_TAGS);
-            TextAsset jsonFile = await handle.Task;
-
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 item_tags (Addressables)");
-                return new Dictionary<string, ItemTags>();
-            }
-
-            List<ItemTags> tagsList = null;
-            string jsonText = jsonFile.text.TrimStart();
-            if (jsonText.StartsWith("["))
-            {
-                tagsList = JsonConvert.DeserializeObject<List<ItemTags>>(jsonFile.text);
-            }
-            else
-            {
-                ItemTagsDatabase db = JsonConvert.DeserializeObject<ItemTagsDatabase>(jsonFile.text);
-                tagsList = db?.ItemTags;
-            }
-
-            var dict = tagsList?
-                .Where(it => it != null && !string.IsNullOrEmpty(it.TagID))
-                .GroupBy(it => it.TagID)
-                .ToDictionary(g => g.Key, g => g.First())
-                ?? new Dictionary<string, ItemTags>();
-
-            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆 item_tags 資料");
-            return dict;
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"[GameDataLoader] LoadItemTagsAsync failed: {e}");
-            return new Dictionary<string, ItemTags>();
-        }
-        finally
-        {
-            if (handle.IsValid()) Addressables.Release(handle);
-        }
-    }
-
-    private async Task<Dictionary<string, ItemDefinition>> LoadItemsAsync()
-    {
-        try
-        {
-            var handle = Addressables.LoadAssetAsync<TextAsset>(KEY_ITEMS);
-            TextAsset jsonFile = await handle.Task;
-
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 items (Addressables)");
-                Addressables.Release(handle);
-                return new Dictionary<string, ItemDefinition>();
-            }
-
-            ItemDatabase db = JsonConvert.DeserializeObject<ItemDatabase>(jsonFile.text);
-            var dict = db?.Items?
-                .Where(i => i != null && !string.IsNullOrEmpty(i.Id))
-                .GroupBy(i => i.Id)
-                .ToDictionary(g => g.Key, g => g.First())
-                ?? new Dictionary<string, ItemDefinition>();
-
-            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆物品資料");
-            Addressables.Release(handle);
-            return dict;
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"[GameDataLoader] LoadItemsAsync failed: {e.Message}");
-            return new Dictionary<string, ItemDefinition>();
-        }
-    }
-    private async Task<Dictionary<string, ShopDefinition>> LoadShopDataAsync()
-    {
-        try
-        {
-            var handle = Addressables.LoadAssetAsync<TextAsset>(KEY_SHOPS);
-            TextAsset jsonFile = await handle.Task;
-
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 shops (Addressables)");
-                Addressables.Release(handle);
-                return new Dictionary<string, ShopDefinition>();
-            }
-
-            ShopDatabase db = JsonConvert.DeserializeObject<ShopDatabase>(jsonFile.text);
-            var dict = db?.Shops?
-                .Where(s => s != null && !string.IsNullOrEmpty(s.ShopID))
-                .GroupBy(s => s.ShopID)
-                .ToDictionary(g => g.Key, g => g.First())
-                ?? new Dictionary<string, ShopDefinition>();
-
-            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆商店資料");
-            Addressables.Release(handle);
-            return dict;
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"[GameDataLoader] LoadShopDataAsync failed: {e.Message}");
-            return new Dictionary<string, ShopDefinition>();
-        }
-    }
-
-    private async Task<Dictionary<string, MonsterProfessionDefinition>> LoadMonsterProfessionsAsync()
-    {
-        AsyncOperationHandle<TextAsset> handle = default;
-        try
-        {
-            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_MONSTER_PROFESSIONS);
-            TextAsset jsonFile = await handle.Task;
-
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 monster_professions (Addressables)");
-                return new Dictionary<string, MonsterProfessionDefinition>();
-            }
-
-            List<MonsterProfessionDefinition> professionsList = null;
-            string jsonText = jsonFile.text.TrimStart();
-            if (jsonText.StartsWith("["))
-            {
-                professionsList = JsonConvert.DeserializeObject<List<MonsterProfessionDefinition>>(jsonFile.text);
-            }
-            else
-            {
-                MonsterProfessionDatabase db = JsonConvert.DeserializeObject<MonsterProfessionDatabase>(jsonFile.text);
-                professionsList = db?.Professions;
-            }
-
-            var dict = professionsList?
-                .Where(p => p != null && !string.IsNullOrEmpty(p.Id))
-                .GroupBy(p => p.Id)
-                .ToDictionary(g => g.Key, g => g.First())
-                ?? new Dictionary<string, MonsterProfessionDefinition>();
-
-            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆妖怪職業資料");
-            return dict;
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"[GameDataLoader] LoadMonsterProfessionsAsync failed: {e}");
-            return new Dictionary<string, MonsterProfessionDefinition>();
-        }
-        finally
-        {
-            if (handle.IsValid()) Addressables.Release(handle);
-        }
-    }
-
-    private async Task<Dictionary<string, MonsterTraitDefinition>> LoadMonsterTraitsAsync()
-    {
-        AsyncOperationHandle<TextAsset> handle = default;
-        try
-        {
-            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_MONSTER_TRAITS);
-            TextAsset jsonFile = await handle.Task;
-
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 monster_traits (Addressables)");
-                return new Dictionary<string, MonsterTraitDefinition>();
-            }
-
-            List<MonsterTraitDefinition> traitsList = null;
-            string jsonText = jsonFile.text.TrimStart();
-            if (jsonText.StartsWith("["))
-            {
-                traitsList = JsonConvert.DeserializeObject<List<MonsterTraitDefinition>>(jsonFile.text);
-            }
-            else
-            {
-                MonsterTraitDefinitionDatabase db = JsonConvert.DeserializeObject<MonsterTraitDefinitionDatabase>(jsonFile.text);
-                traitsList = db?.Traits;
-            }
-
-            var dict = traitsList?
-                .Where(t => t != null && !string.IsNullOrEmpty(t.Id))
-                .GroupBy(t => t.Id)
-                .ToDictionary(g => g.Key, g => g.First())
-                ?? new Dictionary<string, MonsterTraitDefinition>();
-
-            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆妖怪特質資料");
-            return dict;
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"[GameDataLoader] LoadMonsterTraitsAsync failed: {e}");
-            return new Dictionary<string, MonsterTraitDefinition>();
-        }
-        finally
-        {
-            if (handle.IsValid()) Addressables.Release(handle);
-        }
-    }
-
-    private async Task<Dictionary<string, HumanLargeOrder>> LoadHumanLargeOrdersAsync()
-    {
-        AsyncOperationHandle<TextAsset> handle = default;
-        try
-        {
-            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_HUMAN_LARGE_ORDERS);
-            TextAsset jsonFile = await handle.Task;
-
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 human_large_orders (Addressables)");
-                return new Dictionary<string, HumanLargeOrder>();
-            }
-
-            List<HumanLargeOrder> ordersList = null;
-            string jsonText = jsonFile.text.TrimStart();
-            if (jsonText.StartsWith("["))
-            {
-                ordersList = JsonConvert.DeserializeObject<List<HumanLargeOrder>>(jsonFile.text);
-            }
-            else
-            {
-                HumanLargeOrderDatabase db = JsonConvert.DeserializeObject<HumanLargeOrderDatabase>(jsonFile.text);
-                ordersList = db?.LargeOrders;
-            }
-
-            var dict = ordersList?
-                .Where(o => o != null && !string.IsNullOrEmpty(o.OrderId))
-                .GroupBy(o => o.OrderId)
-                .ToDictionary(g => g.Key, g => g.First())
-                ?? new Dictionary<string, HumanLargeOrder>();
-
-            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆大型訂單資料");
-            return dict;
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"[GameDataLoader] LoadHumanLargeOrdersAsync failed: {e}");
-            return new Dictionary<string, HumanLargeOrder>();
-        }
-        finally
-        {
-            if (handle.IsValid()) Addressables.Release(handle);
-        }
-    }
-
-    private async Task<Dictionary<string, HumanSmallOrder>> LoadHumanSmallOrdersAsync()
-    {
-        AsyncOperationHandle<TextAsset> handle = default;
-        try
-        {
-            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_HUMAN_SMALL_ORDERS);
-            TextAsset jsonFile = await handle.Task;
-
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 human_small_orders (Addressables)");
-                return new Dictionary<string, HumanSmallOrder>();
-            }
-
-            List<HumanSmallOrder> ordersList = null;
-            string jsonText = jsonFile.text.TrimStart();
-            if (jsonText.StartsWith("["))
-            {
-                ordersList = JsonConvert.DeserializeObject<List<HumanSmallOrder>>(jsonFile.text);
-            }
-            else
-            {
-                HumanSmallOrderDatabase db = JsonConvert.DeserializeObject<HumanSmallOrderDatabase>(jsonFile.text);
-                ordersList = db?.SmallOrders;
-            }
-
-            var dict = ordersList?
-                .Where(o => o != null && !string.IsNullOrEmpty(o.OrderId))
-                .GroupBy(o => o.OrderId)
-                .ToDictionary(g => g.Key, g => g.First())
-                ?? new Dictionary<string, HumanSmallOrder>();
-
-            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆小型訂單資料");
-            return dict;
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"[GameDataLoader] LoadHumanSmallOrdersAsync failed: {e}");
-            return new Dictionary<string, HumanSmallOrder>();
-        }
-        finally
-        {
-            if (handle.IsValid()) Addressables.Release(handle);
-        }
-    }
-
+    #region Mission Loader (ScriptableObject)
+    /// <summary>
+    /// 任務是 ScriptableObject，走獨立 Addressables Label。
+    /// </summary>
     private async Task<Dictionary<string, NpcMission>> LoadMissionsAsync()
     {
         AsyncOperationHandle<IList<NpcMission>> handle = default;
@@ -557,336 +357,399 @@ public class GameDataLoader : GameSystem.IGameDataProvider
             Debug.LogError($"[GameDataLoader] LoadMissionsAsync failed: {e}");
             return new Dictionary<string, NpcMission>();
         }
-        // 注意：ScriptableObject 資產不需要 Release
+        // 註：ScriptableObject 資產不需要 Release
     }
-    private async Task<PlayerData> LoadInitialPlayerDataAsync()
+    #endregion
+
+    #region Parsers (thread-safe, no Unity API calls)
+    private static Dictionary<string, ItemTags> ParseItemTags(Dictionary<string, string> jsonByName)
     {
+        if (!TryGetJson(jsonByName, KEY_ITEM_TAGS, out string json))
+            return new Dictionary<string, ItemTags>();
         try
         {
-            var handle = Addressables.LoadAssetAsync<TextAsset>(KEY_PLAYER_INIT);
-            TextAsset jsonFile = await handle.Task;
+            List<ItemTags> tagsList;
+            string jsonText = json.TrimStart();
+            if (jsonText.StartsWith("["))
+                tagsList = JsonConvert.DeserializeObject<List<ItemTags>>(json);
+            else
+                tagsList = JsonConvert.DeserializeObject<ItemTagsDatabase>(json)?.ItemTags;
 
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 player_init (Addressables)");
-                Addressables.Release(handle);
-                return new PlayerData();
-            }
+            var dict = tagsList?
+                .Where(it => it != null && !string.IsNullOrEmpty(it.TagID))
+                .GroupBy(it => it.TagID)
+                .ToDictionary(g => g.Key, g => g.First())
+                ?? new Dictionary<string, ItemTags>();
+            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆 item_tags 資料");
+            return dict;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GameDataLoader] ParseItemTags failed: {e}");
+            return new Dictionary<string, ItemTags>();
+        }
+    }
 
-            var data = JsonConvert.DeserializeObject<PlayerData>(jsonFile.text) ?? new PlayerData();
+    private static Dictionary<string, ItemDefinition> ParseItems(Dictionary<string, string> jsonByName)
+    {
+        if (!TryGetJson(jsonByName, KEY_ITEMS, out string json))
+            return new Dictionary<string, ItemDefinition>();
+        try
+        {
+            ItemDatabase db = JsonConvert.DeserializeObject<ItemDatabase>(json);
+            var dict = db?.Items?
+                .Where(i => i != null && !string.IsNullOrEmpty(i.Id))
+                .GroupBy(i => i.Id)
+                .ToDictionary(g => g.Key, g => g.First())
+                ?? new Dictionary<string, ItemDefinition>();
+            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆物品資料");
+            return dict;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GameDataLoader] ParseItems failed: {e.Message}");
+            return new Dictionary<string, ItemDefinition>();
+        }
+    }
+
+    private static Dictionary<string, ShopDefinition> ParseShops(Dictionary<string, string> jsonByName)
+    {
+        if (!TryGetJson(jsonByName, KEY_SHOPS, out string json))
+            return new Dictionary<string, ShopDefinition>();
+        try
+        {
+            ShopDatabase db = JsonConvert.DeserializeObject<ShopDatabase>(json);
+            var dict = db?.Shops?
+                .Where(s => s != null && !string.IsNullOrEmpty(s.ShopID))
+                .GroupBy(s => s.ShopID)
+                .ToDictionary(g => g.Key, g => g.First())
+                ?? new Dictionary<string, ShopDefinition>();
+            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆商店資料");
+            return dict;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GameDataLoader] ParseShops failed: {e.Message}");
+            return new Dictionary<string, ShopDefinition>();
+        }
+    }
+
+    private static Dictionary<string, MonsterProfessionDefinition> ParseMonsterProfessions(Dictionary<string, string> jsonByName)
+    {
+        if (!TryGetJson(jsonByName, KEY_MONSTER_PROFESSIONS, out string json))
+            return new Dictionary<string, MonsterProfessionDefinition>();
+        try
+        {
+            List<MonsterProfessionDefinition> list;
+            string jsonText = json.TrimStart();
+            if (jsonText.StartsWith("["))
+                list = JsonConvert.DeserializeObject<List<MonsterProfessionDefinition>>(json);
+            else
+                list = JsonConvert.DeserializeObject<MonsterProfessionDatabase>(json)?.Professions;
+
+            var dict = list?
+                .Where(p => p != null && !string.IsNullOrEmpty(p.Id))
+                .GroupBy(p => p.Id)
+                .ToDictionary(g => g.Key, g => g.First())
+                ?? new Dictionary<string, MonsterProfessionDefinition>();
+            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆妖怪職業資料");
+            return dict;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GameDataLoader] ParseMonsterProfessions failed: {e}");
+            return new Dictionary<string, MonsterProfessionDefinition>();
+        }
+    }
+
+    private static Dictionary<string, MonsterTraitDefinition> ParseMonsterTraits(Dictionary<string, string> jsonByName)
+    {
+        if (!TryGetJson(jsonByName, KEY_MONSTER_TRAITS, out string json))
+            return new Dictionary<string, MonsterTraitDefinition>();
+        try
+        {
+            List<MonsterTraitDefinition> list;
+            string jsonText = json.TrimStart();
+            if (jsonText.StartsWith("["))
+                list = JsonConvert.DeserializeObject<List<MonsterTraitDefinition>>(json);
+            else
+                list = JsonConvert.DeserializeObject<MonsterTraitDefinitionDatabase>(json)?.Traits;
+
+            var dict = list?
+                .Where(t => t != null && !string.IsNullOrEmpty(t.Id))
+                .GroupBy(t => t.Id)
+                .ToDictionary(g => g.Key, g => g.First())
+                ?? new Dictionary<string, MonsterTraitDefinition>();
+            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆妖怪特質資料");
+            return dict;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GameDataLoader] ParseMonsterTraits failed: {e}");
+            return new Dictionary<string, MonsterTraitDefinition>();
+        }
+    }
+
+    private static Dictionary<string, HumanLargeOrder> ParseHumanLargeOrders(Dictionary<string, string> jsonByName)
+    {
+        if (!TryGetJson(jsonByName, KEY_HUMAN_LARGE_ORDERS, out string json))
+            return new Dictionary<string, HumanLargeOrder>();
+        try
+        {
+            List<HumanLargeOrder> list;
+            string jsonText = json.TrimStart();
+            if (jsonText.StartsWith("["))
+                list = JsonConvert.DeserializeObject<List<HumanLargeOrder>>(json);
+            else
+                list = JsonConvert.DeserializeObject<HumanLargeOrderDatabase>(json)?.LargeOrders;
+
+            var dict = list?
+                .Where(o => o != null && !string.IsNullOrEmpty(o.OrderId))
+                .GroupBy(o => o.OrderId)
+                .ToDictionary(g => g.Key, g => g.First())
+                ?? new Dictionary<string, HumanLargeOrder>();
+            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆大型訂單資料");
+            return dict;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GameDataLoader] ParseHumanLargeOrders failed: {e}");
+            return new Dictionary<string, HumanLargeOrder>();
+        }
+    }
+
+    private static Dictionary<string, HumanSmallOrder> ParseHumanSmallOrders(Dictionary<string, string> jsonByName)
+    {
+        if (!TryGetJson(jsonByName, KEY_HUMAN_SMALL_ORDERS, out string json))
+            return new Dictionary<string, HumanSmallOrder>();
+        try
+        {
+            List<HumanSmallOrder> list;
+            string jsonText = json.TrimStart();
+            if (jsonText.StartsWith("["))
+                list = JsonConvert.DeserializeObject<List<HumanSmallOrder>>(json);
+            else
+                list = JsonConvert.DeserializeObject<HumanSmallOrderDatabase>(json)?.SmallOrders;
+
+            var dict = list?
+                .Where(o => o != null && !string.IsNullOrEmpty(o.OrderId))
+                .GroupBy(o => o.OrderId)
+                .ToDictionary(g => g.Key, g => g.First())
+                ?? new Dictionary<string, HumanSmallOrder>();
+            Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆小型訂單資料");
+            return dict;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GameDataLoader] ParseHumanSmallOrders failed: {e}");
+            return new Dictionary<string, HumanSmallOrder>();
+        }
+    }
+
+    private static PlayerData ParseInitialPlayerData(Dictionary<string, string> jsonByName)
+    {
+        if (!TryGetJson(jsonByName, KEY_PLAYER_INIT, out string json))
+            return new PlayerData();
+        try
+        {
+            var data = JsonConvert.DeserializeObject<PlayerData>(json) ?? new PlayerData();
             Debug.Log("[GameDataLoader] 載入初始玩家資料");
-            Addressables.Release(handle);
             return data;
         }
         catch (Exception e)
         {
-            Debug.LogError($"[GameDataLoader] LoadInitialPlayerDataAsync failed: {e.Message}");
+            Debug.LogError($"[GameDataLoader] ParseInitialPlayerData failed: {e.Message}");
             return new PlayerData();
         }
     }
 
-    private async Task<Dictionary<string, GameEventDefinition>> LoadEventDataAsync()
+    private static Dictionary<string, GameEventDefinition> ParseEventData(Dictionary<string, string> jsonByName)
     {
+        if (!TryGetJson(jsonByName, KEY_EVENTS, out string json))
+            return new Dictionary<string, GameEventDefinition>();
         try
         {
-            var handle = Addressables.LoadAssetAsync<TextAsset>(KEY_EVENTS);
-            TextAsset jsonFile = await handle.Task;
-
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 events (Addressables)");
-                return new Dictionary<string, GameEventDefinition>();
-            }
-
-            EventDatabase db = JsonConvert.DeserializeObject<EventDatabase>(jsonFile.text);
+            EventDatabase db = JsonConvert.DeserializeObject<EventDatabase>(json);
             var dict = db?.Events?
                 .Where(evt => evt != null && !string.IsNullOrEmpty(evt.Id))
                 .GroupBy(evt => evt.Id)
                 .ToDictionary(g => g.Key, g => g.First())
                 ?? new Dictionary<string, GameEventDefinition>();
-
             Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆事件資料");
             return dict;
         }
         catch (Exception e)
         {
-            Debug.LogError($"[GameDataLoader] LoadEventDataAsync failed: {e.Message}");
+            Debug.LogError($"[GameDataLoader] ParseEventData failed: {e.Message}");
             return new Dictionary<string, GameEventDefinition>();
         }
     }
 
-    private async Task<Dictionary<string, AchievementConfig>> LoadAchievementsAsync()
+    private static Dictionary<string, AchievementConfig> ParseAchievements(Dictionary<string, string> jsonByName)
     {
-        AsyncOperationHandle<TextAsset> handle = default;
+        if (!TryGetJson(jsonByName, KEY_ACHIEVEMENTS, out string json))
+            return new Dictionary<string, AchievementConfig>();
         try
         {
-            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_ACHIEVEMENTS);
-            TextAsset jsonFile = await handle.Task;
-
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 Achievements (Addressables)");
-                return new Dictionary<string, AchievementConfig>();
-            }
-
-            List<AchievementConfig> achievementList = null;
-            string jsonText = jsonFile.text.TrimStart();
+            List<AchievementConfig> list;
+            string jsonText = json.TrimStart();
             if (jsonText.StartsWith("["))
-            {
-                achievementList = JsonConvert.DeserializeObject<List<AchievementConfig>>(jsonFile.text);
-            }
+                list = JsonConvert.DeserializeObject<List<AchievementConfig>>(json);
             else
-            {
-                AchievementDatabase db = JsonConvert.DeserializeObject<AchievementDatabase>(jsonFile.text);
-                achievementList = db?.Achievements;
-            }
+                list = JsonConvert.DeserializeObject<AchievementDatabase>(json)?.Achievements;
 
-            var dict = achievementList?
+            var dict = list?
                 .Where(a => a != null && !string.IsNullOrEmpty(a.AchievementID))
                 .GroupBy(a => a.AchievementID)
                 .ToDictionary(g => g.Key, g => g.First())
                 ?? new Dictionary<string, AchievementConfig>();
-
             Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆成就資料");
             return dict;
         }
         catch (Exception e)
         {
-            Debug.LogError($"[GameDataLoader] LoadAchievementsAsync failed: {e}");
+            Debug.LogError($"[GameDataLoader] ParseAchievements failed: {e}");
             return new Dictionary<string, AchievementConfig>();
         }
-        finally
-        {
-            if (handle.IsValid()) Addressables.Release(handle);
-        }
     }
-    private async Task<Dictionary<string, MonsterInformationDatabase>> LoadMonsterInfoAsync()
+
+    private static Dictionary<string, MonsterInformationDatabase> ParseMonsterInfo(Dictionary<string, string> jsonByName)
     {
-        AsyncOperationHandle<TextAsset> handle = default;
+        if (!TryGetJson(jsonByName, KEY_MONSTER_INFO, out string json))
+            return new Dictionary<string, MonsterInformationDatabase>();
         try
         {
-            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_MONSTER_INFO);
-            TextAsset jsonFile = await handle.Task;
-
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 MonsterInfo (Addressables)");
-                return new Dictionary<string, MonsterInformationDatabase>();
-            }
-
-            List<MonsterInformationDatabase> infoList = null;
-            string jsonText = jsonFile.text.TrimStart();
+            List<MonsterInformationDatabase> list;
+            string jsonText = json.TrimStart();
             if (jsonText.StartsWith("["))
-            {
-                infoList = JsonConvert.DeserializeObject<List<MonsterInformationDatabase>>(jsonFile.text);
-            }
+                list = JsonConvert.DeserializeObject<List<MonsterInformationDatabase>>(json);
             else
-            {
-                var db = JsonConvert.DeserializeObject<MonsterInformationDatabaseRoot>(jsonFile.text);
-                infoList = db?.MonsterInformations;
-            }
+                list = JsonConvert.DeserializeObject<MonsterInformationDatabaseRoot>(json)?.MonsterInformations;
 
-            var dict = infoList?
+            var dict = list?
                 .Where(i => i != null && !string.IsNullOrEmpty(i.InformationID))
                 .GroupBy(i => i.InformationID)
                 .ToDictionary(g => g.Key, g => g.First())
                 ?? new Dictionary<string, MonsterInformationDatabase>();
-
             Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆妖怪趣聞資料");
             return dict;
         }
         catch (Exception e)
         {
-            Debug.LogError($"[GameDataLoader] LoadMonsterInfoAsync failed: {e}");
+            Debug.LogError($"[GameDataLoader] ParseMonsterInfo failed: {e}");
             return new Dictionary<string, MonsterInformationDatabase>();
-        }
-        finally
-        {
-            if (handle.IsValid()) Addressables.Release(handle);
         }
     }
 
-    private async Task<Dictionary<string, MonsterStoryDatabase>> LoadMonsterStoryAsync()
+    private static Dictionary<string, MonsterStoryDatabase> ParseMonsterStory(Dictionary<string, string> jsonByName)
     {
-        AsyncOperationHandle<TextAsset> handle = default;
+        if (!TryGetJson(jsonByName, KEY_MONSTER_STORY, out string json))
+            return new Dictionary<string, MonsterStoryDatabase>();
         try
         {
-            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_MONSTER_STORY);
-            TextAsset jsonFile = await handle.Task;
-
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 MonsterStory (Addressables)");
-                return new Dictionary<string, MonsterStoryDatabase>();
-            }
-
-            List<MonsterStoryDatabase> storyList = null;
-            string jsonText = jsonFile.text.TrimStart();
+            List<MonsterStoryDatabase> list;
+            string jsonText = json.TrimStart();
             if (jsonText.StartsWith("["))
-            {
-                storyList = JsonConvert.DeserializeObject<List<MonsterStoryDatabase>>(jsonFile.text);
-            }
+                list = JsonConvert.DeserializeObject<List<MonsterStoryDatabase>>(json);
             else
-            {
-                var db = JsonConvert.DeserializeObject<MonsterStoryDatabaseRoot>(jsonFile.text);
-                storyList = db?.MonsterStories;
-            }
+                list = JsonConvert.DeserializeObject<MonsterStoryDatabaseRoot>(json)?.MonsterStories;
 
-            var dict = storyList?
+            var dict = list?
                 .Where(s => s != null && !string.IsNullOrEmpty(s.MonsterStoryID))
                 .GroupBy(s => s.MonsterStoryID)
                 .ToDictionary(g => g.Key, g => g.First())
                 ?? new Dictionary<string, MonsterStoryDatabase>();
-
             Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆妖怪小故事資料");
             return dict;
         }
         catch (Exception e)
         {
-            Debug.LogError($"[GameDataLoader] LoadMonsterStoryAsync failed: {e}");
+            Debug.LogError($"[GameDataLoader] ParseMonsterStory failed: {e}");
             return new Dictionary<string, MonsterStoryDatabase>();
-        }
-        finally
-        {
-            if (handle.IsValid()) Addressables.Release(handle);
         }
     }
 
-    private async Task<Dictionary<string, NPCMissionData>> LoadNPCDataAsync()
+    private static Dictionary<string, NPCMissionData> ParseNPCData(Dictionary<string, string> jsonByName)
     {
-        AsyncOperationHandle<TextAsset> handle = default;
+        if (!TryGetJson(jsonByName, KEY_NPC_DATA, out string json))
+            return new Dictionary<string, NPCMissionData>();
         try
         {
-            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_NPC_DATA);
-            TextAsset jsonFile = await handle.Task;
-
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 NPCData (Addressables)");
-                return new Dictionary<string, NPCMissionData>();
-            }
-
-            List<NPCMissionData> npcList = null;
-            string jsonText = jsonFile.text.TrimStart();
+            List<NPCMissionData> list;
+            string jsonText = json.TrimStart();
             if (jsonText.StartsWith("["))
-            {
-                npcList = JsonConvert.DeserializeObject<List<NPCMissionData>>(jsonFile.text);
-            }
+                list = JsonConvert.DeserializeObject<List<NPCMissionData>>(json);
             else
-            {
-                var db = JsonConvert.DeserializeObject<NPCMissionDataDatabase>(jsonFile.text);
-                npcList = db?.NPCMissionData;
-            }
+                list = JsonConvert.DeserializeObject<NPCMissionDataDatabase>(json)?.NPCMissionData;
 
-            var dict = npcList?
+            var dict = list?
                 .Where(n => n != null && !string.IsNullOrEmpty(n.NpcID))
                 .GroupBy(n => n.NpcID)
                 .ToDictionary(g => g.Key, g => g.First())
                 ?? new Dictionary<string, NPCMissionData>();
-
             Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆 NPC 資料");
             return dict;
         }
         catch (Exception e)
         {
-            Debug.LogError($"[GameDataLoader] LoadNPCDataAsync failed: {e}");
+            Debug.LogError($"[GameDataLoader] ParseNPCData failed: {e}");
             return new Dictionary<string, NPCMissionData>();
-        }
-        finally
-        {
-            if (handle.IsValid()) Addressables.Release(handle);
         }
     }
 
-    private async Task<Dictionary<string, AchievementSouvenirData>> LoadAchievementSouvenirsAsync()
+    private static Dictionary<string, AchievementSouvenirData> ParseAchievementSouvenirs(Dictionary<string, string> jsonByName)
     {
-        AsyncOperationHandle<TextAsset> handle = default;
+        if (!TryGetJson(jsonByName, KEY_ACHIEVEMENT_SOUVENIRS, out string json))
+            return new Dictionary<string, AchievementSouvenirData>();
         try
         {
-            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_ACHIEVEMENT_SOUVENIRS);
-            TextAsset jsonFile = await handle.Task;
-
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 AchievementSouvenirs (Addressables)");
-                return new Dictionary<string, AchievementSouvenirData>();
-            }
-
-            List<AchievementSouvenirData> souvenirList = null;
-            string jsonText = jsonFile.text.TrimStart();
+            List<AchievementSouvenirData> list;
+            string jsonText = json.TrimStart();
             if (jsonText.StartsWith("["))
-            {
-                souvenirList = JsonConvert.DeserializeObject<List<AchievementSouvenirData>>(jsonFile.text);
-            }
+                list = JsonConvert.DeserializeObject<List<AchievementSouvenirData>>(json);
             else
-            {
-                var db = JsonConvert.DeserializeObject<AchievementSouvenirDatabaseRoot>(jsonFile.text);
-                souvenirList = db?.AchievementSouvenirs;
-            }
+                list = JsonConvert.DeserializeObject<AchievementSouvenirDatabaseRoot>(json)?.AchievementSouvenirs;
 
-            var dict = souvenirList?
+            var dict = list?
                 .Where(s => s != null && !string.IsNullOrEmpty(s.SouvenirID))
                 .GroupBy(s => s.SouvenirID)
                 .ToDictionary(g => g.Key, g => g.First())
                 ?? new Dictionary<string, AchievementSouvenirData>();
-
             Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆成就紀念品資料");
             return dict;
         }
         catch (Exception e)
         {
-            Debug.LogError($"[GameDataLoader] LoadAchievementSouvenirsAsync failed: {e}");
+            Debug.LogError($"[GameDataLoader] ParseAchievementSouvenirs failed: {e}");
             return new Dictionary<string, AchievementSouvenirData>();
-        }
-        finally
-        {
-            if (handle.IsValid()) Addressables.Release(handle);
         }
     }
 
-    private async Task<Dictionary<string, SpecialSouvenirData>> LoadSpecialSouvenirsAsync()
+    private static Dictionary<string, SpecialSouvenirData> ParseSpecialSouvenirs(Dictionary<string, string> jsonByName)
     {
-        AsyncOperationHandle<TextAsset> handle = default;
+        if (!TryGetJson(jsonByName, KEY_SPECIAL_SOUVENIRS, out string json))
+            return new Dictionary<string, SpecialSouvenirData>();
         try
         {
-            handle = Addressables.LoadAssetAsync<TextAsset>(KEY_SPECIAL_SOUVENIRS);
-            TextAsset jsonFile = await handle.Task;
-
-            if (jsonFile == null)
-            {
-                Debug.LogError("[GameDataLoader] 找不到 SpecialSouvenirs (Addressables)");
-                return new Dictionary<string, SpecialSouvenirData>();
-            }
-
-            List<SpecialSouvenirData> souvenirList = null;
-            string jsonText = jsonFile.text.TrimStart();
+            List<SpecialSouvenirData> list;
+            string jsonText = json.TrimStart();
             if (jsonText.StartsWith("["))
-            {
-                souvenirList = JsonConvert.DeserializeObject<List<SpecialSouvenirData>>(jsonFile.text);
-            }
+                list = JsonConvert.DeserializeObject<List<SpecialSouvenirData>>(json);
             else
-            {
-                var db = JsonConvert.DeserializeObject<SpecialSouvenirDatabaseRoot>(jsonFile.text);
-                souvenirList = db?.SpecialSouvenirs;
-            }
+                list = JsonConvert.DeserializeObject<SpecialSouvenirDatabaseRoot>(json)?.SpecialSouvenirs;
 
-            var dict = souvenirList?
+            var dict = list?
                 .Where(s => s != null && !string.IsNullOrEmpty(s.SouvenirID))
                 .GroupBy(s => s.SouvenirID)
                 .ToDictionary(g => g.Key, g => g.First())
                 ?? new Dictionary<string, SpecialSouvenirData>();
-
             Debug.Log($"[GameDataLoader] 載入 {dict.Count} 筆特別紀念品資料");
             return dict;
         }
         catch (Exception e)
         {
-            Debug.LogError($"[GameDataLoader] LoadSpecialSouvenirsAsync failed: {e}");
+            Debug.LogError($"[GameDataLoader] ParseSpecialSouvenirs failed: {e}");
             return new Dictionary<string, SpecialSouvenirData>();
-        }
-        finally
-        {
-            if (handle.IsValid()) Addressables.Release(handle);
         }
     }
     #endregion

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
+using GameSystem;
 
 /// <summary>
 /// 成就管理器 - 負責根據 AchievementConfig 載入並初始化對應的成就腳本
@@ -46,109 +46,61 @@ public class AchievementManager : Singleton<AchievementManager>
             _achievementsByCategory[category] = new List<AchievementBase>();
         }
 
-        // 透過反射找出所有繼承 AchievementBase 的非抽象類別
-        var achievementTypes = FindAllAchievementTypes();
+        // 從共用反射快取取得所有 AchievementLibrary.* 內的 AchievementBase 衍生類別
+        var achievementTypes = GameTypeCache.GetConcreteSubclassesOf<AchievementBase>("AchievementLibrary");
         Debug.Log($"[AchievementManager] 找到 {achievementTypes.Count} 個成就腳本類別");
 
-        // 建立：AchievementID → Type 的對應表
-        var typeMap = BuildAchievementTypeMap(achievementTypes);
-
-        // 對每筆 Config 建立對應的成就實例
-        foreach (var kvp in configDict)
+        // 一次建立實例：直接從實例讀 AchievementID → 配對 config → LoadConfig + Initialize
+        foreach (var type in achievementTypes)
         {
-            string achievementId = kvp.Key;
-            AchievementConfig config = kvp.Value;
-
-            if (!typeMap.TryGetValue(achievementId, out Type achievementType))
+            AchievementBase instance;
+            try
             {
-                Debug.LogWarning($"[AchievementManager] 找不到 AchievementID '{achievementId}' 對應的腳本類別，跳過");
+                instance = Activator.CreateInstance(type) as AchievementBase;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[AchievementManager] 建立 '{type.Name}' 實例失敗: {e.Message}");
                 continue;
+            }
+
+            if (instance == null || string.IsNullOrEmpty(instance.AchievementID))
+            {
+                Debug.LogWarning($"[AchievementManager] '{type.Name}' 沒有有效的 AchievementID，跳過");
+                (instance as IDisposable)?.Dispose();
+                continue;
+            }
+
+            if (!configDict.TryGetValue(instance.AchievementID, out var config))
+            {
+                Debug.LogWarning($"[AchievementManager] 找不到 AchievementID '{instance.AchievementID}' 對應的 Config，跳過");
+                (instance as IDisposable)?.Dispose();
+                continue;
+            }
+
+            if (_achievementsById.ContainsKey(instance.AchievementID))
+            {
+                Debug.LogWarning($"[AchievementManager] 重複的 AchievementID '{instance.AchievementID}'，類別: {type.Name}，將覆蓋先前的類別");
             }
 
             try
             {
-                // 建立實例並載入設定
-                var instance = Activator.CreateInstance(achievementType) as AchievementBase;
-                if (instance == null)
-                {
-                    Debug.LogError($"[AchievementManager] 無法建立 '{achievementType.Name}' 的實例");
-                    continue;
-                }
-
                 instance.LoadConfig(config);
                 instance.Initialize();
-
-                // 依分類歸入
                 _achievementsByCategory[config.Category].Add(instance);
-                _achievementsById[achievementId] = instance;
-
-                // 監聽解鎖事件
+                _achievementsById[instance.AchievementID] = instance;
                 instance.OnUnlocked += OnAchievementUnlocked;
 
-                Debug.Log($"[AchievementManager] 初始化成就: {config.AchievementName} (ID: {achievementId}, 分類: {config.Category})");
+                Debug.Log($"[AchievementManager] 初始化成就: {config.AchievementName} (ID: {instance.AchievementID}, 分類: {config.Category})");
             }
             catch (Exception e)
             {
-                Debug.LogError($"[AchievementManager] 初始化成就 '{achievementId}' 失敗: {e.Message}");
+                Debug.LogError($"[AchievementManager] 初始化成就 '{instance.AchievementID}' 失敗: {e.Message}");
             }
         }
 
         _isInitialized = true;
         Debug.Log($"[AchievementManager] 成就系統初始化完成，共載入 {_achievementsById.Count} 個成就");
-    }
-
-    /// <summary>
-    /// 透過反射找出所有繼承 AchievementBase 的非抽象具體類別
-    /// </summary>
-    private List<Type> FindAllAchievementTypes()
-    {
-        var baseType = typeof(AchievementBase);
-        const string targetNamespace = "AchievementLibrary"; // 改成你的命名空間
-
-        return AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(assembly =>
-            {
-                try { return assembly.GetTypes(); }
-                catch { return Type.EmptyTypes; }
-            })
-            .Where(t => t != baseType
-                     && baseType.IsAssignableFrom(t)
-                     && !t.IsAbstract
-                     && t.Namespace == targetNamespace) // 精確匹配
-            .ToList();
-    }
-
-    /// <summary>
-    /// 建立 AchievementID → Type 的對應表
-    /// 透過暫時建立實例取得其 AchievementID
-    /// </summary>
-    private Dictionary<string, Type> BuildAchievementTypeMap(List<Type> types)
-    {
-        var map = new Dictionary<string, Type>();
-
-        foreach (var type in types)
-        {
-            try
-            {
-                var temp = Activator.CreateInstance(type) as AchievementBase;
-                if (temp != null && !string.IsNullOrEmpty(temp.AchievementID))
-                {
-                    if (map.ContainsKey(temp.AchievementID))
-                    {
-                        Debug.LogWarning($"[AchievementManager] 重複的 AchievementID '{temp.AchievementID}'，類別: {type.Name}，將覆蓋先前的類別");
-                    }
-                    map[temp.AchievementID] = type;
-                }
-                // 清理暫時實例
-                (temp as IDisposable)?.Dispose();
-            }
-            catch (Exception e)
-            {
-                Debug.LogWarning($"[AchievementManager] 無法建立 '{type.Name}' 的暫時實例: {e.Message}");
-            }
-        }
-
-        return map;
     }
 
     /// <summary>
