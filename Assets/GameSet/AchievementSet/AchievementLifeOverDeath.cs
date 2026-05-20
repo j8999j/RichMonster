@@ -1,6 +1,7 @@
 using System;
 namespace AchievementLibrary
 {
+[AchievementDefinition("LifeOverDeath")]
 public class NewWorldGodAchievement : AchievementBase
     {
         public NewWorldGodAchievement()

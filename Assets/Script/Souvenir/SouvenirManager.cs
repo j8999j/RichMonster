@@ -1,137 +1,177 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GameSystem;
 using UnityEngine;
 
 namespace Souvenir
 {
     /// <summary>
-    /// 紀念品管理器 - 負責載入並初始化對應的紀念品腳本 (參考 AchievementManager)
+    /// 紀念品系統管理器。透過 SouvenirDefinitionAttribute 建立 ID 對 Type 的快取索引。
     /// </summary>
     public class SouvenirManager : Singleton<SouvenirManager>, ISpecialSouvenirProvider
     {
-        // 存放所有成就紀念品實例
-        private Dictionary<string, AchievementSouvenir> _achievementSouvenirs
+        private readonly Dictionary<string, AchievementSouvenir> _achievementSouvenirs
             = new Dictionary<string, AchievementSouvenir>();
 
-        // 存放所有特殊紀念品實例
-        private Dictionary<string, SpecialSouvenir> _specialSouvenirs
+        private readonly Dictionary<string, SpecialSouvenir> _specialSouvenirs
             = new Dictionary<string, SpecialSouvenir>();
 
-        // 統一索引：SouvenirID → SouvenirBase（同時涵蓋兩種紀念品）
-        // 供效果分派器查找本局持有的紀念品實例
-        private Dictionary<string, SouvenirBase> _souvenirById
+        private readonly Dictionary<string, SouvenirBase> _souvenirById
             = new Dictionary<string, SouvenirBase>();
 
-        // 當前持有的紀念品 IDs
-        private HashSet<string> _ownedSouvenirIds = new HashSet<string>();
+        private readonly HashSet<string> _ownedSouvenirIds = new HashSet<string>();
 
-        private bool _isInitialized = false;
+        private bool _isInitialized;
         public bool IsInitialized => _isInitialized;
         private SouvenirEffectDispatcher _effectDispatcher;
 
-        /// <summary>
-        /// 初始化系統：透過反射找出所有紀念品腳本並實例化
-        /// </summary>
         public void Initialize()
         {
             if (_isInitialized)
             {
-                Debug.LogWarning("[SouvenirManager] 已經初始化過，跳過重複初始化");
+                Debug.LogWarning("[SouvenirManager] 已初始化，略過重複初始化");
                 return;
             }
 
-            // 從共用反射快取一次取出兩種紀念品的衍生類別（避免 AppDomain 全掃兩次）
-            var achSouvenirTypes = GameSystem.GameTypeCache.GetConcreteSubclassesOf<AchievementSouvenir>();
-            var splSouvenirTypes = GameSystem.GameTypeCache.GetConcreteSubclassesOf<SpecialSouvenir>();
-            Debug.Log($"[SouvenirManager] 找到 {achSouvenirTypes.Count} 個成就紀念品、{splSouvenirTypes.Count} 個特殊紀念品腳本類別");
+            var souvenirTypesById = GameDefinitionTypeRegistry.SouvenirTypesById;
+            Debug.Log($"[SouvenirManager] 已建立 {souvenirTypesById.Count} 個紀念品類別索引");
 
-            // 1. 處理 AchievementSouvenir
-            foreach (var type in achSouvenirTypes)
-            {
-                try
-                {
-                    var instance = Activator.CreateInstance(type) as AchievementSouvenir;
-                    if (instance != null && !string.IsNullOrEmpty(instance.SouvenirID))
-                    {
-                        if (_achievementSouvenirs.ContainsKey(instance.SouvenirID))
-                        {
-                            Debug.LogWarning($"[SouvenirManager] 重複的 SouvenirID '{instance.SouvenirID}'，類別: {type.Name}，將覆蓋先前的類別");
-                        }
-                        // 從 DataManager 填充 ISouvenirBagView 顯示欄位
-                        if (DataManager.Instance.AchievementSouvenirDict != null
-                            && DataManager.Instance.AchievementSouvenirDict.TryGetValue(instance.SouvenirID, out var achData))
-                        {
-                            instance.SouvenirName = achData.SouvenirName;
-                            instance.SouvenirDescription = achData.SouvenirDescription;
-                            instance.EffectName = achData.SouvenirFunctionDescription;
-                        }
-
-                        _achievementSouvenirs[instance.SouvenirID] = instance;
-                        _souvenirById[instance.SouvenirID] = instance;
-                        Debug.Log($"[SouvenirManager] 載入成就紀念品: {instance.SouvenirID}");
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError($"[SouvenirManager] 初始化成就紀念品 '{type.Name}' 失敗: {e.Message}");
-                }
-            }
-
-            // 2. 處理 SpecialSouvenir
-            foreach (var type in splSouvenirTypes)
-            {
-                try
-                {
-                    // 注意: 衍生類別需要提供無參數建構子
-                    var instance = Activator.CreateInstance(type) as SpecialSouvenir;
-                    if (instance != null && !string.IsNullOrEmpty(instance.SouvenirID))
-                    {
-                        if (_specialSouvenirs.ContainsKey(instance.SouvenirID))
-                        {
-                            Debug.LogWarning($"[SouvenirManager] 重複的 SouvenirID '{instance.SouvenirID}'，類別: {type.Name}，將覆蓋先前的類別");
-                        }
-                        // 從 DataManager 填充 ISouvenirBagView 顯示欄位
-                        if (DataManager.Instance.SpecialSouvenirDict != null
-                            && DataManager.Instance.SpecialSouvenirDict.TryGetValue(instance.SouvenirID, out var splData))
-                        {
-                            instance.SouvenirName = splData.SouvenirName;
-                            instance.SouvenirDescription = splData.SouvenirDescription;
-                        }
-
-                        _specialSouvenirs[instance.SouvenirID] = instance;
-                        _souvenirById[instance.SouvenirID] = instance;
-                        Debug.Log($"[SouvenirManager] 載入特殊紀念品: {instance.SouvenirID}");
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError($"[SouvenirManager] 初始化特殊紀念品 '{type.Name}' 失敗: {e.Message}");
-                }
-            }
+            InitializeAchievementSouvenirs(souvenirTypesById);
+            InitializeSpecialSouvenirs(souvenirTypesById);
 
             _isInitialized = true;
             _effectDispatcher = new SouvenirEffectDispatcher(GetOwnedSouvenirs, GetAllSpecialSouvenirsForEffects);
             SnapshotOwnedSouvenirs();
             RegisterAll();
             _effectDispatcher.SubscribeGameEvents();
-            Debug.Log($"[SouvenirManager] 初始化完成，共載入 {_achievementSouvenirs.Count} 個成就紀念品與 {_specialSouvenirs.Count} 個特殊紀念品");
+
+            Debug.Log($"[SouvenirManager] 初始化完成，成就紀念品 {_achievementSouvenirs.Count} 個，特殊紀念品 {_specialSouvenirs.Count} 個");
         }
 
-        #region Public Query & Event API
+        private void InitializeAchievementSouvenirs(IReadOnlyDictionary<string, Type> souvenirTypesById)
+        {
+            var dataDict = DataManager.Instance.AchievementSouvenirDict;
+            if (dataDict == null) return;
 
-        /// <summary>
-        /// 取得指定的成就紀念品
-        /// </summary>
+            foreach (var pair in dataDict)
+            {
+                if (!TryCreateSouvenir(pair.Key, souvenirTypesById, out AchievementSouvenir instance))
+                {
+                    continue;
+                }
+
+                var data = pair.Value;
+                if (data != null)
+                {
+                    instance.SouvenirName = data.SouvenirName;
+                    instance.SouvenirDescription = data.SouvenirDescription;
+                    instance.EffectName = data.SouvenirFunctionDescription;
+                }
+
+                _achievementSouvenirs[instance.SouvenirID] = instance;
+                _souvenirById[instance.SouvenirID] = instance;
+                Debug.Log($"[SouvenirManager] 載入成就紀念品: {instance.SouvenirID}");
+            }
+        }
+
+        private void InitializeSpecialSouvenirs(IReadOnlyDictionary<string, Type> souvenirTypesById)
+        {
+            var dataDict = DataManager.Instance.SpecialSouvenirDict;
+            if (dataDict != null)
+            {
+                foreach (var pair in dataDict)
+                {
+                    if (!TryCreateSouvenir(pair.Key, souvenirTypesById, out SpecialSouvenir instance))
+                    {
+                        continue;
+                    }
+
+                    var data = pair.Value;
+                    if (data != null)
+                    {
+                        instance.SouvenirName = data.SouvenirName;
+                        instance.SouvenirDescription = data.SouvenirDescription;
+                    }
+
+                    RegisterSpecialSouvenir(instance);
+                    Debug.Log($"[SouvenirManager] 載入特殊紀念品: {instance.SouvenirID}");
+                }
+            }
+
+            foreach (var pair in souvenirTypesById)
+            {
+                if (_specialSouvenirs.ContainsKey(pair.Key)) continue;
+                if (!typeof(DefaultOwnedSouvenirBase).IsAssignableFrom(pair.Value)) continue;
+                if (!TryCreateSouvenir(pair.Key, souvenirTypesById, out SpecialSouvenir instance)) continue;
+
+                RegisterSpecialSouvenir(instance);
+                Debug.Log($"[SouvenirManager] 載入預設持有紀念品: {instance.SouvenirID}");
+            }
+        }
+
+        private static bool TryCreateSouvenir<TSouvenir>(
+            string souvenirId,
+            IReadOnlyDictionary<string, Type> souvenirTypesById,
+            out TSouvenir souvenir)
+            where TSouvenir : SouvenirBase
+        {
+            souvenir = null;
+            if (string.IsNullOrEmpty(souvenirId)) return false;
+
+            if (!souvenirTypesById.TryGetValue(souvenirId, out var type))
+            {
+                Debug.LogWarning($"[SouvenirManager] 找不到 SouvenirID '{souvenirId}' 對應的紀念品類別標記");
+                return false;
+            }
+
+            if (!typeof(TSouvenir).IsAssignableFrom(type))
+            {
+                return false;
+            }
+
+            try
+            {
+                souvenir = Activator.CreateInstance(type) as TSouvenir;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[SouvenirManager] 建立紀念品 '{type.Name}' 失敗: {e.Message}");
+                return false;
+            }
+
+            if (souvenir == null || string.IsNullOrEmpty(souvenir.SouvenirID))
+            {
+                Debug.LogWarning($"[SouvenirManager] '{type.Name}' 沒有有效的 SouvenirID");
+                return false;
+            }
+
+            if (souvenir.SouvenirID != souvenirId)
+            {
+                Debug.LogWarning($"[SouvenirManager] '{type.Name}' 的 Attribute ID '{souvenirId}' 與實例 SouvenirID '{souvenir.SouvenirID}' 不一致");
+                return false;
+            }
+
+            return true;
+        }
+
+        private void RegisterSpecialSouvenir(SpecialSouvenir souvenir)
+        {
+            if (_specialSouvenirs.ContainsKey(souvenir.SouvenirID))
+            {
+                Debug.LogWarning($"[SouvenirManager] 重複的 SouvenirID '{souvenir.SouvenirID}'");
+            }
+
+            _specialSouvenirs[souvenir.SouvenirID] = souvenir;
+            _souvenirById[souvenir.SouvenirID] = souvenir;
+        }
+
         public AchievementSouvenir GetAchievementSouvenir(string souvenirId)
         {
             _achievementSouvenirs.TryGetValue(souvenirId, out var souvenir);
             return souvenir;
         }
 
-        /// <summary>
-        /// 取得所有的成就紀念品
-        /// </summary>
         public List<AchievementSouvenir> GetAllAchievementSouvenirs()
         {
             return _achievementSouvenirs.Values.ToList();
@@ -142,39 +182,22 @@ namespace Souvenir
             return _specialSouvenirs.Values.OfType<ISpecialSouvenirSave>().ToList();
         }
 
-        /// <summary>
-        /// 取得指定的特殊紀念品
-        /// </summary>
         public SpecialSouvenir GetSpecialSouvenir(string souvenirId)
         {
             _specialSouvenirs.TryGetValue(souvenirId, out var souvenir);
             return souvenir;
         }
 
-        /// <summary>
-        /// 取得所有的特殊紀念品
-        /// </summary>
         public List<SpecialSouvenir> GetAllSpecialSouvenirs()
         {
             return _specialSouvenirs.Values.ToList();
         }
 
-        #endregion
-
-        #region 所有權與快照管理 (Ownership & Snapshot Management)
-
-        /// <summary>
-        /// 判斷目前是否持有給定的紀念品
-        /// </summary>
         public bool IsOwned(string souvenirId)
         {
             return _ownedSouvenirIds.Contains(souvenirId);
         }
 
-        /// <summary>
-        /// 判斷指定成就紀念品是否已在圖鑑存檔（Book）中解鎖（玩家歷史購買紀錄）。
-        /// 商店 UI 顯示與購買前檢查使用此方法，語意為「已用點數兌換過」。
-        /// </summary>
         public bool IsPurchased(string souvenirId)
         {
             var bookData = DataManager.Instance.GetBookData();
@@ -182,18 +205,12 @@ namespace Souvenir
                 && bookData.UnLockAchievementSouvenirID.Contains(souvenirId);
         }
 
-        /// <summary>
-        /// 在每局遊戲開始時呼叫，從存檔載入已持有的紀念品清單。
-        /// 成就紀念品：讀取 PlayerData.HoldAchievementSouvenirID（本局存檔建立當下的靜態快照）。
-        /// 特殊紀念品：讀取 BookData.UnLockSpecialSouvenirID（跨局 Book 存檔）。
-        /// </summary>
         public void SnapshotOwnedSouvenirs()
         {
             _ownedSouvenirIds.Clear();
             var bookData = DataManager.Instance.GetBookData();
             var playerData = DataManager.Instance.CurrentPlayerData;
 
-            // 成就紀念品：以本局快照 HoldAchievementSouvenirID 為準
             if (playerData?.HoldAchievementSouvenirID != null)
             {
                 foreach (var id in playerData.HoldAchievementSouvenirID)
@@ -204,7 +221,6 @@ namespace Souvenir
 
             if (bookData != null)
             {
-                // 特殊紀念品：維持讀 Book 存檔
                 if (bookData.UnLockSpecialSouvenirID != null)
                 {
                     foreach (var id in bookData.UnLockSpecialSouvenirID)
@@ -213,43 +229,24 @@ namespace Souvenir
                     }
                 }
 
-                // 檢查是否擁有預設的 Sou_key，沒有的話加入為第一項
-                if (!_ownedSouvenirIds.Contains("Sou_key"))
+                foreach (var pair in _specialSouvenirs)
                 {
-                    _ownedSouvenirIds.Add("Sou_key");
-                    if (bookData.UnLockSpecialSouvenirID == null)
-                        bookData.UnLockSpecialSouvenirID = new List<string>();
-
-                    if (!bookData.UnLockSpecialSouvenirID.Contains("Sou_key"))
+                    if (pair.Value is DefaultOwnedSouvenirBase && !_ownedSouvenirIds.Contains(pair.Key))
                     {
-                        bookData.UnLockSpecialSouvenirID.Insert(0, "Sou_key");
-                        DataManager.Instance.SetBookDataChanged(true);
-                    }
-                }
-
-                // 自動加入所有預設持有的紀念品
-                foreach (var kvp in _specialSouvenirs)
-                {
-                    if (kvp.Value is DefaultOwnedSouvenirBase && !_ownedSouvenirIds.Contains(kvp.Key))
-                    {
-                        _ownedSouvenirIds.Add(kvp.Key);
-                        if (bookData.UnLockSpecialSouvenirID == null)
-                            bookData.UnLockSpecialSouvenirID = new List<string>();
-                        if (!bookData.UnLockSpecialSouvenirID.Contains(kvp.Key))
+                        _ownedSouvenirIds.Add(pair.Key);
+                        bookData.UnLockSpecialSouvenirID ??= new List<string>();
+                        if (!bookData.UnLockSpecialSouvenirID.Contains(pair.Key))
                         {
-                            bookData.UnLockSpecialSouvenirID.Add(kvp.Key);
+                            bookData.UnLockSpecialSouvenirID.Add(pair.Key);
                             DataManager.Instance.SetBookDataChanged(true);
                         }
                     }
                 }
             }
-            Debug.Log($"[SouvenirManager] 已載入快照，目前持有 {_ownedSouvenirIds.Count} 個紀念品");
+
+            Debug.Log($"[SouvenirManager] 已快照目前持有紀念品 {_ownedSouvenirIds.Count} 個");
         }
 
-        /// <summary>
-        /// 重新以當前 PlayerData + BookData 快照並重訂閱事件。
-        /// 在載入存檔 / 開新局後、進入場景前呼叫，確保成就紀念品效果符合本局 HoldAchievementSouvenirID。
-        /// </summary>
         public void ResnapshotForCurrentGame()
         {
             if (!_isInitialized) return;
@@ -277,50 +274,41 @@ namespace Souvenir
             }
         }
 
-        #endregion
-
-        #region 商店後端 API (Shop Backend API)
-
-        /// <summary>
-        /// 獲得的總成就點數 (以完成成就的等級計算)
-        /// </summary>
         public int GetTotalAchievementPoints()
         {
-            if (AchievementManager.Instance != null && AchievementManager.Instance.IsInitialized)
+            if (AchievementManager.Instance == null || !AchievementManager.Instance.IsInitialized)
             {
-                int totalPoints = 0;
-                foreach (var ach in AchievementManager.Instance.GetCompletedAchievements())
-                {
-                    totalPoints += GetPointsForLevel(ach.Level);
-                }
-                return totalPoints;
+                return 0;
             }
-            return 0;
+
+            int totalPoints = 0;
+            foreach (var ach in AchievementManager.Instance.GetCompletedAchievements())
+            {
+                totalPoints += GetPointsForLevel(ach.Level);
+            }
+
+            return totalPoints;
         }
 
-        /// <summary>
-        /// 依據成就等級獲取對應的成就點數
-        /// </summary>
         private int GetPointsForLevel(AchievementLevel level)
         {
             switch (level)
             {
                 case AchievementLevel.Bronze: return 100;
-                case AchievementLevel.Silver: return 200; // 暫定
-                case AchievementLevel.Gold: return 300;   // 暫定
+                case AchievementLevel.Silver: return 200;
+                case AchievementLevel.Gold: return 300;
                 default: return 100;
             }
         }
 
-        /// <summary>
-        /// 已花費的成就點數
-        /// </summary>
         public int GetSpentPoints()
         {
             int spent = 0;
             var bookData = DataManager.Instance.GetBookData();
             if (bookData?.UnLockAchievementSouvenirID == null)
+            {
                 return spent;
+            }
 
             foreach (var id in bookData.UnLockAchievementSouvenirID)
             {
@@ -329,26 +317,20 @@ namespace Souvenir
                     spent += ach.Cost;
                 }
             }
+
             return spent;
         }
 
-        /// <summary>
-        /// 剩餘可用的成就點數
-        /// </summary>
         public int GetRemainingPoints()
         {
             return GetTotalAchievementPoints() - GetSpentPoints();
         }
 
-        /// <summary>
-        /// 嘗試購買紀念品 (透過成就點數)
-        /// </summary>
         public bool TryPurchaseSouvenir(string souvenirId)
         {
-            // 以 Book 存檔為準檢查重複購買（商店在單局外開啟，_ownedSouvenirIds 無法反映購買歷史）
             if (IsPurchased(souvenirId))
             {
-                Debug.LogWarning($"[SouvenirShop] 購買失敗：已經擁有紀念品 {souvenirId}");
+                Debug.LogWarning($"[SouvenirShop] 已購買紀念品 {souvenirId}");
                 return false;
             }
 
@@ -357,13 +339,10 @@ namespace Souvenir
                 int remainingPoints = GetRemainingPoints();
                 if (remainingPoints >= ach.Cost)
                 {
-                    // 僅寫入 Book 存檔；_ownedSouvenirIds 由下一次開新局時的 ResnapshotForCurrentGame 接手
                     var bookData = DataManager.Instance.GetBookData();
                     if (bookData != null)
                     {
-                        if (bookData.UnLockAchievementSouvenirID == null)
-                            bookData.UnLockAchievementSouvenirID = new List<string>();
-
+                        bookData.UnLockAchievementSouvenirID ??= new List<string>();
                         if (!bookData.UnLockAchievementSouvenirID.Contains(souvenirId))
                         {
                             bookData.UnLockAchievementSouvenirID.Add(souvenirId);
@@ -372,25 +351,20 @@ namespace Souvenir
                     }
 
                     GameEventCenter.Publish(new SouvenirPurchasedEvent(souvenirId, ach.Cost, GetRemainingPoints()));
-                    Debug.Log($"[SouvenirShop] 購買 {souvenirId} 成功（花費 {ach.Cost} 點），下次開新局時會被納入 HoldAchievementSouvenirID");
+                    Debug.Log($"[SouvenirShop] 購買成功: {souvenirId}, 花費 {ach.Cost}");
                     return true;
                 }
-                else
-                {
-                    Debug.LogWarning($"[SouvenirShop] 購買失敗：紀念品 {souvenirId} 需要 {ach.Cost} 點，但只剩 {remainingPoints} 點");
-                }
+
+                Debug.LogWarning($"[SouvenirShop] 點數不足，紀念品 {souvenirId} 需要 {ach.Cost}，目前 {remainingPoints}");
             }
             else
             {
-                Debug.LogWarning($"[SouvenirShop] 購買失敗：找不到對應的成就紀念品 {souvenirId} (特殊紀念品無法透過商店購買)");
+                Debug.LogWarning($"[SouvenirShop] 找不到可購買的成就紀念品 {souvenirId}");
             }
 
             return false;
         }
 
-        /// <summary>
-        /// 取得可購買的紀念品目錄資訊
-        /// </summary>
         public List<(AchievementSouvenir Souvenir, bool IsOwned)> GetShopCatalog()
         {
             return _achievementSouvenirs.Values
@@ -398,86 +372,48 @@ namespace Souvenir
                 .ToList();
         }
 
-        #endregion
-
-        #region 觸發與廣播機制
-
-        /// <summary>
-        /// 註冊所有特殊紀念品事件 (通常在每局遊戲開始時呼叫)。
-        /// 不論是否已持有，每個特殊紀念品都會 Register() 一次：
-        ///   - 已持有：套用功能效果 + 訂閱事件
-        ///   - 未持有：從存檔恢復進度計數（讓尚未解鎖的進度型紀念品也能繼續累積）
-        /// </summary>
         public void RegisterAll()
         {
             _effectDispatcher?.RegisterAllSpecialSouvenirs();
         }
 
-        /// <summary>
-        /// 取消註冊所有紀念品事件 (通常在每局遊戲結束時呼叫)
-        /// </summary>
         public void UnregisterAll()
         {
             _effectDispatcher?.UnregisterAllSpecialSouvenirs();
         }
 
-        /// <summary>
-        /// 觸發所有實作 IApplyStartEffect 的開局效果 (僅限已持有的有作用)
-        /// </summary>
         public void ApplyAllStartEffects()
         {
             _effectDispatcher?.ApplyAllStartEffects();
         }
 
-        /// <summary>
-        /// 廣播商店折扣計算，讓實作 IShopDiscountProvider 的紀念品修改貨架商品售價
-        /// </summary>
         public void ApplyAllShopDiscounts(string shopId, List<Shop.ShelfSlot> items)
         {
             _effectDispatcher?.ApplyAllShopDiscounts(shopId, items);
         }
 
-        /// <summary>
-        /// 建立商店視覺資訊列表，讓實作 IShopVisualModifier 的紀念品填入折扣標籤等視覺資料
-        /// </summary>
-        public List<ShelfSlotVisualInfo> BuildShopVisualInfos(
-            string shopId,
-            List<Shop.ShelfSlot> items)
+        public List<ShelfSlotVisualInfo> BuildShopVisualInfos(string shopId, List<Shop.ShelfSlot> items)
         {
             return _effectDispatcher != null
                 ? _effectDispatcher.BuildShopVisualInfos(shopId, items)
                 : new List<ShelfSlotVisualInfo>();
         }
 
-        /// <summary>
-        /// 廣播每日效果，讓實作 IDailyEffect 的紀念品在換日時執行
-        /// </summary>
         public void ApplyAllDailyEffects()
         {
             _effectDispatcher?.ApplyAllDailyEffects();
         }
 
-        /// <summary>
-        /// 查詢玩家是否擁有讓刮刮樂免費的紀念品
-        /// </summary>
         public bool IsScratchCardFree()
         {
             return _effectDispatcher != null && _effectDispatcher.IsScratchCardFree();
         }
 
-        /// <summary>
-        /// 查詢玩家目前擁有的紀念品提供的額外背包總容量
-        /// </summary>
         public int GetExtraBagCapacity()
         {
             return _effectDispatcher != null ? _effectDispatcher.GetExtraBagCapacity() : 0;
         }
 
-        #endregion
-
-        /// <summary>
-        /// 重置紀念品系統，清除所有資料並允許重新初始化
-        /// </summary>
         public void Reset()
         {
             _effectDispatcher?.UnsubscribeGameEvents();

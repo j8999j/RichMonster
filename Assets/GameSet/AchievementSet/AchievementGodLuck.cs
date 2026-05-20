@@ -1,6 +1,7 @@
 using System;
 namespace AchievementLibrary
 {
+[AchievementDefinition("GodLuck")]
 public class AchievementGodLuck : AchievementBase
     {
         public AchievementGodLuck()

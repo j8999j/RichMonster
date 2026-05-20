@@ -2,6 +2,7 @@ using System;
 using GameSystem;
 namespace AchievementLibrary
 {
+    [AchievementDefinition("GoldBucket")]
     public class AchievementGoldBucket : AchievementBase, IAchievementWithProgress
     {
         public int goldRecorder { get; set; }

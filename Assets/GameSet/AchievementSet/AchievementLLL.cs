@@ -1,6 +1,7 @@
 using System;
 namespace AchievementLibrary
 {
+[AchievementDefinition("LLL")]
 public class AchievementLLL : AchievementBase
     {
         public AchievementLLL()

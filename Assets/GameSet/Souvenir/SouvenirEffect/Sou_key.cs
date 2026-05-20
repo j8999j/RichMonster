@@ -5,6 +5,7 @@ namespace Souvenir
     /// 預設持有特殊紀念品：黃昏鑰匙
     /// 玩家一開始就擁有，不顯示於成就頁面。
     /// </summary>
+    [SouvenirDefinition("Sou_key")]
     public class Sou_key : DefaultOwnedSouvenirBase, ISouvenirInteractive
     {
         public override string SouvenirID => "Sou_key";

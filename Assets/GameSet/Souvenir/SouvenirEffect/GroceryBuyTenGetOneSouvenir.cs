@@ -11,6 +11,7 @@ namespace Souvenir
         public int PurchaseCount;
     }
 
+    [SouvenirDefinition("SouAch_GroceryCards")]
     public class GroceryBuyTenGetOneSouvenir : AchievementSouvenir, IShopPurchaseListener, ISouvenirInteractive
     {
         private int _pendingRewardCount;

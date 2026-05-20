@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 namespace AchievementLibrary
 {
+[AchievementDefinition("BigDeal")]
 public class AchievementBigDeal : AchievementBase
     {
         public AchievementBigDeal()

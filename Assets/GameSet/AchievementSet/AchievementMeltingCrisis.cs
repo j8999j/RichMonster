@@ -1,6 +1,7 @@
 using System;
 namespace AchievementLibrary
 {
+    [AchievementDefinition("MeltingCrisis")]
     public class AchievementMeltingCrisis : AchievementBase, IAchievementHiddenCondition
     {
         public AchievementMeltingCrisis()

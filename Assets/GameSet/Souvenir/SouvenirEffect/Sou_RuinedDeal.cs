@@ -7,6 +7,7 @@ namespace Souvenir
     /// 條件：與妖怪交易失敗（Hated）累計達到 20 次
     /// 進度跨局儲存，使用 IAchievementSave 機制寫入 illustrated_book.json
     /// </summary>
+    [SouvenirDefinition("Sou_RuinedDeal")]
     public class Sou_RuinedDeal : SpecialSouvenir, IMonsterTradeFailedListener, ISpecialSouvenirSave
     {
         public override string SouvenirID => "Sou_RuinedDeal";

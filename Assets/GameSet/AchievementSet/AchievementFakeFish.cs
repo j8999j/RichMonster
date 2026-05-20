@@ -1,6 +1,7 @@
 using System;
 namespace AchievementLibrary
 {
+[AchievementDefinition("FakeFish")]
 public class AchievementFakeFish : AchievementBase, IAchievementHiddenCondition
 {
     public AchievementFakeFish()

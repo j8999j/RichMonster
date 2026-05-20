@@ -90,6 +90,7 @@ namespace GameSystem
         public static void Invalidate()
         {
             lock (_initLock) { _cachedTypes = null; }
+            GameDefinitionTypeRegistry.Invalidate();
         }
 
         private static List<Type> BuildCache()

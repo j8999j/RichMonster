@@ -1,6 +1,7 @@
 using System;
 namespace AchievementLibrary
 {
+[AchievementDefinition("CrisisManager")]
 public class AchievementCrisisManager : AchievementBase, IAchievementHiddenCondition
     {
         public AchievementCrisisManager()

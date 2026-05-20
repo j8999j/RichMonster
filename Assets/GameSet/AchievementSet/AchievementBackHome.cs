@@ -1,6 +1,7 @@
 using System;
 namespace AchievementLibrary
 {
+[AchievementDefinition("BackHome")]
 public class AchievementBackHome : AchievementBase, IAchievementHiddenCondition
     {
         public AchievementBackHome()

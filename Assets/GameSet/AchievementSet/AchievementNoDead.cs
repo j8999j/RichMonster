@@ -1,6 +1,7 @@
 using System;
 namespace AchievementLibrary
 {
+[AchievementDefinition("NoDead")]
 public class AchievementNoDead : AchievementBase
     {
         public AchievementNoDead()

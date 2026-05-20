@@ -7,6 +7,7 @@ namespace Souvenir
     /// 條件：交易使妖精客人滿意（Satisfied 或 VerySatisfied）累計達到 50 次
     /// 進度跨局儲存，使用 IAchievementSave 機制寫入 illustrated_book.json
     /// </summary>
+    [SouvenirDefinition("Sou_FairyTribute")]
     public class Sou_FairyTribute : SpecialSouvenir, IMonsterTradeWithRaceListener, ISpecialSouvenirSave, ISouvenirInteractive
     {
         public override string SouvenirID => "Sou_FairyTribute";

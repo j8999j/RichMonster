@@ -1,6 +1,7 @@
 using System;
 namespace AchievementLibrary
 {
+[AchievementDefinition("WolfGas")]
 public class AchievementWolfGas : AchievementBase, IAchievementHiddenCondition
 {
     public AchievementWolfGas()

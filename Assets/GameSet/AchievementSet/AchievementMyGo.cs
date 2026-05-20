@@ -1,6 +1,7 @@
 using System;
 namespace AchievementLibrary
 {
+[AchievementDefinition("MyGo")]
 public class AchievementMyGo : AchievementBase, IAchievementHiddenCondition
 {
     public AchievementMyGo()

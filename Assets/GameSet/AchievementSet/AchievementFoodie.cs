@@ -1,6 +1,7 @@
 using System;
 namespace AchievementLibrary
 {
+[AchievementDefinition("Foodie")]
 public class AchievementFoodie : AchievementBase, IAchievementHiddenCondition
     {
         public AchievementFoodie()
