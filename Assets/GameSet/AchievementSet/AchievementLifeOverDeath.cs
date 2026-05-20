@@ -24,14 +24,14 @@ public class NewWorldGodAchievement : AchievementBase
             DataManager.Instance.UpdateAchievementSaveData(this);
         }
         protected override void SubscribeEvents() =>
-            AchievementEvents.OnItemObtained += CheckCondition;
+            GameEventCenter.Subscribe<ItemObtainedEvent>(CheckCondition);
 
         protected override void UnsubscribeEvents() =>
-            AchievementEvents.OnItemObtained -= CheckCondition;
+            GameEventCenter.Unsubscribe<ItemObtainedEvent>(CheckCondition);
 
-        private void CheckCondition(string itemId)
+        private void CheckCondition(ItemObtainedEvent eventData)
         {
-            if (itemId == "DeathNote")
+            if (eventData.ItemId == "DeathNote")
             {
                 CompletedAchievement();
                 SaveData();

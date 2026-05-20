@@ -23,14 +23,14 @@ public class AchievementBackHome : AchievementBase, IAchievementHiddenCondition
             base.Initialize();
         }
         protected override void SubscribeEvents() =>
-            AchievementEvents.OnTransactionCompleted += CheckCondition;
+            GameEventCenter.Subscribe<MonsterTradeCompletedEvent>(CheckCondition);
 
         protected override void UnsubscribeEvents() =>
-            AchievementEvents.OnTransactionCompleted -= CheckCondition;
+            GameEventCenter.Unsubscribe<MonsterTradeCompletedEvent>(CheckCondition);
 
-        private void CheckCondition(string customerId, string itemId)
+        private void CheckCondition(MonsterTradeCompletedEvent eventData)
         {
-            if (customerId == "Kaguya-hime" && itemId == "WaterRocket")
+            if (eventData.CustomerId == "Kaguya-hime" && eventData.ItemId == "WaterRocket")
             {
                 CompletedAchievement();
                 SaveData();

@@ -4,34 +4,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using Souvenir;
 
-#region 事件層
-
-public class AchievementEvents
-{
-    // 當獲得物品時觸發 (參數: 物品ID)
-    public static event Action<string> OnItemObtained;
-    public static void GetItem(string itemId) => OnItemObtained?.Invoke(itemId);
-
-    // 當交易完成時觸發 (參數: 顧客ID, 賣出的物品ID)
-    public static event Action<string, string> OnTransactionCompleted;
-    public static void TradeItem(string customerId, string itemId) => OnTransactionCompleted?.Invoke(customerId, itemId);
-
-    // 當訂單完成時觸發 (參數: 訂單ID, 物品ID列表, 金幣)
-    public static event Action<string, List<string>, int> OnOrderCompleted;
-    public static void CompleteOrder(string orderId, List<string> itemIds, int gold) => OnOrderCompleted?.Invoke(orderId, itemIds, gold);
-    // 金幣數量改變時觸發 (參數: 目前金幣, 變動量)
-    public static event Action<int, int> OnGoldChanged;
-    public static void GoldChanged(int gold, int goldChange) => OnGoldChanged?.Invoke(gold, goldChange);
-    // 刮刮樂結算時觸發 (參數: 獎項等級)
-    public static event Action<int> OnScratchCardCompleted;
-    public static void ScratchCardCompleted(int prizeLevel) => OnScratchCardCompleted?.Invoke(prizeLevel);
-    // 結束一天時觸發 (參數: 當前金幣)
-    public static event Action<int> OnDayEndGold;
-    public static void DayEndGold(int gold) => OnDayEndGold?.Invoke(gold);
-}
-
-#endregion
-
+// 成就系統的資料、介面與基底類別定義；遊戲事件已集中到 GameEventCenter。
 #region 設定 / 資料層
 
 public class AchievementConfig

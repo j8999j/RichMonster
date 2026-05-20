@@ -22,9 +22,9 @@ public class HumanDoor : MonoBehaviour, IInteractable, IMapGuideTarget
     {
         
     }
-    void NextDayWorldDoor()
+    async void NextDayWorldDoor()
     {
-        GameManager.Instance.gameFlow.SwitchGameStageAndSave(DayPhase.HumanDay);
+        await GameManager.Instance.gameFlow.SwitchGameStageAndSaveAsync(DayPhase.HumanDay);
         GameManager.Instance.GoToHumanScene();
     }
 

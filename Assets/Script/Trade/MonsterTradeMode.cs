@@ -311,9 +311,9 @@ public class MonsterTradeMode : MonoBehaviour
     private void PriceTrade(Item item)
     {
         var price = CaculatePrice(item);
-        AchievementEvents.TradeItem(currentmonsterGuest.monsterCustomer.Profession, item.ItemId);
-
         TradeSatisfaction satisfaction = CalculateSatisfaction(item);
+        string customerId = currentmonsterGuest?.monsterCustomer?.Profession ?? string.Empty;
+        string race = currentmonsterGuest?.monsterCustomer?.Race ?? string.Empty;
 
         // 呼叫 View 表達視覺 (先留空)
         tradeView.ShowSatisfactionVisual(satisfaction);
@@ -331,19 +331,14 @@ public class MonsterTradeMode : MonoBehaviour
             tradeView.ShowBagItems(updatedInventory);
             tradeView.ClearBagImage();
 
-            // 廣播給紀念品系統（例如：交易滿意時給額外獎勵）
-            string race = currentmonsterGuest?.monsterCustomer?.Race ?? string.Empty;
-            Souvenir.SouvenirManager.Instance.NotifyMonsterTradeCompleted(satisfaction);
-            Souvenir.SouvenirManager.Instance.NotifyMonsterTradeCompletedWithRace(satisfaction, race);
+            GameEventCenter.Publish(new MonsterTradeCompletedEvent(customerId, item.ItemId, satisfaction, (int)price, race));
 
             tradeView.FadeOutCustomerThenCallback(() => NextGuest());
         }
         else
         {
             Debug.Log($"交易失敗: {satisfaction}");
-            // 廣播交易失敗給紀念品系統（例如：累積失敗次數）
-            string failedRace = currentmonsterGuest?.monsterCustomer?.Race ?? string.Empty;
-            Souvenir.SouvenirManager.Instance.NotifyMonsterTradeFailed(failedRace);
+            GameEventCenter.Publish(new MonsterTradeFailedEvent(customerId, item.ItemId, satisfaction, race));
             // 交易失敗
             GuestLeave();
         }

@@ -10,21 +10,20 @@ public class AchievementComplete : MonoBehaviour
     public TextMeshProUGUI DescriptionText;
     public void OnEnable()
     {
-       UIEvents.OnAchievementUnlocked += Setup;
+       GameEventCenter.Subscribe<AchievementUnlockedEvent>(Setup);
     }
     public void OnDisable()
     {
-        UIEvents.OnAchievementUnlocked -= Setup;
+        GameEventCenter.Unsubscribe<AchievementUnlockedEvent>(Setup);
     }
-    public void Setup(AchievementBase achievement)
+    public void Setup(AchievementUnlockedEvent eventData)
     {
-        
-        if (achievement == null) return;
+        if (eventData == null) return;
         // 顯示成就名稱
-        if (NameText != null) NameText.text = achievement.AchievementName;
+        if (NameText != null) NameText.text = eventData.AchievementName;
 
         // 顯示成就描述
-        if (DescriptionText != null) DescriptionText.text = achievement.Description;
+        if (DescriptionText != null) DescriptionText.text = eventData.Description;
         Panel.SetActive(true);
     }
 }

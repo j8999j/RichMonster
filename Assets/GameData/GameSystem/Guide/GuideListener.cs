@@ -40,12 +40,12 @@ public class DialogueEndListener : GuideListener
 public class PurchaseItemListener : GuideListener
 {
     protected override void OnStartListen()
-        => DataManager.Instance.OnItemPurchased += OnPurchased;
+        => GameEventCenter.Subscribe<ItemPurchasedEvent>(OnPurchased);
 
     protected override void OnStopListen()
-        => DataManager.Instance.OnItemPurchased -= OnPurchased;
+        => GameEventCenter.Unsubscribe<ItemPurchasedEvent>(OnPurchased);
 
-    private void OnPurchased() => onTriggered?.Invoke();
+    private void OnPurchased(ItemPurchasedEvent eventData) => onTriggered?.Invoke();
 }
 
 // ─────────────────────────────────────────────────────

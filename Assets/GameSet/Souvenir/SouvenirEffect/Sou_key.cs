@@ -28,16 +28,13 @@ namespace Souvenir
             if (player.PlayingStatus == DayPhase.AfterNoon)
             {
                 PlayerInfoUIEvents.InvokeCloseAll(); // 關閉隨身包以解除玩家鎖定
-                GameManager.Instance.gameFlow.NextDay();
-                GameManager.Instance.GoToMonsterScene();
-                DataManager.Instance.SetIsTrade(false);
+                GoToMonsterWorld();
                 return true;
             }
             else if (IsReturnHomeState())
             {
                 PlayerInfoUIEvents.InvokeCloseAll();
-                GameManager.Instance.gameFlow.SwitchGameStageAndSave(DayPhase.HumanDay);
-                GameManager.Instance.GoToHumanScene();
+                ReturnHome();
                 return true;
             }
             else
@@ -65,6 +62,18 @@ namespace Souvenir
             return player != null
                 && player.PlayingStatus == DayPhase.Night
                 && player.IsTrade;
+        }
+
+        private static async void GoToMonsterWorld()
+        {
+            await GameManager.Instance.gameFlow.NextDayAsync();
+            GameManager.Instance.GoToMonsterScene();
+        }
+
+        private static async void ReturnHome()
+        {
+            await GameManager.Instance.gameFlow.SwitchGameStageAndSaveAsync(DayPhase.HumanDay);
+            GameManager.Instance.GoToHumanScene();
         }
         #endregion
     }

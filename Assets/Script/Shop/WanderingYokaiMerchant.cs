@@ -245,6 +245,7 @@ namespace Shop
                 SyncPurchaseState(TodayShopItemList);
                 _shopUIView.RefreshAll();
                 _shopUIView.PlayBuySuccessSfx();
+                GameEventCenter.Publish(new ItemPurchasedEvent(ShopID, shelfSlot.Item.Id, shelfSlot.Price, GameCurrencyType.MonsterGold));
             }
             else
             {

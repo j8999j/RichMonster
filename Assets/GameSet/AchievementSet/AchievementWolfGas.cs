@@ -23,14 +23,14 @@ public class AchievementWolfGas : AchievementBase, IAchievementHiddenCondition
         DataManager.Instance.UpdateAchievementSaveData(this);
     }
     protected override void SubscribeEvents() =>
-        AchievementEvents.OnTransactionCompleted += CheckCondition;
+        GameEventCenter.Subscribe<MonsterTradeCompletedEvent>(CheckCondition);
 
     protected override void UnsubscribeEvents() =>
-        AchievementEvents.OnTransactionCompleted -= CheckCondition;
+        GameEventCenter.Unsubscribe<MonsterTradeCompletedEvent>(CheckCondition);
 
-    private void CheckCondition(string customerId, string itemId)
+    private void CheckCondition(MonsterTradeCompletedEvent eventData)
     {
-        if (customerId == "Wolf" && itemId == "WolfGas")
+        if (eventData.CustomerId == "Wolf" && eventData.ItemId == "WolfGas")
         {
             CompletedAchievement();
             SaveData();

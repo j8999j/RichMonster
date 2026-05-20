@@ -95,39 +95,41 @@ public class ScratchCardShop : MonoBehaviour, IInteractable, IMapGuideTarget
     private void SettlePrize(ScratchCardPrizeType prize)
     {
         int goldReward = 0;
+        int prizeLevel = 6;
 
         switch (prize)
         {
             case ScratchCardPrizeType.GrandPrize:
                 goldReward = 500000;
-                AchievementEvents.ScratchCardCompleted(0);
+                prizeLevel = 0;
                 break;
             case ScratchCardPrizeType.FirstPrize:
                 goldReward = 5000;
-                AchievementEvents.ScratchCardCompleted(1);
+                prizeLevel = 1;
                 break;
             case ScratchCardPrizeType.SecondPrize:
                 goldReward = 2000;
-                AchievementEvents.ScratchCardCompleted(2);
+                prizeLevel = 2;
                 break;
             case ScratchCardPrizeType.ThirdPrize:
                 goldReward = 500;
-                AchievementEvents.ScratchCardCompleted(3);
+                prizeLevel = 3;
                 break;
             case ScratchCardPrizeType.FourthPrize:
                 goldReward = 300;
-                AchievementEvents.ScratchCardCompleted(4);
+                prizeLevel = 4;
                 break;
             case ScratchCardPrizeType.FifthPrize:
                 goldReward = 100;
-                AchievementEvents.ScratchCardCompleted(5);
+                prizeLevel = 5;
                 break;
             case ScratchCardPrizeType.NoWin:
                 goldReward = 0;
-                AchievementEvents.ScratchCardCompleted(6);
+                prizeLevel = 6;
                 break;
         }
         DataManager.Instance.ModifyGold(goldReward);
+        GameEventCenter.Publish(new ScratchCardCompletedEvent(prizeLevel, goldReward));
         Debug.Log($"[ScratchCardShop] 恭喜獲得 {prize}！獎勵金幣: {goldReward}");
         ShowPrizePanel(prize);
     }

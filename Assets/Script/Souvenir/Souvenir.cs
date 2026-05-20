@@ -24,7 +24,7 @@ public class ISouvenirBagView
 #endregion
 namespace Souvenir
 {
-    // 移除舊的 SouvenirEvent，因為目前統一使用 SouvenirManager 直接廣播
+    // 紀念品效果由 SouvenirEffectDispatcher 統一分派。
 
     #region SouvenirEffectInterface
     /// <summary> 每局開始時立即套用的一次性效果介面（例如：增加初始金幣） </summary>

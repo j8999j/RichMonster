@@ -15,12 +15,12 @@ namespace AchievementLibrary
         }
         protected override void SubscribeEvents()
         {
-            AchievementEvents.OnGoldChanged += CheckCondition;
+            GameEventCenter.Subscribe<CurrencyChangedEvent>(CheckCondition);
         }
 
         protected override void UnsubscribeEvents()
         {
-            AchievementEvents.OnGoldChanged -= CheckCondition;
+            GameEventCenter.Unsubscribe<CurrencyChangedEvent>(CheckCondition);
         }
         public override void Initialize()
         {
@@ -36,11 +36,13 @@ namespace AchievementLibrary
             }
             base.Initialize();
         }
-        private void CheckCondition(int gold, int goldChange)
+        private void CheckCondition(CurrencyChangedEvent eventData)
         {
-            if (goldChange >= 0)
+            if (eventData.CurrencyType != GameCurrencyType.Gold) return;
+
+            if (eventData.Delta >= 0)
             {
-                goldRecorder += goldChange;
+                goldRecorder += eventData.Delta;
             }
             if (goldRecorder >= 100000) // 企劃書中的關鍵道具 ID
             {

@@ -23,14 +23,14 @@ public class AchievementMyGo : AchievementBase, IAchievementHiddenCondition
         DataManager.Instance.UpdateAchievementSaveData(this);
     }
     protected override void SubscribeEvents() =>
-        AchievementEvents.OnTransactionCompleted += CheckCondition;
+        GameEventCenter.Subscribe<MonsterTradeCompletedEvent>(CheckCondition);
 
     protected override void UnsubscribeEvents() =>
-        AchievementEvents.OnTransactionCompleted -= CheckCondition;
+        GameEventCenter.Unsubscribe<MonsterTradeCompletedEvent>(CheckCondition);
 
-    private void CheckCondition(string customerId, string itemId)
+    private void CheckCondition(MonsterTradeCompletedEvent eventData)
     {
-        if (customerId == "Kaguya-hime" && itemId == "Compass")
+        if (eventData.CustomerId == "Kaguya-hime" && eventData.ItemId == "Compass")
         {
             CompletedAchievement();
             SaveData();

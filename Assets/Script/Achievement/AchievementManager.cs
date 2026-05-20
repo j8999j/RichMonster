@@ -109,8 +109,11 @@ public class AchievementManager : Singleton<AchievementManager>
     private void OnAchievementUnlocked(AchievementBase achievement)
     {
         Debug.Log($"[AchievementManager]成就解鎖: {achievement.AchievementName}");
-        // 可在此擴充：儲存進度、顯示 UI 通知等
-        UIEvents.AchievementUnlocked(achievement);
+        GameEventCenter.Publish(new AchievementUnlockedEvent(
+            achievement.AchievementID,
+            achievement.AchievementName,
+            achievement.Description,
+            achievement.Level));
     }
 
     #region Public Query API

@@ -101,13 +101,13 @@ namespace GameSystem
             dataManager.SetCurrentPlayer(newPlayerData);
             await dataManager.SaveCurrentPlayerAsync(slot);
             Debug.Log($"[GameManager] 開始新遊戲，存檔欄位: {slot}, 種子: {newPlayerData.MasterSeed}");
-            InitializeGame(slot);
+            InitializeGame(slot, true);
         }
 
         /// <summary>
         /// 根據存檔欄位初始化遊戲
         /// </summary>
-        public void InitializeGame(int slot)
+        public void InitializeGame(int slot, bool applyStartEffects = false)
         {
             var playerData = dataManager.CurrentPlayerData as PlayerData;
             if (playerData == null)
@@ -128,11 +128,12 @@ namespace GameSystem
             {
                 // 場景載入完成後才執行
                 DataManager.Instance.ModifyCurrentDay(playerData.DaysPlayed);
-                GameFlowEvents.InvokeDayPhaseChanged(playerData.PlayingStatus);
-                GuaranteeDepositGuide.Refresh();
-                AuctionEntryFeeGuide.Refresh();
-                AuctionDayGuide.Refresh();
-                Souvenir.SouvenirManager.Instance.ApplyAllStartEffects();
+                GameEventCenter.Publish(new DayPhaseChangedEvent(playerData.PlayingStatus));
+                if (applyStartEffects)
+                {
+                    Souvenir.SouvenirManager.Instance.ApplyAllStartEffects();
+                    _ = DataManager.Instance.SaveCurrentPlayerAsync(slot);
+                }
                 gameFlow.StartTutorial();
                 // 玩家初始化已由 OnSceneLoadComplete 事件處理
             });
@@ -269,14 +270,6 @@ namespace GameSystem
         }
         #endregion
         #region 場景轉換捷徑方法（透過 SceneTransitionManager）
-        private void BlackView()
-        {
-
-        }
-        public void LoadImage()
-        {
-
-        }
         /// <summary>
         /// 載入指定場景
         /// </summary>
@@ -297,12 +290,16 @@ namespace GameSystem
         /// </summary>
         public void GoToMonsterScene() => sceneTransitionManager.GoToMonsterScene();
         /// <summary>
-        /// 進入下一天（從夜晚結束進入新的白天）
+        /// 進入下一天夜晚並前往妖怪世界
         /// </summary>
-        public void GoToNextDay()
+        public async void GoToNextDay()
         {
-            gameFlow?.NextDay();
-            sceneTransitionManager.GoToHumanScene();
+            if (gameFlow != null)
+            {
+                await gameFlow.NextDayAsync();
+            }
+
+            sceneTransitionManager.GoToMonsterScene();
         }
         #endregion
     }

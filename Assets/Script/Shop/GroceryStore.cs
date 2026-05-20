@@ -142,8 +142,7 @@ namespace Shop
                 _shopUIView.RefreshAll();
                 _shopUIView.PlayBuySuccessSfx();
                 
-                // 通知紀念品系統 (觸發買十送一等效果)
-                Souvenir.SouvenirManager.Instance.NotifyItemPurchased(ShopID, shelfSlot.Item.Id, 1);
+                GameEventCenter.Publish(new ItemPurchasedEvent(ShopID, shelfSlot.Item.Id, shelfSlot.Price, GameCurrencyType.Gold));
             }
             else
             {

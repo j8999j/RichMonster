@@ -356,9 +356,9 @@ public class HumanOrderMode : MonoBehaviour
     }
     #endregion
     #region UI 操作
-    private void SwitchToAfternoon()
+    private async void SwitchToAfternoon()
     {
-        GameManager.Instance.gameFlow.SwitchGameStageAndSave(DayPhase.AfterNoon);
+        await GameManager.Instance.gameFlow.SwitchGameStageAndSaveAsync(DayPhase.AfterNoon);
     }
     private void OnSelectedOrder(HumanLargeOrder order)
     {
@@ -446,7 +446,7 @@ public class HumanOrderMode : MonoBehaviour
             int TradePrice = LargeOrderTrade(SelectedOrderItems, SelectedLargeOrder);
             DataManager.Instance.ModifyGold(TradePrice);
             List<string> itemIds = SelectedOrderItems.Select(item => item.ItemId).ToList();
-            AchievementEvents.CompleteOrder(SelectedLargeOrder.OrderId, itemIds, TradePrice);
+            GameEventCenter.Publish(new HumanOrderCompletedEvent(SelectedLargeOrder.OrderId, itemIds, TradePrice, true));
             foreach (var item in SelectedOrderItems)
             {
                 DataManager.Instance.RemoveItem(item);
@@ -466,7 +466,7 @@ public class HumanOrderMode : MonoBehaviour
             int TradePrice = SmallOrderTrade(SelectedOrderItems[0], SelectedSmallOrder);
             DataManager.Instance.ModifyGold(TradePrice);
             List<string> itemIds = SelectedOrderItems.Select(item => item.ItemId).ToList();
-            AchievementEvents.CompleteOrder(SelectedSmallOrder.OrderId, itemIds, TradePrice);
+            GameEventCenter.Publish(new HumanOrderCompletedEvent(SelectedSmallOrder.OrderId, itemIds, TradePrice, false));
             DataManager.Instance.RemoveItem(SelectedOrderItems[0]);
             // 刷新訂單列表顯示
             ShowTodayOrder(false);

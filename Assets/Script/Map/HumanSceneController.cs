@@ -18,15 +18,15 @@ public class HumanSceneController : MonoBehaviour
     [SerializeField] private float fadeDuration = 0.3f;
     private void OnEnable()
     {
-        GameFlowEvents.OnDayPhaseChanged += SwitchDayPhase;
+        GameEventCenter.Subscribe<DayPhaseChangedEvent>(SwitchDayPhase);
     }
     private void OnDisable()
     {
-        GameFlowEvents.OnDayPhaseChanged -= SwitchDayPhase;
+        GameEventCenter.Unsubscribe<DayPhaseChangedEvent>(SwitchDayPhase);
     }
-    private void SwitchDayPhase(DayPhase state)
+    private void SwitchDayPhase(DayPhaseChangedEvent eventData)
     {
-        switch (state)
+        switch (eventData.Phase)
         {
             case DayPhase.AfterNoon:
                 LoadingScene(SwitchToNoon);

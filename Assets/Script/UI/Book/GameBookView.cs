@@ -112,7 +112,7 @@ public class GameBookView : MonoBehaviour, IPlayerInfoPage
     private readonly Color _activeColor = Color.white;
     private readonly Color _dimColor = new Color(0.5f, 0.5f, 0.5f, 1f);
     private bool _monsterContentHighlightRegistered;
-    private DataManager _subscribedBookDataManager;
+    private bool _isSubscribedBookDataChanged;
     private Coroutine _bookNotificationRefreshRoutine;
 
     private void Awake()
@@ -797,24 +797,29 @@ public class GameBookView : MonoBehaviour, IPlayerInfoPage
 
     private void SubscribeBookDataChanged()
     {
-        if (_subscribedBookDataManager != null || DataManager.Instance == null)
+        if (_isSubscribedBookDataChanged)
         {
             return;
         }
 
-        _subscribedBookDataManager = DataManager.Instance;
-        _subscribedBookDataManager.BookDataChanged += RefreshBookNotificationState;
+        GameEventCenter.Subscribe<BookDataChangedEvent>(OnBookDataChanged);
+        _isSubscribedBookDataChanged = true;
     }
 
     private void UnsubscribeBookDataChanged()
     {
-        if (_subscribedBookDataManager == null)
+        if (!_isSubscribedBookDataChanged)
         {
             return;
         }
 
-        _subscribedBookDataManager.BookDataChanged -= RefreshBookNotificationState;
-        _subscribedBookDataManager = null;
+        GameEventCenter.Unsubscribe<BookDataChangedEvent>(OnBookDataChanged);
+        _isSubscribedBookDataChanged = false;
+    }
+
+    private void OnBookDataChanged(BookDataChangedEvent eventData)
+    {
+        RefreshBookNotificationState();
     }
 
     /// <summary>

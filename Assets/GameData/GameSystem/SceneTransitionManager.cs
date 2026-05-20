@@ -114,7 +114,6 @@ namespace GameSystem
                 return;
             }
 
-            _dataManager.ModifyCurrentDayPhase(_dataManager.CurrentPlayerData.PlayingStatus);
             LoadScene(SCENE_HUMAN, onComplete);
         }
 
@@ -131,7 +130,6 @@ namespace GameSystem
                 return;
             }
 
-            _dataManager.ModifyCurrentDayPhase(DayPhase.Night);
             LoadScene(SCENE_MONSTER, onComplete);
         }
 

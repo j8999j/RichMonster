@@ -31,7 +31,7 @@ public class MainButtonManager : MonoBehaviour
     [SerializeField] private Sprite nightSprite;
 
     private DataManager subscribedDataManager;
-    private DataManager subscribedBookDataManager;
+    private bool isSubscribedBookDataChanged;
     private Coroutine bookNotificationRefreshRoutine;
     private bool isAuctionHidden;
 
@@ -43,7 +43,7 @@ public class MainButtonManager : MonoBehaviour
     private void OnEnable()
     {
         EnsureMainUiRoot();
-        GameFlowEvents.OnDayPhaseChanged += OnDayPhaseChanged;
+        GameEventCenter.Subscribe<DayPhaseChangedEvent>(OnDayPhaseChanged);
         SubscribePlayerMainView();
         SubscribeBookDataChanged();
         QueueBookNotificationRefresh();
@@ -51,7 +51,7 @@ public class MainButtonManager : MonoBehaviour
 
     private void OnDisable()
     {
-        GameFlowEvents.OnDayPhaseChanged -= OnDayPhaseChanged;
+        GameEventCenter.Unsubscribe<DayPhaseChangedEvent>(OnDayPhaseChanged);
         UnsubscribePlayerMainView();
         if (bookNotificationRefreshRoutine != null)
         {
@@ -78,6 +78,11 @@ public class MainButtonManager : MonoBehaviour
     /// <summary>
     /// 根據遊戲階段切換按鈕顯示
     /// </summary>
+    private void OnDayPhaseChanged(DayPhaseChangedEvent eventData)
+    {
+        OnDayPhaseChanged(eventData.Phase);
+    }
+
     private void OnDayPhaseChanged(DayPhase phase)
     {
         if (isAuctionHidden)
@@ -283,20 +288,25 @@ public class MainButtonManager : MonoBehaviour
 
     private void SubscribeBookDataChanged()
     {
-        if (subscribedBookDataManager != null || DataManager.Instance == null)
+        if (isSubscribedBookDataChanged)
             return;
 
-        DataManager.Instance.BookDataChanged += UpdateBookNotificationIcon;
-        subscribedBookDataManager = DataManager.Instance;
+        GameEventCenter.Subscribe<BookDataChangedEvent>(OnBookDataChanged);
+        isSubscribedBookDataChanged = true;
     }
 
     private void UnsubscribeBookDataChanged()
     {
-        if (subscribedBookDataManager == null)
+        if (!isSubscribedBookDataChanged)
             return;
 
-        subscribedBookDataManager.BookDataChanged -= UpdateBookNotificationIcon;
-        subscribedBookDataManager = null;
+        GameEventCenter.Unsubscribe<BookDataChangedEvent>(OnBookDataChanged);
+        isSubscribedBookDataChanged = false;
+    }
+
+    private void OnBookDataChanged(BookDataChangedEvent eventData)
+    {
+        UpdateBookNotificationIcon();
     }
 
     private void QueueBookNotificationRefresh()

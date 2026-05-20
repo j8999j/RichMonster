@@ -24,14 +24,14 @@ public class AchievementGodLuck : AchievementBase
             DataManager.Instance.UpdateAchievementSaveData(this);
         }
         protected override void SubscribeEvents() =>
-            AchievementEvents.OnScratchCardCompleted += CheckCondition;
+            GameEventCenter.Subscribe<ScratchCardCompletedEvent>(CheckCondition);
 
         protected override void UnsubscribeEvents() =>
-            AchievementEvents.OnScratchCardCompleted -= CheckCondition;
+            GameEventCenter.Unsubscribe<ScratchCardCompletedEvent>(CheckCondition);
 
-        private void CheckCondition(int prizeLevel)
+        private void CheckCondition(ScratchCardCompletedEvent eventData)
         {
-            if (prizeLevel == 0)
+            if (eventData.PrizeLevel == 0)
             {
                 CompletedAchievement();
                 SaveData();

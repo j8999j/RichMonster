@@ -19,7 +19,7 @@ namespace Souvenir
             = new Dictionary<string, SpecialSouvenir>();
 
         // 統一索引：SouvenirID → SouvenirBase（同時涵蓋兩種紀念品）
-        // 供 ForEachOwnedSouvenir 等高頻廣播路徑使用，避免每個 id 兩次 dict lookup
+        // 供效果分派器查找本局持有的紀念品實例
         private Dictionary<string, SouvenirBase> _souvenirById
             = new Dictionary<string, SouvenirBase>();
 
@@ -28,6 +28,7 @@ namespace Souvenir
 
         private bool _isInitialized = false;
         public bool IsInitialized => _isInitialized;
+        private SouvenirEffectDispatcher _effectDispatcher;
 
         /// <summary>
         /// 初始化系統：透過反射找出所有紀念品腳本並實例化
@@ -110,8 +111,10 @@ namespace Souvenir
             }
 
             _isInitialized = true;
+            _effectDispatcher = new SouvenirEffectDispatcher(GetOwnedSouvenirs, GetAllSpecialSouvenirsForEffects);
             SnapshotOwnedSouvenirs();
             RegisterAll();
+            _effectDispatcher.SubscribeGameEvents();
             Debug.Log($"[SouvenirManager] 初始化完成，共載入 {_achievementSouvenirs.Count} 個成就紀念品與 {_specialSouvenirs.Count} 個特殊紀念品");
         }
 
@@ -255,29 +258,22 @@ namespace Souvenir
             RegisterAll();
         }
 
-        private void ForEachOwnedSouvenir<T>(Action<T> action) where T : class
+        private IEnumerable<SouvenirBase> GetOwnedSouvenirs()
         {
             foreach (var id in _ownedSouvenirIds)
             {
-                if (_souvenirById.TryGetValue(id, out var souvenir) && souvenir is T target)
+                if (_souvenirById.TryGetValue(id, out var souvenir))
                 {
-                    action(target);
+                    yield return souvenir;
                 }
             }
         }
 
-        /// <summary>
-        /// 對所有特殊紀念品（無論是否持有）執行指定動作。
-        /// 用於進度計數廣播，讓未收集的紀念品也能累積條件進度。
-        /// </summary>
-        private void ForEachAllSpecialSouvenirs<T>(Action<T> action) where T : class
+        private IEnumerable<SpecialSouvenir> GetAllSpecialSouvenirsForEffects()
         {
             foreach (var souvenir in _specialSouvenirs.Values)
             {
-                if (souvenir is T target)
-                {
-                    action(target);
-                }
+                yield return souvenir;
             }
         }
 
@@ -375,6 +371,7 @@ namespace Souvenir
                         }
                     }
 
+                    GameEventCenter.Publish(new SouvenirPurchasedEvent(souvenirId, ach.Cost, GetRemainingPoints()));
                     Debug.Log($"[SouvenirShop] 購買 {souvenirId} 成功（花費 {ach.Cost} 點），下次開新局時會被納入 HoldAchievementSouvenirID");
                     return true;
                 }
@@ -413,11 +410,7 @@ namespace Souvenir
         /// </summary>
         public void RegisterAll()
         {
-            foreach (var souvenir in _specialSouvenirs.Values)
-            {
-                souvenir.Register();
-            }
-            Debug.Log("[SouvenirManager] 已註冊所有特殊紀念品事件");
+            _effectDispatcher?.RegisterAllSpecialSouvenirs();
         }
 
         /// <summary>
@@ -425,11 +418,7 @@ namespace Souvenir
         /// </summary>
         public void UnregisterAll()
         {
-            foreach (var souvenir in _specialSouvenirs.Values)
-            {
-                souvenir.Unregister();
-            }
-            Debug.Log("[SouvenirManager] 已取消註冊所有紀念品事件");
+            _effectDispatcher?.UnregisterAllSpecialSouvenirs();
         }
 
         /// <summary>
@@ -437,8 +426,7 @@ namespace Souvenir
         /// </summary>
         public void ApplyAllStartEffects()
         {
-            ForEachOwnedSouvenir<IApplyStartEffect>(startEffect => startEffect.ApplyStartEffect());
-            Debug.Log("[SouvenirManager] 已觸發所有持有的 IApplyStartEffect 開局效果");
+            _effectDispatcher?.ApplyAllStartEffects();
         }
 
         /// <summary>
@@ -446,16 +434,7 @@ namespace Souvenir
         /// </summary>
         public void ApplyAllShopDiscounts(string shopId, List<Shop.ShelfSlot> items)
         {
-            if (items == null || items.Count == 0) return;
-            ForEachOwnedSouvenir<IShopDiscountProvider>(discountProvider => discountProvider.ApplyShopDiscount(shopId, items));
-        }
-
-        /// <summary>
-        /// 廣播商店購買事件，讓實作 IShopPurchaseListener 的紀念品處理如買十送一等計數
-        /// </summary>
-        public void NotifyItemPurchased(string shopId, string itemId, int amount)
-        {
-            ForEachOwnedSouvenir<IShopPurchaseListener>(purchaseListener => purchaseListener.OnItemPurchased(shopId, itemId, amount));
+            _effectDispatcher?.ApplyAllShopDiscounts(shopId, items);
         }
 
         /// <summary>
@@ -465,45 +444,9 @@ namespace Souvenir
             string shopId,
             List<Shop.ShelfSlot> items)
         {
-            var visualInfos = new List<ShelfSlotVisualInfo>();
-            if (items == null) return visualInfos;
-            foreach (var slot in items)
-            {
-                var info = new ShelfSlotVisualInfo { SlotIndex = slot.SlotIndex };
-                visualInfos.Add(info);
-                slot.VisualInfo = info;
-            }
-
-            // 讓所有符合條件且玩家已持有的紀念品填入視覺資訊
-            ForEachOwnedSouvenir<IShopVisualModifier>(vm => vm.ModifyVisual(shopId, visualInfos));
-
-            return visualInfos;
-        }
-
-        /// <summary>
-        /// 廣播妖怪交易完成事件，讓實作 IMonsterTradeListener 的紀念品給予額外獎勵
-        /// </summary>
-        public void NotifyMonsterTradeCompleted(TradeSatisfaction satisfaction)
-        {
-            ForEachOwnedSouvenir<IMonsterTradeListener>(listener => listener.OnTradeCompleted(satisfaction));
-        }
-
-        /// <summary>
-        /// 廣播妖怪交易完成事件（含種族資訊）。
-        /// 使用 ForEachAllSpecialSouvenirs 以便尚未解鎖的進度型紀念品也能累積計數。
-        /// </summary>
-        public void NotifyMonsterTradeCompletedWithRace(TradeSatisfaction satisfaction, string race)
-        {
-            ForEachAllSpecialSouvenirs<IMonsterTradeWithRaceListener>(listener => listener.OnTradeCompletedWithRace(satisfaction, race));
-        }
-
-        /// <summary>
-        /// 廣播妖怪交易失敗事件。
-        /// 使用 ForEachAllSpecialSouvenirs 以便尚未解鎖的進度型紀念品也能累積計數。
-        /// </summary>
-        public void NotifyMonsterTradeFailed(string race)
-        {
-            ForEachAllSpecialSouvenirs<IMonsterTradeFailedListener>(listener => listener.OnTradeFailed(race));
+            return _effectDispatcher != null
+                ? _effectDispatcher.BuildShopVisualInfos(shopId, items)
+                : new List<ShelfSlotVisualInfo>();
         }
 
         /// <summary>
@@ -511,8 +454,7 @@ namespace Souvenir
         /// </summary>
         public void ApplyAllDailyEffects()
         {
-            ForEachOwnedSouvenir<IDailyEffect>(daily => daily.ApplyDailyEffect());
-            Debug.Log("[SouvenirManager] 已觸發所有每日效果");
+            _effectDispatcher?.ApplyAllDailyEffects();
         }
 
         /// <summary>
@@ -520,16 +462,7 @@ namespace Souvenir
         /// </summary>
         public bool IsScratchCardFree()
         {
-            bool isFree = false;
-            // IFreeScratchCardProvider 查詢
-            ForEachOwnedSouvenir<IFreeScratchCardProvider>(provider =>
-            {
-                if (provider.IsScratchCardFree())
-                {
-                    isFree = true;
-                }
-            });
-            return isFree;
+            return _effectDispatcher != null && _effectDispatcher.IsScratchCardFree();
         }
 
         /// <summary>
@@ -537,12 +470,7 @@ namespace Souvenir
         /// </summary>
         public int GetExtraBagCapacity()
         {
-            int extraCapacity = 0;
-            ForEachOwnedSouvenir<IBagCapacityProvider>(provider =>
-            {
-                extraCapacity += provider.GetExtraCapacity();
-            });
-            return extraCapacity;
+            return _effectDispatcher != null ? _effectDispatcher.GetExtraBagCapacity() : 0;
         }
 
         #endregion
@@ -552,11 +480,13 @@ namespace Souvenir
         /// </summary>
         public void Reset()
         {
+            _effectDispatcher?.UnsubscribeGameEvents();
             UnregisterAll();
             _achievementSouvenirs.Clear();
             _specialSouvenirs.Clear();
             _souvenirById.Clear();
             _ownedSouvenirIds.Clear();
+            _effectDispatcher = null;
             _isInitialized = false;
             Debug.Log("[SouvenirManager] 紀念品系統已重置");
         }

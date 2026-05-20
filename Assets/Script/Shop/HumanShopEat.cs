@@ -133,6 +133,7 @@ namespace Shop
                 // **關鍵：通知 View 刷新 (包含列表變灰 + 按鈕變灰)**
                 _shopUIView.RefreshAll();
                 _shopUIView.PlayBuySuccessSfx();
+                GameEventCenter.Publish(new ItemPurchasedEvent(ShopID, shelfSlot.Item.Id, shelfSlot.Price, GameCurrencyType.Gold));
             }
             else
             {

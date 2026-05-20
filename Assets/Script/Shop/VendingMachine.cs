@@ -136,7 +136,7 @@ namespace Shop
                 SyncPurchaseState(TodayShopItemList);
                 _shopUIView.RefreshAll();
                 _shopUIView.PlayBuySuccessSfx();
-                Souvenir.SouvenirManager.Instance.NotifyItemPurchased(ShopID, shelfSlot.Item.Id, 1);
+                GameEventCenter.Publish(new ItemPurchasedEvent(ShopID, shelfSlot.Item.Id, shelfSlot.Price, GameCurrencyType.Gold));
             }
             else
             {

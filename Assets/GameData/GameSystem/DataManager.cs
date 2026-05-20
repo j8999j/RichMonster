@@ -84,8 +84,6 @@ public class DataManager : Singleton<DataManager>
     #region Events (事件)
     /// <summary> 玩家主畫面資料更新事件 (Day, Gold, PlayingStatus) </summary>
     public event Action<int, int, DayPhase> PlayerMainViewUpdate;
-    public event Action OnItemPurchased;
-    public event Action BookDataChanged;
     #endregion
 
     public IGameDataProvider GameDataProvider => _gameDataProvider ??= new GameDataLoader();
@@ -387,7 +385,7 @@ public class DataManager : Singleton<DataManager>
         _achievementSaveDict = new Dictionary<string, IAchievementSave>();
         _specialSouvenirSaveDict = new Dictionary<string, ISpecialSouvenirSave>();
         OnBookDataChanged = false;
-        BookDataChanged?.Invoke();
+        GameEventCenter.Publish(new BookDataChangedEvent(false));
         Debug.Log("[DataManager] 圖鑑資料快取已清空");
     }
 
@@ -398,9 +396,11 @@ public class DataManager : Singleton<DataManager>
     {
         if (_bookData == null) return;
 
+        bool wasUnlocked = false;
         var existing = _bookData.ItemBookData.ItemBooks.Find(x => x.ItemID == itemId);
         if (existing != null)
         {
+            wasUnlocked = !existing.IsBooked;
             existing.IsBooked = true;
         }
         else
@@ -410,10 +410,16 @@ public class DataManager : Singleton<DataManager>
                 ItemID = itemId,
                 IsBooked = true
             });
+            wasUnlocked = true;
         }
 
         MarkBookDataChanged();
         SaveRepository.SaveBookData(_bookData);
+
+        if (wasUnlocked)
+        {
+            GameEventCenter.Publish(new ItemBookUnlockedEvent(itemId));
+        }
     }
 
     /// <summary>
@@ -440,6 +446,7 @@ public class DataManager : Singleton<DataManager>
             }
 
             _bookData.MonsterBookData.UnlockMonsterInformationID.Add(informationId);
+            GameEventCenter.Publish(new MonsterInformationUnlockedEvent(informationId, monsterId));
 
             // 記錄為新情報（尚未在圖鑑中確認）
             _bookData.MonsterBookData.NewMonsterInformationID ??= new List<string>();
@@ -462,6 +469,7 @@ public class DataManager : Singleton<DataManager>
                         if (!string.IsNullOrEmpty(newStory.MonsterStoryID))
                         {
                             _bookData.MonsterBookData.NewMonsterStoryID.Add(newStory.MonsterStoryID);
+                            GameEventCenter.Publish(new MonsterStoryUnlockedEvent(newStory.MonsterStoryID, monsterId));
                         }
                     }
                 }
@@ -795,13 +803,13 @@ public class DataManager : Singleton<DataManager>
     public void SetBookDataChanged(bool value)
     {
         OnBookDataChanged = value;
-        BookDataChanged?.Invoke();
+        GameEventCenter.Publish(new BookDataChangedEvent(value));
     }
 
     private void MarkBookDataChanged()
     {
         OnBookDataChanged = true;
-        BookDataChanged?.Invoke();
+        GameEventCenter.Publish(new BookDataChangedEvent(true));
     }
 
 
@@ -850,10 +858,11 @@ public class DataManager : Singleton<DataManager>
     {
         if (_currentPlayerData == null) return;
 
+        int before = _currentPlayerData.Gold;
         _currentPlayerData.Gold += amount;
         if (_currentPlayerData.Gold < 0) _currentPlayerData.Gold = 0;
         OnPlayerDataChanged = true;
-        AchievementEvents.GoldChanged(_currentPlayerData.Gold, amount);
+        GameEventCenter.Publish(new CurrencyChangedEvent(GameCurrencyType.Gold, before, _currentPlayerData.Gold, amount));
         AdjustUpdateView();
     }
     /// <summary>
@@ -863,9 +872,11 @@ public class DataManager : Singleton<DataManager>
     {
         if (_currentPlayerData == null) return;
 
+        int before = _currentPlayerData.MonsterGold;
         _currentPlayerData.MonsterGold += amount;
         if (_currentPlayerData.MonsterGold < 0) _currentPlayerData.MonsterGold = 0;
         OnPlayerDataChanged = true;
+        GameEventCenter.Publish(new CurrencyChangedEvent(GameCurrencyType.MonsterGold, before, _currentPlayerData.MonsterGold, amount));
         AdjustUpdateView();
     }
     /// <summary>
@@ -877,7 +888,6 @@ public class DataManager : Singleton<DataManager>
         if (_currentPlayerData.Gold >= amount)
         {
             ModifyGold(-amount);
-            OnItemPurchased?.Invoke();
             return true;
         }
         return false;
@@ -949,12 +959,15 @@ public class DataManager : Singleton<DataManager>
         long calculatedGold = ((long)spentMonsterGold * 3 + 3) / 4;
         gainedGold = calculatedGold > int.MaxValue ? int.MaxValue : (int)calculatedGold;
 
+        int beforeMonsterGold = _currentPlayerData.MonsterGold;
+        int beforeGold = _currentPlayerData.Gold;
         _currentPlayerData.MonsterGold = 0;
         long totalGold = (long)_currentPlayerData.Gold + gainedGold;
         _currentPlayerData.Gold = totalGold > int.MaxValue ? int.MaxValue : (int)totalGold;
 
         OnPlayerDataChanged = true;
-        AchievementEvents.GoldChanged(_currentPlayerData.Gold, gainedGold);
+        GameEventCenter.Publish(new CurrencyChangedEvent(GameCurrencyType.MonsterGold, beforeMonsterGold, _currentPlayerData.MonsterGold, -beforeMonsterGold));
+        GameEventCenter.Publish(new CurrencyChangedEvent(GameCurrencyType.Gold, beforeGold, _currentPlayerData.Gold, gainedGold));
         AdjustUpdateView();
         return true;
     }
@@ -1020,7 +1033,6 @@ public class DataManager : Singleton<DataManager>
     {
         if (_currentPlayerData == null) return;
         if (_currentPlayerData.Inventory == null) _currentPlayerData.Inventory = new Inventory();
-        AchievementEvents.GetItem(itemId);
         if (IsItemInBook(itemId) == false)
         {
             AddItemToBook(itemId);
@@ -1032,6 +1044,7 @@ public class DataManager : Singleton<DataManager>
         };
         _currentPlayerData.Inventory.Items.Add(newItem);
         OnPlayerDataChanged = true;
+        GameEventCenter.Publish(new ItemObtainedEvent(itemId, costPrice));
     }
 
     /// <summary>
@@ -1178,7 +1191,7 @@ public class DataManager : Singleton<DataManager>
     {
         _currentPlayerData.PlayingStatus = dayPhase;
         OnPlayerDataChanged = true;
-        GameFlowEvents.InvokeDayPhaseChanged(dayPhase);
+        GameEventCenter.Publish(new DayPhaseChangedEvent(dayPhase));
         AdjustUpdateView();
     }
 

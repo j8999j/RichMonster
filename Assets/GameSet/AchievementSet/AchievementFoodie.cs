@@ -24,14 +24,14 @@ public class AchievementFoodie : AchievementBase, IAchievementHiddenCondition
             DataManager.Instance.UpdateAchievementSaveData(this);
         }
         protected override void SubscribeEvents() =>
-            AchievementEvents.OnItemObtained += CheckCondition;
+            GameEventCenter.Subscribe<ItemObtainedEvent>(CheckCondition);
 
         protected override void UnsubscribeEvents() =>
-            AchievementEvents.OnItemObtained -= CheckCondition;
+            GameEventCenter.Unsubscribe<ItemObtainedEvent>(CheckCondition);
 
-        private void CheckCondition(string itemId)
+        private void CheckCondition(ItemObtainedEvent eventData)
         {
-            if (DataManager.Instance.GetItemById(itemId).Type == ItemType.Food)
+            if (DataManager.Instance.GetItemById(eventData.ItemId).Type == ItemType.Food)
             {
                 if(DataManager.Instance.GetDistinctItemCountByTypeAndWorld(ItemType.Food, ItemWorld.Human) >= 3)
                 {

@@ -24,14 +24,14 @@ public class AchievementBigDeal : AchievementBase
             DataManager.Instance.UpdateAchievementSaveData(this);
         }
         protected override void SubscribeEvents() =>
-            AchievementEvents.OnOrderCompleted += CheckCondition;
+            GameEventCenter.Subscribe<HumanOrderCompletedEvent>(CheckCondition);
 
         protected override void UnsubscribeEvents() =>
-            AchievementEvents.OnOrderCompleted -= CheckCondition;
+            GameEventCenter.Unsubscribe<HumanOrderCompletedEvent>(CheckCondition);
 
-        private void CheckCondition(string orderId, List<string> itemIds, int gold)
+        private void CheckCondition(HumanOrderCompletedEvent eventData)
         {
-            if (gold > 10000)
+            if (eventData.Gold > 10000)
             {
                 CompletedAchievement();
                 SaveData();

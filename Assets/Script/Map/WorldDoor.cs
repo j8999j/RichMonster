@@ -17,9 +17,9 @@ public class WorldDoor : MonoBehaviour, IInteractable
     {
 
     }
-    void NextDayWorldDoor()
+    async void NextDayWorldDoor()
     {
-        GameManager.Instance.gameFlow.NextDay();
+        await GameManager.Instance.gameFlow.NextDayAsync();
         GameManager.Instance.GoToMonsterScene();
     }
 

@@ -24,8 +24,8 @@ public class WaitForDayPhaseStep : GuideStep
             return;
         }
 
-        GameFlowEvents.OnDayChanged += HandleDayChanged;
-        GameFlowEvents.OnDayPhaseChanged += HandleDayPhaseChanged;
+        GameEventCenter.Subscribe<DayChangedEvent>(HandleDayChanged);
+        GameEventCenter.Subscribe<DayPhaseChangedEvent>(HandleDayPhaseChanged);
     }
 
     public override void Dispose()
@@ -33,12 +33,12 @@ public class WaitForDayPhaseStep : GuideStep
         Unsubscribe();
     }
 
-    private void HandleDayChanged(int day)
+    private void HandleDayChanged(DayChangedEvent eventData)
     {
         TryComplete();
     }
 
-    private void HandleDayPhaseChanged(DayPhase phase)
+    private void HandleDayPhaseChanged(DayPhaseChangedEvent eventData)
     {
         TryComplete();
     }
@@ -69,7 +69,7 @@ public class WaitForDayPhaseStep : GuideStep
 
     private void Unsubscribe()
     {
-        GameFlowEvents.OnDayChanged -= HandleDayChanged;
-        GameFlowEvents.OnDayPhaseChanged -= HandleDayPhaseChanged;
+        GameEventCenter.Unsubscribe<DayChangedEvent>(HandleDayChanged);
+        GameEventCenter.Unsubscribe<DayPhaseChangedEvent>(HandleDayPhaseChanged);
     }
 }

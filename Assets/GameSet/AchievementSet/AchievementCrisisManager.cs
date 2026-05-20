@@ -24,14 +24,14 @@ public class AchievementCrisisManager : AchievementBase, IAchievementHiddenCondi
             DataManager.Instance.UpdateAchievementSaveData(this);
         }
         protected override void SubscribeEvents() =>
-            AchievementEvents.OnDayEndGold += CheckCondition;
+            GameEventCenter.Subscribe<DayEndedEvent>(CheckCondition);
 
         protected override void UnsubscribeEvents() =>
-            AchievementEvents.OnDayEndGold -= CheckCondition;
+            GameEventCenter.Unsubscribe<DayEndedEvent>(CheckCondition);
 
-        private void CheckCondition(int gold)
+        private void CheckCondition(DayEndedEvent eventData)
         {
-            if (gold < 50)
+            if (eventData.Gold < 50)
             {
                 CompletedAchievement();
                 SaveData();
