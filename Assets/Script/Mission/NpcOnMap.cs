@@ -16,7 +16,7 @@ public class NpcOnMap : MonoBehaviour, IInteractable, IMapGuideTarget
     public void LoadData()
     {
         string saveKey = SaveDataKeys.BuildNPCMission(NpcMission.MissionID);
-        var data = DataManager.Instance.GetPlayerSaveData<NPCMissionSave>(saveKey);
+        var data = DataManager.Instance.GetDailySaveData<NPCMissionSave>(saveKey);
         if (data != null && data.LastUpdatedDay == GameManager.Instance.gameFlow.CurrentDay)
         {
             NpcMission.IsFinish = data.IsFinish;

@@ -8,7 +8,7 @@ namespace Souvenir
     /// 跨日不會被重置，跨局只要讀取此存檔即代表永久持有
     /// </summary>
     [Serializable]
-    public class SouvenirShopSaveData : ISaveData
+    public class SouvenirShopSaveData : IRunSaveData
     {
         public string UniqueID { get; set; } = SaveDataKeys.SouvenirShop;
         public int LastUpdatedDay { get; set; }

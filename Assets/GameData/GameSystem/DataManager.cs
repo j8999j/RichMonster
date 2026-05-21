@@ -1252,6 +1252,21 @@ public class DataManager : Singleton<DataManager>
     /// </summary>
     /// <typeparam name="T">必須實作 ISaveData 的資料類型</typeparam>
     /// <param name="key">對應的存檔鍵值</param>
+    public T GetDailySaveData<T>(string key) where T : class, IDailySaveData, new()
+    {
+        return GetPlayerSaveData<T>(key);
+    }
+
+    public T GetRunSaveData<T>(string key) where T : class, IRunSaveData, new()
+    {
+        return GetPersistentSaveData<T>(key);
+    }
+
+    public T GetFlowSaveData<T>(string key) where T : class, IFlowSaveData, new()
+    {
+        return GetPersistentSaveData<T>(key);
+    }
+
     public T GetPlayerSaveData<T>(string key) where T : class, ISaveData, new()
     {
         if (_currentPlayerData == null)
@@ -1317,14 +1332,7 @@ public class DataManager : Singleton<DataManager>
     /// </summary>
     public MonsterTradeProgress GetMonsterTradeHistory()
     {
-        if (_currentPlayerData.GameSaveFile.GameData.ContainsKey(SaveDataKeys.MonsterTradeProgress))
-        {
-            return _currentPlayerData.GameSaveFile.GameData[SaveDataKeys.MonsterTradeProgress] as MonsterTradeProgress;
-        }
-        else
-        {
-            return new MonsterTradeProgress();
-        }
+        return GetFlowSaveData<MonsterTradeProgress>(SaveDataKeys.MonsterTradeProgress);
     }
     #endregion
 }

@@ -41,7 +41,7 @@ public class YokaiPackageSpawner : MonoBehaviour
     private void LoadOrGenerate()
     {
         int currentDay = GameManager.Instance.gameFlow.CurrentDay;
-        var existing = DataManager.Instance.GetPlayerSaveData<YokaiPackageSave>(SaveDataKeys.YokaiPackage);
+        var existing = DataManager.Instance.GetDailySaveData<YokaiPackageSave>(SaveDataKeys.YokaiPackage);
 
         if (existing != null && existing.LastUpdatedDay == currentDay && existing.SpawnIndices.Count > 0)
         {
@@ -161,7 +161,7 @@ public class YokaiPackageSpawner : MonoBehaviour
     }
 }
 
-public class YokaiPackageSave : ISaveData
+public class YokaiPackageSave : IDailySaveData
 {
     public string UniqueID => SaveDataKeys.YokaiPackage;
     public int LastUpdatedDay { get; set; } = 0;

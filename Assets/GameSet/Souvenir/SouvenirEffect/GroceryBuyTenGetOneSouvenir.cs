@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Souvenir
 {
     [System.Serializable]
-    public class GroceryPurchaseSaveData : ISaveData
+    public class GroceryPurchaseSaveData : IRunSaveData
     {
         public string UniqueID { get; set; } = SaveDataKeys.GroceryPurchase;
         public int LastUpdatedDay { get; set; }
@@ -24,7 +24,7 @@ namespace Souvenir
             if (shopId != ShopIDs.GroceryStore) return;
 
             GroceryPurchaseSaveData saveData = DataManager.Instance
-                .GetPersistentSaveData<GroceryPurchaseSaveData>(SaveDataKeys.GroceryPurchase);
+                .GetRunSaveData<GroceryPurchaseSaveData>(SaveDataKeys.GroceryPurchase);
 
             if (string.IsNullOrEmpty(saveData.UniqueID))
             {
@@ -109,7 +109,7 @@ namespace Souvenir
         private int GetCurrentPoints()
         {
             GroceryPurchaseSaveData saveData = DataManager.Instance
-                .GetPersistentSaveData<GroceryPurchaseSaveData>(SaveDataKeys.GroceryPurchase);
+                .GetRunSaveData<GroceryPurchaseSaveData>(SaveDataKeys.GroceryPurchase);
 
             return saveData != null && !string.IsNullOrEmpty(saveData.UniqueID)
                 ? saveData.PurchaseCount

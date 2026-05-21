@@ -69,7 +69,7 @@ public class ScratchCardShop : MonoBehaviour, IInteractable, IMapGuideTarget
 
     private bool LoadData()
     {
-        var data = DataManager.Instance.GetPlayerSaveData<ScratchCardShopData>(SaveDataKeys.ScratchCardShop);
+        var data = DataManager.Instance.GetDailySaveData<ScratchCardShopData>(SaveDataKeys.ScratchCardShop);
         return data.IsScratched;
     }
 
@@ -170,7 +170,7 @@ public class ScratchCardShop : MonoBehaviour, IInteractable, IMapGuideTarget
     }
 }
 
-public class ScratchCardShopData : ISaveData
+public class ScratchCardShopData : IDailySaveData
 {
     public string UniqueID => SaveDataKeys.ScratchCardShop;
     public int LastUpdatedDay { get; set; }

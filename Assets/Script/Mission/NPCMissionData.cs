@@ -10,7 +10,7 @@ public class NPCMissionDataDatabase
 {
     public List<NPCMissionData> NPCMissionData;
 }
-public class NPCMissionSave : ISaveData
+public class NPCMissionSave : IDailySaveData
 {
     public string UniqueID { get; set; }
     public int LastUpdatedDay { get; set; }

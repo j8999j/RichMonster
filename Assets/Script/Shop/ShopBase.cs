@@ -104,7 +104,7 @@ namespace Shop
             if (shelves == null) return result;
 
             var targetShopId = SaveDataKeys.BuildShopShelf(ShopID);
-            ThisShopShelfData = DataManager.Instance.GetPlayerSaveData<ShopShelfData>(targetShopId);
+            ThisShopShelfData = DataManager.Instance.GetDailySaveData<ShopShelfData>(targetShopId);
             if (ThisShopShelfData.LastUpdatedDay != GameManager.Instance.gameFlow.CurrentDay)
             {
                 ThisShopShelfData = new ShopShelfData { UniqueID = targetShopId, Changes = new List<ShopInventoryChange>() };

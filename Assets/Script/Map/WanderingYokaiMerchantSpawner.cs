@@ -29,7 +29,7 @@ public class WanderingYokaiMerchantSpawner : MonoBehaviour
     private void LoadOrGenerate()
     {
         int currentDay = GameManager.Instance.gameFlow.CurrentDay;
-        var existing = DataManager.Instance.GetPlayerSaveData<WanderingYokaiMerchantSave>(SaveDataKeys.WanderingYokaiMerchant);
+        var existing = DataManager.Instance.GetDailySaveData<WanderingYokaiMerchantSave>(SaveDataKeys.WanderingYokaiMerchant);
 
         if (existing != null
             && existing.LastUpdatedDay == currentDay
@@ -80,7 +80,7 @@ public class WanderingYokaiMerchantSpawner : MonoBehaviour
     }
 }
 
-public class WanderingYokaiMerchantSave : ISaveData
+public class WanderingYokaiMerchantSave : IDailySaveData
 {
     public string UniqueID => SaveDataKeys.WanderingYokaiMerchant;
     public int LastUpdatedDay { get; set; } = 0;

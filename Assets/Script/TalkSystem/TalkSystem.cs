@@ -87,6 +87,7 @@ namespace Talksystem
         private bool _isAdvancingDialogue;
         private bool _isSkippingDialogue;
         private float _nextAdvanceInputTime;
+        private Coroutine _skipDialogueCoroutine;
 
         // 等待按鍵後的行為
         private bool _waitClearAfter;
@@ -222,7 +223,7 @@ namespace Talksystem
         /// </summary>
         public void Next()
         {
-            if (!_isDialogueActive || !CanAdvanceInput())
+            if (!_isDialogueActive || _isSkippingDialogue || !CanAdvanceInput())
                 return;
 
             _isAdvancingDialogue = true;
@@ -304,7 +305,9 @@ namespace Talksystem
             if (!_isDialogueActive || _isSkippingDialogue)
                 return;
 
-            StartCoroutine(SkipDialogueWithFadeRoutine());
+            _isSkippingDialogue = true;
+            SetSkipDialogueButtonVisible(false);
+            _skipDialogueCoroutine = StartCoroutine(SkipDialogueWithFadeRoutine());
         }
 
         /// <summary>
@@ -394,7 +397,10 @@ namespace Talksystem
             }
 
             // 開始處理節點
-            ProcessNodes();
+            if (CanContinueProcessingNodes())
+            {
+                ProcessNodes();
+            }
         }
 
         /// <summary>
@@ -402,6 +408,11 @@ namespace Talksystem
         /// </summary>
         private void ProcessNodes()
         {
+            if (!_isDialogueActive || _isSkippingDialogue || _nodes == null)
+            {
+                return;
+            }
+
             while (_currentNodeIndex < _nodes.Count)
             {
                 var node = _nodes[_currentNodeIndex];
@@ -477,6 +488,12 @@ namespace Talksystem
 
         private void FinishDialogue(bool completed, bool raiseEndEvent, bool closePanels)
         {
+            if (_skipDialogueCoroutine != null)
+            {
+                StopCoroutine(_skipDialogueCoroutine);
+                _skipDialogueCoroutine = null;
+            }
+
             if (_typewriterCoroutine != null)
             {
                 StopCoroutine(_typewriterCoroutine);
@@ -530,8 +547,6 @@ namespace Talksystem
 
         private IEnumerator SkipDialogueWithFadeRoutine()
         {
-            _isSkippingDialogue = true;
-
             if (_typewriterCoroutine != null)
             {
                 StopCoroutine(_typewriterCoroutine);
@@ -573,6 +588,7 @@ namespace Talksystem
 
             _currentDisplayText = string.Empty;
             _isSkippingDialogue = false;
+            _skipDialogueCoroutine = null;
             CompleteCurrentDialogue(true, true);
         }
 
@@ -817,7 +833,10 @@ namespace Talksystem
             {
                 Debug.LogWarning("[TalkSystem] 找不到 StoryPlaybackPanel，無法載入故事圖片");
                 _typewriterCoroutine = null;
-                ProcessNodes();
+                if (CanContinueProcessingNodes())
+                {
+                    ProcessNodes();
+                }
                 yield break;
             }
 
@@ -833,7 +852,10 @@ namespace Talksystem
             }
 
             _typewriterCoroutine = null;
-            ProcessNodes();
+            if (CanContinueProcessingNodes())
+            {
+                ProcessNodes();
+            }
         }
 
         private bool StartStoryPanelHide(float duration)
@@ -862,7 +884,10 @@ namespace Talksystem
             }
 
             _typewriterCoroutine = null;
-            ProcessNodes();
+            if (CanContinueProcessingNodes())
+            {
+                ProcessNodes();
+            }
         }
 
         private float GetOptionalFloat(List<string> parameters, int index, float fallback)
@@ -921,6 +946,11 @@ namespace Talksystem
             return !_isAdvancingDialogue && Time.unscaledTime >= _nextAdvanceInputTime;
         }
 
+        private bool CanContinueProcessingNodes()
+        {
+            return _isDialogueActive && !_isSkippingDialogue && _nodes != null;
+        }
+
         private void BlockAdvanceInputBriefly()
         {
             _nextAdvanceInputTime = Time.unscaledTime + Mathf.Max(0f, advanceInputCooldownSeconds);
@@ -933,7 +963,10 @@ namespace Talksystem
         {
             yield return new WaitForSeconds(seconds);
             _typewriterCoroutine = null;
-            ProcessNodes();
+            if (CanContinueProcessingNodes())
+            {
+                ProcessNodes();
+            }
         }
 
         /// <summary>
@@ -949,7 +982,10 @@ namespace Talksystem
                 yield return fadeRoutine;
             }
             _typewriterCoroutine = null;
-            ProcessNodes();
+            if (CanContinueProcessingNodes())
+            {
+                ProcessNodes();
+            }
         }
 
         // ===========================
@@ -996,7 +1032,10 @@ namespace Talksystem
             if (dialogueView == null)
             {
                 _isTyping = false;
-                ProcessNodes();
+                if (CanContinueProcessingNodes())
+                {
+                    ProcessNodes();
+                }
                 yield break;
             }
 
@@ -1008,9 +1047,23 @@ namespace Talksystem
 
             while (visibleChars < totalChars)
             {
+                if (!CanContinueProcessingNodes())
+                {
+                    _isTyping = false;
+                    _typewriterCoroutine = null;
+                    yield break;
+                }
+
                 // 暫停檢查
                 while (_isPaused)
                 {
+                    if (!CanContinueProcessingNodes())
+                    {
+                        _isTyping = false;
+                        _typewriterCoroutine = null;
+                        yield break;
+                    }
+
                     yield return null;
                 }
 
@@ -1026,7 +1079,10 @@ namespace Talksystem
             _typewriterCoroutine = null;
 
             // 打字完成後繼續處理下一個節點
-            ProcessNodes();
+            if (CanContinueProcessingNodes())
+            {
+                ProcessNodes();
+            }
         }
 
         /// <summary>

@@ -351,7 +351,7 @@ public class CollectionMissionTracker : MonoBehaviour
         if (DataManager.Instance == null)
             return new CollectionMissionSaveData();
 
-        var progress = DataManager.Instance.GetPersistentSaveData<CollectionMissionSaveData>(SaveDataKeys.CollectionMission);
+        var progress = DataManager.Instance.GetRunSaveData<CollectionMissionSaveData>(SaveDataKeys.CollectionMission);
         progress.UniqueID = SaveDataKeys.CollectionMission;
         progress.RaceProgress ??= new System.Collections.Generic.List<CollectionMissionRaceProgress>();
         return progress;

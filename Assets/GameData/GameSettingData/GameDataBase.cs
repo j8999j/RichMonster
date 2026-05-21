@@ -196,7 +196,7 @@ public class ShopCategoryDatabase
 /// 商店貨架的存檔資料，紀錄各個商店當局的商品購買狀態
 /// </summary>
 [System.Serializable]
-public class ShopShelfData : ISaveData
+public class ShopShelfData : IDailySaveData
 {
     public string UniqueID { get; set; }
     public int LastUpdatedDay { get; set; }
@@ -223,7 +223,7 @@ public class ShopInventoryChange
 /// 妖怪交易的進度存檔資料
 /// </summary>
 [System.Serializable]
-public class MonsterTradeProgress : ISaveData
+public class MonsterTradeProgress : IFlowSaveData
 {
     public string UniqueID { get; set; } = SaveDataKeys.MonsterTradeProgress;
     public int LastUpdatedDay { get; set; }
@@ -235,7 +235,7 @@ public class MonsterTradeProgress : ISaveData
 /// <summary>
 /// 玩家的訂單歷史與進度紀錄存檔
 /// </summary>
-public class OrderHistoryData : ISaveData
+public class OrderHistoryData : IDailySaveData
 {
     public string UniqueID { get; set; } = SaveDataKeys.OrderHistory;
     public int LastUpdatedDay { get; set; }
@@ -259,7 +259,7 @@ public class OrderProgress
 /// 單次交易的詳細進度與狀態存檔
 /// </summary>
 [System.Serializable]
-public class TradeProgress : ISaveData
+public class TradeProgress : IFlowSaveData
 {
     public string UniqueID { get; set; }
     public int LastUpdatedDay { get; set; }

@@ -15,7 +15,7 @@ public class TutorialFlow
 
     private void LoadTaskData()
     {
-        var data = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>(SaveDataKeys.Tutorial);
+        var data = DataManager.Instance.GetRunSaveData<TutorialSaveData>(SaveDataKeys.Tutorial);
         if (data.IsComplete)
         {
             currentTaskIndex = taskQueue.Count;
@@ -65,7 +65,7 @@ public class TutorialFlow
     {
         if (currentTaskIndex >= taskQueue.Count)
         {
-            var savedData = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>(SaveDataKeys.Tutorial);
+            var savedData = DataManager.Instance.GetRunSaveData<TutorialSaveData>(SaveDataKeys.Tutorial);
             if (!savedData.IsComplete)
             {
                 SaveProgress();
@@ -76,7 +76,7 @@ public class TutorialFlow
         }
 
         var task = taskQueue[currentTaskIndex];
-        var data = DataManager.Instance.GetPersistentSaveData<TutorialSaveData>(SaveDataKeys.Tutorial);
+        var data = DataManager.Instance.GetRunSaveData<TutorialSaveData>(SaveDataKeys.Tutorial);
         bool resumesSavedTask = currentTaskIndex == data.CurrentTaskIndex;
         int fallbackStartStep = resumesSavedTask ? data.CurrentStepIndex : 0;
         string startStepId = resumesSavedTask ? ResolveCurrentTaskResumeStepId(data) : null;

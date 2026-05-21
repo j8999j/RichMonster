@@ -132,7 +132,7 @@ public static class CollectionMissionRaceUtility
 }
 
 [Serializable]
-public class CollectionMissionSaveData : ISaveData
+public class CollectionMissionSaveData : IRunSaveData
 {
     public string UniqueID { get; set; } = SaveDataKeys.CollectionMission;
     public int LastUpdatedDay { get; set; }
