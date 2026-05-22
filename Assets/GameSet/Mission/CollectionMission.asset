@@ -79,3 +79,6 @@ MonoBehaviour:
     - ItemID: SkyGlassJade
       Points: 4
       Description: "\u4E0D\u65B7\u9583\u720D\u8457\u661F\u7A7A\u7684\u5149\u8292\uFF0C\u80FD\u5920\u5C07\u6574\u500B\u7A7A\u9593\u6295\u5F71\u6210\u5B87\u5B99\u7A7A\u9593"
+    - ItemID: Parchment
+      Points: 2
+      Description: "\u8A18\u9304\u8457\u53E4\u4EE3\u7279\u5225\u7684\u6A02\u7AE0"

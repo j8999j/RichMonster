@@ -342,6 +342,10 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
             child.gameObject.SetActive(false);
         }
     }
+    public void HideOrderSelectGrids()
+    {
+        ClearOnSelectGrid();
+    }
     public void ClearBagDetail()
     {
         DetailNameText.text = "";
@@ -393,6 +397,11 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         LoadOrderImage(order.OrderId);
         SetOrderTypeIcon(order.OrderType);
         ShowOrderTags(order.OrderNeedTags);
+        if (order.IsFinish)
+        {
+            HideOrderSelectGrids();
+            ShowOrderFinish();
+        }
 
     }
     public void UpdateOrderView(HumanSmallOrder order)
@@ -403,6 +412,11 @@ public class HumanOrderView : MonoBehaviour, IGuideInteractable
         LoadOrderImage(order.OrderId);
         SetOrderTypeIcon(order.OrderType);
         ShowOrderTags(order.OrderNeedTags);
+        if (order.IsFinish)
+        {
+            HideOrderSelectGrids();
+            ShowOrderFinish();
+        }
     }
     //根據目前訂單類型顯示與調整放置UI的方法
     public void UpdataOnSelectGridPos(bool IsBigOrder)

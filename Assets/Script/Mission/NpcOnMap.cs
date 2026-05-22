@@ -32,7 +32,7 @@ public class NpcOnMap : MonoBehaviour, IInteractable, IMapGuideTarget
         data.UniqueID = SaveDataKeys.BuildNPCMission(NpcMission.MissionID);
         data.IsFinish = NpcMission.IsFinish;
         data.LastUpdatedDay = GameManager.Instance.gameFlow.CurrentDay;
-        DataManager.Instance.SetPlayerData(data.UniqueID, data);
+        DataManager.Instance.SetDailySaveData(data);
     }
     /// <summary>
     /// 設定 NPC 任務與顯示圖示

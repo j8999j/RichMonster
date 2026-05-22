@@ -46,7 +46,7 @@ public class WanderingYokaiMerchantSpawner : MonoBehaviour
             SpawnIndex = PickSpawnIndex(currentDay),
             ShopIndex = PickShopIndex(currentDay)
         };
-        DataManager.Instance.SetPlayerData(SaveDataKeys.WanderingYokaiMerchant, _save);
+        DataManager.Instance.SetDailySaveData(_save);
     }
 
     private int PickSpawnIndex(int currentDay)

@@ -99,7 +99,7 @@ public class AbyssShop : MonoBehaviour, IInteractable, IMapGuideTarget
             ArrivedBottom = _ArrivedBottom,
             LastUpdatedDay = GameManager.Instance.gameFlow.CurrentDay
         };
-        DataManager.Instance.SetPlayerData(SaveDataKeys.Abyss, abyssSave);
+        DataManager.Instance.SetDailySaveData(abyssSave);
     }
     private void HandleContinue()
     {

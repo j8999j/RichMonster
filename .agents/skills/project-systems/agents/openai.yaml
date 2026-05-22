@@ -1,0 +1,4 @@
+interface:
+  display_name: "ForTest Project Systems"
+  short_description: "Unity project system map and invocation patterns."
+  default_prompt: "Use this skill when working in the ForTest Unity project and you need to understand or modify existing systems, APIs, UI views, data flow, save flow, dialogue commands, audio, sprites, shops, missions, achievements, or scene transitions."

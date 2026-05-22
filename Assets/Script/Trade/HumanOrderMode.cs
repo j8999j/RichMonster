@@ -441,40 +441,64 @@ public class HumanOrderMode : MonoBehaviour
         if (SelectedLargeOrder != null)
         {
             // 先標記訂單為已完成
-            SelectedLargeOrder.IsFinish = true;
-            DataManager.Instance.AddOrderProgress(SelectedLargeOrder.OrderId);
-            int TradePrice = LargeOrderTrade(SelectedOrderItems, SelectedLargeOrder);
+            HumanLargeOrder completedOrder = SelectedLargeOrder;
+            completedOrder.IsFinish = true;
+            DataManager.Instance.AddOrderProgress(completedOrder.OrderId);
+            int TradePrice = LargeOrderTrade(SelectedOrderItems, completedOrder);
             DataManager.Instance.ModifyGold(TradePrice);
             List<string> itemIds = SelectedOrderItems.Select(item => item.ItemId).ToList();
-            GameEventCenter.Publish(new HumanOrderCompletedEvent(SelectedLargeOrder.OrderId, itemIds, TradePrice, true));
+            GameEventCenter.Publish(new HumanOrderCompletedEvent(completedOrder.OrderId, itemIds, TradePrice, true));
             foreach (var item in SelectedOrderItems)
             {
                 DataManager.Instance.RemoveItem(item);
             }
             // 刷新訂單列表顯示
-            ShowTodayOrder(false);
-            ShowLargeOrderBagItems(SelectedLargeOrder);
-            ClearSelectedData();
-            _humanOrderView.ClearOrderView();
+            RefreshCompletedLargeOrderSelection(completedOrder);
             await GameManager.Instance.gameFlow.SaveGameAsync();
         }
         else if (SelectedSmallOrder != null)
         {
+            HumanSmallOrder completedOrder = SelectedSmallOrder;
             // 先標記訂單為已完成
-            SelectedSmallOrder.IsFinish = true;
-            DataManager.Instance.AddOrderProgress(SelectedSmallOrder.OrderId);
-            int TradePrice = SmallOrderTrade(SelectedOrderItems[0], SelectedSmallOrder);
+            completedOrder.IsFinish = true;
+            DataManager.Instance.AddOrderProgress(completedOrder.OrderId);
+            int TradePrice = SmallOrderTrade(SelectedOrderItems[0], completedOrder);
             DataManager.Instance.ModifyGold(TradePrice);
             List<string> itemIds = SelectedOrderItems.Select(item => item.ItemId).ToList();
-            GameEventCenter.Publish(new HumanOrderCompletedEvent(SelectedSmallOrder.OrderId, itemIds, TradePrice, false));
+            GameEventCenter.Publish(new HumanOrderCompletedEvent(completedOrder.OrderId, itemIds, TradePrice, false));
             DataManager.Instance.RemoveItem(SelectedOrderItems[0]);
             // 刷新訂單列表顯示
-            ShowTodayOrder(false);
-            ShowSmallOrderBagItems(SelectedSmallOrder);
-            ClearSelectedData();
-            _humanOrderView.ClearOrderView();
+            RefreshCompletedSmallOrderSelection(completedOrder);
             await GameManager.Instance.gameFlow.SaveGameAsync();
         }
+    }
+
+    private void RefreshCompletedLargeOrderSelection(HumanLargeOrder order)
+    {
+        SelectedLargeOrder = order;
+        SelectedSmallOrder = null;
+        SelectedOrderItems.Clear();
+        _humanOrderView.ClearBagDetail();
+        ShowTodayOrder(false);
+        _humanOrderView.UpdateOrderView(order);
+        _humanOrderView.HideOrderSelectGrids();
+        _humanOrderView.ShowOrderFinish();
+        _humanOrderView.UpdateOrderSelectCount(0, 3);
+        ShowLargeOrderBagItems(order);
+    }
+
+    private void RefreshCompletedSmallOrderSelection(HumanSmallOrder order)
+    {
+        SelectedLargeOrder = null;
+        SelectedSmallOrder = order;
+        SelectedOrderItems.Clear();
+        _humanOrderView.ClearBagDetail();
+        ShowTodayOrder(false);
+        _humanOrderView.UpdateOrderView(order);
+        _humanOrderView.HideOrderSelectGrids();
+        _humanOrderView.ShowOrderFinish();
+        _humanOrderView.UpdateOrderSelectCount(0, 1);
+        ShowSmallOrderBagItems(order);
     }
     private void ClearSelectedData()//清空選擇的訂單與物品
     {

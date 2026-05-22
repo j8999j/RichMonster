@@ -816,13 +816,71 @@ public class DataManager : Singleton<DataManager>
     #endregion
 
     #region ModifyPlayerAPI
+    public void SetDailySaveData<T>(T data) where T : class, IDailySaveData
+    {
+        SetSaveData(data);
+    }
+
+    public void SetRunSaveData<T>(T data) where T : class, IRunSaveData
+    {
+        SetSaveData(data);
+    }
+
+    public void SetFlowSaveData<T>(T data) where T : class, IFlowSaveData
+    {
+        SetSaveData(data);
+    }
+
+    /// <summary>
+    /// 寫入玩家單局存檔資料，存檔鍵以 data.UniqueID 為準。
+    /// </summary>
+    public void SetSaveData<T>(T data) where T : class, ISaveData
+    {
+        if (_currentPlayerData == null)
+        {
+            Debug.LogError("[DataManager] _currentPlayerData is null，無法寫入存檔資料");
+            return;
+        }
+        if (data == null)
+        {
+            Debug.LogError("[DataManager] data is null，無法寫入存檔資料");
+            return;
+        }
+        if (string.IsNullOrEmpty(data.UniqueID))
+        {
+            Debug.LogError($"[DataManager] {typeof(T).Name}.UniqueID 為空，無法寫入存檔資料");
+            return;
+        }
+
+        if (_currentPlayerData.GameSaveFile == null)
+            _currentPlayerData.GameSaveFile = new GameSaveFile();
+        if (_currentPlayerData.GameSaveFile.GameData == null)
+            _currentPlayerData.GameSaveFile.GameData = new Dictionary<string, ISaveData>();
+
+        _currentPlayerData.GameSaveFile.GameData[data.UniqueID] = data;
+        OnPlayerDataChanged = true;
+
+        Debug.Log($"[DataManager] 已寫入存檔資料 key={data.UniqueID}, type={typeof(T).Name}");
+    }
+
     /// <summary>
     /// 新增或更新存檔資料到當前玩家的 GameSaveFile 中
     /// </summary>
     /// <param name="key">存檔資料的唯一鍵值</param>
     /// <param name="data">要儲存的資料 (必須實作 ISaveData)</param>
-    public void SetPlayerData<T>(string key, T data) where T : class, ISaveData
+    private void RemovedSetPlayerData<T>(string key, T data) where T : class, ISaveData
     {
+        if (data != null && !string.IsNullOrEmpty(data.UniqueID))
+        {
+            if (!string.IsNullOrEmpty(key) && key != data.UniqueID)
+            {
+                Debug.LogWarning($"[DataManager] SetPlayerData key '{key}' 與 {typeof(T).Name}.UniqueID '{data.UniqueID}' 不一致，將以 UniqueID 為準");
+            }
+
+            SetSaveData(data);
+            return;
+        }
+
         if (_currentPlayerData == null)
         {
             Debug.LogError("[DataManager] _currentPlayerData is null，無法寫入存檔資料");
@@ -1254,20 +1312,20 @@ public class DataManager : Singleton<DataManager>
     /// <param name="key">對應的存檔鍵值</param>
     public T GetDailySaveData<T>(string key) where T : class, IDailySaveData, new()
     {
-        return GetPlayerSaveData<T>(key);
+        return GetSaveDataCore<T>(key, true);
     }
 
     public T GetRunSaveData<T>(string key) where T : class, IRunSaveData, new()
     {
-        return GetPersistentSaveData<T>(key);
+        return GetSaveDataCore<T>(key, false);
     }
 
     public T GetFlowSaveData<T>(string key) where T : class, IFlowSaveData, new()
     {
-        return GetPersistentSaveData<T>(key);
+        return GetSaveDataCore<T>(key, false);
     }
 
-    public T GetPlayerSaveData<T>(string key) where T : class, ISaveData, new()
+    private T GetSaveDataCore<T>(string key, bool resetWhenDayChanged) where T : class, ISaveData, new()
     {
         if (_currentPlayerData == null)
         {
@@ -1290,11 +1348,11 @@ public class DataManager : Singleton<DataManager>
             return new T();
         }
         T data = _currentPlayerData.GameSaveFile.GameData[key] as T;
-        if (data != null && data.LastUpdatedDay != _currentPlayerData.DaysPlayed)
+        if (resetWhenDayChanged && data != null && data.LastUpdatedDay != _currentPlayerData.DaysPlayed)
         {
             return new T();
         }
-        return data;
+        return data ?? new T();
     }
 
     /// <summary>
@@ -1302,7 +1360,7 @@ public class DataManager : Singleton<DataManager>
     /// </summary>
     /// <typeparam name="T">必須實作 ISaveData 的資料類型</typeparam>
     /// <param name="key">對應的存檔鍵值</param>
-    public T GetPersistentSaveData<T>(string key) where T : class, ISaveData, new()
+    private T RemovedRunSaveData<T>(string key) where T : class, ISaveData, new()
     {
         if (_currentPlayerData == null)
         {

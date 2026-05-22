@@ -250,7 +250,7 @@ public class CollectionMissionTracker : MonoBehaviour
         progress.LastUpdatedDay = dataManager.CurrentPlayerData?.DaysPlayed ?? 0;
 
         dataManager.ModifyGold(goldAmount);
-        dataManager.SetPlayerData(SaveDataKeys.CollectionMission, progress);
+        dataManager.SetRunSaveData(progress);
         return true;
     }
 
@@ -320,7 +320,7 @@ public class CollectionMissionTracker : MonoBehaviour
         progress.TotalPoints += points;
         addedPoints = points;
 
-        dataManager.SetPlayerData(SaveDataKeys.CollectionMission, progress);
+        dataManager.SetRunSaveData(progress);
         return true;
     }
 

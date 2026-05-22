@@ -78,7 +78,7 @@ public class ScratchCardShop : MonoBehaviour, IInteractable, IMapGuideTarget
         var data = new ScratchCardShopData();
         data.IsScratched = isScratched;
         data.LastUpdatedDay = CurrentDay;
-        DataManager.Instance.SetPlayerData(SaveDataKeys.ScratchCardShop, data);
+        DataManager.Instance.SetDailySaveData(data);
     }
     /// <summary>
     /// ScratchCard 刮除完成後的回調 (由 ScratchCard.onScratchComplete 事件觸發)

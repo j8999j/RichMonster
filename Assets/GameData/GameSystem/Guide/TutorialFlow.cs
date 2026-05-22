@@ -42,7 +42,7 @@ public class TutorialFlow
         };
 
         WriteCurrentTaskState(data);
-        DataManager.Instance.SetPlayerData(SaveDataKeys.Tutorial, data);
+        DataManager.Instance.SetRunSaveData(data);
 
         try
         {

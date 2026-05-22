@@ -40,7 +40,7 @@ namespace Souvenir
             }
 
             saveData.LastUpdatedDay = DataManager.Instance.CurrentPlayerData.DaysPlayed;
-            DataManager.Instance.SetPlayerData(SaveDataKeys.GroceryPurchase, saveData);
+            DataManager.Instance.SetRunSaveData(saveData);
 
             QueueRewards(completedRewardCount);
         }

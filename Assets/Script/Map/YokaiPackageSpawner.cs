@@ -55,7 +55,7 @@ public class YokaiPackageSpawner : MonoBehaviour
             SpawnIndices = PickSpawnIndices(currentDay),
             PickedIndices = new List<int>()
         };
-        DataManager.Instance.SetPlayerData(SaveDataKeys.YokaiPackage, _save);
+        DataManager.Instance.SetDailySaveData(_save);
     }
 
     private List<int> PickSpawnIndices(int currentDay)
@@ -127,7 +127,7 @@ public class YokaiPackageSpawner : MonoBehaviour
         }
 
         _save.PickedIndices.Add(index);
-        DataManager.Instance.SetPlayerData(SaveDataKeys.YokaiPackage, _save);
+        DataManager.Instance.SetDailySaveData(_save);
 
         if (_spawned.TryGetValue(index, out var pkg) && pkg != null)
         {
