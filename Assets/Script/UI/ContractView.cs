@@ -35,11 +35,6 @@ public class ContractView : MonoBehaviour, IPlayerInfoPage
     {
         EnsureReferences();
 
-        if (ContractButton != null)
-        {
-            ContractButton.onClick.AddListener(RequestCloseContractPanel);
-        }
-
         if (ClosePanelButton != null)
         {
             ClosePanelButton.onClick.AddListener(RequestCloseContractPanel);
@@ -70,11 +65,6 @@ public class ContractView : MonoBehaviour, IPlayerInfoPage
 
     private void OnDestroy()
     {
-        if (ContractButton != null)
-        {
-            ContractButton.onClick.RemoveListener(RequestCloseContractPanel);
-        }
-
         if (ClosePanelButton != null)
         {
             ClosePanelButton.onClick.RemoveListener(RequestCloseContractPanel);
