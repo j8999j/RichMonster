@@ -66,9 +66,9 @@ namespace Shop
             items = ApplyPriceFactor(items);
             TodayShopItemList = items;
 
-            if (ApplyShopVisualInfo)
+            if (Souvenir.SouvenirManager.Instance != null && Souvenir.SouvenirManager.Instance.IsInitialized)
             {
-                Souvenir.SouvenirManager.Instance.BuildShopVisualInfos(ShopID, items);
+                Souvenir.SouvenirManager.Instance.ApplyShopShelfPipeline(ShopID, items, ApplyShopVisualInfo);
             }
 
             if (_shopUIView != null)

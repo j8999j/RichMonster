@@ -25,6 +25,9 @@ namespace Souvenir
         private bool _isInitialized;
         public bool IsInitialized => _isInitialized;
         private SouvenirEffectDispatcher _effectDispatcher;
+        private SouvenirEffectRegistry _effectRegistry;
+        private SouvenirPipelineService _pipelineService;
+        private SpecialSouvenirLifecycle _specialSouvenirLifecycle;
 
         public void Initialize()
         {
@@ -40,10 +43,14 @@ namespace Souvenir
             InitializeAchievementSouvenirs(souvenirTypesById);
             InitializeSpecialSouvenirs(souvenirTypesById);
 
+            _effectRegistry = new SouvenirEffectRegistry();
+            _pipelineService = new SouvenirPipelineService(_effectRegistry);
+            _effectDispatcher = new SouvenirEffectDispatcher(_effectRegistry);
+            _specialSouvenirLifecycle = new SpecialSouvenirLifecycle(GetAllSpecialSouvenirsForEffects);
             _isInitialized = true;
-            _effectDispatcher = new SouvenirEffectDispatcher(GetOwnedSouvenirs, GetAllSpecialSouvenirsForEffects);
             SnapshotOwnedSouvenirs();
-            RegisterAll();
+            RebuildEffectRegistry();
+            InitializeAllSpecialSouvenirs();
             _effectDispatcher.SubscribeGameEvents();
 
             Debug.Log($"[SouvenirManager] 初始化完成，成就紀念品 {_achievementSouvenirs.Count} 個，特殊紀念品 {_specialSouvenirs.Count} 個");
@@ -250,9 +257,15 @@ namespace Souvenir
         public void ResnapshotForCurrentGame()
         {
             if (!_isInitialized) return;
-            UnregisterAll();
+            ReleaseAllSpecialSouvenirs();
             SnapshotOwnedSouvenirs();
-            RegisterAll();
+            RebuildEffectRegistry();
+            InitializeAllSpecialSouvenirs();
+        }
+
+        private void RebuildEffectRegistry()
+        {
+            _effectRegistry?.Rebuild(GetOwnedSouvenirs(), GetAllSpecialSouvenirsForEffects());
         }
 
         private IEnumerable<SouvenirBase> GetOwnedSouvenirs()
@@ -372,14 +385,14 @@ namespace Souvenir
                 .ToList();
         }
 
-        public void RegisterAll()
+        public void InitializeAllSpecialSouvenirs()
         {
-            _effectDispatcher?.RegisterAllSpecialSouvenirs();
+            _specialSouvenirLifecycle?.InitializeAll();
         }
 
-        public void UnregisterAll()
+        public void ReleaseAllSpecialSouvenirs()
         {
-            _effectDispatcher?.UnregisterAllSpecialSouvenirs();
+            _specialSouvenirLifecycle?.ReleaseAll();
         }
 
         public void ApplyAllStartEffects()
@@ -387,42 +400,43 @@ namespace Souvenir
             _effectDispatcher?.ApplyAllStartEffects();
         }
 
-        public void ApplyAllShopDiscounts(string shopId, List<Shop.ShelfSlot> items)
-        {
-            _effectDispatcher?.ApplyAllShopDiscounts(shopId, items);
-        }
-
-        public List<ShelfSlotVisualInfo> BuildShopVisualInfos(string shopId, List<Shop.ShelfSlot> items)
-        {
-            return _effectDispatcher != null
-                ? _effectDispatcher.BuildShopVisualInfos(shopId, items)
-                : new List<ShelfSlotVisualInfo>();
-        }
-
         public void ApplyAllDailyEffects()
         {
             _effectDispatcher?.ApplyAllDailyEffects();
         }
 
-        public bool IsScratchCardFree()
+        public List<ShelfSlotVisualInfo> ApplyShopShelfPipeline(
+            string shopId,
+            List<Shop.ShelfSlot> items,
+            bool buildVisualInfos)
         {
-            return _effectDispatcher != null && _effectDispatcher.IsScratchCardFree();
+            return _pipelineService != null
+                ? _pipelineService.ApplyShopShelf(shopId, items, buildVisualInfos)
+                : new List<ShelfSlotVisualInfo>();
         }
 
-        public int GetExtraBagCapacity()
+        public bool EvaluateScratchCardFree()
         {
-            return _effectDispatcher != null ? _effectDispatcher.GetExtraBagCapacity() : 0;
+            return _pipelineService != null && _pipelineService.EvaluateScratchCardFree();
+        }
+
+        public int CalculateExtraBagCapacity()
+        {
+            return _pipelineService != null ? _pipelineService.CalculateExtraBagCapacity() : 0;
         }
 
         public void Reset()
         {
             _effectDispatcher?.UnsubscribeGameEvents();
-            UnregisterAll();
+            ReleaseAllSpecialSouvenirs();
             _achievementSouvenirs.Clear();
             _specialSouvenirs.Clear();
             _souvenirById.Clear();
             _ownedSouvenirIds.Clear();
             _effectDispatcher = null;
+            _effectRegistry = null;
+            _pipelineService = null;
+            _specialSouvenirLifecycle = null;
             _isInitialized = false;
             Debug.Log("[SouvenirManager] 紀念品系統已重置");
         }

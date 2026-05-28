@@ -156,7 +156,6 @@ namespace Shop
                 slot.Price = PriceCalculationResult(slot);
             }
 
-            Souvenir.SouvenirManager.Instance.ApplyAllShopDiscounts(ShopID, shelves);
             return shelves;
         }
 

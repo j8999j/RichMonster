@@ -6,13 +6,13 @@ namespace Souvenir
     /// 旅行背包：背包容量上限增加 5 格
     /// </summary>
     [SouvenirDefinition("SouAch_TravelBag")]
-    public class TravelBagSouvenir : AchievementSouvenir, IBagCapacityProvider
+    public class TravelBagSouvenir : AchievementSouvenir, ISouvenirPipelineHandler<BagCapacityPipelineContext>
     {
         public override string SouvenirID => "SouAch_TravelBag";
 
-        public int GetExtraCapacity()
+        public void Apply(BagCapacityPipelineContext context)
         {
-            return 5;
+            context.AddExtraCapacity(5);
         }
     }
 }

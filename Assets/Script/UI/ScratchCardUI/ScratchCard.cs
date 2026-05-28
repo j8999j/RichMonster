@@ -183,7 +183,7 @@ public class ScratchCard : MonoBehaviour, IDragHandler, IPointerDownHandler, IPo
     {
         bool isFree = Souvenir.SouvenirManager.Instance != null
             && Souvenir.SouvenirManager.Instance.IsInitialized
-            && Souvenir.SouvenirManager.Instance.IsScratchCardFree();
+            && Souvenir.SouvenirManager.Instance.EvaluateScratchCardFree();
 
         if (!isFree && !DataManager.Instance.TrySpendGold(300))
             return;

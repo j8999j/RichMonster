@@ -234,7 +234,8 @@ public class ShopUIView : ShopViewBase
     {
         if (data?.VisualInfo == null) return false;
 
-        return data.VisualInfo.IsDailySpecial
+        return data.VisualInfo.HasEffects
+            || data.VisualInfo.IsDailySpecial
             || !string.IsNullOrEmpty(data.VisualInfo.DiscountLabel)
             || (data.Item != null && data.Price < data.Item.BasePrice);
     }

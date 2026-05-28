@@ -1,25 +1,15 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Souvenir
 {
-    /// <summary>
-    /// 負責紀念品效果的事件訂閱、生命週期與分派。
-    /// SouvenirManager 管理資料與所有權；此類別只處理「哪些效果該被觸發」。
-    /// </summary>
-    public class SouvenirEffectDispatcher
+    public sealed class SouvenirEffectDispatcher
     {
-        private readonly Func<IEnumerable<SouvenirBase>> _getOwnedSouvenirs;
-        private readonly Func<IEnumerable<SpecialSouvenir>> _getAllSpecialSouvenirs;
+        private readonly SouvenirEffectRegistry _registry;
         private bool _eventsSubscribed;
 
-        public SouvenirEffectDispatcher(
-            Func<IEnumerable<SouvenirBase>> getOwnedSouvenirs,
-            Func<IEnumerable<SpecialSouvenir>> getAllSpecialSouvenirs)
+        public SouvenirEffectDispatcher(SouvenirEffectRegistry registry)
         {
-            _getOwnedSouvenirs = getOwnedSouvenirs;
-            _getAllSpecialSouvenirs = getAllSpecialSouvenirs;
+            _registry = registry;
         }
 
         public void SubscribeGameEvents()
@@ -42,122 +32,52 @@ namespace Souvenir
             _eventsSubscribed = false;
         }
 
-        public void RegisterAllSpecialSouvenirs()
-        {
-            foreach (var souvenir in _getAllSpecialSouvenirs())
-            {
-                souvenir.Register();
-            }
-
-            Debug.Log("[SouvenirEffectDispatcher] 已註冊所有特殊紀念品事件");
-        }
-
-        public void UnregisterAllSpecialSouvenirs()
-        {
-            foreach (var souvenir in _getAllSpecialSouvenirs())
-            {
-                souvenir.Unregister();
-            }
-
-            Debug.Log("[SouvenirEffectDispatcher] 已取消註冊所有紀念品事件");
-        }
-
         public void ApplyAllStartEffects()
         {
-            ForEachOwned<IApplyStartEffect>(startEffect => startEffect.ApplyStartEffect());
-            Debug.Log("[SouvenirEffectDispatcher] 已觸發所有持有的 IApplyStartEffect 開局效果");
-        }
-
-        public void ApplyAllShopDiscounts(string shopId, List<Shop.ShelfSlot> items)
-        {
-            if (items == null || items.Count == 0) return;
-            ForEachOwned<IShopDiscountProvider>(discountProvider => discountProvider.ApplyShopDiscount(shopId, items));
-        }
-
-        public List<ShelfSlotVisualInfo> BuildShopVisualInfos(string shopId, List<Shop.ShelfSlot> items)
-        {
-            var visualInfos = new List<ShelfSlotVisualInfo>();
-            if (items == null) return visualInfos;
-
-            foreach (var slot in items)
+            foreach (var effect in _registry.GetOwned<IApplyStartEffect>())
             {
-                var info = new ShelfSlotVisualInfo { SlotIndex = slot.SlotIndex };
-                visualInfos.Add(info);
-                slot.VisualInfo = info;
+                effect.ApplyStartEffect();
             }
 
-            ForEachOwned<IShopVisualModifier>(visualModifier => visualModifier.ModifyVisual(shopId, visualInfos));
-            return visualInfos;
+            Debug.Log("[SouvenirEffectDispatcher] Applied owned start effects.");
         }
 
         public void ApplyAllDailyEffects()
         {
-            ForEachOwned<IDailyEffect>(daily => daily.ApplyDailyEffect());
-            Debug.Log("[SouvenirEffectDispatcher] 已觸發所有每日效果");
-        }
-
-        public bool IsScratchCardFree()
-        {
-            bool isFree = false;
-            ForEachOwned<IFreeScratchCardProvider>(provider =>
+            foreach (var effect in _registry.GetOwned<IDailyEffect>())
             {
-                if (provider.IsScratchCardFree())
-                {
-                    isFree = true;
-                }
-            });
-            return isFree;
-        }
+                effect.ApplyDailyEffect();
+            }
 
-        public int GetExtraBagCapacity()
-        {
-            int extraCapacity = 0;
-            ForEachOwned<IBagCapacityProvider>(provider =>
-            {
-                extraCapacity += provider.GetExtraCapacity();
-            });
-            return extraCapacity;
+            Debug.Log("[SouvenirEffectDispatcher] Applied owned daily effects.");
         }
 
         private void OnItemPurchased(ItemPurchasedEvent eventData)
         {
-            ForEachOwned<IShopPurchaseListener>(
-                purchaseListener => purchaseListener.OnItemPurchased(eventData.ShopId, eventData.ItemId, eventData.Amount));
+            foreach (var listener in _registry.GetOwned<IShopPurchaseListener>())
+            {
+                listener.OnItemPurchased(eventData.ShopId, eventData.ItemId, eventData.Amount);
+            }
         }
 
         private void OnMonsterTradeCompleted(MonsterTradeCompletedEvent eventData)
         {
-            ForEachOwned<IMonsterTradeListener>(
-                listener => listener.OnTradeCompleted(eventData.Satisfaction));
-            ForEachAllSpecial<IMonsterTradeWithRaceListener>(
-                listener => listener.OnTradeCompletedWithRace(eventData.Satisfaction, eventData.Race));
+            foreach (var listener in _registry.GetOwned<IMonsterTradeListener>())
+            {
+                listener.OnTradeCompleted(eventData.Satisfaction);
+            }
+
+            foreach (var listener in _registry.GetAllSpecial<IMonsterTradeWithRaceListener>())
+            {
+                listener.OnTradeCompletedWithRace(eventData.Satisfaction, eventData.Race);
+            }
         }
 
         private void OnMonsterTradeFailed(MonsterTradeFailedEvent eventData)
         {
-            ForEachAllSpecial<IMonsterTradeFailedListener>(
-                listener => listener.OnTradeFailed(eventData.Race));
-        }
-
-        private void ForEachOwned<T>(Action<T> action) where T : class
-        {
-            foreach (var souvenir in _getOwnedSouvenirs())
+            foreach (var listener in _registry.GetAllSpecial<IMonsterTradeFailedListener>())
             {
-                if (souvenir is T target)
-                {
-                    action(target);
-                }
-            }
-        }
-
-        private void ForEachAllSpecial<T>(Action<T> action) where T : class
-        {
-            foreach (var souvenir in _getAllSpecialSouvenirs())
-            {
-                if (souvenir is T target)
-                {
-                    action(target);
-                }
+                listener.OnTradeFailed(eventData.Race);
             }
         }
     }

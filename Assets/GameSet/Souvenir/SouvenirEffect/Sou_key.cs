@@ -15,8 +15,8 @@ namespace Souvenir
             EffectName = "爺爺留下的神祕鑰匙";
         }
 
-        public override void Register() { }
-        public override void Unregister() { }
+        public override void InitializeLifecycle() { }
+        public override void ReleaseLifecycle() { }
         #region ISouvenirInteractive 實作
 
         public bool HasInteraction => true;

@@ -956,7 +956,7 @@ public class DataManager : Singleton<DataManager>
         int extraCapacity = 0;
         if (SouvenirManager.Instance != null && SouvenirManager.Instance.IsInitialized)
         {
-            extraCapacity = SouvenirManager.Instance.GetExtraBagCapacity();
+            extraCapacity = SouvenirManager.Instance.CalculateExtraBagCapacity();
         }
 
         return BaseInventoryCapacity + Mathf.Max(0, extraCapacity);

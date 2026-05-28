@@ -54,12 +54,12 @@ namespace Souvenir
             }
         }
 
-        public override void Register()
+        public override void InitializeLifecycle()
         {
             Initialize();
         }
 
-        public override void Unregister() { }
+        public override void ReleaseLifecycle() { }
 
         public void OnTradeCompletedWithRace(TradeSatisfaction satisfaction, string race)
         {

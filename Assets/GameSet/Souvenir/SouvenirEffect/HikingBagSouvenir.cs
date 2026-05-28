@@ -6,13 +6,13 @@ namespace Souvenir
     /// 登山背包：背包容量上限增加 15 格
     /// </summary>
     [SouvenirDefinition("SouAch_HikingBag")]
-    public class HikingBagSouvenir : AchievementSouvenir, IBagCapacityProvider
+    public class HikingBagSouvenir : AchievementSouvenir, ISouvenirPipelineHandler<BagCapacityPipelineContext>
     {
         public override string SouvenirID => "SouAch_HikingBag";
 
-        public int GetExtraCapacity()
+        public void Apply(BagCapacityPipelineContext context)
         {
-            return 10;
+            context.AddExtraCapacity(10);
         }
     }
 }
