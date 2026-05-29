@@ -376,7 +376,8 @@ public class DataManager : Singleton<DataManager>
             {
                 UnlockMonsterInformationID = new List<string>(),
                 NewMonsterInformationID = new List<string>(),
-                NewMonsterStoryID = new List<string>()
+                NewMonsterStoryID = new List<string>(),
+                MonsterServedCount = new Dictionary<string, int>()
             },
             AchievementData = new List<IAchievementSave>(),
             SpecialSouvenirProgressData = new List<ISpecialSouvenirSave>(),
@@ -507,6 +508,31 @@ public class DataManager : Singleton<DataManager>
         }
     }
 
+
+    /// <summary>
+    /// 妖怪接待次數 +1 (key 為 ProfessionId)
+    /// </summary>
+    public void IncrementMonsterServedCount(string monsterId)
+    {
+        if (_bookData == null || string.IsNullOrEmpty(monsterId)) return;
+        _bookData.MonsterBookData.MonsterServedCount ??= new Dictionary<string, int>();
+
+        var dict = _bookData.MonsterBookData.MonsterServedCount;
+        dict[monsterId] = dict.TryGetValue(monsterId, out int n) ? n + 1 : 1;
+
+        MarkBookDataChanged();
+        SaveRepository.SaveBookData(_bookData);
+    }
+
+    /// <summary>
+    /// 取得指定妖怪的接待次數 (key 為 ProfessionId)
+    /// </summary>
+    public int GetMonsterServedCount(string monsterId)
+    {
+        if (_bookData == null || string.IsNullOrEmpty(monsterId)) return 0;
+        var dict = _bookData.MonsterBookData?.MonsterServedCount;
+        return dict != null && dict.TryGetValue(monsterId, out int n) ? n : 0;
+    }
 
     /// <summary>
     /// 檢查物品是否已收錄在圖鑑中

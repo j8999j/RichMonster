@@ -310,6 +310,8 @@ public class MonsterBookData
     public List<string> NewMonsterInformationID;
     /// <summary> 新解鎖但尚未在圖鑑畫面中被玩家確認的故事 ID </summary>
     public List<string> NewMonsterStoryID;
+    /// <summary> 每位妖怪職業 (ProfessionId) 的接待次數 </summary>
+    public Dictionary<string, int> MonsterServedCount;
 }
 
 /// <summary>

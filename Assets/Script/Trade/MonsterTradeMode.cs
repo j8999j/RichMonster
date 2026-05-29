@@ -47,7 +47,7 @@ public class MonsterTradeMode : MonoBehaviour
     /// </summary>
     public void GenerateGuestList()
     {
-        _TodayMonsterGuestList = _generator.GenerateGuestsForDay(1);
+        _TodayMonsterGuestList = _generator.GenerateGuestsForDay(GameManager.Instance.gameFlow.CurrentDay);
         //LogAllGuestDetails();
     }
 
@@ -310,10 +310,16 @@ public class MonsterTradeMode : MonoBehaviour
     #region TradePrice
     private void PriceTrade(Item item)
     {
-        var price = CaculatePrice(item);
         TradeSatisfaction satisfaction = CalculateSatisfaction(item);
+        var price = CaculatePrice(item, satisfaction);
         string customerId = currentmonsterGuest?.monsterCustomer?.Profession ?? string.Empty;
         string race = currentmonsterGuest?.monsterCustomer?.Race ?? string.Empty;
+
+        // 紀錄該妖怪接待次數 (含成功與 Hated 失敗，皆視為接待過一次)
+        if (!string.IsNullOrEmpty(customerId))
+        {
+            DataManager.Instance.IncrementMonsterServedCount(customerId);
+        }
 
         // 呼叫 View 表達視覺 (先留空)
         tradeView.ShowSatisfactionVisual(satisfaction);
@@ -377,13 +383,20 @@ public class MonsterTradeMode : MonoBehaviour
         bool hasAllRequestTags = request.RequestTags == null || !request.RequestTags.Except(itemDefinition.Tags).Any();
         bool hasAnyRequestTag = request.RequestTags != null && request.RequestTags.Any(t => itemDefinition.Tags.Contains(t));
         bool hasAnyPreferTag = customer.PreferredTags != null && customer.PreferredTags.Any(t => itemDefinition.Tags.Contains(t));
-        bool hasAllPreferTags = customer.PreferredTags != null && customer.PreferredTags.Count > 0 && !customer.PreferredTags.Except(itemDefinition.Tags).Any();
+
+        int preferTotalCount = customer.PreferredTags?.Count ?? 0;
+        int preferMatchCount = customer.PreferredTags != null
+            ? customer.PreferredTags.Intersect(itemDefinition.Tags).Count()
+            : 0;
+        // 命中 3 個以上，或命中全部偏好標籤（總數 <3 時也視為達標）
+        bool hasEnoughPreferTags = preferTotalCount > 0
+            && (preferMatchCount >= 3 || preferMatchCount >= preferTotalCount);
 
         // 4. 非常滿意 (VerySatisfied)
         // 條件 A: 符合需求類型且具有所有需求標籤並包含任意偏好標籤
         bool verySatisfiedA = isTypeMatch && hasAllRequestTags && hasAnyPreferTag;
-        // 條件 B: 提交物品符合所有偏好標籤(忽略需求部分)
-        bool verySatisfiedB = hasAllPreferTags;
+        // 條件 B: 提交物品包含 3 個以上或全部偏好標籤(忽略需求部分)
+        bool verySatisfiedB = hasEnoughPreferTags;
 
         if (verySatisfiedA || verySatisfiedB)
         {
@@ -393,8 +406,8 @@ public class MonsterTradeMode : MonoBehaviour
         // 3. 滿意 (Satisfied)
         // 條件 A: 符合需求類型且具有任一需求標籤
         bool satisfiedA = isTypeMatch && hasAnyRequestTag;
-        // 條件 B: 需求類型符合且物品包含任意偏好標籤
-        bool satisfiedB = isTypeMatch && hasAnyPreferTag;
+        // 條件 B: 物品包含任意偏好標籤(忽略需求類型)
+        bool satisfiedB = hasAnyPreferTag;
 
         if (satisfiedA || satisfiedB)
         {
@@ -404,11 +417,12 @@ public class MonsterTradeMode : MonoBehaviour
         // 2. 尚可 (Okay): 不包含厭惡標籤但未達到滿意與非常滿意標準
         return TradeSatisfaction.Okay;
     }
-    private float CaculatePrice(Item item)
+    private float CaculatePrice(Item item, TradeSatisfaction satisfaction)
     {
         var itemDefinition = DataManager.Instance.GetItemById(item.ItemId);
         var basePrice = itemDefinition.BasePrice;
-        float RequestMultiplier;
+        bool isTypeMatch = itemDefinition.Type == currentmonsterGuest.monsterRequest.itemType;
+
         // 計算顧客偏好標籤與物品標籤的交集數量
         int preferMatchCount = currentmonsterGuest.monsterCustomer.PreferredTags
             .Intersect(itemDefinition.Tags)
@@ -422,35 +436,28 @@ public class MonsterTradeMode : MonoBehaviour
             _ => currentmonsterGuest.monsterCustomer.PreferMaxPower * 1f
         };
 
-        if (currentmonsterGuest.monsterRequest.itemType == itemDefinition.Type)
+        float RequestMultiplier;
+        if (satisfaction == TradeSatisfaction.Satisfied || satisfaction == TradeSatisfaction.VerySatisfied)
         {
-            // 計算物品標籤與顧客請求標籤的相同數量
-            int matchingTagCount = itemDefinition.Tags
-                .Intersect(currentmonsterGuest.monsterRequest.RequestTags)
-                .Count();
-            switch (matchingTagCount)
+            // 取需求標籤與偏好標籤命中數的較大者
+            int requestMatchCount = currentmonsterGuest.monsterRequest.RequestTags != null
+                ? itemDefinition.Tags.Intersect(currentmonsterGuest.monsterRequest.RequestTags).Count()
+                : 0;
+            int bestMatchCount = System.Math.Max(requestMatchCount, preferMatchCount);
+            RequestMultiplier = bestMatchCount switch
             {
-                case 0:
-                    RequestMultiplier = 1.2f;
-                    break;
-                case 1:
-                    RequestMultiplier = 1.3f;
-                    break;
-                case 2:
-                    RequestMultiplier = 1.7f;
-                    break;
-                case 3:
-                    RequestMultiplier = 3f;
-                    break;
-                default:
-                    RequestMultiplier = 3f;
-                    break;
-            }
+                1 => 1.3f,
+                2 => 1.7f,
+                >= 3 => 3f,
+                _ => isTypeMatch ? 1f : 0.8f
+            };
         }
         else
         {
-            RequestMultiplier = 0.8f;
+            // 尚可：類型符合 隨機 0.9-1.2，類型不符 0.8x
+            RequestMultiplier = isTypeMatch ? 0.9f + GameRng.Value() * 0.3f : 0.8f;
         }
+
         float BudgetMultiplier = PreferMultiplier + currentmonsterGuest.monsterCustomer.BudgetMultiplier;
         var price = basePrice * BudgetMultiplier * RequestMultiplier;
         return price;

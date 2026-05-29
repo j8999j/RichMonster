@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class GameFlow
 {
+    // 前期 Day 1-5、中期 Day 6-13、後期 Day 14+
+    public const int EarlyPhaseLastDay = 5;
+    public const int MidPhaseLastDay = 13;
+
     public int CurrentDay { get; private set; }
 
     private readonly IReadOnlyPlayerData _currentPlayerData;

@@ -33,6 +33,7 @@ public class GameBookView : MonoBehaviour, IPlayerInfoPage
     public TextMeshProUGUI MonsterName;
     public TextMeshProUGUI RaceName;
     public TextMeshProUGUI MonsterDescription;
+    public TextMeshProUGUI MonsterServedCountText;
     public Image MonsterDetailIcon;
     public Image MonsterRaceIcon;
     public Sprite GhoustRaceSprite;
@@ -572,6 +573,13 @@ public class GameBookView : MonoBehaviour, IPlayerInfoPage
 
         int unlockedInfoCount = 0;
 
+        // 接待次數 (含未解鎖也顯示，反映玩家曾接待過幾次)
+        if (MonsterServedCountText != null)
+        {
+            int servedCount = DataManager.Instance.GetMonsterServedCount(slot.CurrentDefinition.Id);
+            MonsterServedCountText.text = $"接待次數：{servedCount}";
+        }
+
         if (isUnlocked)
         {
             if (MonsterName != null) MonsterName.text = slot.CurrentDefinition.ProfessionName;
@@ -957,6 +965,8 @@ public class GameBookView : MonoBehaviour, IPlayerInfoPage
             RaceName.text = "";
         if (MonsterDescription != null)
             MonsterDescription.text = "";
+        if (MonsterServedCountText != null)
+            MonsterServedCountText.text = "";
         if (MonsterDetailIcon != null)
         {
             MonsterDetailIcon.sprite = nullSprite;

@@ -5,9 +5,18 @@ using GameSystem;
 
 public class MonsterGuestGenerator
 {
-    private const int RegularWeight = 100;
-    private const int RareWeight = 30;
-    private const int RichWeight = 20;
+    // 前/中/後期分界共用 GameFlow.EarlyPhaseLastDay / MidPhaseLastDay
+    private const int EarlyRegularWeight = 70;
+    private const int EarlyRareWeight = 20;
+    private const int EarlyRichWeight = 10;
+
+    private const int MidRegularWeight = 60;
+    private const int MidRareWeight = 30;
+    private const int MidRichWeight = 10;
+
+    private const int LateRegularWeight = 50;
+    private const int LateRareWeight = 30;
+    private const int LateRichWeight = 20;
 
     private const int MinTraitCount = 0;
     private const int MaxTraitCount = 2;
@@ -61,7 +70,7 @@ public class MonsterGuestGenerator
     {
         string keyPrefix = $"Day:{dayNumber}:Guest:{guestIndex}";
 
-        var profession = PickProfessionKeyed(keyPrefix, usedProfessions);
+        var profession = PickProfessionKeyed(keyPrefix, dayNumber, usedProfessions);
         var traits = GenerateTraitsKeyed(keyPrefix);
         var customer = new MonsterCustomer(profession, traits);
         var request = GenerateRequestKeyed(customer, keyPrefix);
@@ -105,12 +114,21 @@ public class MonsterGuestGenerator
 
     private MonsterCustomer GenerateCustomerKeyed(string keyPrefix)
     {
-        var profession = PickProfessionKeyed(keyPrefix);
+        var profession = PickProfessionKeyed(keyPrefix, 1);
         var traits = GenerateTraitsKeyed(keyPrefix);
         return new MonsterCustomer(profession, traits);
     }
 
-    private MonsterProfessionDefinition PickProfessionKeyed(string keyPrefix, HashSet<string> usedProfessions = null)
+    private static (int regular, int rare, int rich) GetProfessionWeights(int dayNumber)
+    {
+        if (dayNumber <= GameFlow.EarlyPhaseLastDay)
+            return (EarlyRegularWeight, EarlyRareWeight, EarlyRichWeight);
+        if (dayNumber <= GameFlow.MidPhaseLastDay)
+            return (MidRegularWeight, MidRareWeight, MidRichWeight);
+        return (LateRegularWeight, LateRareWeight, LateRichWeight);
+    }
+
+    private MonsterProfessionDefinition PickProfessionKeyed(string keyPrefix, int dayNumber, HashSet<string> usedProfessions = null)
     {
         if (_professionData == null || _professionData.Count == 0) return null;
 
@@ -125,16 +143,17 @@ public class MonsterGuestGenerator
             }
         }
 
+        var (regularWeight, rareWeight, richWeight) = GetProfessionWeights(dayNumber);
         var weightedList = new List<(MonsterProfessionDefinition prof, int weight)>();
 
         foreach (var prof in professionList)
         {
             int weight = prof.professionType switch
             {
-                ProfessionType.Regular => RegularWeight,
-                ProfessionType.Rare => RareWeight,
-                ProfessionType.Rich => RichWeight,
-                _ => RegularWeight
+                ProfessionType.Regular => regularWeight,
+                ProfessionType.Rare => rareWeight,
+                ProfessionType.Rich => richWeight,
+                _ => regularWeight
             };
             weightedList.Add((prof, weight));
         }
